@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+
+
+@theme {
+  --color-primary: #EC4899;
+  --color-input:#EBEBEB;
+  --color-focus:#EC4899 ;
+  --color-border-clr:#E5E7EB;
+  --color-text-pr:oklch(0.592 0.249 0.584);
+  --color-gradient-primary:#f6339a;
+  --color-gradient-secondary:#9810fa;
+
+}
+
+/* Prevent blue tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Optimize image rendering */
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
