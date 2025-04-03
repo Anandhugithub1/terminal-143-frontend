@@ -65,5 +65,4 @@ npm run test  # or yarn test
 
 ---
 
-Happy coding! 🎉
 
