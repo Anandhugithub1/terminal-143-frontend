@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import App from './App.jsx'
 import { Login } from './pages/Auth/Login.jsx';
-import {HomeScreen} from './pages/Home.jsx';
+// import {HomeScreen} from './pages/Home.jsx';
 import { Register } from './pages/Auth/Register.jsx';
 import { ProfileDetails } from './pages/Profile_Details.jsx';
 import EmailOTPVerification from './pages/Auth/OtpVerification.jsx';
@@ -21,7 +21,7 @@ const route =createBrowserRouter(
     <Route path='' element={<App/>}>
       <Route path='register' element={<Register/>}/>
     <Route path='complete-details' element={<ProfileDetails/>}/>
-  <Route path='home' element={<HomeScreen/>}/>
+  {/* <Route path='home' element={<HomeScreen/>}/> */}
 <Route path='login' element={<Login/>}/>
 <Route path='verify' element={<EmailOTPVerification/>}/>
 <Route path='forgot-password' element={<ForgotAndResetPassword/>}/>
