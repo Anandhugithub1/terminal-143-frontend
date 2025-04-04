@@ -170,15 +170,15 @@ const ChooseCategory = () => {
                 </div>
               </div>
 
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 flex-shrink-0">
-                <img
-                  src={manInWhiteShirt}
-                  alt="Find Match"
-                  className="w-full h-full object-contain rounded-full relative"
-                />
-            
-              
-              </div>
+              <div className="relative z-10 w-43 h-36 sm:w-48 sm:h-48 flex-shrink-0 md:w-56">
+  <img
+    src={manInWhiteShirt}
+    alt="Find Match"
+    className="w-full h-full object-cover"
+  />
+</div>
+
+
             </div>
           </div>
 
