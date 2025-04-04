@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import womanInRedShirt from '../../assets/woman.png';
 import manInWhiteShirt from '../../assets/man.png';
-import smallPic1 from '../../assets/small.jpg';
-import smallPic2 from '../../assets/small1.jpg';
-import smallPic3 from '../../assets/small.jpg';
-import smallPic4 from '../../assets/small.jpg';
+
 
 const ChooseCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -173,37 +170,14 @@ const ChooseCategory = () => {
                 </div>
               </div>
 
-              {/* Man Image + Floating Profile Pics */}
               <div className="relative w-32 h-32 sm:w-40 sm:h-40 flex-shrink-0">
                 <img
                   src={manInWhiteShirt}
                   alt="Find Match"
                   className="w-full h-full object-contain rounded-full relative"
                 />
-                <img
-                  src={smallPic1}
-                  alt="User 1"
-                  className="absolute w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow"
-                  style={{ top: '-15%', left: '10%' }}
-                />
-                <img
-                  src={smallPic2}
-                  alt="User 2"
-                  className="absolute w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow"
-                  style={{ top: '-20%', right: '5%' }}
-                />
-                <img
-                  src={smallPic3}
-                  alt="User 3"
-                  className="absolute w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow"
-                  style={{ top: '-5%', left: '-10%' }}
-                />
-                <img
-                  src={smallPic4}
-                  alt="User 4"
-                  className="absolute w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-white shadow"
-                  style={{ top: '-10%', right: '-10%' }}
-                />
+            
+              
               </div>
             </div>
           </div>
