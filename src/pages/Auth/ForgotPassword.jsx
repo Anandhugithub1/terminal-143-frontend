@@ -6,7 +6,7 @@ import { Button } from '../../shared/Button'; // import the common button
 export const ForgotAndResetPassword = () => {
   const [step, setStep] = useState('forgot');
   const [email, setEmail] = useState('');
-  const [confirmationCode, setConfirmationCode] = useState('');
+  const [ConfirmationCode, setConfirmationCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -43,15 +43,20 @@ export const ForgotAndResetPassword = () => {
 
   const handleResetSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !confirmationCode || !newPassword) {
+    if (!email || !ConfirmationCode || !newPassword) {
       setError('Please fill in all fields.');
       return;
     }
     setError('');
     setMessage('');
-
+  
     try {
-      const payload = { email, confirmationCode, newPassword };
+      // Correct the payload keys to match backend expectations
+      const payload = { 
+        email, 
+        ConfirmationCode, 
+        Password: newPassword 
+      };
       const response = await fetch('http://localhost:3000/api/users/confirm-forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -113,7 +118,7 @@ export const ForgotAndResetPassword = () => {
                 disabled
               />
               <InputField
-                value={confirmationCode}
+                value={ConfirmationCode}
                 onChange={(e) => setConfirmationCode(e.target.value)}
                 placeholder="Enter confirmation code"
               />
