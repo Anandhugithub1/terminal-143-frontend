@@ -86,4 +86,3 @@ export const FindMatchCard = ({ selectedCategory, setSelectedCategory, manInWhit
       </div>
     );
   };
-
