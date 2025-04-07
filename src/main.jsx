@@ -11,21 +11,23 @@ import App from './App.jsx'
 import { Login } from './pages/Auth/Login.jsx';
 // import {HomeScreen} from './pages/Home.jsx';
 import { Register } from './pages/Auth/Register.jsx';
-import { ProfileDetails } from './pages/Profile_Details.jsx';
+import AddDetails from './pages/User/Add_Details.jsx';
 import EmailOTPVerification from './pages/Auth/OtpVerification.jsx';
 import { ForgotAndResetPassword } from './pages/Auth/ForgotPassword.jsx';
 import { AuthProvider } from './pages/Auth/State.jsx';
 import  ChooseCategory  from './pages/User/ChooseCategory.jsx';
+import SelectLanguage from './pages/User/Select_lang.jsx';
 const route =createBrowserRouter(
   createRoutesFromElements(
     <Route path='' element={<App/>}>
       <Route path='register' element={<Register/>}/>
-    <Route path='complete-details' element={<ProfileDetails/>}/>
+    <Route path='complete-details' element={<AddDetails/>}/>
   {/* <Route path='home' element={<HomeScreen/>}/> */}
 <Route path='login' element={<Login/>}/>
 <Route path='verify' element={<EmailOTPVerification/>}/>
 <Route path='forgot-password' element={<ForgotAndResetPassword/>}/>
 <Route path='choose-category' element={<ChooseCategory/>}/>
+<Route path='select-language' element={<SelectLanguage/>}/>
     </Route>
   )
 )
