@@ -24,3 +24,12 @@ export const profilesData = [
     image: 'https://picsum.photos/400/600?3'
   }
 ];
+
+export  const LANGUAGE_LABELS = {
+  en: 'English',
+  fr: 'French',
+  de: 'German',
+  zh: 'Chinese',
+  ja: 'Japanese',
+  ar: 'Arabic',
+};
