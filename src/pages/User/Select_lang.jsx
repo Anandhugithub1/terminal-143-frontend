@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from 'react-router-dom';
 const LANGUAGES = {
   ENGLISH: 'en',
   FRENCH: 'fr',
@@ -11,6 +11,7 @@ const LANGUAGES = {
 
 const SelectLanguage = () => {
   const [selectedLang, setSelectedLang] = useState(LANGUAGES.ENGLISH);
+  const navigate = useNavigate();
 
   const getLanguageLabel = (code) => {
     switch (code) {
@@ -33,6 +34,8 @@ const SelectLanguage = () => {
 
   const handleSelectLanguage = (langCode) => {
     setSelectedLang(langCode);
+    localStorage.setItem('selectedLanguage', langCode);
+
   };
 
   return (
@@ -40,7 +43,7 @@ const SelectLanguage = () => {
       <div className="w-full lg:max-w-3xl lg:mx-auto min-h-screen flex flex-col">
         {/* Back Button */}
         <div className="flex items-center px-8 pt-8 pb-4">
-          <button className="flex items-center text-gray-600 text-base font-medium">
+          <button className="flex items-center text-gray-600 text-base font-medium" onClick={() => navigate(-1)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6 mr-2"

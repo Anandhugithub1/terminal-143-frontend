@@ -40,7 +40,7 @@ export const Login = () => {
       } else {
         login(result.accessToken);
         console.log('Login successful', result);
-        navigate('/complete-details');
+        navigate('/choose-category');
       }
     } catch (err) {
       console.error('Error during login:', err);
