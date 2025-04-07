@@ -15,8 +15,8 @@ const ChooseCategory = () => {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
   const USER_TYPE_MAP = {
-    FIND_MATCH: 'fm',
-    MATCH_PROVIDER: 'mp',
+    provider: 'mp',
+    match: 'fm',
   };
 
   // Get token from AuthContext
