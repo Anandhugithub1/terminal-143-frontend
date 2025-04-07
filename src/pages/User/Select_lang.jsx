@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 
 const LANGUAGES = {
   ENGLISH: 'en',
-  THAI: 'th',
-  RUSSIAN: 'ru',
+  FRENCH: 'fr',
+  GERMAN: 'de',
   CHINESE: 'zh',
-  SPANISH: 'es',
-  MEXICAN: 'mx',
-  ITALIAN: 'it',
-  PORTUGUESE: 'pt',
+  JAPANESE: 'ja',
+  ARABIC: 'ar',
 };
 
 const SelectLanguage = () => {
@@ -18,20 +16,16 @@ const SelectLanguage = () => {
     switch (code) {
       case LANGUAGES.ENGLISH:
         return 'English';
-      case LANGUAGES.THAI:
-        return 'Thai';
-      case LANGUAGES.RUSSIAN:
-        return 'Russian';
+      case LANGUAGES.FRENCH:
+        return 'France';
+      case LANGUAGES.GERMAN:
+        return 'Germany';
       case LANGUAGES.CHINESE:
         return 'Chinese';
-      case LANGUAGES.SPANISH:
-        return 'Spanish';
-      case LANGUAGES.MEXICAN:
-        return 'Mexican';
-      case LANGUAGES.ITALIAN:
-        return 'Italian';
-      case LANGUAGES.PORTUGUESE:
-        return 'Portuguese';
+      case LANGUAGES.JAPANESE:
+        return 'Japanese';
+      case LANGUAGES.ARABIC:
+        return 'Arabic';
       default:
         return 'Unknown';
     }
@@ -42,14 +36,14 @@ const SelectLanguage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 flex justify-center">
-      <div className="w-full max-w-sm bg-white shadow-md min-h-screen flex flex-col">
-        {/* Navigation Bar with Back Button */}
-        <div className="flex items-center space-x-4 px-4 py-2 border-b border-gray-200">
-          <button className="flex items-center space-x-1 text-blue-500">
+    <div className="min-h-screen bg-white text-black flex justify-center">
+      <div className="w-full lg:max-w-3xl lg:mx-auto min-h-screen flex flex-col">
+        {/* Back Button */}
+        <div className="flex items-center px-8 pt-8 pb-4">
+          <button className="flex items-center text-gray-600 text-base font-medium">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-6 w-6 mr-2"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -57,31 +51,33 @@ const SelectLanguage = () => {
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-            <span className="text-sm font-medium">Back</span>
+            Back
           </button>
         </div>
 
-        {/* Page Title */}
-        <div className="px-4 py-2 border-b border-gray-200">
-          <h1 className="text-xl font-semibold">Choose Your Language</h1>
+        {/* Title */}
+        <div className="px-8 pb-6">
+          <h1 className="text-2xl font-bold">Choose Your Language</h1>
         </div>
 
         {/* Language List */}
-        <div className="flex-1 overflow-y-auto">
-          {Object.values(LANGUAGES).map((langCode) => {
+        <div className="flex-1">
+          {Object.values(LANGUAGES).map((langCode, index) => {
             const label = getLanguageLabel(langCode);
             const isSelected = selectedLang === langCode;
             return (
-              <button
+              <div
                 key={langCode}
                 onClick={() => handleSelectLanguage(langCode)}
-                className="w-full flex items-center justify-between px-4 py-4 border-b border-gray-100 hover:bg-gray-50 focus:outline-none"
+                className={`flex justify-between items-center px-8 py-4 ${
+                  index === 0 ? '' : 'border-t border-gray-200'
+                } cursor-pointer hover:bg-gray-50 transition`}
               >
-                <span className="text-sm font-medium">{label}</span>
+                <span className="text-lg">{label}</span>
                 {isSelected && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-green-500"
+                    className="h-6 w-6 text-green-500"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -94,7 +90,7 @@ const SelectLanguage = () => {
                     />
                   </svg>
                 )}
-              </button>
+              </div>
             );
           })}
         </div>
