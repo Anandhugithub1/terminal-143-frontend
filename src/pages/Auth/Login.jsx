@@ -36,7 +36,9 @@ export const Login = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        setError(result.error || 'Login failed');
+        console.log('Login failed:', result);
+        const msg = result?.error || result?.message || 'Unexpected error: Please try again later';
+        setError(msg);
       } else {
         login(result.accessToken);
         console.log('Login successful', result);

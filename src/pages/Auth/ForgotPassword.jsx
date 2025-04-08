@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { InputField } from '../../shared/common';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../../shared/Button'; // import the common button
-
+import { Button } from '../../shared/Button';
+import { PasswordInput } from '../../shared/Passinput';
 export const ForgotAndResetPassword = () => {
   const [step, setStep] = useState('forgot');
   const [email, setEmail] = useState('');
   const [ConfirmationCode, setConfirmationCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState(''); // 👈 New state
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export const ForgotAndResetPassword = () => {
       const response = await fetch('http://localhost:3000/api/users/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       const result = await response.json();
       if (!response.ok) {
@@ -43,24 +44,28 @@ export const ForgotAndResetPassword = () => {
 
   const handleResetSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !ConfirmationCode || !newPassword) {
+    if (!email || !ConfirmationCode || !newPassword || !confirmPassword) {
       setError('Please fill in all fields.');
       return;
     }
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
     setError('');
     setMessage('');
-  
+
     try {
-      // Correct the payload keys to match backend expectations
-      const payload = { 
-        email, 
-        ConfirmationCode, 
-        Password: newPassword 
+      const payload = {
+        email,
+        ConfirmationCode,
+        Password: newPassword,
       };
       const response = await fetch('http://localhost:3000/api/users/confirm-forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       const result = await response.json();
       if (!response.ok) {
@@ -122,14 +127,19 @@ export const ForgotAndResetPassword = () => {
                 onChange={(e) => setConfirmationCode(e.target.value)}
                 placeholder="Enter confirmation code"
               />
-              <InputField
+              <PasswordInput
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Enter new password"
               />
+              <PasswordInput
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm new password"
+              />
               {error && <p className="text-red-500 text-sm">{error}</p>}
               {message && <p className="text-green-500 text-sm">{message}</p>}
-              <Button type="submit" >
+              <Button type="submit">
                 Reset Password
               </Button>
             </form>
