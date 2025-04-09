@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { InputField } from '../../shared/common';
 import { PasswordInput } from '../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
@@ -13,19 +14,16 @@ export const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Regex: At least one digit, one special character, one uppercase and one lowercase letter
   const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z])(?=.*[a-z]).+$/;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if passwords match
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
-    // Check password meets the requirements
     if (!passwordRegex.test(password)) {
       setError(
         'Password must contain at least 1 number, 1 lowercase letter, 1 special character, and 1 uppercase letter.'
@@ -37,7 +35,6 @@ export const Register = () => {
     setLoading(true);
     setMessage('');
 
-    // Prepare data for backend registration
     const payload = {
       email: emailPhone.includes('@') ? emailPhone : '',
       phoneNumber: !emailPhone.includes('@') ? emailPhone : '',
@@ -45,29 +42,17 @@ export const Register = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:2000/api/users/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
-      }
-      // Navigate to OTP verification page and pass the email via state
+      const { data } = await axios.post('http://localhost:2000/api/users/register', payload);
       navigate('/verify', { state: { email: emailPhone } });
       setMessage(`User registered successfully. An OTP has been sent to ${emailPhone}`);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || 'Registration failed');
     } finally {
       setLoading(false);
     }
   };
 
   const handleGoogleLogin = () => {
-    // Google login logic goes here
     console.log('Google login clicked');
   };
 
@@ -123,12 +108,9 @@ export const Register = () => {
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {message && <p className="text-green-600 text-sm">{message}</p>}
 
-
-<Button type='submit' disabled={loading}>
-{loading ? 'Registering...' : 'Get Started'}
-
-</Button>
-    
+          <Button type="submit" disabled={loading}>
+            {loading ? 'Registering...' : 'Get Started'}
+          </Button>
         </form>
 
         <div className="mt-6 flex items-center justify-center space-x-2">
@@ -137,9 +119,8 @@ export const Register = () => {
           <div className="flex-1 border-t border-border-clr"></div>
         </div>
 
-       <GoogleButton onClick={handleGoogleLogin}>
+        <GoogleButton onClick={handleGoogleLogin} />
 
-       </GoogleButton>
         <p className="mt-6 text-center text-sm text-gray-500">
           Already have an account?{' '}
           <Link to="/login" className="text-pink-600 font-semibold hover:underline">

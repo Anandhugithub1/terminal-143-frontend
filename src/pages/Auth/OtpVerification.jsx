@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { InputField } from '../../shared/common';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../../shared/Button';
+import axios from 'axios';
 
 const EmailOTPVerification = () => {
   const [confirmationCode, setOtp] = useState('');
@@ -11,7 +12,6 @@ const EmailOTPVerification = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Retrieve email passed from registration page via state
   const email = location.state?.email || '';
 
   useEffect(() => {
@@ -29,26 +29,18 @@ const EmailOTPVerification = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/users/confirm', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, ConfirmationCode: confirmationCode }),
+      // eslint-disable-next-line no-unused-vars
+      const response = await axios.post('http://localhost:3000/api/users/confirm', {
+        email,
+        ConfirmationCode: confirmationCode,
       });
-      const data = await response.json();
-      console.log(email, confirmationCode);
-
-      if (!response.ok) {
-        throw new Error(data.error || 'OTP Verification failed');
-      }
 
       setMessage('OTP verified successfully! Redirecting...');
       setTimeout(() => {
         navigate('/login');
       }, 1500);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || 'OTP Verification failed');
     } finally {
       setLoading(false);
     }
@@ -62,22 +54,13 @@ const EmailOTPVerification = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/api/users/resend-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
+      await axios.post('http://localhost:3000/api/users/resend-otp', {
+        email,
       });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to resend OTP');
-      }
 
       setMessage(`OTP has been resent to ${email}`);
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || 'Failed to resend OTP');
     } finally {
       setLoading(false);
     }
@@ -86,7 +69,6 @@ const EmailOTPVerification = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
-        {/* App Logo */}
         <div className="flex justify-center mb-6">
           <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-3 rounded-full">
             <svg
@@ -123,10 +105,7 @@ const EmailOTPVerification = () => {
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {message && <p className="text-green-600 text-sm">{message}</p>}
 
-          <Button
-            type="submit"
-            disabled={loading || !email}
-          >
+          <Button type="submit" disabled={loading || !email}>
             {loading ? 'Verifying...' : 'Verify OTP'}
           </Button>
         </form>
