@@ -3,12 +3,14 @@ import { InputField } from '../../shared/common';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../shared/Button';
 import { PasswordInput } from '../../shared/Passinput';
+import axios from 'axios'; // ✅ Import Axios
+
 export const ForgotAndResetPassword = () => {
   const [step, setStep] = useState('forgot');
   const [email, setEmail] = useState('');
   const [ConfirmationCode, setConfirmationCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // 👈 New state
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
@@ -24,21 +26,13 @@ export const ForgotAndResetPassword = () => {
 
     try {
       const payload = { email };
-      const response = await fetch('http://localhost:3000/api/users/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const result = await response.json();
-      if (!response.ok) {
-        setError(result.error || 'Failed to send reset code.');
-      } else {
-        setMessage('Reset code sent successfully. Please check your email.');
-        setTimeout(() => setStep('reset'), 1500);
-      }
+      // eslint-disable-next-line no-unused-vars
+      const response = await axios.post('http://localhost:3000/api/users/forgot-password', payload);
+      setMessage('Reset code sent successfully. Please check your email.');
+      setTimeout(() => setStep('reset'), 1500);
     } catch (err) {
       console.error('Error sending reset code:', err);
-      setError('An error occurred, please try again.');
+      setError(err.response?.data?.error || 'Failed to send reset code.');
     }
   };
 
@@ -62,21 +56,13 @@ export const ForgotAndResetPassword = () => {
         ConfirmationCode,
         Password: newPassword,
       };
-      const response = await fetch('http://localhost:3000/api/users/confirm-forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const result = await response.json();
-      if (!response.ok) {
-        setError(result.error || 'Password reset failed.');
-      } else {
-        setMessage('Password has been reset successfully.');
-        setTimeout(() => navigate('/login'), 2000);
-      }
+      // eslint-disable-next-line no-unused-vars
+      const response = await axios.post('http://localhost:3000/api/users/confirm-forgot-password', payload);
+      setMessage('Password has been reset successfully.');
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       console.error('Error resetting password:', err);
-      setError('An error occurred, please try again.');
+      setError(err.response?.data?.error || 'Password reset failed.');
     }
   };
 
@@ -87,7 +73,7 @@ export const ForgotAndResetPassword = () => {
           <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-3 rounded-full">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </div>
         </div>
