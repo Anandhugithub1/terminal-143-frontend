@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { InputField } from '../../shared/common';
 import { PasswordInput } from '../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
@@ -27,26 +28,17 @@ export const Login = () => {
       : { phoneNumber: emailPhone, password };
 
     try {
-      const response = await fetch('http://localhost:2000/api/users/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      const response = await axios.post('http://localhost:2000/api/users/login', payload);
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        console.log('Login failed:', result);
-        const msg = result?.error || result?.message || 'Unexpected error: Please try again later';
-        setError(msg);
-      } else {
-        login(result.accessToken);
-        console.log('Login successful', result);
+      if (response.status === 200) {
+        login(response.data.accessToken);
+        console.log('Login successful', response.data);
         navigate('/choose-category');
       }
     } catch (err) {
-      console.error('Error during login:', err);
-      setError('Login failed, please try again');
+      console.error('Login failed:', err);
+      const msg = err.response?.data?.error || err.response?.data?.message || 'Unexpected error: Please try again later';
+      setError(msg);
     }
   };
 
@@ -88,9 +80,7 @@ export const Login = () => {
             </Link>
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <Button
-            type="submit"
-          >
+          <Button type="submit">
             Log In
           </Button>
         </form>
@@ -101,11 +91,7 @@ export const Login = () => {
           <div className="flex-1 border-t border-border-clr"></div>
         </div>
 
-
-<GoogleButton onClick={handleGoogleLogin} >
-</GoogleButton>
-
-
+        <GoogleButton onClick={handleGoogleLogin} />
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Don't have an account?{' '}
