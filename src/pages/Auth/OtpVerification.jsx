@@ -30,7 +30,7 @@ const EmailOTPVerification = () => {
 
     try {
       // eslint-disable-next-line no-unused-vars
-      const response = await axios.post('http://localhost:3000/api/users/confirm', {
+      const response = await axios.post('http://localhost:2000/api/users/confirm', {
         email,
         ConfirmationCode: confirmationCode,
       });

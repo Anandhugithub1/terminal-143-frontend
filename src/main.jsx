@@ -23,7 +23,7 @@ const route =createBrowserRouter(
   createRoutesFromElements(
     <Route path='' element={<App/>}>
       <Route path='register' element={<Register/>}/>
-    <Route path='complete-details' element={<AddDetails/>}/>
+    <Route path='complete-details/*' element={<AddDetails/>}/>
   {/* <Route path='home' element={<HomeScreen/>}/> */}
 <Route path='login' element={<Login/>}/>
 <Route path='verify' element={<EmailOTPVerification/>}/>

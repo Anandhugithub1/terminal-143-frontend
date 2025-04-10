@@ -42,6 +42,7 @@ export const Register = () => {
     };
 
     try {
+      // eslint-disable-next-line no-unused-vars
       const { data } = await axios.post('http://localhost:2000/api/users/register', payload);
       navigate('/verify', { state: { email: emailPhone } });
       setMessage(`User registered successfully. An OTP has been sent to ${emailPhone}`);
