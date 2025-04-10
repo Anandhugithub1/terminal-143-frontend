@@ -1,41 +1,52 @@
-  import { useWizard } from '../../contexts/ProfileWizard';
+// Step1BasicInfo.jsx
+import { useWizard } from '../../contexts/ProfileWizard';
+import { useNavigate } from 'react-router-dom';
+import { InputField } from '../../shared/common';
+import { ProgressBar } from './Progess';
 
-  import { useNavigate } from 'react-router-dom';
-  import { InputField } from '../../shared/common';
+const Step1BasicInfo = () => {
+  const { formData, setFormData } = useWizard();
+  const navigate = useNavigate();
 
-  const Step1BasicInfo = () => {
-    const { formData, setFormData } = useWizard();
-    const navigate = useNavigate();
+  const handleNext = () => {
+    if (!formData.name.trim()) return;
+    navigate('/complete/bio');
+  };
 
-    const handleNext = () => {
-      if (!formData.name.trim()) return;
-      navigate('/complete/bio');
-    };
+  return (
+    <div className="animate-fade-in">
+      <ProgressBar step={1} totalSteps={4} />
 
-    return (
-      <div className="p-6">
-        <h2 className="text-xl font-bold mb-4">Step 1: Basic Info</h2>
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome! 👋</h2>
+        <p className="text-gray-500">Let's start with the basics</p>
+      </div>
+
+      <div className="space-y-6">
         <InputField
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           placeholder="Full Name *"
+          className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
         />
-        <InputField
-          type="number"
-          value={formData.age}
-          onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-          placeholder="Age"
-          min="18"
-          max="100"
-        />
-        <button
-          onClick={handleNext}
-          className="mt-4 bg-pink-500 text-white py-2 px-4 rounded-xl"
-        >
-          Next
-        </button>
-      </div>
-    );
-  };
 
-  export default Step1BasicInfo;
+        <InputField
+          type="date"
+          value={formData.dob}
+          onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+          placeholder="Date of Birth"
+          className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
+        />
+      </div>
+
+      <button
+        onClick={handleNext}
+        className="mt-8 w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-4 rounded-xl transition-all transform hover:scale-[1.01] shadow-lg shadow-pink-500/20"
+      >
+        Continue
+      </button>
+    </div>
+  );
+};
+
+export default Step1BasicInfo;
