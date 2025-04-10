@@ -23,20 +23,30 @@ const Step1BasicInfo = () => {
       </div>
 
       <div className="space-y-6">
-        <InputField
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          placeholder="Full Name *"
-          className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
-        />
+        <div>
+         
+          <InputField
+            id="fullName"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            placeholder="Full Name *"
+            className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
 
-        <InputField
-          type="date"
-          value={formData.dob}
-          onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-          placeholder="Date of Birth"
-          className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
-        />
+        <div>
+          <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
+            Date of Birth
+          </label>
+          <InputField
+            id="dob"
+            type="date"
+            value={formData.dob}
+            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+            placeholder="Date of Birth"
+            className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
+          />
+        </div>
       </div>
 
       <button
