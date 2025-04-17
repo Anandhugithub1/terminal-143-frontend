@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../Auth/State'; // Adjust the path as necessary
+import { useAuth } from '../Auth/State'; 
 import womanInRedShirt from '../../assets/woman.png';
 import manInWhiteShirt from '../../assets/man.png';
 import { FindMatchCard, MatchProviderCard } from '../../components/Card';
@@ -14,13 +14,13 @@ const ChooseCategory = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
+  const { accessToken, login } = useAuth();
+
   const USER_TYPE_MAP = {
     provider: 'mp',
     match: 'fm',
   };
 
-  // Get token from AuthContext
-  const { accessToken } = useAuth();
 
   useEffect(() => {
     const lang = localStorage.getItem('selectedLanguage');
@@ -29,35 +29,36 @@ const ChooseCategory = () => {
     }
   }, []);
 
+
   const handleContinue = async () => {
     if (!selectedCategory) return;
     const userTypeValue = USER_TYPE_MAP[selectedCategory];
-
+  
     setLoading(true);
     setError('');
     setSuccess('');
-
+  
     try {
-      // Use token from AuthContext
       const response = await fetch('http://localhost:4000/api/users/select-user-type', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Include the token in the Authorization header:
           'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ userType: userTypeValue })  // ✅ use enum value
-
+        body: JSON.stringify({ userType: userTypeValue })
       });
-
+  
       const data = await response.json();
-
+  
       if (!response.ok) {
         setError(data.error || 'An error occurred');
       } else {
         setSuccess(data.message);
-        navigate('/complete'); // Adjust the path as necessary
-        // Optionally navigate to the next page or update state
+        
+        // ✅ Update userType in AuthContext
+        login(accessToken, userTypeValue); 
+  
+        navigate('/complete');
       }
     } catch (err) {
       setError('Network error ' + (err.message || 'An error occurred'));
