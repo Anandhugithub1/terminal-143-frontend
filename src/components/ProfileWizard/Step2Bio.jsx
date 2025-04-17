@@ -2,8 +2,8 @@ import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 
-const languages = ['English', 'Spanish', 'Hindi', 'French', 'German', 'Mandarin'];
-const statusOptions = ['Student', 'Working', 'Freelancer', 'Other'];
+const languages = ['English', 'Spanish',  'French', 'German', 'Mandarin'];
+const statusOptions = ['Postive', 'Negative', 'Prefer not to say', ];
 
 const Step2Bio = () => {
   const { formData, setFormData } = useWizard();
@@ -65,13 +65,13 @@ const Step2Bio = () => {
 
       {/* Status */}
       <div className="mb-6">
-        <h3 className="text-md font-semibold mb-2">Your Status 📍</h3>
+        <h3 className="text-md font-semibold mb-2">STD Status 🧬</h3>
         <select
           value={formData.stdStatus || ''}
           onChange={(e) => setFormData({ ...formData, stdStatus: e.target.value })}
           className="w-full p-3 bg-gray-50 rounded-xl border border-gray-300"
         >
-          <option value="" disabled>Select your current status</option>
+          <option value="" disabled>Select your STD status</option>
           {statusOptions.map(status => (
             <option key={status} value={status}>{status}</option>
           ))}
