@@ -27,7 +27,7 @@ export const ForgotAndResetPassword = () => {
     try {
       const payload = { email };
       // eslint-disable-next-line no-unused-vars
-      const response = await axios.post('http://localhost:3000/api/users/forgot-password', payload);
+      const response = await axios.post('http://localhost:2000/api/users/forgot-password', payload);
       setMessage('Reset code sent successfully. Please check your email.');
       setTimeout(() => setStep('reset'), 1500);
     } catch (err) {
@@ -57,7 +57,7 @@ export const ForgotAndResetPassword = () => {
         Password: newPassword,
       };
       // eslint-disable-next-line no-unused-vars
-      const response = await axios.post('http://localhost:3000/api/users/confirm-forgot-password', payload);
+      const response = await axios.post('http://localhost:2000/api/users/confirm-forgot-password', payload);
       setMessage('Password has been reset successfully.');
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {

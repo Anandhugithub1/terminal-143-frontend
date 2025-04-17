@@ -56,7 +56,7 @@ const ChooseCategory = () => {
         setError(data.error || 'An error occurred');
       } else {
         setSuccess(data.message);
-        navigate('/complete-details'); // Adjust the path as necessary
+        navigate('/complete'); // Adjust the path as necessary
         // Optionally navigate to the next page or update state
       }
     } catch (err) {

@@ -217,3 +217,17 @@
 //     </div>
 //   );
 // };
+
+import { useAuth } from '../pages/Auth/State'; // Adjust the path as necessary
+
+import React from 'react'
+
+const Home = () => {
+    const { userType } = useAuth();
+
+  return (
+    <div>hello {userType}</div>
+  )
+}
+
+export default Home

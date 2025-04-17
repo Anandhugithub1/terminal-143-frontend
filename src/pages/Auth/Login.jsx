@@ -5,10 +5,12 @@ import { PasswordInput } from '../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './State';
 import { Button, GoogleButton } from '../../shared/Button'; // import the common button
+import Loader from '../../components/Ui/Loading';
 
 export const Login = () => {
   const [emailPhone, setEmailPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -27,18 +29,28 @@ export const Login = () => {
       ? { email: emailPhone, password }
       : { phoneNumber: emailPhone, password };
 
+    setIsLoading(true);
+
     try {
       const response = await axios.post('http://localhost:2000/api/users/login', payload);
 
       if (response.status === 200) {
-        login(response.data.accessToken);
+        const { accessToken, userType } = response.data;
+        login(accessToken, userType);
+        console.log('UserType set to:', userType);
         console.log('Login successful', response.data);
-        navigate('/choose-category');
+        if (userType === null) {
+          navigate('/choose-category');
+        } else {
+          navigate('/');
+        }
       }
     } catch (err) {
       console.error('Login failed:', err);
       const msg = err.response?.data?.error || err.response?.data?.message || 'Unexpected error: Please try again later';
       setError(msg);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -48,8 +60,14 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4 relative">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8 relative">
+        {isLoading && (
+          // Center the Loader by using an absolute overlay div
+          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
+            <Loader />
+          </div>
+        )}
         <div className="flex justify-center mb-6">
           <div className="bg-gradient-to-r from-gradient-primary to-gradient-secondary p-3 rounded-full">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,11 +86,13 @@ export const Login = () => {
             value={emailPhone}
             onChange={(e) => setEmailPhone(e.target.value)}
             placeholder="Email or phone number"
+            disabled={isLoading}
           />
           <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
+            disabled={isLoading}
           />
           <div className="text-right">
             <Link to='/forgot-password' className="text-text-pr font-semibold text-sm hover:underline">
@@ -80,8 +100,8 @@ export const Login = () => {
             </Link>
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <Button type="submit">
-            Log In
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? <Loader /> : "Log In"}
           </Button>
         </form>
 
@@ -91,7 +111,7 @@ export const Login = () => {
           <div className="flex-1 border-t border-border-clr"></div>
         </div>
 
-        <GoogleButton onClick={handleGoogleLogin} />
+        <GoogleButton onClick={handleGoogleLogin} disabled={isLoading} />
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Don't have an account?{' '}
