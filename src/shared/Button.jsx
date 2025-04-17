@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 export const Button = ({
   children,
   onClick,
@@ -44,3 +44,26 @@ export const GoogleButton = ({ onClick,disabled, type = 'button',...props
   </button>
   );
 }
+
+export const baseButtonClasses =
+  "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:scale-105 active:scale-95";
+export const PrimaryButton = ({ children, to, className = "", ...props }) => (
+  <Link
+    to={to}
+    className={`${baseButtonClasses} bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white px-6 py-4 hover:shadow-xl ${className}`}
+    {...props}
+  >
+    {children}
+  </Link>
+);
+
+export const SecondaryButton = ({ children, to, className = "", ...props }) => (
+  <Link
+    to={to}
+    className={`${baseButtonClasses} border-2 border-gray-200 bg-white text-gray-700 hover:border-indigo-100 hover:bg-indigo-50 px-6 py-4 ${className}`}
+    {...props}
+  >
+    {children}
+  </Link>
+);
+
