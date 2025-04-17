@@ -1,8 +1,8 @@
+import React, { useState } from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import { useAuth } from '../../pages/Auth/State';
-import { useState } from 'react';
 import axios from 'axios';
 
 const categories = {
@@ -15,8 +15,9 @@ export default function Step4Tags() {
   const { formData, setFormData } = useWizard();
   const { userType, accessToken } = useAuth();
   const navigate = useNavigate();
+
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError]     = useState('');
 
   const toggle = (category, value) => {
     const current = formData[category] || [];
@@ -28,32 +29,47 @@ export default function Step4Tags() {
 
   const handleBack = () => navigate('/complete/photo');
 
-  const selectedInterests = Object.entries(categories).flatMap(([cat]) => formData[cat] || []);
+  const selectedInterests = Object.entries(categories)
+    .flatMap(([cat]) => formData[cat] || []);
 
-  const uploadToS3 = async (file) => {
+  // helper sends file + its slot index for mp users
+  const uploadToS3 = async (file, index = 0) => {
+    const requestBody = {
+      fileType: file.type,
+      ...(userType === 'mp' ? { photoIndex: index } : {})
+    };
+
     const { data: { presignedUrl, publicUrl } } = await axios.post(
       'http://localhost:4000/api/users/presigned-url',
-      { fileType: file.type },
-      { headers: { Authorization: `Bearer ${accessToken}` } }
+      requestBody,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'x-user-type': userType
+        }
+      }
     );
 
     const uploadRes = await axios.put(presignedUrl, file, {
       headers: { 'Content-Type': file.type },
     });
-
     if (uploadRes.status !== 200) throw new Error('Failed to upload file');
+
     return publicUrl;
   };
 
   const handleSubmit = async () => {
     setLoading(true);
     setError('');
+
     try {
       let photoUrls = [];
+
       if (userType === 'mp') {
         const files = formData.profilePhotos || [];
-        for (const file of files) {
-          const url = await uploadToS3(file);
+        // pass each file its index so backend stores them separately
+        for (let i = 0; i < files.length; i++) {
+          const url = await uploadToS3(files[i], i);
           photoUrls.push(url);
         }
       } else {
@@ -63,28 +79,30 @@ export default function Step4Tags() {
           photoUrls.push(url);
         }
       }
-      const payload = {
-        name: formData.name || '',
-        age: formData.dob || '',
-        location: formData.location || '',
-        interest: selectedInterests,
-        bio: formData.bio || '',
-        gender: formData.gender || '',
-        popularity: formData.popularity || 0,
-        languagesKnown: formData.languagesKnown || [],
-        stdStatus: formData.stdStatus || '',
-        ...(userType === 'mp' ? { photos: photoUrls } : { photo: photoUrls[0] || '' }),
-      };
-      
 
-      // eslint-disable-next-line no-unused-vars
-      const response = await axios.post(
+      const payload = {
+        name:            formData.name || '',
+        age:             formData.dob || '',
+        location:        formData.location || '',
+        interest:        selectedInterests,
+        bio:             formData.bio || '',
+        gender:          formData.gender || '',
+        popularity:      formData.popularity || 0,
+        languagesKnown:  formData.languagesKnown || [],
+        stdStatus:       formData.stdStatus || '',
+        ...(userType === 'mp'
+          ? { photos: photoUrls }
+          : { photo: photoUrls[0] || '' }
+        ),
+      };
+
+      await axios.post(
         'http://localhost:4000/api/users/complete-profile',
         payload,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            'x-user-type': userType,
+            'x-user-type':    userType,
           },
         }
       );
@@ -130,8 +148,9 @@ export default function Step4Tags() {
       </div>
 
       {error && <p className="mt-4 text-center text-red-500">{error}</p>}
+
       <div className="mt-8 flex gap-4">
-        <button 
+        <button
           onClick={handleBack}
           className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
         >
@@ -140,7 +159,8 @@ export default function Step4Tags() {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
+          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
+                     text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
         >
           {loading ? 'Saving...' : 'Finish'}
         </button>
