@@ -20,6 +20,7 @@ import { AuthProvider } from './pages/Auth/State.jsx';
 import ChooseCategory from './pages/User/ChooseCategory.jsx';
 import SelectLanguage from './pages/User/Select_lang.jsx';
 import Home from './pages/Home.jsx'
+import {HomePage} from './pages/HomePage.jsx'
 
 const route = createBrowserRouter(
   createRoutesFromElements(
@@ -40,6 +41,7 @@ const route = createBrowserRouter(
       <Route path="forgot-password" element={<ForgotAndResetPassword />} />
       <Route path="choose-category" element={<ChooseCategory />} />
       <Route path="select-language" element={<SelectLanguage />} />
+      <Route path="home" element={<HomePage />} />
     </Route>
   )
 );
