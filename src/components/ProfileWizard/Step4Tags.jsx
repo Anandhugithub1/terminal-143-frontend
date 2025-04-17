@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import { useAuth } from '../../pages/Auth/State';
 import { useState } from 'react';
+import axios from 'axios';
 
 const categories = {
   '🎮 Entertainment': ['Travel', 'Movies', 'Gaming', 'Sports', 'Art', 'Reading'],
   '🎵 Music Genres': ['Pop', 'Rock', 'Jazz', 'Hip Hop', 'EDM', 'Classical'],
-  '🍔 Food & Drink': ['Coffee', 'Cocktails', 'BBQ', 'Sushi', 'Wine', 'Dessert']
+  '🍔 Food & Drink': ['Coffee', 'Cocktails', 'BBQ', 'Sushi', 'Wine', 'Dessert'],
 };
 
 export default function Step4Tags() {
@@ -27,26 +28,20 @@ export default function Step4Tags() {
 
   const handleBack = () => navigate('/complete/photo');
 
-  // Flatten selected tags across all categories
   const selectedInterests = Object.entries(categories).flatMap(([cat]) => formData[cat] || []);
 
   const uploadToS3 = async (file) => {
-    const res = await fetch('http://localhost:4000/api/users/presigned-url', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ fileType: file.type }),
-    });
-    if (!res.ok) throw new Error('Failed to get upload URL');
-    const { presignedUrl, publicUrl } = await res.json();
+    const { data: { presignedUrl, publicUrl } } = await axios.post(
+      'http://localhost:4000/api/users/presigned-url',
+      { fileType: file.type },
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
 
-    const uploadRes = await fetch(presignedUrl, {
-      method: 'PUT',
-      body: file,
+    const uploadRes = await axios.put(presignedUrl, file, {
+      headers: { 'Content-Type': file.type },
     });
-    if (!uploadRes.ok) throw new Error('Failed to upload file');
+
+    if (uploadRes.status !== 200) throw new Error('Failed to upload file');
     return publicUrl;
   };
 
@@ -54,7 +49,6 @@ export default function Step4Tags() {
     setLoading(true);
     setError('');
     try {
-      // Upload photos if any, but do not display them in UI
       let photoUrls = [];
       if (userType === 'mp') {
         const files = formData.profilePhotos || [];
@@ -70,7 +64,6 @@ export default function Step4Tags() {
         }
       }
 
-      // Prepare payload
       const payload = {
         name: formData.name || '',
         age: formData.dob || '',
@@ -79,31 +72,23 @@ export default function Step4Tags() {
         bio: formData.bio || '',
         gender: formData.gender || '',
         popularity: formData.popularity || 0,
+        ...(userType === 'mp' ? { photos: photoUrls } : { photo: photoUrls[0] || '' }),
       };
-      if (userType === 'mp') {
-        payload.photos = photoUrls;
-      } else {
-        payload.photo = photoUrls[0] || '';
-      }
 
-      const response = await fetch('http://localhost:4000/api/users/complete-profile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-          'x-user-type': userType,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        const { error: msg } = await response.json();
-        throw new Error(msg || 'Profile update failed');
-      }
+      const response = await axios.post(
+        'http://localhost:4000/api/users/complete-profile',
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'x-user-type': userType,
+          },
+        }
+      );
 
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -118,8 +103,6 @@ export default function Step4Tags() {
         <p className="text-gray-500">Select your interests to find better matches</p>
       </div>
 
-      {/* Image previews removed: uploaded images are hidden in this step */}
-
       <div className="space-y-8">
         {Object.entries(categories).map(([title, items]) => (
           <div key={title}>
@@ -132,8 +115,8 @@ export default function Step4Tags() {
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
                     formData[title]?.includes(item)
                       ? 'bg-pink-500 text-white shadow-md shadow-pink-500/20'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}
-                  `}
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
                 >
                   {item}
                 </button>
