@@ -63,7 +63,6 @@ export default function Step4Tags() {
           photoUrls.push(url);
         }
       }
-
       const payload = {
         name: formData.name || '',
         age: formData.dob || '',
@@ -72,9 +71,13 @@ export default function Step4Tags() {
         bio: formData.bio || '',
         gender: formData.gender || '',
         popularity: formData.popularity || 0,
+        languagesKnown: formData.languagesKnown || [],
+        stdStatus: formData.stdStatus || '',
         ...(userType === 'mp' ? { photos: photoUrls } : { photo: photoUrls[0] || '' }),
       };
+      
 
+      // eslint-disable-next-line no-unused-vars
       const response = await axios.post(
         'http://localhost:4000/api/users/complete-profile',
         payload,
