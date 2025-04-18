@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Bars3Icon, XMarkIcon, HeartIcon } from '@heroicons/react/24/outline';
+// eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import ReactCountryFlag from 'react-country-flag';
 

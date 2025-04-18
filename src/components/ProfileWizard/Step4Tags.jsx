@@ -61,13 +61,12 @@ export default function Step4Tags() {
   const handleSubmit = async () => {
     setLoading(true);
     setError('');
-
+  
     try {
       let photoUrls = [];
-
+  
       if (userType === 'mp') {
         const files = formData.profilePhotos || [];
-        // pass each file its index so backend stores them separately
         for (let i = 0; i < files.length; i++) {
           const url = await uploadToS3(files[i], i);
           photoUrls.push(url);
@@ -79,34 +78,35 @@ export default function Step4Tags() {
           photoUrls.push(url);
         }
       }
-
-      const payload = {
-        name:            formData.name || '',
-        age:             formData.dob || '',
-        location:        formData.location || '',
-        interest:        selectedInterests,
-        bio:             formData.bio || '',
-        gender:          formData.gender || '',
-        popularity:      formData.popularity || 0,
-        languagesKnown:  formData.languagesKnown || [],
-        stdStatus:       formData.stdStatus || '',
-        ...(userType === 'mp'
-          ? { photos: photoUrls }
-          : { photo: photoUrls[0] || '' }
-        ),
-      };
-
+  
+      const payload = {};
+  
+      if (formData.name)              payload.name = formData.name;
+      if (formData.dob)               payload.age = formData.dob;
+      if (formData.location)          payload.location = formData.location;
+      if (selectedInterests.length)   payload.interest = selectedInterests;
+      if (formData.bio)               payload.bio = formData.bio;
+      if (formData.gender)            payload.gender = formData.gender;
+      if (formData.popularity)        payload.popularity = formData.popularity;
+      if (formData.languagesKnown?.length) payload.languagesKnown = formData.languagesKnown;
+      if (formData.stdStatus)         payload.stdStatus = formData.stdStatus;
+  
+      if (userType === 'mp' && photoUrls.length)
+        payload.photos = photoUrls;
+      else if (userType !== 'mp' && photoUrls[0])
+        payload.photo = photoUrls[0];
+  
       await axios.post(
         'http://localhost:4000/api/users/complete-profile',
         payload,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
-            'x-user-type':    userType,
+            'x-user-type': userType,
           },
         }
       );
-
+  
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Something went wrong');
@@ -114,6 +114,7 @@ export default function Step4Tags() {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="animate-fade-in">
