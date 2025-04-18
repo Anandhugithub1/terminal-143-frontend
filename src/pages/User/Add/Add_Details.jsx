@@ -1,8 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Step1BasicInfo from '../../components/ProfileWizard/Step1BasicInfo';
-import Step2Bio from '../../components/ProfileWizard/Step2Bio';
-import Step3PhotoUpload from '../../components/ProfileWizard/Step3PhotoUpload.';
-import Step4Tags from '../../components/ProfileWizard/Step4Tags';
+import Step1BasicInfo from '../../../components/ProfileWizard/Step1BasicInfo';
+import Step2Bio from '../../../components/ProfileWizard/Step2Bio';
+import Step3PhotoUpload from '../../../components/ProfileWizard/Step3PhotoUpload.';
+import Step4Tags from '../../../components/ProfileWizard/Step4Tags';
 
 const AddDetails = () => {
   return (

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../Auth/State'; 
-import womanInRedShirt from '../../assets/woman.png';
-import manInWhiteShirt from '../../assets/man.png';
-import { MatchProviderCard,FindMatchCard } from '../../components/Cards/ChooseCard';
-import { LANGUAGE_LABELS } from '../../Utlis/utlis';
-import LanguageIcon from '../../assets/svgs/language.svg';
+import { useAuth } from '../../Auth/State'; 
+import womanInRedShirt from '../../../assets/woman.png';
+import manInWhiteShirt from '../../../assets/man.png';
+import { MatchProviderCard,FindMatchCard } from '../../../components/Cards/ChooseCard';
+import { LANGUAGE_LABELS } from '../../../Utlis/utlis';
+import LanguageIcon from '../../../assets/svgs/language.svg';
 
 const ChooseCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);

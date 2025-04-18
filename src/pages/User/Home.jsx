@@ -218,7 +218,7 @@
 //   );
 // };
 
-import { useAuth } from '../pages/Auth/State'; // Adjust the path as necessary
+import { useAuth } from '../Auth/State'; // Adjust the path as necessary
 
 import React from 'react'
 

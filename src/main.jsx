@@ -13,13 +13,13 @@ import {
 import App from './App.jsx';
 import { Login } from './pages/Auth/Login.jsx';
 import { Register } from './pages/Auth/Register.jsx';
-import AddDetails from './pages/User/Add_Details.jsx';
 import EmailOTPVerification from './pages/Auth/OtpVerification.jsx';
 import { ForgotAndResetPassword } from './pages/Auth/ForgotPassword.jsx';
 import { AuthProvider } from './pages/Auth/State.jsx';
-import ChooseCategory from './pages/User/ChooseCategory.jsx';
 import SelectLanguage from './pages/User/Select_lang.jsx';
-import Home from './pages/Home.jsx'
+import Home from './pages/User/Home.jsx'
+import AddDetails from './pages/User/Add/Add_Details.jsx';
+import ChooseCategory from './pages/User/Add/add_category.jsx';
 import {HomePage} from './pages/HomePage.jsx'
 
 const route = createBrowserRouter(
