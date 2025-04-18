@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../Auth/State'; 
 import womanInRedShirt from '../../assets/woman.png';
 import manInWhiteShirt from '../../assets/man.png';
-import { FindMatchCard, MatchProviderCard } from '../../components/Card';
+import { MatchProviderCard,FindMatchCard } from '../../components/Cards/ChooseCard';
 import { LANGUAGE_LABELS } from '../../Utlis/utlis';
 import LanguageIcon from '../../assets/svgs/language.svg';
 
@@ -21,6 +21,7 @@ const ChooseCategory = () => {
     match: 'fm',
   };
 
+  // Get token from AuthContext
 
   useEffect(() => {
     const lang = localStorage.getItem('selectedLanguage');
