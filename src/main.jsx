@@ -21,6 +21,7 @@ import UserHomePage from './pages/User/Home.jsx'
 import AddDetails from './pages/User/Add/Add_Details.jsx';
 import ChooseCategory from './pages/User/Add/add_category.jsx';
 import {HomePage} from './pages/HomePage.jsx'
+import PricingPage from './pages/Global/Pricing.jsx';
 
 const route = createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +43,7 @@ const route = createBrowserRouter(
       <Route path="choose-category" element={<ChooseCategory />} />
       <Route path="select-language" element={<SelectLanguage />} />
       <Route path="home" element={<HomePage />} />
+      <Route path="pricing" element={<PricingPage />} />
     </Route>
   )
 );
