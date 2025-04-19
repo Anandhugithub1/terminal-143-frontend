@@ -1,3 +1,5 @@
+// Step2Bio.js
+import React from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
@@ -11,14 +13,14 @@ const LANGUAGES = {
   MEXICAN:    'mx',
   ITALIAN:    'it',
   PORTUGUESE: 'pt',
-  FRENCH:     'fr',   // ← added
-  GERMAN:     'de',   // ← added
+  FRENCH:     'fr',
+  GERMAN:     'de',
 };
 
 const STD_STATUS = {
-  POSITIVE:         'p',
-  NEGATIVE:         'n',
-  PREFER_NOT_TO_SAY:'pns',
+  POSITIVE:          'p',
+  NEGATIVE:          'n',
+  PREFER_NOT_TO_SAY: 'pns',
 };
 
 const languageOptions = [
@@ -26,13 +28,13 @@ const languageOptions = [
   { label: 'Spanish',   value: LANGUAGES.SPANISH },
   { label: 'French',    value: LANGUAGES.FRENCH },
   { label: 'German',    value: LANGUAGES.GERMAN },
-  { label: 'Mandarin',  value: LANGUAGES.CHINESE },  // “Mandarin” ➞ zh
+  { label: 'Mandarin',  value: LANGUAGES.CHINESE },
 ];
 
 const statusOptions = [
-  { label: 'Positive',           value: STD_STATUS.POSITIVE },
-  { label: 'Negative',           value: STD_STATUS.NEGATIVE },
-  { label: 'Prefer not to say',  value: STD_STATUS.PREFER_NOT_TO_SAY },
+  { label: 'Positive',          value: STD_STATUS.POSITIVE },
+  { label: 'Negative',          value: STD_STATUS.NEGATIVE },
+  { label: 'Prefer not to say', value: STD_STATUS.PREFER_NOT_TO_SAY },
 ];
 
 const Step2Bio = () => {
@@ -117,6 +119,19 @@ const Step2Bio = () => {
             </option>
           ))}
         </select>
+      </div>
+
+      {/* Last Tested Date */}
+      <div className="mb-6">
+        <h3 className="text-md font-semibold mb-2">Last Tested Date 🗓️</h3>
+        <input
+          type="date"
+          value={formData.lastTestedDate || ''}
+          onChange={e =>
+            setFormData({ ...formData, lastTestedDate: e.target.value })
+          }
+          className="w-full p-3 bg-gray-50 rounded-xl border border-gray-300"
+        />
       </div>
 
       {/* Navigation */}

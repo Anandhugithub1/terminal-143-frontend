@@ -1,8 +1,16 @@
+import React from "react";
 import { RxCross1, RxHeart } from "react-icons/rx";
-
+import { HiOutlineLocationMarker } from "react-icons/hi";
 import { AiOutlineReload } from "react-icons/ai";
 
 export function DetailSection({ profile }) {
+  const displayStatus =
+    profile.stdStatus === "n"
+      ? "Negative"
+      : profile.stdStatus === "p"
+      ? "Positive"
+      : "Prefer not to say";
+
   return (
     <div className="-mt-12 bg-white rounded-t-3xl p-6">
       <div className="flex justify-between items-center">
@@ -21,7 +29,7 @@ export function DetailSection({ profile }) {
           </button>
         </div>
       </div>
-      <p className="mt-2 text-gray-600">“{profile.about}”</p>
+
       <div className="mt-4 space-y-4">
         <section>
           <h3 className="font-medium">About me</h3>
@@ -33,6 +41,7 @@ export function DetailSection({ profile }) {
             <span>{profile.job || "—"}</span>
           </div>
         </section>
+
         <section>
           <h3 className="font-medium">Languages</h3>
           <div className="mt-1 flex flex-wrap gap-2">
@@ -46,6 +55,7 @@ export function DetailSection({ profile }) {
             ))}
           </div>
         </section>
+
         <section>
           <h3 className="font-medium">Interests</h3>
           <div className="mt-1 flex flex-wrap gap-2">
@@ -59,16 +69,15 @@ export function DetailSection({ profile }) {
             ))}
           </div>
         </section>
+
         <section>
-          <h3 className="font-medium">Health status</h3>
-          <div className="mt-2 text-sm text-gray-600">
+          <h3 className="font-medium">Health Status</h3>
+          <div className="mt-2 text-sm text-gray-600 space-y-1">
             <p>
-              STI/STD Status{" "}
-              <span className="font-medium">{profile.health?.status}</span>
+              STI/STD Status: <span className="font-medium">{displayStatus}</span>
             </p>
             <p>
-              Tested on{" "}
-              <span className="font-medium">{profile.health?.testedOn}</span>
+              Tested on: <span className="font-medium">{profile.lastTestedDate || "Unknown"}</span>
             </p>
           </div>
         </section>

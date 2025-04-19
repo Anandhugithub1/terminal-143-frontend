@@ -32,7 +32,6 @@ export default function Step4Tags() {
   const selectedInterests = Object.entries(categories)
     .flatMap(([cat]) => formData[cat] || []);
 
-  // helper sends file + its slot index for mp users
   const uploadToS3 = async (file, index = 0) => {
     const requestBody = {
       fileType: file.type,
@@ -80,22 +79,31 @@ export default function Step4Tags() {
       }
   
       const payload = {};
+      console.log('payload', payload);
+
   
-      if (formData.name)              payload.name = formData.name;
-      if (formData.dob)               payload.age = formData.dob;
-      if (formData.location)          payload.location = formData.location;
-      if (selectedInterests.length)   payload.interest = selectedInterests;
-      if (formData.bio)               payload.bio = formData.bio;
-      if (formData.gender)            payload.gender = formData.gender;
-      if (formData.popularity)        payload.popularity = formData.popularity;
+      if (formData.name)                payload.name = formData.name;
+      if (formData.dob)                 payload.dob = formData.dob;
+      if (formData.location)            payload.location = formData.location;
+      if (selectedInterests.length)     payload.interest = selectedInterests;
+      if (formData.bio)                 payload.bio = formData.bio;
+      if (formData.gender)              payload.gender = formData.gender;
+      if (formData.popularity)          payload.popularity = formData.popularity;
       if (formData.languagesKnown?.length) payload.languagesKnown = formData.languagesKnown;
-      if (formData.stdStatus)         payload.stdStatus = formData.stdStatus;
+
+      // Include healthStatus object
+      if (formData.stdStatus || formData.lastTestedDate) {
+        payload.healthStatus = {
+          stdStatus: formData.stdStatus || '',
+          lastTestedDate: formData.lastTestedDate || '',
+        };
+      }
   
       if (userType === 'mp' && photoUrls.length)
         payload.photos = photoUrls;
       else if (userType !== 'mp' && photoUrls[0])
         payload.photo = photoUrls[0];
-  
+  console.log('payload', payload);  
       await axios.post(
         'http://localhost:4000/api/users/complete-profile',
         payload,

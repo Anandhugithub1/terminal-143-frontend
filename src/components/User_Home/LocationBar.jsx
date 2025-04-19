@@ -1,5 +1,6 @@
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { RxCross1, RxHeart } from "react-icons/rx";
+import { AiOutlineReload,  } from "react-icons/ai";
 
 
 export function LocationBar() {
