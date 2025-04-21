@@ -1,11 +1,11 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ProfileCard  from "../../components/Cards/ProfileCard";
+import ProfileCard from "../../components/Cards/ProfileCard";
 import BottomNav from "../../components/Layout/BottomNavigation";
 import TopNav from "../../components/Layout/TopNavigation";
 import { DetailSection } from "../../components/User_Home/Details";
 import { LocationBar, ActionControls } from "../../components/User_Home/LocationBar";
+import AlertMessage from "../../components/Ui/Alerts";
 
 // Placeholder image URL (adjust path as needed)
 const placeholderImage = "/images/placeholder.png";
@@ -15,9 +15,32 @@ export default function UserHomePage() {
   const [profilesData, setProfilesData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [requestError, setRequestError] = useState("");
 
   const accessToken = localStorage.getItem("accessToken");
   const userType = localStorage.getItem("userType");
+
+  const handleConnect = async (recipientUserId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/request/",
+        { recipientUserId },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "x-user-type": userType,
+          },
+        }
+      );
+      console.log("Request sent:", response.data);
+      // advance to the next profile upon success
+      setIdx((i) => Math.min(i + 1, profilesData.length - 1));
+      setRequestError("");
+    } catch (err) {
+      console.error("Error sending connect request:", err);
+      setRequestError(err.response?.data?.error || "Unable to send request.");
+    }
+  };
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -108,17 +131,24 @@ export default function UserHomePage() {
           <TopNav />
           <LocationBar />
 
-          {/* ProfileCard now handles its own image loading;
-              ensure it uses onError on <img> to fallback to placeholderImage */}
-          <ProfileCard profile={profile} placeholderImage={placeholderImage}  onConnectClick={()=>{
-            console.log("Connect clicked for", profile.name);
-          } 
-          
-          }
-          onMessageClick={()=>{
-            console.log("Message clicked for", profile.name);
-          }}
+          {/* Inline request error alert below ProfileCard */}
+          {requestError && (
+            <div className="px-4 mt-4">
+              <AlertMessage
+                message={requestError}
+                type="error"
+                isVisible={!!requestError}
+                onClose={() => setRequestError("")}
+              />
+            </div>
+          )}
+          <ProfileCard
+            profile={profile}
+            placeholderImage={placeholderImage}
+            onConnectClick={() => handleConnect(profile.userId)}
+            onMessageClick={() => console.log("Message clicked for", profile.name)}
           />
+
 
           <ActionControls
             onReject={handleReject}
