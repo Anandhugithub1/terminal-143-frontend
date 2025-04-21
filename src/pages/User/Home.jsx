@@ -110,7 +110,15 @@ export default function UserHomePage() {
 
           {/* ProfileCard now handles its own image loading;
               ensure it uses onError on <img> to fallback to placeholderImage */}
-          <ProfileCard profile={profile} placeholderImage={placeholderImage} />
+          <ProfileCard profile={profile} placeholderImage={placeholderImage}  onConnectClick={()=>{
+            console.log("Connect clicked for", profile.name);
+          } 
+          
+          }
+          onMessageClick={()=>{
+            console.log("Message clicked for", profile.name);
+          }}
+          />
 
           <ActionControls
             onReject={handleReject}
