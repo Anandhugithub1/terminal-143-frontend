@@ -24,7 +24,7 @@ export default function UserHomePage() {
 
   const handleConnect = async (recipientUserId) => {
     try {
-      const response = await axios.post(
+       await axios.post(
         "http://localhost:4000/api/request/",
         { recipientUserId },
         {
@@ -34,7 +34,7 @@ export default function UserHomePage() {
           },
         }
       );
-      console.log("Request sent:", response.data);
+
       // advance to the next profile upon success
       setIdx((i) => Math.min(i + 1, profilesData.length - 1));
       setRequestError("");
