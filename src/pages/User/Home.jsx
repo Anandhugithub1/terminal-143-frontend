@@ -7,7 +7,9 @@ import { DetailSection } from "../../components/User_Home/Details";
 import { LocationBar, ActionControls } from "../../components/User_Home/LocationBar";
 import AlertMessage from "../../components/Ui/Alerts";
 
-// Placeholder image URL (adjust path as needed)
+//  // Placeholder image URL (adjust path as needed)
+
+
 const placeholderImage = "/images/placeholder.png";
 
 export default function UserHomePage() {
