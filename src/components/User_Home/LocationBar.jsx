@@ -2,6 +2,8 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { RxCross1, RxHeart } from "react-icons/rx";
 import { AiOutlineReload,  } from "react-icons/ai";
 
+// Location Bars and Action Controls for User Home Page
+
 
 export function LocationBar() {
   return (

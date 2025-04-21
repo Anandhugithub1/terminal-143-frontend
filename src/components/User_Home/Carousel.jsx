@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useSwipeable } from 'react-swipeable';
 import React, { memo, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
