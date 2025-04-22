@@ -32,8 +32,8 @@ export const ProfileInfo = memo(({
   top,
   compatibility,
   distance,
-  onMessageClick,
-  onConnectClick,
+  // onMessageClick,
+  // onConnectClick,
 }) => (
   <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-transparent text-white">
     <div className="flex items-center justify-between">
@@ -42,7 +42,7 @@ export const ProfileInfo = memo(({
         <p className="text-sm opacity-75">Active {lastActive}</p>
       </div>
       <div className="flex space-x-2">
-        <button
+        {/* <button
           aria-label="Message"
           className="p-2 bg-primary rounded-full"
           onClick={onMessageClick}
@@ -55,7 +55,7 @@ export const ProfileInfo = memo(({
           onClick={onConnectClick}
         >
           <FiUserPlus size={16} />
-        </button>
+        </button> */}
       </div>
     </div>
 

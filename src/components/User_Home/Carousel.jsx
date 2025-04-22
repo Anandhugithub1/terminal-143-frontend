@@ -1,11 +1,9 @@
-/* eslint-disable no-unused-vars */
 import { useSwipeable } from 'react-swipeable';
 import React, { memo, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { motion } from 'framer-motion';
 
-// Photo carousel with swipe and dots indicator
 export const PhotoCarousel = memo(({
   images,
   activeIdx,
@@ -14,6 +12,7 @@ export const PhotoCarousel = memo(({
   alt,
   placeholderImage,
   onError,
+  className = '',
 }) => {
   const handlers = useSwipeable({
     onSwipedLeft: onNext,
@@ -22,28 +21,30 @@ export const PhotoCarousel = memo(({
     trackMouse: true,
   });
 
-  const dots = useMemo(
-    () =>
-      images.map((_, idx) => (
-        <span
-          key={idx}
-          className={classnames('w-2 h-2 rounded-full transition-opacity', {
-            'bg-white': idx === activeIdx,
-            'bg-white bg-opacity-50': idx !== activeIdx,
-          })}
-        />
-      )),
+  // Telegram-style horizontal progress bars with better visibility
+  const segments = useMemo(
+    () => (
+      <div className="absolute top-1 left-0 right-0 flex justify-center px-4 pt-1 space-x-1 z-10">
+        {images.map((_, idx) => (
+          <div
+            key={idx}
+            className={classnames(
+              'h-1 w-[80vh]  transition-all duration-300 rounded-full',
+              {
+                'w-6 bg-white shadow-sm shadow-black/50': idx === activeIdx,
+                'w-6 bg-gray-200/80 shadow-sm shadow-black/30': idx !== activeIdx,
+              }
+            )}
+          />
+        ))}
+      </div>
+    ),
     [images, activeIdx]
   );
-
   const handleError = useCallback(
-    (e) => {
-      if (placeholderImage) {
-        e.currentTarget.src = placeholderImage;
-      }
-      if (onError) {
-        onError(e);
-      }
+    e => {
+      if (placeholderImage) e.currentTarget.src = placeholderImage;
+      onError?.(e);
     },
     [placeholderImage, onError]
   );
@@ -51,21 +52,19 @@ export const PhotoCarousel = memo(({
   return (
     <motion.div
       {...handlers}
-      className="relative overflow-hidden"
+      className={classnames('relative overflow-hidden', className)}
       initial={{ scale: 1 }}
       whileTap={{ scale: 0.97 }}
     >
       <img
         src={images[activeIdx]}
         alt={`${alt} photo ${activeIdx + 1}`}
-        className="w-full h-96 object-cover"
+        className="w-full h-full object-cover"
         onError={handleError}
         loading="lazy"
         decoding="async"
       />
-      <div className="absolute top-2 left-1/2 transform -translate-x-1/2 flex space-x-1">
-        {dots}
-      </div>
+      {segments}
     </motion.div>
   );
 });
@@ -78,9 +77,11 @@ PhotoCarousel.propTypes = {
   alt: PropTypes.string.isRequired,
   placeholderImage: PropTypes.string,
   onError: PropTypes.func,
+  className: PropTypes.string,
 };
 
 PhotoCarousel.defaultProps = {
   placeholderImage: '',
   onError: null,
+  className: '',
 };

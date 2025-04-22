@@ -24,7 +24,8 @@
     if (!images.length) return null;
 
     return (
-      <div className="mx-4 mt-4 rounded-xl shadow-lg overflow-hidden relative">
+          <div className="mx-5 mt-4 rounded-3xl shadow-lg overflow-hidden h-[65vh] relative">
+
         <PhotoCarousel
           images={images}
           activeIdx={photoIdx}
@@ -33,6 +34,7 @@
           alt={name}
           placeholderImage={placeholderImage}
                   onError={e => { e.currentTarget.src = placeholderImage; }}
+                  className="w-full h-full" 
 
         />
         <ProfileInfo 

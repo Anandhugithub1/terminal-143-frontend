@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ProfileCard from "../../components/Cards/ProfileCard";
@@ -24,7 +25,7 @@ export default function UserHomePage() {
 
   const handleConnect = async (recipientUserId) => {
     try {
-       await axios.post(
+      const response = await axios.post(
         "http://localhost:4000/api/request/",
         { recipientUserId },
         {
@@ -131,7 +132,6 @@ export default function UserHomePage() {
       ) : (
         <div className="pb-20">
           <TopNav />
-          <LocationBar />
 
           {/* Inline request error alert below ProfileCard */}
           {requestError && (

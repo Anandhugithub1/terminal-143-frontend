@@ -17,18 +17,18 @@ const BottomNav = () => {
       name: 'Home', 
       icon: activeTab === 'Home' ? <AiFillHome size="1.4em" /> : <AiOutlineHome size="1.4em" /> 
     },
-    { 
-      name: 'Search', 
-      icon: <FiSearch size="1.4em" />
-    },
-    { 
-      name: 'Messages', 
-      icon: <FiMessageSquare size="1.4em" />
-    },
-    { 
-      name: 'Favorites', 
-      icon: activeTab === 'Favorites' ? <AiFillHeart size="1.4em" /> : <AiOutlineHeart size="1.4em" /> 
-    },
+    // { 
+    //   name: 'Search', 
+    //   icon: <FiSearch size="1.4em" />
+    // },
+    // { 
+    //   name: 'Messages', 
+    //   icon: <FiMessageSquare size="1.4em" />
+    // },
+    // { 
+    //   name: 'Favorites', 
+    //   icon: activeTab === 'Favorites' ? <AiFillHeart size="1.4em" /> : <AiOutlineHeart size="1.4em" /> 
+    // },
     { 
       name: 'Profile', 
       icon: activeTab === 'Profile' ? <RiUserFill size="1.4em" /> : <RiUserLine size="1.4em" /> 
