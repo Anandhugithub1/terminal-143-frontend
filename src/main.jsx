@@ -22,6 +22,9 @@ import AddDetails from './pages/User/Add/Add_Details.jsx';
 import ChooseCategory from './pages/User/Add/add_category.jsx';
 import {HomePage} from './pages/HomePage.jsx'
 import PricingPage from './pages/Global/Pricing.jsx';
+import SettingsPage from './pages/Settings/Settings.jsx';
+import ProfileSettingsPage from './pages/Settings/ProfileSettings.jsx';
+import { ProfilePage } from './pages/User/Profile/Profile.jsx';
 
 const route = createBrowserRouter(
   createRoutesFromElements(
@@ -30,12 +33,7 @@ const route = createBrowserRouter(
       {/* Wrap the /complete route with the WizardProvider */}
       <Route
         path="complete/*"
-        element={
-          <WizardProvider>
-            <AddDetails />
-          </WizardProvider>
-        }
-      />
+        element={<WizardProvider><AddDetails /></WizardProvider>}/>
       <Route path="/" element={<UserHomePage />} />
       <Route path="login" element={<Login />} />
       <Route path="verify" element={<EmailOTPVerification />} />
@@ -44,6 +42,11 @@ const route = createBrowserRouter(
       <Route path="select-language" element={<SelectLanguage />} />
       <Route path="home" element={<HomePage />} />
       <Route path="pricing" element={<PricingPage />} />
+   <Route path="settings" element={<SettingsPage />}/>
+   <Route path="profile" element={<ProfilePage />} />
+<Route path="settings/profile-settings" element={<ProfileSettingsPage />} />
+
+
     </Route>
   )
 );
