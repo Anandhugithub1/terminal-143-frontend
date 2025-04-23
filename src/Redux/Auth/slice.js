@@ -1,12 +1,13 @@
+
 // ==== src/redux/slices/authSlice.js ====
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import apiClient from '../apiClient';
+import authClient from '../clients/authClient';
 
 export const login = createAsyncThunk(
   'auth/login',
   async (credentials, { rejectWithValue }) => {
     try {
-      const { data } = await apiClient.post('/users/login', credentials);
+      const { data } = await authClient.post('/users/login', credentials);
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -26,16 +27,17 @@ const authSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(login.pending, state => { state.status = 'loading'; })
-      .addCase(login.fulfilled, (state, action) => {
+      .addCase(login.fulfilled, (state, { payload }) => {
         state.status = 'succeeded';
-        state.accessToken = action.payload.accessToken;
-        state.userType = action.payload.userType;
+        state.accessToken = payload.accessToken;
+        state.userType = payload.userType;
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(login.rejected, (state, { payload }) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = payload;
       });
   }
 });
+
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;
