@@ -20,11 +20,11 @@ import SelectLanguage from './pages/User/Select_lang.jsx';
 import UserHomePage from './pages/User/Home.jsx'
 import AddDetails from './pages/User/Add/Add_Details.jsx';
 import ChooseCategory from './pages/User/Add/add_category.jsx';
-import {HomePage} from './pages/HomePage.jsx'
+import {HomePage} from './pages/Global/HomePage.jsx'
 import PricingPage from './pages/Global/Pricing.jsx';
 import SettingsPage from './pages/Settings/Settings.jsx';
 import ProfileSettingsPage from './pages/Settings/ProfileSettings.jsx';
-import { ProfilePage } from './pages/User/Profile/Profile.jsx';
+import ProfilePage  from './pages/User/Profile/Profile.jsx';
 
 const route = createBrowserRouter(
   createRoutesFromElements(

@@ -81,7 +81,7 @@ function ProfileSettingsPage() {
               className="flex justify-between items-center px-5 py-4 hover:bg-gray-50 transition"
             >
               <div className="flex items-center space-x-3">
-                <Icon size={20} className=" rounded-2xl border-1 border-gray-700" />
+                <Icon size={20} className=" rounded-2xl  " />  
                 <span className="text-gray-700 font-medium">{label}</span>
               </div>
               <div className="flex items-center space-x-2">

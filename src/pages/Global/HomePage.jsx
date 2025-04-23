@@ -3,12 +3,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 // eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
-import Navbar from "../components/Layout/Navbar";
-import Footer from "../components/Layout/Footer";
-import FeatureCard from "../components/Cards/GlobalFeatureCard";
-import { PrimaryButton, SecondaryButton } from "../shared/Button";
-import { itemVariants ,containerVariants} from "../Utlis/animation_variants";
-import heroimage from '../assets/images/hero1.jpg'
+import Navbar from "../../components/Layout/Navbar";
+
+import Footer from "../../components/Layout/Footer";
+import FeatureCard from "../../components/Cards/GlobalFeatureCard";
+import { PrimaryButton, SecondaryButton } from "../../shared/Button";
+import { itemVariants ,containerVariants} from "../../Utlis/animation_variants";
+import heroimage from '../../assets/images/hero1.jpg'
 // Icons
 import {
   
