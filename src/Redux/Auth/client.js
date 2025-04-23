@@ -3,7 +3,7 @@ import { store } from '../store';
 import { logout } from './slice';
 
 const authClient = axios.create({
-  baseURL: import.meta.env.VITE_AUTH_URL,  // e.g. http://localhost:2000
+  baseURL: import.meta.env.VITE_AUTH_URL, 
   headers: { 'Content-Type': 'application/json' }
 });
 

@@ -23,7 +23,6 @@ import ChooseCategory from './pages/User/Add/add_category.jsx';
 import {HomePage} from './pages/Global/HomePage.jsx'
 import PricingPage from './pages/Global/Pricing.jsx';
 import SettingsPage from './pages/Settings/Settings.jsx';
-import ProfileSettingsPage from './pages/Settings/ProfileSettings.jsx';
 import ProfilePage  from './pages/User/Profile/Profile.jsx';
 
 const route = createBrowserRouter(
@@ -44,7 +43,6 @@ const route = createBrowserRouter(
       <Route path="pricing" element={<PricingPage />} />
    <Route path="settings" element={<SettingsPage />}/>
    <Route path="profile" element={<ProfilePage />} />
-<Route path="settings/profile-settings" element={<ProfileSettingsPage />} />
 
 
     </Route>

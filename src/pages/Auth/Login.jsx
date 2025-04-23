@@ -32,7 +32,7 @@ export const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:2000/api/users/login', payload);
+      const response = await axios.post('http://localhost:2000/api/auth/login', payload);
 
       if (response.status === 200) {
         const { accessToken, userType } = response.data;
