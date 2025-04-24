@@ -6,7 +6,6 @@ import '@fontsource-variable/inter';
 
 const menuItems = [
   { label: 'Preferences', icon: <Sliders size={20} />, to: '/preferences' },
-  { label: 'Profile Information', icon: <User size={20} />, to: '/settings/profile-settings' },
   { label: 'Help Centre', icon: <HelpCircle size={20} />, to: '/help' },
   { label: 'About App', icon: <Info size={20} />, to: '/about' },
 ];
@@ -24,26 +23,7 @@ const SettingsPage = () => {
       </header>
 
       <div className="p-4">
-        <div className="flex flex-col items-center">
-          <div className="relative">
-            <img
-              src="https://fastly.picsum.photos/id/27/3264/1836.jpg?hmac=p3BVIgKKQpHhfGRRCbsi2MCAzw8mWBCayBsKxxtWO8g"
-              alt="User Avatar"
-              className="h-24 w-24 rounded-full object-cover"
-            />
-            <button className="absolute bottom-0 right-0 bg-white p-1 rounded-full border">
-              {/* Replace with your edit icon */}
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 11l6-6L5 17v4h4l10-10z" />
-              </svg>
-            </button>
-          </div>
-          <h2 className="mt-4 text-xl font-semibold">Rodri Alexander</h2>
-          {/* <p className="text-sm text-gray-500">rodri123@gmail.com</p> */}
-          <div className="mt-2 text-sm text-gray-700">
-            {/* <span className="font-medium">40% </span>Completed */}
-          </div>
-        </div>
+     
 
         <nav className="mt-6 space-y-4">
           {menuItems.map(({ label, icon, to }) => (

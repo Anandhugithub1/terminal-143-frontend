@@ -14,7 +14,7 @@ const TopNav = () => {
       </div>
 
       {/* Right actions */}
-      <div className="flex items-center space-x-3">
+      {/* <div className="flex items-center space-x-3">
         <button className="p-1.5 rounded-lg hover:bg-gray-50 transition-colors duration-200">
           <FiFilter size={20} className="text-gray-600 hover:text-gray-900" />
         </button>
@@ -25,7 +25,7 @@ const TopNav = () => {
           <FiBell size={20} className="text-gray-600 hover:text-gray-900" />
           <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white" />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };
