@@ -60,10 +60,10 @@ export default function Step4Tags() {
   const handleSubmit = async () => {
     setLoading(true);
     setError('');
-  
+
     try {
       let photoUrls = [];
-  
+
       if (userType === 'mp') {
         const files = formData.profilePhotos || [];
         for (let i = 0; i < files.length; i++) {
@@ -77,33 +77,35 @@ export default function Step4Tags() {
           photoUrls.push(url);
         }
       }
-  
+
       const payload = {};
-      console.log('payload', payload);
-
-  
-      if (formData.name)                payload.name = formData.name;
-      if (formData.dob)                 payload.dob = formData.dob;
-      if (formData.location)            payload.location = formData.location;
-      if (selectedInterests.length)     payload.interest = selectedInterests;
-      if (formData.bio)                 payload.bio = formData.bio;
-      if (formData.gender)              payload.gender = formData.gender;
-      if (formData.popularity)          payload.popularity = formData.popularity;
+      // Basic info
+      if (formData.name)                   payload.name = formData.name;
+      if (formData.dob)                    payload.dob = formData.dob;
+      if (formData.location)               payload.location = formData.location;
+      // Interests
+      if (selectedInterests.length)        payload.interest = selectedInterests;
+      // Bio & extras
+      if (formData.bio)                    payload.bio = formData.bio;
+      if (formData.gender)                 payload.gender = formData.gender;
+      if (formData.popularity)             payload.popularity = formData.popularity;
       if (formData.languagesKnown?.length) payload.languagesKnown = formData.languagesKnown;
-
-      // Include healthStatus object
+      // Health status
       if (formData.stdStatus || formData.lastTestedDate) {
         payload.healthStatus = {
           stdStatus: formData.stdStatus || '',
           lastTestedDate: formData.lastTestedDate || '',
         };
       }
-  
-      if (userType === 'mp' && photoUrls.length)
-        payload.photos = photoUrls;
-      else if (userType !== 'mp' && photoUrls[0])
-        payload.photo = photoUrls[0];
-  console.log('payload', payload);  
+      // Preferences
+      payload.preferences = formData.preferences || [];
+      // User Type
+      payload.userType = userType;
+
+      // Photos
+      if (userType === 'mp' && photoUrls.length)        payload.photos = photoUrls;
+      else if (userType !== 'mp' && photoUrls[0])        payload.photo = photoUrls[0];
+console.log(payload)
       await axios.post(
         'http://localhost:4000/api/users/complete-profile',
         payload,
@@ -114,8 +116,8 @@ export default function Step4Tags() {
           },
         }
       );
-  
-      navigate('/dashboard');
+
+      navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Something went wrong');
     } finally {
@@ -123,7 +125,6 @@ export default function Step4Tags() {
     }
   };
   
-
   return (
     <div className="animate-fade-in">
       <ProgressBar step={4} totalSteps={4} />

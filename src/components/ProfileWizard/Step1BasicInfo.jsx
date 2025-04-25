@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { InputField } from '../../shared/common';
 import { ProgressBar } from './Progess';
 
+// Gender options
 const GENDERS = {
   MALE: 'M',
   FEMALE: 'F',
@@ -20,6 +21,15 @@ const GENDERS = {
   OTHER: 'OT',
 };
 
+// Preference options (multi-select)
+const PREFERENCES = {
+  MALE: 'M',
+  FEMALE: 'F',
+  TO_FEMALE: 'tF',  // Ladyboy, Shemale, Trans Women
+  TO_MALE: 'tM',    // Trans Man, Tomboy
+  OTHERS: 'Ot',
+};
+
 const Step1BasicInfo = () => {
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();
@@ -27,6 +37,21 @@ const Step1BasicInfo = () => {
   const handleNext = () => {
     if (!formData.name.trim()) return;
     navigate('/complete/bio');
+  };
+
+  const handlePreferenceChange = (value) => {
+    const current = formData.preferences || [];
+    if (current.includes(value)) {
+      setFormData({
+        ...formData,
+        preferences: current.filter((p) => p !== value),
+      });
+    } else {
+      setFormData({
+        ...formData,
+        preferences: [...current, value],
+      });
+    }
   };
 
   return (
@@ -39,6 +64,7 @@ const Step1BasicInfo = () => {
       </div>
 
       <div className="space-y-6">
+        {/* Full Name */}
         <div>
           <InputField
             id="fullName"
@@ -49,6 +75,7 @@ const Step1BasicInfo = () => {
           />
         </div>
 
+        {/* Date of Birth */}
         <div>
           <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
             Date of Birth
@@ -63,6 +90,7 @@ const Step1BasicInfo = () => {
           />
         </div>
 
+        {/* Gender */}
         <div>
           <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
             Gender
@@ -76,13 +104,40 @@ const Step1BasicInfo = () => {
             <option value="" disabled>Select your gender</option>
             {Object.entries(GENDERS).map(([label, value]) => (
               <option key={value} value={value}>
-                {label.replace(/([A-Z])/g, ' $1').trim().replace(/^To/, 'To ').replace('LadyBoy', 'Ladyboy')}
+                {label.replace(/([A-Z])/g, ' $1')
+                  .trim()
+                  .replace(/^To/, 'To ')
+                  .replace('LadyBoy', 'Ladyboy')}
               </option>
             ))}
           </select>
         </div>
+
+        {/* Preferences (Multi-checkbox) */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Who are you interested in?
+          </label>
+          <div className="grid grid-cols-2 gap-4">
+            {Object.entries(PREFERENCES).map(([label, value]) => (
+              <label key={value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  value={value}
+                  checked={(formData.preferences || []).includes(value)}
+                  onChange={() => handlePreferenceChange(value)}
+                  className="h-5 w-5 text-pink-500 rounded focus:ring-2 focus:ring-pink-500"
+                />
+                <span className="text-gray-700">
+                  {label.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase())}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
       </div>
 
+      {/* Continue Button */}
       <button
         onClick={handleNext}
         className="mt-8 w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-4 rounded-xl transition-all transform hover:scale-[1.01] shadow-lg shadow-pink-500/20"
