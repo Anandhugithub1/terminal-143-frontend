@@ -4,11 +4,13 @@ import { InputField } from '../../shared/common';
 import { PasswordInput } from '../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, GoogleButton } from '../../shared/Button';
+import { ChevronDown } from 'lucide-react';
 
 export const Register = () => {
   const [emailPhone, setEmailPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [gender, setGender] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,19 +20,18 @@ export const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
     if (!passwordRegex.test(password)) {
-      setError(
-        'Password must contain at least 1 number, 1 lowercase letter, 1 special character, and 1 uppercase letter.'
-      );
+      setError('Password must contain at least 1 number, 1 lowercase letter, 1 special character, and 1 uppercase letter.');
       return;
     }
-
+    if (!gender) {
+      setError('Please select your gender');
+      return;
+    }
     setError('');
     setLoading(true);
     setMessage('');
@@ -38,12 +39,12 @@ export const Register = () => {
     const payload = {
       email: emailPhone.includes('@') ? emailPhone : '',
       phoneNumber: !emailPhone.includes('@') ? emailPhone : '',
+      gender,
       password,
     };
 
     try {
-      // eslint-disable-next-line no-unused-vars
-      const { data } = await axios.post('http://localhost:2000/api/auth/register', payload);
+      const { data } = await axios.post('http://localhost:3000/api/auth/register', payload);
       navigate('/verify', { state: { email: emailPhone } });
       setMessage(`User registered successfully. An OTP has been sent to ${emailPhone}`);
     } catch (err) {
@@ -60,21 +61,10 @@ export const Register = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
-        {/* App Logo */}
         <div className="flex justify-center mb-6">
           <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-3 rounded-full">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
+            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </div>
         </div>
@@ -89,6 +79,31 @@ export const Register = () => {
             onChange={(e) => setEmailPhone(e.target.value)}
             placeholder="Email or phone number"
           />
+
+<div>
+  <label htmlFor="gender" className="block text-gray-700 text-sm font-semibold mb-2">
+    Gender
+  </label>
+  <div className="relative">
+    <select
+      id="gender"
+      value={gender}
+      onChange={(e) => setGender(e.target.value)}
+      className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all appearance-none pr-10 bg-white hover:border-gray-400"
+    >
+      <option value="" className="text-gray-400">Select your gender</option>
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="to male">To Male</option>
+      <option value="to female">To Female</option>
+      <option value="others">Others</option>
+    </select>
+    <ChevronDown 
+      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+      size={20}
+    />
+  </div>
+</div>
 
           <PasswordInput
             value={password}
