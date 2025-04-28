@@ -16,7 +16,6 @@ export const Register = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>])(?=.*[A-Z])(?=.*[a-z]).+$/;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,10 +23,7 @@ export const Register = () => {
       setError('Passwords do not match');
       return;
     }
-    if (!passwordRegex.test(password)) {
-      setError('Password must contain at least 1 number, 1 lowercase letter, 1 special character, and 1 uppercase letter.');
-      return;
-    }
+  
     if (!gender) {
       setError('Please select your gender');
       return;
