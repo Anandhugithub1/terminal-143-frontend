@@ -44,7 +44,7 @@ export const Register = () => {
     };
 
     try {
-      const { data } = await axios.post('http://localhost:3000/api/auth/register', payload);
+      const { data } = await axios.post('http://localhost:2000/api/auth/register', payload);
       navigate('/verify', { state: { email: emailPhone } });
       setMessage(`User registered successfully. An OTP has been sent to ${emailPhone}`);
     } catch (err) {
@@ -91,12 +91,12 @@ export const Register = () => {
       onChange={(e) => setGender(e.target.value)}
       className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all appearance-none pr-10 bg-white hover:border-gray-400"
     >
-      <option value="" className="text-gray-400">Select your gender</option>
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      <option value="to male">To Male</option>
-      <option value="to female">To Female</option>
-      <option value="others">Others</option>
+      <option value="">— select —</option>
+  <option value="MALE">Male</option>
+  <option value="FEMALE">Female</option>
+  <option value="TO_FEMALE">Trans Female</option>
+  <option value="TO_MALE">Trans Male</option>
+  <option value="OTHERS">Other</option>
     </select>
     <ChevronDown 
       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
