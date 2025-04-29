@@ -4,22 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { InputField } from '../../shared/common';
 import { ProgressBar } from './Progess';
 
-// Gender options
-const GENDERS = {
-  MALE: 'M',
-  FEMALE: 'F',
-  NON_BINARY: 'NB',
-  GENDER_FLUID: 'GF',
-  TRANSGENDER: 'TG',
-  AGENDER: 'AG',
-  INTERSEX: 'IX',
-  TWO_SPIRIT: 'TS',
-  ToFemale: 'TF',
-  ToMale: 'TM',
-  LadyBoy: 'LB',
-  Tomboy: 'TB',
-  OTHER: 'OT',
-};
+
 
 // Preference options (multi-select)
 const PREFERENCES = {
@@ -90,28 +75,7 @@ const Step1BasicInfo = () => {
           />
         </div>
 
-        {/* Gender */}
-        <div>
-          <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-1">
-            Gender
-          </label>
-          <select
-            id="gender"
-            value={formData.gender || ''}
-            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
-            className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
-          >
-            <option value="" disabled>Select your gender</option>
-            {Object.entries(GENDERS).map(([label, value]) => (
-              <option key={value} value={value}>
-                {label.replace(/([A-Z])/g, ' $1')
-                  .trim()
-                  .replace(/^To/, 'To ')
-                  .replace('LadyBoy', 'Ladyboy')}
-              </option>
-            ))}
-          </select>
-        </div>
+    
 
         {/* Preferences (Multi-checkbox) */}
         <div>
