@@ -1,0 +1,13 @@
+{
+    "appName": "Terminal143",
+    "links": {
+      "about": "About",
+      "pricing": "Pricing",
+      "login": "Sign In"
+    },
+    "cta": {
+      "createProfile": "Create Free Profile",
+      "viewPricing": "View Pricing"
+    }
+  }
+  
