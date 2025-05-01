@@ -22,6 +22,8 @@ export default function UserHomePage() {
 
   const accessToken = localStorage.getItem("accessToken");
   const userType = localStorage.getItem("userType");
+  const preferences = (["F"] );
+
 
   const handleConnect = async (recipientUserId) => {
     try {
@@ -52,7 +54,8 @@ export default function UserHomePage() {
         const response = await axios.get(
           "http://localhost:4000/api/users/matchproviders/all",
           {
-            params: { limit: 10 },
+            params: { limit: 10,      preferences: JSON.stringify(preferences),
+            },
             headers: {
               Authorization: `Bearer ${accessToken}`,
               "x-user-type": userType,

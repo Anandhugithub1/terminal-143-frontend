@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, } from 'react';
+// AuthContext.js
+import React, { createContext, useContext, useState } from 'react';
 
 const AuthContext = createContext();
 
@@ -6,34 +7,34 @@ export const AuthProvider = ({ children }) => {
   // Initialize state from localStorage on mount
   const [authState, setAuthState] = useState(() => ({
     accessToken: localStorage.getItem('accessToken') || null,
-
     userType: localStorage.getItem('userType') || null,
+    // Load stored preferences or default to an empty array
+    preferences: JSON.parse(localStorage.getItem('preferences') || '[]'),
   }));
 
-  // Optionally, if the user might update localStorage from another tab, you can set up
-  // an effect to sync state (or use storage events).
-
-  const login = (token, userType) => {
+  const login = (token, userType, preferences = []) => {
     // Store values in localStorage for persistence
     localStorage.setItem('accessToken', token);
-
     localStorage.setItem('userType', userType);
+    // Save preferences as a JSON string
+    localStorage.setItem('preferences', JSON.stringify(preferences));
 
     setAuthState({
       accessToken: token,
-      userType: userType,
-      
+      userType,
+      preferences,
     });
   };
 
   const logout = () => {
-    // Clean up the stored values if logging out
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userType');
+    localStorage.removeItem('preferences');
 
     setAuthState({
       accessToken: null,
       userType: null,
+      preferences: [],
     });
   };
 
@@ -42,6 +43,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         accessToken: authState.accessToken,
         userType: authState.userType,
+        preferences: authState.preferences,
         login,
         logout,
       }}
