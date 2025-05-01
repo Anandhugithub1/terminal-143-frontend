@@ -1,14 +1,21 @@
 {
-
-
-    "languages": {
-        "en": "English",
-        "th": "ภาษาไทย",
-        "ru": "Русский",
-        "zh": "中文",
-        "es": "Español",
-        "mx": "Español (MX)",
-        "it": "Italiano",
-        "pt": "Português"
-      }
+  "brand": "Terminal143",
+  "tagline": "สร้างการเชื่อมต่อที่มีความหมายตั้งแต่ปี 2024",
+  "sections": {
+    "company": "เกี่ยวกับบริษัท",
+    "legal": "กฎหมาย",
+    "connect": "เชื่อมต่อ"
+  },
+  "links": {
+    "about": "เกี่ยวกับ",
+    "careers": "ร่วมงานกับเรา",
+    "blog": "บล็อก",
+    "privacy": "นโยบายความเป็นส่วนตัว",
+    "terms": "ข้อกำหนดบริการ",
+    "security": "ความปลอดภัย",
+    "contact": "ติดต่อเรา",
+    "faq": "คำถามที่พบบ่อย",
+    "press": "สื่อ"
+  },
+  "copyright": "&copy; 2024 Terminal143. สงวนลิขสิทธิ์."
 }

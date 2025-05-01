@@ -6,5 +6,35 @@
     },
     "ctaHeading": "Ready to Start Your Journey?",
     "ctaText": "Join thousands of professionals who've found meaningful connections through Terminal143"
+ ,
+
+    "heading": "Why Choose Terminal143",
+    "subheading": "A modern approach to meaningful connections",
+    "cards": {
+      "smartMatching": {
+        "title": "Smart Matching",
+        "desc": "Our AI-powered algorithm analyzes thousands of data points to find truly compatible matches"
+      },
+      "verifiedMembers": {
+        "title": "Verified Members",
+        "desc": "All profiles undergo rigorous verification to ensure authenticity and safety"
+      },
+      "qualityFirst": {
+        "title": "Quality First",
+        "desc": "Focus on meaningful connections rather than endless swiping"
+      }
+    },
+
+
+    "hero": {
+      "headingPart1": "Find Meaningful Connections",
+      "headingHighlight": "Without the Games",
+      "subheading": "Intelligent matchmaking for professionals seeking authentic relationships",
+      "buttons": {
+        "trial": "Start Free Trial",
+        "howItWorks": "How It Works"
+      },
+      "imageAlt": "Professional couple using Terminal143 app"
+    }
   }
   

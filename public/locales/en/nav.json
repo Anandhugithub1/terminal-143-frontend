@@ -9,5 +9,26 @@
       "it": "Italiano",
       "pt": "Português"
     }
+
+,
+    "brand": "Terminal143",
+  "tagline": "Making meaningful connections since 2024",
+  "sections": {
+    "company": "Company",
+    "legal": "Legal",
+    "connect": "Connect"
+  },
+  "links": {
+    "about": "About",
+    "careers": "Careers",
+    "blog": "Blog",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "security": "Security",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "press": "Press"
+  },
+  "copyright": "&copy; 2024 Terminal143. All rights reserved."
   }
   
