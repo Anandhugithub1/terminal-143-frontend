@@ -4,6 +4,8 @@ import { createRoot } from 'react-dom/client';
 import { WizardProvider } from './contexts/ProfileWizard.jsx';
 import '@fontsource-variable/inter';
 import './App.css';
+import './i18n/i18n.js'
+
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -20,7 +22,7 @@ import SelectLanguage from './pages/User/Select_lang.jsx';
 import UserHomePage from './pages/User/Home.jsx'
 import AddDetails from './pages/User/Add/Add_Details.jsx';
 import ChooseCategory from './pages/User/Add/add_category.jsx';
-import {HomePage} from './pages/Global/HomePage.jsx'
+import HomePage from './pages/Global/HomePage.jsx'
 import PricingPage from './pages/Global/Pricing.jsx';
 import SettingsPage from './pages/Settings/Settings.jsx';
 import ProfilePage  from './pages/User/Profile/Profile.jsx';
