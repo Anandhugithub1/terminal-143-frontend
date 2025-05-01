@@ -87,7 +87,6 @@ export default function Step4Tags() {
       if (selectedInterests.length)        payload.interest = selectedInterests;
       // Bio & extras
       if (formData.bio)                    payload.bio = formData.bio;
-      if (formData.gender)                 payload.gender = formData.gender;
       if (formData.popularity)             payload.popularity = formData.popularity;
       if (formData.languagesKnown?.length) payload.languagesKnown = formData.languagesKnown;
       // Health status
