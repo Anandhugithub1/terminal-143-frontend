@@ -69,9 +69,8 @@ export default function Footer() {
         >
           <div
             className="whitespace-pre-wrap"
-            // render any HTML entities (e.g. &copy;) correctly
-            dangerouslySetInnerHTML={{ __html: t('copyright') }}
-          />
+          /><p>{t('copyright')}</p>
+
         </motion.div>
       </div>
     </motion.footer>
