@@ -39,9 +39,9 @@ export const Login = () => {
       );
 
       if (response.status === 200) {
-        const { accessToken, userType, preferences } = response.data;
+        const { accessToken, userType, preferences,idToken } = response.data;
         // Pass preferences array to login
-        login(accessToken, userType, preferences);
+        login(accessToken, userType, preferences,idToken);
         console.log('UserType set to:', userType);
         console.log('Preferences set to:', preferences);
         console.log('Login successful', response.data);
