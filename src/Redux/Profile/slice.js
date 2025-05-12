@@ -62,6 +62,7 @@ const profilesSlice = createSlice({
             compatibility: raw.popularity || 0,
             distance: raw.distance || 'N/A',
             location: raw.location,
+            
             job: raw.jobTitle || '',
             languages: raw.languagesKnown?.length ? raw.languagesKnown : [raw.language],
             interests: raw.interest || [],
