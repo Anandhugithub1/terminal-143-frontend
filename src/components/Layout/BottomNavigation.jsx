@@ -13,7 +13,7 @@ const BottomNav = () => {
   const tabs = [
     {
       name: 'Home',
-      path: '/',
+      path: '/home',
       icon: ({ isActive }) =>
         isActive ? <AiFillHome size="1.4em" /> : <AiOutlineHome size="1.4em" />,
     },
