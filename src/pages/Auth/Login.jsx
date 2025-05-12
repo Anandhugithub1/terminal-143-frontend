@@ -39,18 +39,22 @@ export const Login = () => {
       );
 
       if (response.status === 200) {
-        const { accessToken, userType, preferences,idToken } = response.data;
-        // Pass preferences array to login
-        login(accessToken, userType, preferences,idToken);
+        const { accessToken, idToken, userType, preferences = [],username } = response.data;
+        
+        login(idToken, accessToken, userType, username, preferences);
+
         console.log('UserType set to:', userType);
+        console.log('AccessToken set to:', accessToken);
         console.log('Preferences set to:', preferences);
+        console.log('username set to ',username)
         console.log('Login successful', response.data);
+
 
         // Navigate based on userType or other logic
         if (userType === null) {
           navigate('/choose-category');
         } else {
-          navigate('/');
+          navigate('/home');
         }
       }
     } catch (err) {
@@ -65,10 +69,10 @@ export const Login = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google login clicked');
-    // Implement your Google login logic here
-  };
+  // const handleGoogleLogin = () => {
+  //   console.log('Google login clicked');
+  //   // Implement your Google login logic here
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4 relative">
@@ -133,7 +137,7 @@ export const Login = () => {
           <div className="flex-1 border-t border-border-clr"></div>
         </div>
 
-        <GoogleButton onClick={handleGoogleLogin} disabled={isLoading} />
+        {/* <GoogleButton onClick={handleGoogleLogin} disabled={isLoading} /> */}
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Don't have an account?{' '}
