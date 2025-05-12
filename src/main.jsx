@@ -5,7 +5,8 @@ import { WizardProvider } from './contexts/ProfileWizard.jsx';
 import '@fontsource-variable/inter';
 import './App.css';
 import './i18n/i18n.js'
-
+import {store} from './Redux/store.js'; 
+import { Provider } from 'react-redux';
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -26,6 +27,8 @@ import HomePage from './pages/Global/HomePage.jsx'
 import PricingPage from './pages/Global/Pricing.jsx';
 import SettingsPage from './pages/Settings/Settings.jsx';
 import ProfilePage  from './pages/User/Profile/Profile.jsx';
+import ProfileEditPage  from './pages/User/Profile/ProfileEdit.jsx';
+import ShareQRCodePage from './pages/User/Profile/Qrcode.jsx';
 
 const route = createBrowserRouter(
   createRoutesFromElements(
@@ -35,16 +38,21 @@ const route = createBrowserRouter(
       <Route
         path="complete/*"
         element={<WizardProvider><AddDetails /></WizardProvider>}/>
-      <Route path="/" element={<UserHomePage />} />
+
+        
+      <Route path="/" element={<HomePage />} />
       <Route path="login" element={<Login />} />
       <Route path="verify" element={<EmailOTPVerification />} />
       <Route path="forgot-password" element={<ForgotAndResetPassword />} />
       <Route path="choose-category" element={<ChooseCategory />} />
       <Route path="select-language" element={<SelectLanguage />} />
-      <Route path="home" element={<HomePage />} />
+      <Route path="home" element={<UserHomePage />} />
       <Route path="pricing" element={<PricingPage />} />
    <Route path="settings" element={<SettingsPage />}/>
    <Route path="profile" element={<ProfilePage />} />
+   <Route path='edit-profile' element={<ProfileEditPage />} />
+   <Route path='share-qr' element={<ShareQRCodePage />} />
+
 
 
     </Route>
@@ -53,8 +61,11 @@ const route = createBrowserRouter(
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+    <Provider store={store}>
+      
     <AuthProvider>
       <RouterProvider router={route} />
     </AuthProvider>
+    </Provider>
   </StrictMode>,
 );
