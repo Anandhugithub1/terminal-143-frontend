@@ -9,7 +9,7 @@ import { DetailSection } from '../../components/User_Home/Details';
 import { ActionControls } from '../../components/User_Home/LocationBar';
 import AlertMessage from '../../components/Ui/Alerts';
 import axios from 'axios';
-
+import { LoadingSpinner } from '../../components/Ui/Spinner';
 const placeholderImage = '/images/placeholder.png';
 
 export default function UserHomePage() {
@@ -17,12 +17,10 @@ export default function UserHomePage() {
   const { list: profiles, status, error } = useSelector((state) => state.profiles);
   const [idx, setIdx] = useState(0);
   const [requestError, setRequestError] = useState('');
-
   const accessToken = localStorage.getItem('accessToken');
   const userType = localStorage.getItem('userType');
   const idToken = localStorage.getItem('idToken');
   const preferences = useMemo(() => ['F'], []);
-
   // Only fetch once when status is 'idle'
   useEffect(() => {
     if (status === 'idle') {
@@ -61,7 +59,7 @@ export default function UserHomePage() {
   };
 
   if (error) return <div className="p-4 text-red-500">{error}</div>;
-  if (status === 'loading') return <div className="p-4">Loading...</div>;
+  if (status === 'loading') return   <LoadingSpinner />;
 
   return (
     <div className="bg-white min-h-screen pb-20">
