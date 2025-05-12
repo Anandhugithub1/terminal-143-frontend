@@ -1,7 +1,7 @@
 
 // ==== src/redux/slices/authSlice.js ====
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import authClient from '../clients/authClient';
+import authClient from './client';
 
 export const login = createAsyncThunk(
   'auth/login',
