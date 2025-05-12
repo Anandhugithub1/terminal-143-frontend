@@ -11,21 +11,25 @@ export const AuthProvider = ({ children }) => {
     userType: localStorage.getItem('userType') || null,
     // Load stored preferences or default to an empty array
     preferences: JSON.parse(localStorage.getItem('preferences') || '[]'),
+    username:localStorage.getItem('username'),
   }));
 
-  const login = (id,token, userType, preferences = []) => {
+  const login = (id,token, userType,username, preferences = [],) => {
     // Store values in localStorage for persistence
     localStorage.setItem('accessToken', token);
     localStorage.setItem('userType', userType);
     localStorage.setItem('idToken', id);
     // Save preferences as a JSON string
     localStorage.setItem('preferences', JSON.stringify(preferences));
+    localStorage.setItem('username', username);
 
     setAuthState({
       accessToken: token,
       userType,
-      preferences,
       idToken:id,
+      username,
+      preferences,
+
 
     });
   };
@@ -35,12 +39,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('userType');
     localStorage.removeItem('preferences');
 localStorage.removeItem('idToken');
+localStorage.removeItem('username')
     setAuthState({
       
       accessToken: null,
       userType: null,
       idToken:null,
       preferences: [],
+      username:null,
     });
   };
 
@@ -51,6 +57,7 @@ localStorage.removeItem('idToken');
         userType: authState.userType,
         preferences: authState.preferences,
         idToken:authState.idToken,
+        username:authState.username,
         login,
         logout,
       }}
