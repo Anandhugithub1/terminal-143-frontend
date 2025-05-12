@@ -15,7 +15,8 @@ export default function Step4Tags() {
   const { formData, setFormData } = useWizard();
   const { userType, accessToken } = useAuth();
   const navigate = useNavigate();
-
+const username =localStorage.getItem('username');
+const idToken =localStorage.getItem('idToken');
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState('');
 
@@ -38,13 +39,18 @@ export default function Step4Tags() {
       ...(userType === 'mp' ? { photoIndex: index } : {})
     };
 
+    console.log('Request Body:', requestBody, );
+
     const { data: { presignedUrl, publicUrl } } = await axios.post(
       'http://localhost:4000/api/users/presigned-url',
       requestBody,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          'x-user-type': userType
+          'x-user-type': userType,
+          'x-user-name':username,
+          'x-id-token':idToken,
+
         }
       }
     );
@@ -112,10 +118,12 @@ console.log(payload)
           headers: {
             Authorization: `Bearer ${accessToken}`,
             'x-user-type': userType,
+            'x-user-name':username,
+            'x-id-token':idToken,
+
           },
         }
       );
-
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Something went wrong');
