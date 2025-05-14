@@ -1,0 +1,41 @@
+name: Deploy to EC2
+
+
+on:
+  push:
+    branches: [ main ]
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+
+      - name: Copy deploy key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+
+      - name: SSH & Deploy
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ec2-user
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/terminal-143-frontend
+            git pull origin main
+            npm install
+            npm run build
+            # restart your server or service if needed
+
+
