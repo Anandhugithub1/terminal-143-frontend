@@ -29,7 +29,7 @@ const ComingSoon = () => {
         <p className="text-gray-600 mb-6">
           We're working hard to bring you this feature. Stay tuned!
         </p>
-        <Link to="/home">
+        <Link to="/">
           <Button>
             Go to Home
           </Button>
