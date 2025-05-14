@@ -55,7 +55,7 @@ const EmailOTPVerification = () => {
     setLoading(true);
 
     try {
-      await axios.post('http://localhost:3000/api/auth/resend-otp', {
+      await axios.post(`${baseurl}/resend-otp`, {
         email,
       });
 
