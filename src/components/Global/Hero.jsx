@@ -1,6 +1,5 @@
 // src/components/Global/Hero.jsx
-import React from 'react';
-import heroimage from '../../assets/images/hero2.jpeg';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { itemVariants, containerVariants } from '../../Utlis/animation_variants';
@@ -8,16 +7,22 @@ import { PrimaryButton, SecondaryButton } from '../../shared/Button';
 
 export default function Hero() {
   const { t } = useTranslation('home');
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   return (
     <section className="relative w-full h-screen bg-gray-900 text-white overflow-hidden">
+      {/* Background image with smooth fade-in */}
       <picture className="absolute inset-0 z-0 h-full w-full">
-        <img
-          src={heroimage}
+        <motion.img
+          src="https://d36zx1g74mcorc.cloudfront.net/websitephotos/hero2.jpg"
           alt={t('hero.imageAlt')}
-          className="w-full h-full object-cover"
+          className={`w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setImgLoaded(true)}
           loading="eager"
           fetchPriority="high"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: imgLoaded ? 1 : 0 }}
+          transition={{ duration: 1 }}
         />
       </picture>
       <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/10 to-black/60 z-10" />
