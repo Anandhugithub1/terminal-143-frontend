@@ -3,7 +3,7 @@ import axios from 'axios';
 import { InputField } from '../../shared/common';
 import { PasswordInput } from '../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, GoogleButton } from '../../shared/Button';
+import { Button } from '../../shared/Button';
 import { ChevronDown } from 'lucide-react';
 import { baseurl } from '../../Utlis/utlis';
 export const Register = () => {
@@ -131,7 +131,7 @@ export const Register = () => {
           <div className="flex-1 border-t border-border-clr"></div>
         </div>
 
-        <GoogleButton onClick={handleGoogleLogin} />
+        {/* onClick={handleGoogleLogin} /> */}
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Already have an account?{' '}
