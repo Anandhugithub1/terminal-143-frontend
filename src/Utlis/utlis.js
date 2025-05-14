@@ -67,3 +67,6 @@ export function getProfileFields(profile) {
     },
   ];
 }
+
+
+export const baseurl ="https://gufhe5jwsj.execute-api.us-east-1.amazonaws.com"
