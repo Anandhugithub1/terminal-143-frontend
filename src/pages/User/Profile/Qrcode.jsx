@@ -10,7 +10,7 @@ import {
   selectProfile,
   selectProfileStatus,
   selectProfileError,
-} from '../../../Redux/User/slice';
+} from '../../../Redux/User/profile-slice';
 
 export default function ShareQRCodePage() {
   const navigate = useNavigate();
