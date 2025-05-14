@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../shared/Button';
 import { PasswordInput } from '../../shared/Passinput';
 import axios from 'axios'; // ✅ Import Axios
-
+import { baseurl } from '../../Utlis/utlis';
 export const ForgotAndResetPassword = () => {
   const [step, setStep] = useState('forgot');
   const [email, setEmail] = useState('');
@@ -27,7 +27,7 @@ export const ForgotAndResetPassword = () => {
     try {
       const payload = { email };
       // eslint-disable-next-line no-unused-vars
-      const response = await axios.post('http://localhost:2000/api/auth/forgot-password', payload);
+      const response = await axios.post(`${baseurl}/forgot-password`, payload);
       setMessage('Reset code sent successfully. Please check your email.');
       setTimeout(() => setStep('reset'), 1500);
     } catch (err) {
@@ -57,7 +57,7 @@ export const ForgotAndResetPassword = () => {
         Password: newPassword,
       };
       // eslint-disable-next-line no-unused-vars
-      const response = await axios.post('http://localhost:2000/api/auth/confirm-forgot-password', payload);
+      const response = await axios.post(`${baseurl}/confirm-forgot-password`, payload);
       setMessage('Password has been reset successfully.');
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {

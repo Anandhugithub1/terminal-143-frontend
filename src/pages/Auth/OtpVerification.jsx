@@ -3,6 +3,7 @@ import { InputField } from '../../shared/common';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../../shared/Button';
 import axios from 'axios';
+import { baseurl } from '../../Utlis/utlis';
 
 const EmailOTPVerification = () => {
   const [confirmationCode, setOtp] = useState('');
@@ -30,7 +31,7 @@ const EmailOTPVerification = () => {
 
     try {
       // eslint-disable-next-line no-unused-vars
-      const response = await axios.post('http://localhost:2000/api/auth/confirm', {
+      const response = await axios.post(`${baseurl}/confirm}`, {
         email,
         ConfirmationCode: confirmationCode,
       });

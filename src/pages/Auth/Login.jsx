@@ -6,6 +6,7 @@ import { PasswordInput } from '../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './State';
 import { Button, GoogleButton } from '../../shared/Button';
+import {baseurl} from '../../Utlis/utlis'
 import Loader from '../../components/Ui/Loading';
 
 export const Login = () => {
@@ -34,7 +35,7 @@ export const Login = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:2000/api/auth/login',
+        `${baseurl}/login`,
         payload
       );
 

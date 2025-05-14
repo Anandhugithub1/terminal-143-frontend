@@ -5,7 +5,7 @@ import { PasswordInput } from '../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, GoogleButton } from '../../shared/Button';
 import { ChevronDown } from 'lucide-react';
-
+import { baseurl } from '../../Utlis/utlis';
 export const Register = () => {
   const [emailPhone, setEmailPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -40,7 +40,7 @@ export const Register = () => {
     };
 
     try {
-      const { data } = await axios.post('http://localhost:2000/api/auth/register', payload);
+      const { data } = await axios.post(`${baseurl}/register`, payload);
       navigate('/verify', { state: { email: emailPhone } });
       setMessage(`User registered successfully. An OTP has been sent to ${emailPhone}`);
     } catch (err) {
