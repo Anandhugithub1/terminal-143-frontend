@@ -53,9 +53,9 @@ export const Login = () => {
 
         // Navigate based on userType or other logic
         if (userType === null) {
-          navigate('/choose-category');
+          navigate('/coming-soon');
         } else {
-          navigate('/home');
+          navigate('/coming-soon');
         }
       }
     } catch (err) {
