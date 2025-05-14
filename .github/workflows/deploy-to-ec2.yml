@@ -1,37 +1,50 @@
-name: Deploy to EC2
+name: "Deploy to EC2"
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - "main"
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    runs-on: "ubuntu-latest"
 
-      - name: Install SSH key
+    steps:
+      - name: "Checkout code"
+        uses: "actions/checkout@v3"
+
+      - name: "Install SSH key"
         run: |
           mkdir -p ~/.ssh
-          # Use printf to preserve newlines in your private key
           printf "%s\n" "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
 
-      - name: Add EC2 host to known_hosts
+      - name: "Add EC2 host to known_hosts"
         run: |
-          # Scan your EC2 host, not github.com
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H "${{ secrets.EC2_HOST }}" >> ~/.ssh/known_hosts || true
 
-      - name: SSH & Deploy
-        uses: appleboy/ssh-action@v0.1.7
+      - name: "Debug: DNS resolution & ping"
+        run: |
+          echo "Resolving ${{ secrets.EC2_HOST }}…"
+          nslookup "${{ secrets.EC2_HOST }}" || true
+          ping -c 4 "${{ secrets.EC2_HOST }}" || true
+
+      - name: "Debug: test SSH key"
+        run: |
+          ssh -o StrictHostKeyChecking=no \
+              -i ~/.ssh/id_ed25519 \
+              ec2-user@"${{ secrets.EC2_HOST }}" \
+              "echo ' SSH connection successful'" || true
+
+      - name: "SSH & Deploy"
+        uses: "appleboy/ssh-action@v0.1.7"
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_SSH_KEY }}
+          host: "${{ secrets.EC2_HOST }}"
+          username: "ec2-user"
+          key: "${{ secrets.EC2_SSH_KEY }}"
           script: |
             cd ~/terminal-143-frontend
             git pull origin main
             npm install
             npm run build
-            # e.g. sudo systemctl restart my-service
+            # e.g. sudo systemctl restart your-service
