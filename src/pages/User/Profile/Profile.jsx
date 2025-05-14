@@ -7,7 +7,7 @@ import TopNav from '../../../components/Layout/TopNavigation';
 import BottomNav from '../../../components/Layout/BottomNavigation';
 import { Edit2, Share2, MapPin, Cake } from 'lucide-react';
 import '@fontsource-variable/inter';
-import { fetchProfile, selectProfile, selectProfileStatus } from '../../../Redux/User/slice';
+import { fetchProfile, selectProfile, selectProfileStatus } from '../../../Redux/User/profile-slice';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 export default function ProfilePage() {
