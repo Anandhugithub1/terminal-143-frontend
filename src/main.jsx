@@ -30,7 +30,7 @@ import ProfilePage  from './pages/User/Profile/Profile.jsx';
 import ProfileEditPage  from './pages/User/Profile/ProfileEdit.jsx';
 import ShareQRCodePage from './pages/User/Profile/Qrcode.jsx';
 import ComingSoon from './pages/Auth/ComingSoon.jsx';
-
+import NotFoundPage from './pages/404/404.jsx';
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -54,7 +54,7 @@ const route = createBrowserRouter(
    <Route path='edit-profile' element={<ProfileEditPage />} />
    <Route path='share-qr' element={<ShareQRCodePage />} />
    <Route path="coming-soon" element={<ComingSoon />} />
-
+   <Route path="*" element={<NotFoundPage />} />
 
 
     </Route>
