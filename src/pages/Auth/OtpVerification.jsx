@@ -1,126 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { InputField } from '../../shared/common';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Button } from '../../shared/Button';
-import axios from 'axios';
-import { baseurl } from '../../Utlis/utlis';
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { InputField } from '../../shared/common'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Button } from '../../shared/Button'
+import { verifyOtp, resendOtp } from '../../features/Auth/authThunks'
+import { resetAuthState } from '../../features/Auth/authSlice'
+import {
+  selectLoading as selectOtpLoading,
+  selectError  as selectOtpError,
+  selectSuccess as selectOtpSuccess,
+  selectMessage as selectOtpMessage,
+} from '../../features/Auth/authSelectors'
 
 const EmailOTPVerification = () => {
-  const [confirmationCode, setOtp] = useState('');
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const [code, setCode] = useState('')
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const email = location.state?.email
 
-  const email = location.state?.email || '';
+  const isLoading = useSelector(selectOtpLoading)
+  const isError   = useSelector(selectOtpError)
+  const isSuccess = useSelector(selectOtpSuccess)
+  const message   = useSelector(selectOtpMessage)
 
+  // Always clear any old auth state on mount
   useEffect(() => {
-    if (!email) {
-      setError('No email provided. Please complete registration first.');
+    dispatch(resetAuthState())
+  }, [dispatch])
+
+  // Debug log
+  useEffect(() => {
+    console.log('OTP state:', { isLoading, isError, isSuccess, message })
+  }, [isLoading, isError, isSuccess, message])
+
+  // When we get success, reset slice and navigate
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(resetAuthState())
+      navigate('/login')
     }
-  }, [email]);
+  }, [isSuccess, dispatch, navigate])
 
-  const handleOtpVerification = async (e) => {
-    e.preventDefault();
-    if (!email) return;
+  const handleVerify = e => {
+    e.preventDefault()
+    if (!email) return
+    dispatch(verifyOtp({ email, code }))
+  }
 
-    setError('');
-    setMessage('');
-    setLoading(true);
-
-    try {
-      await axios.post(`${baseurl}/confirm`, {
-        email,
-        ConfirmationCode: confirmationCode,
-      });
-
-      setMessage('OTP verified successfully! Redirecting...');
-      setTimeout(() => {
-        navigate('/login');
-      }, 1500);
-    } catch (err) {
-      setError(err.response?.data?.error || 'OTP Verification failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResendOtp = async () => {
-    if (!email) return;
-
-    setError('');
-    setMessage('');
-    setLoading(true);
-
-    try {
-      await axios.post(`${baseurl}/resend-otp`, {
-        email,
-      });
-
-      setMessage(`OTP has been resent to ${email}`);
-    } catch (err) {
-      setError(err.response?.data?.error || 'Failed to resend OTP');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleResend = () => {
+    if (!email) return
+    dispatch(resendOtp({ email }))
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
-        <div className="flex justify-center mb-6">
-          <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-3 rounded-full">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-              />
-            </svg>
-          </div>
-        </div>
-
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
           Verify Your Email
         </h1>
-
         <p className="text-center text-sm text-gray-500 mb-4">
-          An OTP has been sent to your email: <span className="font-semibold">{email}</span>
+          OTP sent to <span className="font-semibold">{email}</span>
         </p>
-
-        <form onSubmit={handleOtpVerification} className="space-y-4">
+        <form onSubmit={handleVerify} className="space-y-4">
           <InputField
-            value={confirmationCode}
-            onChange={(e) => setOtp(e.target.value)}
+            value={code}
+            onChange={e => setCode(e.target.value)}
             placeholder="Enter OTP"
           />
-
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          {message && <p className="text-green-600 text-sm">{message}</p>}
-
-          <Button type="submit" disabled={loading || !email}>
-            {loading ? 'Verifying...' : 'Verify OTP'}
+          {isError   && <p className="text-red-500 text-sm">{message}</p>}
+          {isSuccess && <p className="text-green-600 text-sm">{message}</p>}
+          <Button type="submit" disabled={isLoading || !email}>
+            {isLoading ? 'Verifying...' : 'Verify OTP'}
           </Button>
         </form>
-
         <div className="mt-4 text-center">
           <Button
-            onClick={handleResendOtp}
-            disabled={loading || !email}
+            onClick={handleResend}
+            disabled={isLoading || !email}
             type="button"
             className="text-sm text-pink-600 hover:underline bg-transparent shadow-none"
           >
             Resend OTP
           </Button>
         </div>
-
         <p className="mt-6 text-center text-sm text-gray-500">
           Already verified?{' '}
           <Link to="/login" className="text-pink-600 font-semibold hover:underline">
@@ -129,7 +92,7 @@ const EmailOTPVerification = () => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EmailOTPVerification;
+export default EmailOTPVerification
