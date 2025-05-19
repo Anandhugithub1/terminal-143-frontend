@@ -18,11 +18,10 @@ import { Login } from './pages/Auth/Login.jsx';
 import { Register } from './pages/Auth/Register.jsx';
 import EmailOTPVerification from './pages/Auth/OtpVerification.jsx';
 import { ForgotAndResetPassword } from './pages/Auth/ForgotPassword.jsx';
-import { AuthProvider } from './pages/Auth/State.jsx';
 import SelectLanguage from './pages/User/Select_lang.jsx';
 import UserHomePage from './pages/User/Home.jsx'
 import AddDetails from './pages/User/Add/Add_Details.jsx';
-import ChooseCategory from './pages/User/Add/add_category.jsx';
+import ChooseCategory from './pages/Auth/ChooseCategory.jsx';
 import HomePage from './pages/Global/HomePage.jsx'
 import PricingPage from './pages/Global/Pricing.jsx';
 import SettingsPage from './pages/Settings/Settings.jsx';
@@ -31,14 +30,23 @@ import ProfileEditPage  from './pages/User/Profile/ProfileEdit.jsx';
 import ShareQRCodePage from './pages/User/Profile/Qrcode.jsx';
 import ComingSoon from './pages/Auth/ComingSoon.jsx';
 import NotFoundPage from './pages/404/404.jsx';
+import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
+
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
       <Route path="register" element={<Register />} />
       {/* Wrap the /complete route with the WizardProvider */}
       <Route
-        path="complete/*"
-        element={<WizardProvider><AddDetails /></WizardProvider>}/>
+  path="complete/*"
+  element={
+    <RequireProfileIncomplete>
+      <WizardProvider>
+        <AddDetails />
+      </WizardProvider>
+    </RequireProfileIncomplete>
+  }
+/>
 
         
       <Route path="/" element={<HomePage />} />
@@ -65,9 +73,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
       
-    <AuthProvider>
       <RouterProvider router={route} />
-    </AuthProvider>
     </Provider>
   </StrictMode>,
 );
