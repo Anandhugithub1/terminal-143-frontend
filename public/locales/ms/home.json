@@ -1,0 +1,36 @@
+{
+    "stats": {
+      "matches": "Padanan Berjaya",
+      "verified": "Profil Disahkan",
+      "rating": "Penilaian Purata"
+    },
+    "ctaHeading": "Bersedia untuk Memulakan Perjalanan Anda?",
+    "ctaText": "Sertai ribuan profesional yang telah menemui hubungan bermakna melalui Terminal143",
+    "heading": "Kenapa Pilih Terminal143",
+    "subheading": "Pendekatan moden untuk hubungan yang bermakna",
+    "cards": {
+      "smartMatching": {
+        "title": "Padanan Pintar",
+        "desc": "Algoritma AI kami menganalisis ribuan data untuk mencari padanan yang benar-benar serasi"
+      },
+      "verifiedMembers": {
+        "title": "Ahli Disahkan",
+        "desc": "Semua profil disemak dengan ketat untuk memastikan keaslian dan keselamatan"
+      },
+      "qualityFirst": {
+        "title": "Keutamaan kepada Kualiti",
+        "desc": "Fokus kepada hubungan bermakna, bukan hanya meleret tanpa henti"
+      }
+    },
+    "hero": {
+      "headingPart1": "Cari Hubungan Bermakna",
+      "headingHighlight": "Tanpa Permainan",
+      "subheading": "Padanan pintar untuk profesional yang mencari hubungan yang tulen",
+      "buttons": {
+        "trial": "Mulakan Percubaan Percuma",
+        "howItWorks": "Bagaimana Ia Berfungsi"
+      },
+      "imageAlt": "Pasangan profesional menggunakan aplikasi Terminal143"
+    }
+  }
+  

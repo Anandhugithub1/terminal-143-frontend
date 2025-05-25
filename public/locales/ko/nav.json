@@ -1,0 +1,33 @@
+{
+    "languages": {
+      "en": "English",
+      "th": "ภาษาไทย",
+      "ru": "Русский",
+      "zh": "中文",
+      "es": "Español",
+      "mx": "Español (MX)",
+      "it": "Italiano",
+      "pt": "Português",
+      "ko": "한국어"
+    },
+    "brand": "Terminal143",
+    "tagline": "2024년부터 의미 있는 연결을 만듭니다",
+    "sections": {
+      "company": "회사",
+      "legal": "법률",
+      "connect": "연결"
+    },
+    "links": {
+      "about": "회사 소개",
+      "careers": "채용",
+      "blog": "블로그",
+      "privacy": "개인정보처리방침",
+      "terms": "이용 약관",
+      "security": "보안",
+      "contact": "문의하기",
+      "faq": "자주 묻는 질문",
+      "press": "보도자료"
+    },
+    "copyright": "© 2024 Terminal143. 판권 소유."
+  }
+  

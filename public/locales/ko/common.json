@@ -1,0 +1,13 @@
+{
+    "appName": "Terminal143",
+    "links": {
+      "about": "회사 소개",
+      "pricing": "요금제",
+      "login": "로그인"
+    },
+    "cta": {
+      "createProfile": "무료 프로필 만들기",
+      "viewPricing": "요금제 보기"
+    }
+  }
+  

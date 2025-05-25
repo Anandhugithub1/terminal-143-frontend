@@ -1,0 +1,13 @@
+{
+    "appName": "Terminal143",
+    "links": {
+      "about": "Tentang Kami",
+      "pricing": "Harga",
+      "login": "Log Masuk"
+    },
+    "cta": {
+      "createProfile": "Cipta Profil Percuma",
+      "viewPricing": "Lihat Harga"
+    }
+  }
+  

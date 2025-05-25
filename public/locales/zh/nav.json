@@ -1,0 +1,32 @@
+{
+    "languages": {
+      "en": "English",
+      "th": "ภาษาไทย",
+      "ru": "Русский",
+      "zh": "中文",
+      "es": "Español",
+      "mx": "Español (MX)",
+      "it": "Italiano",
+      "pt": "Português"
+    },
+    "brand": "Terminal143",
+    "tagline": "自 2024 年以来，助您建立有意义的联系",
+    "sections": {
+      "company": "公司",
+      "legal": "法律",
+      "connect": "联系"
+    },
+    "links": {
+      "about": "关于我们",
+      "careers": "招聘信息",
+      "blog": "博客",
+      "privacy": "隐私政策",
+      "terms": "服务条款",
+      "security": "安全性",
+      "contact": "联系我们",
+      "faq": "常见问题",
+      "press": "媒体"
+    },
+    "copyright": "© 2024 Terminal143。保留所有权利。"
+  }
+  

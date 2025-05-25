@@ -1,0 +1,15 @@
+{
+     
+      "appName": "Terminal143",
+      "links": {
+        "about": "О нас",
+        "pricing": "Цены",
+        "login": "Войти"
+      },
+      "cta": {
+        "createProfile": "Создать бесплатный профиль",
+        "viewPricing": "Посмотреть цены"
+      }
+    
+  }
+  
