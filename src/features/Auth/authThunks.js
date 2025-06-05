@@ -1,6 +1,6 @@
 // src/features/auth/authThunks.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { apiRegister, apiVerifyOtp, apiResendOtp, apiLogin } from './authAPI';
+import { apiRegister, apiVerifyOtp, apiResendOtp, apiLogin } from './authApi';
 
 // ─── REGISTER ───────────────────────────────────────────────────────────────
 export const registerUser = createAsyncThunk(
