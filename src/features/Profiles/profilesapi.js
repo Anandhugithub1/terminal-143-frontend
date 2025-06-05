@@ -1,7 +1,7 @@
 /* ================= features/profiles/api.js ================= */
 import axios from 'axios';
 
-const BASE_URL = 'https://userapi.terminal143.com/';
+const BASE_URL = 'https://userapi.terminal143.com';
 
 
 export const getMatchProviders = async ({ preferences, limit = 10, }) => {
