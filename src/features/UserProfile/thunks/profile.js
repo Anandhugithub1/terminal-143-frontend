@@ -60,7 +60,8 @@ export const fetchPresignedUrl = createAsyncThunk(
           headers: { 'Content-Type': file.type },
         });
 
-     
+        console.log("File type:", file.type);
+
         return { publicUrl, photoIndex };
 
 
