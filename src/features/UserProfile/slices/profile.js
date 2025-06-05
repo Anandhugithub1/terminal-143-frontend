@@ -33,8 +33,13 @@ const userProfileSlice = createSlice({
         state.currentUser = action.payload;
       })
       .addCase(fetchProfile.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+        if (action.payload === 'Profile not found.') {
+          state.status = 'notFound';
+          state.error = null;
+        } else {
+          state.status = 'failed';
+          state.error = action.payload;
+        }
       })
 
       // updateProfile

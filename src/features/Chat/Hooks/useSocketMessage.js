@@ -13,7 +13,7 @@ export const useSocketMessages = ({ sender, recipient, onMessage }) => {
     };
 
     socket.on('new_message', handleMessage);
-    socket.on('message_sent', handleMessage);
+    socket.on('message_sent', handleMessage);  
 
     return () => {
       socket.off('new_message', handleMessage);

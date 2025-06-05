@@ -20,18 +20,19 @@ export const LoginForm = () => {
   const isLoading = useSelector(selectLoading);
   const errorMessage = useSelector(selectError);
   const auth = useSelector(selectAuth);
-  const { isSuccess, userType } = auth;
+  const { isSuccess, profileCompleted } = auth;
 
-  // After a successful login, redirect based on userType
   useEffect(() => {
+    // only run navigation when login succeeds
     if (isSuccess) {
-      if (userType === null || userType === undefined) {
-        navigate('/choose-category');
+      // if profileCompleted is null/undefined/false/empty → complete profile
+      if (!profileCompleted) {
+        navigate('/complete');
       } else {
         navigate('/home');
       }
     }
-  }, [isSuccess, userType, navigate]);
+  }, [isSuccess, profileCompleted, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

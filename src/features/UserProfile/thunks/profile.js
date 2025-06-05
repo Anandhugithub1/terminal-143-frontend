@@ -12,10 +12,14 @@ export const fetchProfile = createAsyncThunk(
   'userProfile/fetchProfile',
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await fetchMyProfile();
-      return data;
+      const res = await fetchMyProfile();
+      return res.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || err.message);
+      if (err.response?.status === 404) {
+        // Profile doesn’t exist yet
+        return rejectWithValue('Profile not found.');
+      }
+      return rejectWithValue(err.message);
     }
   }
 );
@@ -44,26 +48,27 @@ export const fetchPresignedUrl = createAsyncThunk(
   }
 );
 
-export const uploadProfileImage = createAsyncThunk(
-  'userProfile/uploadProfileImage',
-  async ({ file, photoIndex }, thunkAPI) => {
-    try {
-      const { presignedUrl, publicUrl } = await thunkAPI
-        .dispatch(fetchPresignedUrl({ fileType: file.type, photoIndex }))
-        .unwrap();
+  export const uploadProfileImage = createAsyncThunk(
+    'userProfile/uploadProfileImage',
+    async ({ file, photoIndex }, thunkAPI) => {
+      try {
+        const { presignedUrl, publicUrl } = await thunkAPI
+          .dispatch(fetchPresignedUrl({ fileType: file.type, photoIndex }))
+          .unwrap();
 
-      await axios.put(presignedUrl, file, {
-        headers: { 'Content-Type': file.type },
-      });
+        await axios.put(presignedUrl, file, {
+          headers: { 'Content-Type': file.type },
+        });
 
-      const payload = { photos: { index: photoIndex, url: publicUrl } };
-      const updated = await thunkAPI.dispatch(updateProfile(payload)).unwrap();
-      return { updatedProfile: updated, publicUrl };
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err.message || 'Upload failed');
+     
+        return { publicUrl, photoIndex };
+
+
+      } catch (err) {
+        return thunkAPI.rejectWithValue(err.message || 'Upload failed');
+      }
     }
-  }
-);
+  );
 
 /** Thunk to complete profile (final submission) */
 export const completeProfile = createAsyncThunk(

@@ -1,5 +1,6 @@
 // src/features/Auth/components/RegisterForm.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { InputField } from '../../../shared/common';
 import { PasswordInput } from '../../../shared/Passinput';
@@ -17,6 +18,10 @@ import {
 } from '../authSelectors';
 
 export const RegisterForm = () => {
+
+
+  const location = useLocation();
+  const userType = location.state?.userType; // <- this is the passed value
   // local form state
   const [emailPhone, setEmailPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -60,7 +65,7 @@ export const RegisterForm = () => {
 
     // clear any local error & dispatch thunk
     setLocalError('');
-    dispatch(registerUser({ emailPhone, password, gender }));
+    dispatch(registerUser({ emailPhone, password, gender,userType }));
   };
 
   return (

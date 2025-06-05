@@ -1,8 +1,8 @@
-// authThunks.js
-// ----------------------
+// src/features/auth/authThunks.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { apiRegister, apiVerifyOtp, apiResendOtp } from './authApi';
+import { apiRegister, apiVerifyOtp, apiResendOtp, apiLogin } from './authAPI';
 
+// ─── REGISTER ───────────────────────────────────────────────────────────────
 export const registerUser = createAsyncThunk(
   'auth/registerUser',
   async (args, { rejectWithValue }) => {
@@ -15,6 +15,7 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// ─── VERIFY OTP ───────────────────────────────────────────────────────────────
 export const verifyOtp = createAsyncThunk(
   'auth/verifyOtp',
   async (args, { rejectWithValue }) => {
@@ -27,6 +28,7 @@ export const verifyOtp = createAsyncThunk(
   }
 );
 
+// ─── RESEND OTP ───────────────────────────────────────────────────────────────
 export const resendOtp = createAsyncThunk(
   'auth/resendOtp',
   async (args, { rejectWithValue }) => {
@@ -35,6 +37,24 @@ export const resendOtp = createAsyncThunk(
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data || { error: 'Resend OTP failed' });
+    }
+  }
+);
+
+// ─── NEW: LOGIN ───────────────────────────────────────────────────────────────
+export const loginUser = createAsyncThunk(
+  'auth/loginUser',
+  /**
+   * args: { emailPhone: string, password: string }
+   */
+  async ({ emailPhone, password }, { rejectWithValue }) => {
+    try {
+      const { data } = await apiLogin({ emailPhone, password });
+      // data should include: accessToken, idToken, userType, preferences, username, etc.
+      return data;
+    } catch (err) {
+      // If server returned something like { error: 'Invalid credentials' }
+      return rejectWithValue(err.response?.data || { error: 'Login failed' });
     }
   }
 );
