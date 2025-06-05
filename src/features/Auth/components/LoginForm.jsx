@@ -115,7 +115,7 @@ export const LoginForm = () => {
       <p className="mt-6 text-center text-sm text-gray-500">
         Don't have an account?{' '}
         <Link
-          to="/register"
+          to="/choose-category"
           className="text-text-pr font-semibold hover:underline"
         >
           Register

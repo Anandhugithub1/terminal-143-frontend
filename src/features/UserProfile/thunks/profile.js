@@ -47,29 +47,34 @@ export const fetchPresignedUrl = createAsyncThunk(
     }
   }
 );
+export const uploadProfileImage = createAsyncThunk(
+  'userProfile/uploadProfileImage',
+  async ({ file, photoIndex }, thunkAPI) => {
+    try {
+      const { presignedUrl, publicUrl } = await thunkAPI
+        .dispatch(fetchPresignedUrl({ fileType: file.type, photoIndex }))
+        .unwrap();
 
-  export const uploadProfileImage = createAsyncThunk(
-    'userProfile/uploadProfileImage',
-    async ({ file, photoIndex }, thunkAPI) => {
-      try {
-        const { presignedUrl, publicUrl } = await thunkAPI
-          .dispatch(fetchPresignedUrl({ fileType: file.type, photoIndex }))
-          .unwrap();
+      // ✅ Use fetch instead of axios
+      const res = await fetch(presignedUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': file.type,
+        },
+        body: file,
+      });
 
-        await axios.put(presignedUrl, file, {
-          headers: { 'Content-Type': file.type },
-        });
-
-        console.log("File type:", file.type);
-
-        return { publicUrl, photoIndex };
-
-
-      } catch (err) {
-        return thunkAPI.rejectWithValue(err.message || 'Upload failed');
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Upload failed: ${res.status} - ${errText}`);
       }
+
+      return { publicUrl, photoIndex };
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message || 'Upload failed');
     }
-  );
+  }
+);
 
 /** Thunk to complete profile (final submission) */
 export const completeProfile = createAsyncThunk(
