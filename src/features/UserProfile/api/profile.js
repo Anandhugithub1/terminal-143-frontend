@@ -5,7 +5,7 @@ const PROFILE_BASE = 'https://userapi.terminal143.com';
 
 /** Fetch the current user's profile */
 export const fetchMyProfile = () =>
-  axios.get(`${PROFILE_BASE}/profile`, { withCredentials: true });
+  axios.get(`${PROFILE_BASE}/user/profile`, { withCredentials: true });
 
 /** Patch any profile fields */
 export const updateProfileData = (payload) => {
