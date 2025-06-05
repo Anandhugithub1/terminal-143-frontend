@@ -26,7 +26,7 @@ Badge.propTypes = {
 export const ProfileInfo = memo(({
   name,
   age,
-  lastActive,
+  lastSeen,
   about,
   gender,
   top,
@@ -39,7 +39,7 @@ export const ProfileInfo = memo(({
     <div className="flex items-center justify-between">
       <div>
         <h2 className="text-xl font-semibold">{name}, {age}</h2>
-        <p className="text-sm opacity-75">Active {lastActive}</p>
+        <p className="text-sm opacity-75"> {lastSeen}</p>
       </div>
       <div className="flex space-x-2">
         {/* <button
@@ -77,7 +77,7 @@ export const ProfileInfo = memo(({
 ProfileInfo.propTypes = {
   name: PropTypes.string.isRequired,
   age: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  lastActive: PropTypes.string.isRequired,
+  lastSeen: PropTypes.string.isRequired,
   about: PropTypes.string,
   gender: PropTypes.string.isRequired,
   top: PropTypes.string,

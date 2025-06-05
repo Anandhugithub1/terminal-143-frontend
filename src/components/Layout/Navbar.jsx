@@ -12,10 +12,8 @@ const LANGUAGES = [
   { code: 'th', countryCode: 'TH' },
   { code: 'ru', countryCode: 'RU' },
   { code: 'zh', countryCode: 'CN' },
-  { code: 'es', countryCode: 'ES' },
-  { code: 'mx', countryCode: 'MX' },
-  { code: 'it', countryCode: 'IT' },
-  { code: 'pt', countryCode: 'PT' },
+  { code: 'ko', countryCode: 'KR' }, // Korean
+  { code: 'ms', countryCode: 'MY' }  // Malaysian
 ];
 
 const transitionVariants = {

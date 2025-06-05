@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+/* ========== Step4Tags.jsx ========== */
+import React from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
-import { useAuth } from '../../pages/Auth/State';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  uploadProfileImage,
+  completeProfile,
+} from '../../features/UserProfile';
 
 const categories = {
   '🎮 Entertainment': ['Travel', 'Movies', 'Gaming', 'Sports', 'Art', 'Reading'],
@@ -13,140 +17,94 @@ const categories = {
 
 export default function Step4Tags() {
   const { formData, setFormData } = useWizard();
-  const { userType, accessToken } = useAuth();
   const navigate = useNavigate();
-const username =localStorage.getItem('username');
-const idToken =localStorage.getItem('idToken');
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
+  const dispatch = useDispatch();
+  const userType = localStorage.getItem('userType');
 
+  const { completeStatus, error: apiError } = useSelector(
+    (s) => s.userProfile
+  );
+
+  // Toggle tag selection
   const toggle = (category, value) => {
     const current = formData[category] || [];
-    const updated = current.includes(value)
-      ? current.filter(v => v !== value)
-      : [...current, value];
-    setFormData({ ...formData, [category]: updated });
+    setFormData({
+      ...formData,
+      [category]: current.includes(value)
+        ? current.filter((v) => v !== value)
+        : [...current, value],
+    });
   };
+
+  const selectedInterests = Object.entries(categories).flatMap(
+    ([cat]) => formData[cat] || []
+  );
 
   const handleBack = () => navigate('/complete/photo');
 
-  const selectedInterests = Object.entries(categories)
-    .flatMap(([cat]) => formData[cat] || []);
-
-  const uploadToS3 = async (file, index = 0) => {
-    const requestBody = {
-      fileType: file.type,
-      ...(userType === 'mp' ? { photoIndex: index } : {})
-    };
-
-    console.log('Request Body:', requestBody, );
-
-    const { data: { presignedUrl, publicUrl } } = await axios.post(
-      'http://localhost:4000/api/users/presigned-url',
-      requestBody,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'x-user-type': userType,
-          'x-user-name':username,
-          'x-id-token':idToken,
-
-        }
-      }
-    );
-
-    const uploadRes = await axios.put(presignedUrl, file, {
-      headers: { 'Content-Type': file.type },
-    });
-    if (uploadRes.status !== 200) throw new Error('Failed to upload file');
-
-    return publicUrl;
-  };
-
   const handleSubmit = async () => {
-    setLoading(true);
-    setError('');
-
     try {
-      let photoUrls = [];
+      // 1) Upload photos and collect URLs in correct order
+      const photoUrls = [];
+      if (userType === 'mp' && formData.profilePhotos?.length) {
+        for (let i = 0; i < formData.profilePhotos.length; i++) {
+          const { publicUrl } = await dispatch(
+            uploadProfileImage({
+              file: formData.profilePhotos[i],
+              photoIndex: i,
+            })
+          ).unwrap();
+          photoUrls.push(publicUrl);
+        }
+      } else if (formData.profilePhoto) {
+        const { publicUrl } = await dispatch(
+          uploadProfileImage({ file: formData.profilePhoto, photoIndex: 0 })
+        ).unwrap();
+        photoUrls.push(publicUrl);
+      }
 
+      // 2) Build payload to match backend schema
+      const payload = {
+        ...formData,
+        interest: selectedInterests,
+      };
       if (userType === 'mp') {
-        const files = formData.profilePhotos || [];
-        for (let i = 0; i < files.length; i++) {
-          const url = await uploadToS3(files[i], i);
-          photoUrls.push(url);
-        }
+        payload.photos = photoUrls;            // array of strings
       } else {
-        const file = formData.profilePhoto;
-        if (file) {
-          const url = await uploadToS3(file);
-          photoUrls.push(url);
-        }
+        payload.photo = photoUrls[0] || '';    // single string
       }
 
-      const payload = {};
-      // Basic info
-      if (formData.name)                   payload.name = formData.name;
-      if (formData.dob)                    payload.dob = formData.dob;
-      if (formData.location)               payload.location = formData.location;
-      // Interests
-      if (selectedInterests.length)        payload.interest = selectedInterests;
-      // Bio & extras
-      if (formData.bio)                    payload.bio = formData.bio;
-      if (formData.popularity)             payload.popularity = formData.popularity;
-      if (formData.languagesKnown?.length) payload.languagesKnown = formData.languagesKnown;
-      // Health status
-      if (formData.stdStatus || formData.lastTestedDate) {
-        payload.healthStatus = {
-          stdStatus: formData.stdStatus || '',
-          lastTestedDate: formData.lastTestedDate || '',
-        };
-      }
-      // Preferences
-      payload.preferences = formData.preferences || [];
-      // User Type
-      payload.userType = userType;
-
-      // Photos
-      if (userType === 'mp' && photoUrls.length)        payload.photos = photoUrls;
-      else if (userType !== 'mp' && photoUrls[0])        payload.photo = photoUrls[0];
-console.log(payload)
-      await axios.post(
-        'http://localhost:4000/api/users/complete-profile',
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'x-user-type': userType,
-            'x-user-name':username,
-            'x-id-token':idToken,
-
-          },
-        }
-      );
-      navigate('/');
+      // 3) Dispatch completion
+      await dispatch(completeProfile(payload)).unwrap();
+      navigate('/home');
     } catch (err) {
-      setError(err.response?.data?.error || err.message || 'Something went wrong');
-    } finally {
-      setLoading(false);
+      console.error('Profile completion error:', err);
     }
   };
-  
+
+  const isLoading = completeStatus === 'loading';
+
   return (
     <div className="animate-fade-in">
       <ProgressBar step={4} totalSteps={4} />
 
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Final Touch! 🌟</h2>
-        <p className="text-gray-500">Select your interests to find better matches</p>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          Final Touch! 🌟
+        </h2>
+        <p className="text-gray-500">
+          Select your interests to find better matches
+        </p>
       </div>
 
       <div className="space-y-8">
         {Object.entries(categories).map(([title, items]) => (
           <div key={title}>
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">{title}</h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">
+              {title}
+            </h3>
             <div className="flex flex-wrap gap-3">
-              {items.map(item => (
+              {items.map((item) => (
                 <button
                   key={item}
                   onClick={() => toggle(title, item)}
@@ -164,22 +122,25 @@ console.log(payload)
         ))}
       </div>
 
-      {error && <p className="mt-4 text-center text-red-500">{error}</p>}
+      {apiError && (
+        <p className="mt-4 text-center text-red-500">{apiError}</p>
+      )}
 
       <div className="mt-8 flex gap-4">
         <button
           onClick={handleBack}
-          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+          disabled={isLoading}
+          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50"
         >
           Back
         </button>
         <button
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={isLoading}
           className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
                      text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
         >
-          {loading ? 'Saving...' : 'Finish'}
+          {isLoading ? 'Saving...' : 'Finish'}
         </button>
       </div>
     </div>

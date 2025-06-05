@@ -1,10 +1,8 @@
-// Step1BasicInfo.jsx
+import { useState } from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { InputField } from '../../shared/common';
 import { ProgressBar } from './Progess';
-
-
 
 // Preference options (multi-select)
 const PREFERENCES = {
@@ -15,12 +13,42 @@ const PREFERENCES = {
   OTHERS: 'Ot',
 };
 
+// Helper to calculate age from date string (YYYY-MM-DD)
+const calculateAge = (dob) => {
+  if (!dob) return 0;
+  const today = new Date();
+  const birthDate = new Date(dob);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+};
+
 const Step1BasicInfo = () => {
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+
+  const currentYear = new Date().getFullYear();
+  const minDob = '1950-01-01';
+  const maxDob = `${currentYear}-12-31`;
 
   const handleNext = () => {
-    if (!formData.name.trim()) return;
+    // Name required
+    if (!formData.name.trim()) {
+      setError('Full name is required.');
+      return;
+    }
+    // Age validation
+    const age = calculateAge(formData.dob);
+    if (age < 18) {
+      setError('You must be at least 18 years old to continue.');
+      return;
+    }
+    // Clear errors and proceed
+    setError('');
     navigate('/complete/bio');
   };
 
@@ -63,7 +91,7 @@ const Step1BasicInfo = () => {
         {/* Date of Birth */}
         <div>
           <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
-            Date of Birth
+            Date of Birth *
           </label>
           <InputField
             id="dob"
@@ -71,11 +99,16 @@ const Step1BasicInfo = () => {
             value={formData.dob}
             onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
             placeholder="Date of Birth"
+            min={minDob}
+            max={maxDob}
             className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
           />
         </div>
 
-    
+        {/* Error Message */}
+        {error && (
+          <p className="text-sm text-red-600">{error}</p>
+        )}
 
         {/* Preferences (Multi-checkbox) */}
         <div>

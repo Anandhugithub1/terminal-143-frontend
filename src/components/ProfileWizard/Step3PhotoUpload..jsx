@@ -2,11 +2,10 @@ import React, { useRef, useState } from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
-import { useAuth } from '../../pages/Auth/State';
 
 const Step3PhotoUpload = () => {
   const { formData, setFormData } = useWizard();
-  const { userType } = useAuth();
+  const userType =localStorage.getItem('userType');
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);

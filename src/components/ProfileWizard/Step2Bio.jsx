@@ -1,39 +1,39 @@
-// Step2Bio.js
+/* ========== Step2Bio.jsx ========== */
 import React from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 
 const LANGUAGES = {
-  ENGLISH:    'en',
-  THAI:       'th',
-  RUSSIAN:    'ru',
-  CHINESE:    'zh',
-  SPANISH:    'es',
-  MEXICAN:    'mx',
-  ITALIAN:    'it',
+  ENGLISH: 'en',
+  THAI: 'th',
+  RUSSIAN: 'ru',
+  CHINESE: 'zh',
+  SPANISH: 'es',
+  MEXICAN: 'mx',
+  ITALIAN: 'it',
   PORTUGUESE: 'pt',
-  FRENCH:     'fr',
-  GERMAN:     'de',
+  FRENCH: 'fr',
+  GERMAN: 'de',
 };
 
 const STD_STATUS = {
-  POSITIVE:          'p',
-  NEGATIVE:          'n',
+  POSITIVE: 'p',
+  NEGATIVE: 'n',
   PREFER_NOT_TO_SAY: 'pns',
 };
 
 const languageOptions = [
-  { label: 'English',   value: LANGUAGES.ENGLISH },
-  { label: 'Spanish',   value: LANGUAGES.SPANISH },
-  { label: 'French',    value: LANGUAGES.FRENCH },
-  { label: 'German',    value: LANGUAGES.GERMAN },
-  { label: 'Mandarin',  value: LANGUAGES.CHINESE },
+  { label: 'English', value: LANGUAGES.ENGLISH },
+  { label: 'Spanish', value: LANGUAGES.SPANISH },
+  { label: 'French', value: LANGUAGES.FRENCH },
+  { label: 'German', value: LANGUAGES.GERMAN },
+  { label: 'Mandarin', value: LANGUAGES.CHINESE },
 ];
 
 const statusOptions = [
-  { label: 'Positive',          value: STD_STATUS.POSITIVE },
-  { label: 'Negative',          value: STD_STATUS.NEGATIVE },
+  { label: 'Positive', value: STD_STATUS.POSITIVE },
+  { label: 'Negative', value: STD_STATUS.NEGATIVE },
   { label: 'Prefer not to say', value: STD_STATUS.PREFER_NOT_TO_SAY },
 ];
 
@@ -41,6 +41,9 @@ const Step2Bio = () => {
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();
   const charLimit = 500;
+
+  // Extract or initialize healthStatus
+  const healthStatus = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
 
   const handleNext = () => navigate('/complete/photo');
   const handleBack = () => navigate('/complete/basic');
@@ -51,6 +54,26 @@ const Step2Bio = () => {
       ? known.filter(c => c !== code)
       : [...known, code];
     setFormData({ ...formData, languagesKnown: updated });
+  };
+
+  const handleStatusChange = (e) => {
+    setFormData({
+      ...formData,
+      healthStatus: {
+        ...healthStatus,
+        stdStatus: e.target.value,
+      },
+    });
+  };
+
+  const handleDateChange = (e) => {
+    setFormData({
+      ...formData,
+      healthStatus: {
+        ...healthStatus,
+        lastTestedDate: e.target.value,
+      },
+    });
   };
 
   return (
@@ -104,10 +127,8 @@ const Step2Bio = () => {
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-2">STD Status 🧬</h3>
         <select
-          value={formData.stdStatus || ''}
-          onChange={e =>
-            setFormData({ ...formData, stdStatus: e.target.value })
-          }
+          value={healthStatus.stdStatus}
+          onChange={handleStatusChange}
           className="w-full p-3 bg-gray-50 rounded-xl border border-gray-300"
         >
           <option value="" disabled>
@@ -126,10 +147,8 @@ const Step2Bio = () => {
         <h3 className="text-md font-semibold mb-2">Last Tested Date 🗓️</h3>
         <input
           type="date"
-          value={formData.lastTestedDate || ''}
-          onChange={e =>
-            setFormData({ ...formData, lastTestedDate: e.target.value })
-          }
+          value={healthStatus.lastTestedDate}
+          onChange={handleDateChange}
           className="w-full p-3 bg-gray-50 rounded-xl border border-gray-300"
         />
       </div>

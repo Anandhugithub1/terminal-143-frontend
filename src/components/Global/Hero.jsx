@@ -55,7 +55,7 @@ export default function Hero() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <PrimaryButton to="/register" className="!py-3 px-8">
+            <PrimaryButton to="/choose-category" className="!py-3 px-8">
               {t('hero.buttons.trial')}
             </PrimaryButton>
             <SecondaryButton to="/about" className="!py-3 px-8">
