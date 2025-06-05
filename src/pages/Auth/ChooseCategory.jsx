@@ -28,6 +28,7 @@ const ChooseCategory = () => {
     if (!selectedCategory) return;
 
     const userTypeValue = USER_TYPE_MAP[selectedCategory];
+    localStorage.setItem('userType', userTypeValue);
     navigate('/register', { state: { userType: userTypeValue } });
 
     

@@ -1,4 +1,3 @@
-
 /* ProfilePage.jsx */
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,23 +6,25 @@ import TopNav from '../../../components/Layout/TopNavigation';
 import BottomNav from '../../../components/Layout/BottomNavigation';
 import { Edit2, Share2, MapPin, Cake } from 'lucide-react';
 import '@fontsource-variable/inter';
-import { fetchProfile, selectProfile, selectProfileStatus } from '../../../Redux/User/profile-slice';
+import { fetchProfile } from '../../../features/UserProfile';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const profile = useSelector(selectProfile);
-  const status = useSelector(selectProfileStatus);
+
+  // pull profile & status from our userProfile slice
+  const profile = useSelector((state) => state.userProfile.currentUser);
+  const status  = useSelector((state) => state.userProfile.status);
 
   useEffect(() => {
-    if (status === 'idle') dispatch(fetchProfile());
+    if (status === 'idle') {
+      dispatch(fetchProfile());
+    }
   }, [dispatch, status]);
 
   if (status !== 'succeeded') {
-    return (
-     <LoadingSpinner/>
-    );
+    return <LoadingSpinner />;
   }
 
   const age = profile.dob
@@ -61,19 +62,19 @@ export default function ProfilePage() {
 
         {/* Bio */}
         <div className="mt-6 text-center px-6">
-          <p className=" leading-5 text-sm">
+          <p className="leading-5 text-sm">
             {profile.bio || 'Let your personality shine through your bio!'}
           </p>
         </div>
-       
+
         {/* Actions */}
         <div className="mt-8 flex flex-col gap-4 px-6">
-        <button
+          <button
             onClick={() => navigate('/edit-profile')}
             className="w-full flex items-center justify-center px-6 py-3 bg-input border border-border-clr rounded-full text-sm font-medium text-text-sec hover:bg-focus-primary/10 transition"
           >
             <Edit2 size={16} className="inline-block mr-2 text-text-sec" />
-            Edit  Profile
+            Edit Profile
           </button>
           <button
             onClick={() => navigate('/share-qr')}
@@ -82,7 +83,6 @@ export default function ProfilePage() {
             <Share2 size={16} className="inline-block mr-2" />
             Share Profile
           </button>
-          
         </div>
       </main>
 

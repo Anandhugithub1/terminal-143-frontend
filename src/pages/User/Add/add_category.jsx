@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../Auth/State';
 import womanInRedShirt from '../../../assets/woman.png';
 import manInWhiteShirt from '../../../assets/man.png';
 import { MatchProviderCard, FindMatchCard } from '../../../components/Cards/ChooseCard';
@@ -11,7 +10,6 @@ const ChooseCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const navigate = useNavigate();
   // pull everything we need from context
-  const { accessToken, idToken, preferences = [], login, username } = useAuth();
 
   const [selectedLang, setSelectedLang] = useState('en');
 
@@ -30,9 +28,9 @@ const ChooseCategory = () => {
     if (!selectedCategory) return;
 
     const userTypeValue = USER_TYPE_MAP[selectedCategory];
-    // Re-use your existing tokens and prefs, only swap in the new userType:
-    login(idToken, accessToken, userTypeValue, username, preferences);
-    navigate('/complete');
+    navigate('/register', { state: { userType: userTypeValue } });
+
+    
   };
 
   return (
@@ -41,7 +39,7 @@ const ChooseCategory = () => {
       <div className="flex justify-end p-4">
         <button
           className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-full shadow-sm transition-colors"
-          onClick={() => navigate('/select-language')}
+          onClick={() => navigate('/register')}
         >
           <img src={LanguageIcon} alt="Language Icon" className="h-5 w-5" />
           <span className="text-sm font-medium">

@@ -1,17 +1,21 @@
-// pages/ProfileEditPage.jsx
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, ChevronLeft, Edit2 } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { interestMap, getProfileFields } from '../../../Utlis/utlis';
 import { useEditableProfile } from '../../../Hooks/EditProfile';
-import { EditableField,UploadOptions } from '../../../components/User_Home/ProfileEdit';
+import { EditableField, UploadOptions } from '../../../components/User_Home/ProfileEdit';
+import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 export default function ProfileEditPage() {
   const navigate = useNavigate();
   const userType = localStorage.getItem('userType');
+  const [showUpload, setShowUpload] = useState(false);
+  const galleryRef = useRef(null);
+  const cameraRef = useRef(null);
   const {
     profile,
+    status,
     localAvatar,
     localBio,
     editField,
@@ -19,14 +23,23 @@ export default function ProfileEditPage() {
     uploadImage,
   } = useEditableProfile();
 
-  const galleryRef = useRef(null);
-  const cameraRef = useRef(null);
-  const [showUpload, setShowUpload] = useState(false);
+  // While `profile` is still null (status: 'idle' or 'loading'), render a loading indicator:
+  if (status === 'idle' || status === 'loading' || profile === null) {
+    return (
+      <LoadingSpinner/>
+    );
+  }
 
+  // At this point, `profile` is guaranteed to be a non-null object
   const fields = getProfileFields(profile);
-  const interests = (profile.interest || []).map(key => ({ key, ...interestMap[key] }));
+  const interests = (profile.interest || []).map((key) => ({
+    key,
+    ...interestMap[key],
+  }));
 
-  const handlePhotoClick = () => setShowUpload(v => !v);
+  
+
+  const handlePhotoClick = () => setShowUpload((v) => !v);
   const handleFileChange = (e, source) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -51,7 +64,10 @@ export default function ProfileEditPage() {
                 alt="Profile avatar"
                 className="w-24 h-24 rounded-full border-4 border-pink-400 object-cover"
               />
-              <button onClick={handlePhotoClick} className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow">
+              <button
+                onClick={handlePhotoClick}
+                className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow"
+              >
                 <Edit2 size={16} className="text-gray-600" />
               </button>
 
@@ -59,7 +75,7 @@ export default function ProfileEditPage() {
                 type="file"
                 accept="image/*"
                 ref={galleryRef}
-                onChange={e => handleFileChange(e, 'gallery')}
+                onChange={(e) => handleFileChange(e, 'gallery')}
                 className="hidden"
               />
               <input
@@ -67,14 +83,20 @@ export default function ProfileEditPage() {
                 accept="image/*"
                 capture="environment"
                 ref={cameraRef}
-                onChange={e => handleFileChange(e, 'camera')}
+                onChange={(e) => handleFileChange(e, 'camera')}
                 className="hidden"
               />
 
               {showUpload && (
                 <UploadOptions
-                  onCamera={() => { cameraRef.current.click(); setShowUpload(false); }}
-                  onGallery={() => { galleryRef.current.click(); setShowUpload(false); }}
+                  onCamera={() => {
+                    cameraRef.current.click();
+                    setShowUpload(false);
+                  }}
+                  onGallery={() => {
+                    galleryRef.current.click();
+                    setShowUpload(false);
+                  }}
                   onCancel={() => setShowUpload(false)}
                 />
               )}
@@ -99,7 +121,7 @@ export default function ProfileEditPage() {
             <div className="px-5 py-3 border-b border-gray-200">
               <h2 className="text-sm font-semibold text-gray-800">About Me</h2>
             </div>
-            {fields.map(f => (
+            {fields.map((f) => (
               <EditableField
                 key={f.key}
                 icon={f.icon}
