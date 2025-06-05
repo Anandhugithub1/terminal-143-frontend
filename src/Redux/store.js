@@ -1,14 +1,16 @@
 // ==== src/redux/store.js ====
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './Auth/slice';
-import profileReducer from './Profile/slice';
-import userProfileReducer from './User/profile-slice'; 
-import updateProfileReducer from './User/updateSlice'; // Assuming you have this slice
+import authReducer from '../features/Auth/authSlice';
+// import profileReducer from './Profile/slice';
+import { profilesReducer } from '../features/Profiles';
+
+import {userProfileReducer} from '../features/UserProfile';
+import updateProfileReducer from './User/updateSlice';
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
-    profiles: profileReducer,
-    userprofile: userProfileReducer,
-    profileUpdate: updateProfileReducer
+    profiles: profilesReducer,
+    userProfile: userProfileReducer,
+    profileUpdate: updateProfileReducer,
+    auth:authReducer,
   }
 });

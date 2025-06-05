@@ -6,16 +6,13 @@ export const fetchProfile = createAsyncThunk(
   'profile/fetchProfile',
   async (_, { rejectWithValue }) => {
     try {
-      const accessToken = localStorage.getItem('accessToken');
-      const idToken = localStorage.getItem('idToken');
-      const userType = localStorage.getItem('userType');
+     
 
       const response = await axios.get('http://localhost:4000/api/users/profile', {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
-          'x-user-type': userType,
-          'x-id-token': idToken,
+        
         },
+        withCredentials: true, 
       });
       return response.data;
     } catch (err) {

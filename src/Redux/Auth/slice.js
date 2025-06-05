@@ -1,43 +1,66 @@
-
-// ==== src/redux/slices/authSlice.js ====
+/*
+  Redux Toolkit slice for user registration/authentication
+*/
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import authClient from './client';
+import axios from 'axios';
+import { baseurl } from '../../Utlis/utlis';
 
-export const login = createAsyncThunk(
-  'auth/login',
-  async (credentials, { rejectWithValue }) => {
+// Async thunk for user registration
+export const registerUser = createAsyncThunk(
+  'auth/registerUser',
+  async ({ emailPhone, password, gender }, { rejectWithValue }) => {
     try {
-      const { data } = await authClient.post('/users/login', credentials);
-      return data;
+      const payload = {
+        email: emailPhone.includes('@') ? emailPhone : '',
+        phoneNumber: !emailPhone.includes('@') ? emailPhone : '',
+        gender,
+        password,
+      };
+      const response = await axios.post(`${baseurl}/register`, payload);
+      // Optionally store token or other data
+      return response.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
+      // Return error payload
+      return rejectWithValue(err.response?.data || { error: 'Registration failed' });
     }
   }
 );
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: { accessToken: null, userType: null, status: 'idle', error: null },
-  reducers: {
-    logout(state) {
-      state.accessToken = null;
-      state.userType = null;
-    }
+  initialState: {
+    isLoading: false,
+    isSuccess: false,
+    isError: false,
+    message: '',
   },
-  extraReducers: builder => {
+  reducers: {
+    resetAuthState(state) {
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.isError = false;
+      state.message = '';
+    },
+  },
+  extraReducers: (builder) => {
     builder
-      .addCase(login.pending, state => { state.status = 'loading'; })
-      .addCase(login.fulfilled, (state, { payload }) => {
-        state.status = 'succeeded';
-        state.accessToken = payload.accessToken;
-        state.userType = payload.userType;
+      .addCase(registerUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
       })
-      .addCase(login.rejected, (state, { payload }) => {
-        state.status = 'failed';
-        state.error = payload;
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload.message || 'Registered successfully';
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload.error || 'Registration failed';
       });
-  }
+  },
 });
 
-export const { logout } = authSlice.actions;
+export const { resetAuthState } = authSlice.actions;
 export default authSlice.reducer;
