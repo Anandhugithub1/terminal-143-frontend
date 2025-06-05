@@ -1,7 +1,7 @@
 /* ========== features/UserProfile/api.js ========== */
 import axios from 'axios';
 
-const PROFILE_BASE = 'https://tih3q92313.execute-api.us-east-1.amazonaws.com';
+const PROFILE_BASE = 'https://userapi.terminal143.com';
 
 /** Fetch the current user's profile */
 export const fetchMyProfile = () =>
