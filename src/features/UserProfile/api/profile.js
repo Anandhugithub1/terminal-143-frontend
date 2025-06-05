@@ -38,7 +38,7 @@ export const completeProfileApi = (payload) => {
   
 
   return axios.post(
-    `${PROFILE_BASE}/complete-profile`,
+    `${PROFILE_BASE}/user/complete-profile`,
     payload,
     {
    withCredentials: true
