@@ -1,4 +1,4 @@
-// src/main.jsx or wherever your router is defined
+// src/main.jsx 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { WizardProvider } from './contexts/ProfileWizard.jsx';
@@ -7,6 +7,8 @@ import './App.css';
 import './i18n/i18n.js'
 import {store} from './Redux/store.js'; 
 import { Provider } from 'react-redux';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './shared/lib/client.js';
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -31,7 +33,8 @@ import ShareQRCodePage from './pages/User/Profile/Qrcode.jsx';
 import ComingSoon from './pages/Auth/ComingSoon.jsx';
 import NotFoundPage from './pages/404/404.jsx';
 import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
-
+import ChatPage from './pages/User/Chat/Chat.jsx';  
+import ChatList from './pages/User/Chat/ChatList.jsx'; // Import the ChatList component
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -64,6 +67,9 @@ const route = createBrowserRouter(
    <Route path="coming-soon" element={<ComingSoon />} />
    <Route path="*" element={<NotFoundPage />} />
 
+   <Route path="chat" element={<ChatPage />} />
+   <Route path="chat-list" element={<ChatList />} />
+
 
     </Route>
   )
@@ -71,9 +77,13 @@ const route = createBrowserRouter(
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+       <QueryClientProvider client={queryClient}> 
+
     <Provider store={store}>
       
       <RouterProvider router={route} />
     </Provider>
+    </QueryClientProvider>
+
   </StrictMode>,
 );
