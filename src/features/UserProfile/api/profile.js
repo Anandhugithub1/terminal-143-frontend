@@ -25,7 +25,7 @@ export const getPresignedUrl = ({ fileType, photoIndex }) => {
   
 
   return axios.post(
-    `${PROFILE_BASE}/presigned-url`,
+    `${PROFILE_BASE}/user/presigned-url`,
     { fileType, photoIndex },
     { withCredentials: true }
   );
