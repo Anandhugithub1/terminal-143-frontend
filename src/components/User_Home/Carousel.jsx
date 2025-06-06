@@ -20,11 +20,11 @@ export const PhotoCarousel = memo(({
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
     trackTouch: true,
-    delta: 5, // super sensitive
-    flickThreshold: 0.1, // fast flick triggers easily
+    delta: 5,
+    flickThreshold: 0.1,
   });
 
-  // Preload next and previous images
+  // Preload next/prev
   useEffect(() => {
     const preloadImage = (src) => {
       if (!src) return;
@@ -39,7 +39,7 @@ export const PhotoCarousel = memo(({
     preloadImage(images[prevIdx]);
   }, [activeIdx, images]);
 
-  // Progress bar segments
+  // Progress bar
   const segments = useMemo(
     () => (
       <div className="absolute top-1 left-0 right-0 flex justify-center px-2 pt-1 space-x-1 z-10 pointer-events-none">
@@ -54,7 +54,7 @@ export const PhotoCarousel = memo(({
               }
             )}
             style={{
-              width: `max(4vw, 24px)`, // adaptive
+              width: `max(4vw, 24px)`,
             }}
           />
         ))}
@@ -75,12 +75,12 @@ export const PhotoCarousel = memo(({
     <motion.div
       {...handlers}
       className={classnames(
-        'relative overflow-hidden select-none touch-pan-y',
+        'relative overflow-hidden select-none',
         className
       )}
       style={{
         willChange: 'transform',
-        touchAction: 'pan-y',
+        touchAction: 'none', // FULL swipe control (like Insta)
       }}
       initial={{ scale: 1 }}
       whileTap={{ scale: 0.97 }}
@@ -91,7 +91,7 @@ export const PhotoCarousel = memo(({
           src={images[activeIdx]}
           srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
           alt={`${alt} photo ${activeIdx + 1}`}
-          className="w-full h-full object-cover absolute top-0 left-0"
+          className="w-full h-full object-cover"
           onError={handleError}
           loading="lazy"
           decoding="async"
