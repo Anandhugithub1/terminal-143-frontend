@@ -1,8 +1,8 @@
 import { useSwipeable } from 'react-swipeable';
-import React, { memo, useMemo, useCallback } from 'react';
+import React, { memo, useMemo, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const PhotoCarousel = memo(({
   images,
@@ -19,10 +19,27 @@ export const PhotoCarousel = memo(({
     onSwipedRight: onPrev,
     preventDefaultTouchmoveEvent: true,
     trackMouse: true,
-    delta: 10, // make it more responsive to short swipes
-    flickThreshold: 0.3, // improve experience on mobile fast flick
+    trackTouch: true,
+    delta: 5, // super sensitive
+    flickThreshold: 0.1, // fast flick triggers easily
   });
 
+  // Preload next and previous images
+  useEffect(() => {
+    const preloadImage = (src) => {
+      if (!src) return;
+      const img = new Image();
+      img.src = src;
+    };
+
+    const nextIdx = (activeIdx + 1) % images.length;
+    const prevIdx = (activeIdx - 1 + images.length) % images.length;
+
+    preloadImage(images[nextIdx]);
+    preloadImage(images[prevIdx]);
+  }, [activeIdx, images]);
+
+  // Progress bar segments
   const segments = useMemo(
     () => (
       <div className="absolute top-1 left-0 right-0 flex justify-center px-2 pt-1 space-x-1 z-10 pointer-events-none">
@@ -37,7 +54,7 @@ export const PhotoCarousel = memo(({
               }
             )}
             style={{
-              width: `max(4vw, 24px)`, // adaptive width for mobile & desktop
+              width: `max(4vw, 24px)`, // adaptive
             }}
           />
         ))}
@@ -58,29 +75,40 @@ export const PhotoCarousel = memo(({
     <motion.div
       {...handlers}
       className={classnames(
-        'relative overflow-hidden select-none touch-pan-y', // improve touch handling
+        'relative overflow-hidden select-none touch-pan-y',
         className
       )}
+      style={{
+        willChange: 'transform',
+        touchAction: 'pan-y',
+      }}
       initial={{ scale: 1 }}
       whileTap={{ scale: 0.97 }}
-      style={{
-        willChange: 'transform', // hint for better performance
-      }}
     >
-      <img
-        src={images[activeIdx]}
-        srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`} // allow browser to choose better quality
-        alt={`${alt} photo ${activeIdx + 1}`}
-        className="w-full h-full object-cover"
-        onError={handleError}
-        loading="lazy"
-        decoding="async"
-        style={{
-          maxHeight: '100vh', // never overflow on small phones
-          objectFit: 'cover',
-          objectPosition: 'center',
-        }}
-      />
+      <AnimatePresence initial={false} mode="wait">
+        <motion.img
+          key={images[activeIdx]}
+          src={images[activeIdx]}
+          srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
+          alt={`${alt} photo ${activeIdx + 1}`}
+          className="w-full h-full object-cover absolute top-0 left-0"
+          onError={handleError}
+          loading="lazy"
+          decoding="async"
+          style={{
+            maxHeight: '100vh',
+            objectFit: 'cover',
+            objectPosition: 'center',
+          }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{
+            duration: 0.3,
+            ease: 'easeInOut',
+          }}
+        />
+      </AnimatePresence>
       {segments}
     </motion.div>
   );
