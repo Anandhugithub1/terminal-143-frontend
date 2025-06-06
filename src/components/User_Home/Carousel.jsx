@@ -20,11 +20,7 @@ export const PhotoCarousel = memo(({
   const handlers = useSwipeable({
     onSwiping: (e) => {
       isHorizontalSwipe.current = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-
-      // Allow vertical scroll, block only horizontal swipe
-      if (isHorizontalSwipe.current && e.event.cancelable) {
-        e.event.preventDefault();
-      }
+      // DO NOT call e.event.preventDefault() here → allows vertical scroll
     },
     onSwipedLeft: () => {
       if (isHorizontalSwipe.current) onNext();
@@ -39,6 +35,7 @@ export const PhotoCarousel = memo(({
     rotationAngle: 15,
     nodeRef: containerRef,
   });
+  
 
   // Preload next/prev images
   useEffect(() => {
