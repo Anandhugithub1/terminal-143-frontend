@@ -14,6 +14,7 @@ export const PhotoCarousel = memo(({
   onError,
   className = '',
 }) => {
+  const containerRef = useRef();
   const handlers = useSwipeable({
     onSwipedLeft: onNext,
     onSwipedRight: onPrev,
@@ -21,11 +22,11 @@ export const PhotoCarousel = memo(({
     preventScrollOnSwipe: true,
     trackMouse: true,
     trackTouch: true,
-    delta: 5,
-    flickThreshold: 0.1,
-    rotationAngle: 15,
+    delta: 10,  // Increased for better reliability
+    flickThreshold: 0.15,  // Slightly increased
+    rotationAngle: 30,  // Increased angle tolerance
+    nodeRef: containerRef,  // Ensures stable reference
   });
-  
 
   // Preload next/prev
   useEffect(() => {
@@ -81,49 +82,51 @@ export const PhotoCarousel = memo(({
   }, [activeIdx]);
 
   return (
-    <motion.div
-      {...handlers}
-      className={classnames(
-        'relative overflow-hidden select-none',
-        className
-      )}
-      style={{
-        willChange: 'transform',
-        touchAction: 'none',
-      }}
-      initial={{ scale: 1 }}
-      whileTap={{ scale: 0.97 }}
-    >
-      <AnimatePresence initial={false} mode="wait">
-        <motion.img
-          key={images[activeIdx]}
-          src={images[activeIdx]}
-          srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
-          alt={`${alt} photo ${activeIdx + 1}`}
-          className="w-full h-full object-cover"
-          onError={handleError}
-          loading="lazy"
-          decoding="async"
-          style={{
-            maxHeight: '100vh',
-            objectFit: 'cover',
-            objectPosition: 'center',
-          }}
-          initial={
-            hasLoadedOnce.current
-              ? { opacity: 0, scale: 0.98 }
-              : false // skip animation on first load
-          }
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1.02 }}
-          transition={{
-            duration: 0.3,
-            ease: 'easeInOut',
-          }}
-        />
-      </AnimatePresence>
-      {segments}
-    </motion.div>
+    <div className={classnames('relative', className)}>
+      {/* Swipe overlay - invisible layer for better touch detection */}
+      <div 
+        {...handlers}
+        className="absolute inset-0 z-20"
+        style={{ touchAction: 'none' }}
+      />
+      
+      <motion.div
+        ref={containerRef}
+        className="relative overflow-hidden select-none w-full h-full"
+        initial={{ scale: 1 }}
+        whileTap={{ scale: 0.97 }}
+      >
+        <AnimatePresence initial={false} mode="wait">
+          <motion.img
+            key={images[activeIdx]}
+            src={images[activeIdx]}
+            srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
+            alt={`${alt} photo ${activeIdx + 1}`}
+            className="w-full h-full object-cover"
+            onError={handleError}
+            loading="lazy"
+            decoding="async"
+            style={{
+              maxHeight: '100vh',
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
+            initial={
+              hasLoadedOnce.current
+                ? { opacity: 0, scale: 0.98 }
+                : false // skip animation on first load
+            }
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.02 }}
+            transition={{
+              duration: 0.3,
+              ease: 'easeInOut',
+            }}
+          />
+        </AnimatePresence>
+        {segments}
+      </motion.div>
+    </div>
   );
 });
 
