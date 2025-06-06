@@ -95,7 +95,8 @@ export const PhotoCarousel = memo(({
       {/* Swipe overlay - invisible layer for swipe detection */}
       <div
         ref={containerRef}
-        className="absolute inset-0 z-20 pointer-events-none"
+        className="absolute inset-0 z-20"
+
         {...handlers}
       />
 
