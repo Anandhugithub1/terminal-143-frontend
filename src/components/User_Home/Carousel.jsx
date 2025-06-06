@@ -19,24 +19,28 @@ export const PhotoCarousel = memo(({
 
   const handlers = useSwipeable({
     onSwiping: (e) => {
-      // Determine if swipe is primarily horizontal
       isHorizontalSwipe.current = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+
+      // Allow vertical scroll, block only horizontal swipe
+      if (isHorizontalSwipe.current && e.event.cancelable) {
+        e.event.preventDefault();
+      }
     },
-    onSwipedLeft: (e) => {
+    onSwipedLeft: () => {
       if (isHorizontalSwipe.current) onNext();
     },
-    onSwipedRight: (e) => {
+    onSwipedRight: () => {
       if (isHorizontalSwipe.current) onPrev();
     },
     trackMouse: true,
     trackTouch: true,
     delta: 10,
-    preventScrollOnSwipe: true,
+    preventScrollOnSwipe: false, // allow vertical scroll
     rotationAngle: 15,
     nodeRef: containerRef,
   });
 
-  // Preload next/prev
+  // Preload next/prev images
   useEffect(() => {
     const preloadImage = (src) => {
       if (!src) return;
@@ -61,8 +65,8 @@ export const PhotoCarousel = memo(({
             className={classnames(
               'h-1 transition-all duration-300 rounded-full',
               {
-                'w-6 bg-white shadow-sm shadow-black/50': idx === activeIdx,
-                'w-6 bg-gray-200/80 shadow-sm shadow-black/30': idx !== activeIdx,
+                'bg-white shadow-sm shadow-black/50': idx === activeIdx,
+                'bg-gray-200/80 shadow-sm shadow-black/30': idx !== activeIdx,
               }
             )}
             style={{
@@ -76,28 +80,28 @@ export const PhotoCarousel = memo(({
   );
 
   const handleError = useCallback(
-    e => {
+    (e) => {
       if (placeholderImage) e.currentTarget.src = placeholderImage;
       onError?.(e);
     },
     [placeholderImage, onError]
   );
 
-  // Add a flag to skip animation on first load
+  // Skip animation on first load
   const hasLoadedOnce = useRef(false);
   useEffect(() => {
     hasLoadedOnce.current = true;
   }, [activeIdx]);
 
   return (
-    <div className={classnames('relative', className)}>
-      {/* Swipe overlay - invisible layer for touch detection */}
-      <div 
+    <div className={classnames('relative w-full h-full', className)}>
+      {/* Swipe overlay - invisible layer for swipe detection */}
+      <div
         ref={containerRef}
-        className="absolute inset-0 z-20 touch-none"
+        className="absolute inset-0 z-20 pointer-events-none"
         {...handlers}
       />
-      
+
       <motion.div
         className="relative overflow-hidden select-none w-full h-full"
         initial={{ scale: 1 }}
@@ -110,6 +114,7 @@ export const PhotoCarousel = memo(({
             srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
             alt={`${alt} photo ${activeIdx + 1}`}
             className="w-full h-full object-cover"
+            draggable="false"
             onError={handleError}
             loading="lazy"
             decoding="async"
@@ -131,6 +136,7 @@ export const PhotoCarousel = memo(({
             }}
           />
         </AnimatePresence>
+
         {segments}
       </motion.div>
     </div>
