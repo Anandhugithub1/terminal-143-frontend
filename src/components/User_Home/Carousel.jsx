@@ -1,5 +1,5 @@
 import { useSwipeable } from 'react-swipeable';
-import React, { memo, useMemo, useCallback, useEffect } from 'react';
+import React, { memo, useMemo, useCallback, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -71,6 +71,12 @@ export const PhotoCarousel = memo(({
     [placeholderImage, onError]
   );
 
+  // Add a flag to skip animation on first load
+  const hasLoadedOnce = useRef(false);
+  useEffect(() => {
+    hasLoadedOnce.current = true;
+  }, [activeIdx]);
+
   return (
     <motion.div
       {...handlers}
@@ -80,7 +86,7 @@ export const PhotoCarousel = memo(({
       )}
       style={{
         willChange: 'transform',
-        touchAction: 'none', // FULL swipe control (like Insta)
+        touchAction: 'none',
       }}
       initial={{ scale: 1 }}
       whileTap={{ scale: 0.97 }}
@@ -100,7 +106,11 @@ export const PhotoCarousel = memo(({
             objectFit: 'cover',
             objectPosition: 'center',
           }}
-          initial={{ opacity: 0, scale: 0.98 }}
+          initial={
+            hasLoadedOnce.current
+              ? { opacity: 0, scale: 0.98 }
+              : false // skip animation on first load
+          }
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.02 }}
           transition={{
