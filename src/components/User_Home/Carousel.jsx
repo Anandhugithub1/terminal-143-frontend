@@ -18,11 +18,14 @@ export const PhotoCarousel = memo(({
     onSwipedLeft: onNext,
     onSwipedRight: onPrev,
     preventDefaultTouchmoveEvent: true,
+    preventScrollOnSwipe: true,
     trackMouse: true,
     trackTouch: true,
     delta: 5,
     flickThreshold: 0.1,
+    rotationAngle: 15,
   });
+  
 
   // Preload next/prev
   useEffect(() => {
