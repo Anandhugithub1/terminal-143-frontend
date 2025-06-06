@@ -15,17 +15,25 @@ export const PhotoCarousel = memo(({
   className = '',
 }) => {
   const containerRef = useRef();
+  const isHorizontalSwipe = useRef(false);
+
   const handlers = useSwipeable({
-    onSwipedLeft: onNext,
-    onSwipedRight: onPrev,
-    preventDefaultTouchmoveEvent: true,
-    preventScrollOnSwipe: true,
+    onSwiping: (e) => {
+      // Determine if swipe is primarily horizontal
+      isHorizontalSwipe.current = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+    },
+    onSwipedLeft: (e) => {
+      if (isHorizontalSwipe.current) onNext();
+    },
+    onSwipedRight: (e) => {
+      if (isHorizontalSwipe.current) onPrev();
+    },
     trackMouse: true,
     trackTouch: true,
-    delta: 10,  // Increased for better reliability
-    flickThreshold: 0.15,  // Slightly increased
-    rotationAngle: 30,  // Increased angle tolerance
-    nodeRef: containerRef,  // Ensures stable reference
+    delta: 10,
+    preventScrollOnSwipe: true,
+    rotationAngle: 15,
+    nodeRef: containerRef,
   });
 
   // Preload next/prev
@@ -83,15 +91,14 @@ export const PhotoCarousel = memo(({
 
   return (
     <div className={classnames('relative', className)}>
-      {/* Swipe overlay - invisible layer for better touch detection */}
+      {/* Swipe overlay - invisible layer for touch detection */}
       <div 
+        ref={containerRef}
+        className="absolute inset-0 z-20 touch-none"
         {...handlers}
-        className="absolute inset-0 z-20"
-        style={{ touchAction: 'none' }}
       />
       
       <motion.div
-        ref={containerRef}
         className="relative overflow-hidden select-none w-full h-full"
         initial={{ scale: 1 }}
         whileTap={{ scale: 0.97 }}
