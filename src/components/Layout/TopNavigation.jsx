@@ -1,6 +1,7 @@
 import React from 'react';
 import { FiMenu, FiFilter, FiSettings, FiBell } from 'react-icons/fi';
 import Logo from '../../assets/images/logo.png';
+import { Link } from 'react-router-dom';
 
 const TopNav = () => {
   return (
@@ -19,7 +20,7 @@ const TopNav = () => {
         {/* <button className="p-1.5 rounded-lg hover:bg-gray-50 transition-colors duration-200">
           <FiFilter size={20} className="text-gray-600 hover:text-gray-900" />
         </button> */}
-        <button className="p-1.5 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+        <button className="p-1.5 rounded-lg hover:bg-gray-50 transition-colors duration-200" Link="/settings">
           <FiSettings size={20} className="text-gray-600 hover:text-gray-900" />
         </button>
         {/* <button className="p-1.5 rounded-lg hover:bg-gray-50 transition-colors duration-200 relative">
