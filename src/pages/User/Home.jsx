@@ -31,19 +31,11 @@ export default function UserHomePage() {
   const isEnd = profiles.length > 0 && idx >= profiles.length;
 
   // Refresh handler does full page reload
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+  const handleRefresh = () => window.location.reload();
 
-  // If error fetching profiles
-  if (error) {
-    return <div className="p-4 text-red-500">{error}</div>;
-  }
-
-  // Loading state
-  if (status === 'loading') {
-    return <LoadingSpinner />;
-  }
+  // Error & Loading states
+  if (error) return <div className="p-4 text-red-500">{error}</div>;
+  if (status === 'loading') return <LoadingSpinner />;
 
   // End-of-profiles state
   if (isEnd) {
@@ -53,57 +45,46 @@ export default function UserHomePage() {
         <button
           onClick={handleRefresh}
           className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
-        >
-          Refresh Profiles
-        </button>
+        >Refresh Profiles</button>
       </div>
     );
   }
 
   // Build current profile
   const rawProfile = profiles[idx] || {};
-  const images = rawProfile.images && rawProfile.images.length > 0
-    ? rawProfile.images
-    : [placeholderImage];
+  const images = rawProfile.images?.length > 0 ? rawProfile.images : [placeholderImage];
   const profile = { ...rawProfile, images };
 
-  // Connect handler (to be implemented)
-  const handleConnect = async (userId) => {
-    // TODO: implement connect logic
-  };
+  // Connect handler placeholder
+  const handleConnect = async (userId) => {/* TODO */};
 
   return (
     <div className="relative bg-white min-h-screen pb-20">
-      
       <TopNav />
 
       {requestError && (
         <div className="px-4 mt-4">
-          <AlertMessage
-            message={requestError}
-            type="error"
-            isVisible={!!requestError}
-            onClose={() => setRequestError('')}
-          />
+          <AlertMessage message={requestError} type="error" isVisible onClose={() => setRequestError('')} />
         </div>
       )}
 
-      <ProfileCard
-        profile={profile}
-        placeholderImage={placeholderImage}
-        onConnectClick={() => handleConnect(profile.userId)}
-        onMessageClick={() => console.log('Message clicked for', profile.name)}
-      />
+      {/* Card + controls container */}
+      <div className="relative">
+        <ProfileCard
+          profile={profile}
+          placeholderImage={placeholderImage}
+          onConnectClick={() => handleConnect(profile.userId)}
+          onMessageClick={() => console.log('Message clicked')}
+        />
 
-      {/* Action buttons positioned relative to card container */}
-      <div className="absolute bottom-32 inset-x-0">
-    <ActionControls
-      className="mx-auto"  // centers the inner flex
-      onReject={() => setIdx(i => Math.min(i + 1, profiles.length))}
-      onRefresh={handleRefresh}
-      onLike={() => setIdx(i => Math.min(i + 1, profiles.length))}
-    />
-  </div>
+        {/* Always visible, fixed inside viewport */}
+        <ActionControls
+          className="fixed bottom-32 inset-x-0"
+          onReject={() => setIdx(i => Math.min(i + 1, profiles.length))}
+          onRefresh={handleRefresh}
+          onLike={() => setIdx(i => Math.min(i + 1, profiles.length))}
+        />
+      </div>
 
       <DetailSection profile={profile} />
       <BottomNav />
