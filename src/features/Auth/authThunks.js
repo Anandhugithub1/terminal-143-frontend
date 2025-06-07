@@ -10,10 +10,13 @@ export const registerUser = createAsyncThunk(
       const { data } = await apiRegister(args);
       return data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || { error: 'Registration failed' });
+      const errorMessage =
+        err.response?.data?.error || err.response?.data?.message || err.message || 'Registration failed';
+      return rejectWithValue({ error: errorMessage });
     }
   }
 );
+
 
 // ─── VERIFY OTP ───────────────────────────────────────────────────────────────
 export const verifyOtp = createAsyncThunk(
