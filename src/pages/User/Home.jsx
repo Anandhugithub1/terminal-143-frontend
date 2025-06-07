@@ -1,4 +1,3 @@
-/* ========== UserHomePage.jsx ========== */
 import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -24,40 +23,57 @@ export default function UserHomePage() {
   // Only fetch once when status is 'idle'
   useEffect(() => {
     if (status === 'idle') {
-      dispatch(fetchProfiles({ preferences,  }));
+      dispatch(fetchProfiles({ preferences }));
     }
-  }, [status, dispatch, preferences,]);
+  }, [status, dispatch, preferences]);
 
-  // Grab the raw profile (which already has an `images` array from the slice)
-  const rawProfile = profiles[idx] || {};
+  // Check if we've reached the end of the profiles
+  const isEnd = profiles.length > 0 && idx >= profiles.length;
 
-  // Build a guaranteed "images" array (fallback to one placeholder if empty)
-  const images =
-    rawProfile.images && rawProfile.images.length > 0
-      ? rawProfile.images
-      : [placeholderImage];
-
-  // Merge it back onto rawProfile so ProfileCard always sees `profile.images`
-  const profile = { ...rawProfile, images };
-
-  const handleConnect = async () => {
-    // TODO: implement connect logic
-  };
-
-  // Refresh handler resets status to 'idle' before dispatching
+  // Refresh handler resets status then fetches new profiles
   const handleRefresh = () => {
     if (status !== 'loading') {
       dispatch(resetProfilesStatus());
-      dispatch(fetchProfiles({ preferences, userType }));
+      dispatch(fetchProfiles({ preferences }));
     }
   };
 
+  // If error fetching profiles
   if (error) {
     return <div className="p-4 text-red-500">{error}</div>;
   }
+
+  // Loading state
   if (status === 'loading') {
     return <LoadingSpinner />;
   }
+
+  // End-of-profiles state
+  if (isEnd) {
+    return (
+      <div className="bg-white min-h-screen flex flex-col items-center justify-center">
+        <p className="text-gray-500 text-lg">Reached the end of profiles</p>
+        <button
+          onClick={handleRefresh}
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
+        >
+          Refresh Profiles
+        </button>
+      </div>
+    );
+  }
+
+  // Build current profile
+  const rawProfile = profiles[idx] || {};
+  const images = rawProfile.images && rawProfile.images.length > 0
+    ? rawProfile.images
+    : [placeholderImage];
+  const profile = { ...rawProfile, images };
+
+  // Connect handler (to be implemented)
+  const handleConnect = async (userId) => {
+    // TODO: implement connect logic
+  };
 
   return (
     <div className="bg-white min-h-screen pb-20">
@@ -82,9 +98,9 @@ export default function UserHomePage() {
       />
 
       <ActionControls
-        onReject={() => setIdx((i) => Math.min(i + 1, profiles.length - 1))}
+        onReject={() => setIdx((i) => Math.min(i + 1, profiles.length))}
         onRefresh={handleRefresh}
-        onLike={() => setIdx((i) => Math.min(i + 1, profiles.length - 1))}
+        onLike={() => setIdx((i) => Math.min(i + 1, profiles.length))}
       />
 
       <DetailSection profile={profile} />
