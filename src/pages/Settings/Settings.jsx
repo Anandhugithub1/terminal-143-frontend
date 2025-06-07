@@ -1,11 +1,15 @@
 // src/pages/SettingsPage.jsx
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Sliders, User, HelpCircle, Info } from 'lucide-react';
+import { ArrowLeft, Sliders, User, Lock, LogOut, HelpCircle, Info } from 'lucide-react';
 import '@fontsource-variable/inter';
 
 const menuItems = [
+  { label: 'Logout', icon: <LogOut size={20} />, to: '/logout' },
+  { label: 'Change Password', icon: <Lock size={20} />, to: '/change-password' },
   { label: 'Preferences', icon: <Sliders size={20} />, to: '/preferences' },
+  { label: 'Delete Account', icon: <Trash2 size={20} />, to: '/delete-account' },
+
   { label: 'Help Centre', icon: <HelpCircle size={20} />, to: '/help' },
   { label: 'About App', icon: <Info size={20} />, to: '/about' },
 ];
@@ -23,8 +27,6 @@ const SettingsPage = () => {
       </header>
 
       <div className="p-4">
-     
-
         <nav className="mt-6 space-y-4">
           {menuItems.map(({ label, icon, to }) => (
             <Link
