@@ -44,7 +44,7 @@ export default function ExplorePage() {
       {/* Filter bar only (more modern look, no heading/subheading) */}
       <div className="sticky top-16 z-10 bg-white px-4 py-3 border-b">
         <div className="flex overflow-x-auto space-x-3 scrollbar-hide">
-          {['All', 'Nearby', 'Popular', 'New', 'Verified'].map((filter) => (
+          {['All', 'Nearby', 'Popular', 'New', ].map((filter) => (
             <button
               key={filter}
               onClick={() => toggleFilter(filter)}
