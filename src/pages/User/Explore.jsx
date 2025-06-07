@@ -23,10 +23,11 @@ export default function ExplorePage() {
   }, [status, dispatch, preferences]);
 
   const handleRefresh = () => window.location.reload();
+
   const toggleFilter = (filter) => {
-    setActiveFilters(prev => 
-      prev.includes(filter) 
-        ? prev.filter(f => f !== filter) 
+    setActiveFilters((prev) =>
+      prev.includes(filter)
+        ? prev.filter((f) => f !== filter)
         : [...prev, filter]
     );
   };
@@ -39,16 +40,15 @@ export default function ExplorePage() {
   return (
     <div className="relative bg-white min-h-screen pb-20">
       <TopNav />
-      
-      <div className="sticky top-16 z-10 bg-white pt-2 px-4 border-b">
-        <h1 className="text-2xl font-bold mb-3">Discover People</h1>
-        
-        <div className="flex overflow-x-auto pb-3 space-x-3 scrollbar-hide">
+
+      {/* Filter bar only (more modern look, no heading/subheading) */}
+      <div className="sticky top-16 z-10 bg-white px-4 py-3 border-b">
+        <div className="flex overflow-x-auto space-x-3 scrollbar-hide">
           {['All', 'Nearby', 'Popular', 'New', 'Verified'].map((filter) => (
             <button
               key={filter}
               onClick={() => toggleFilter(filter)}
-              className={`px-4 py-2 rounded-full whitespace-nowrap flex-shrink-0 ${
+              className={`px-4 py-2 rounded-full whitespace-nowrap flex-shrink-0 transition ${
                 activeFilters.includes(filter)
                   ? 'bg-pink-500 text-white'
                   : 'bg-gray-100 text-gray-700'
@@ -60,7 +60,8 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      <div className="px-2 pt-2">
+      {/* Profiles grid */}
+      <div className="px-2 pt-4">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center mt-20 text-gray-500">
             <p className="text-lg mb-4">No profiles available</p>
@@ -77,8 +78,8 @@ export default function ExplorePage() {
               const firstImage =
                 profile.images?.length > 0 ? profile.images[0] : placeholderImage;
               return (
-                <Link 
-                  to={`/profile/${profile.userId}`} 
+                <Link
+                  to={`/profile/${profile.userId}`}
                   key={profile.userId}
                   className="break-inside-avoid relative group"
                 >
@@ -88,7 +89,7 @@ export default function ExplorePage() {
                       alt={profile.name}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
-                    
+
                     {/* Profile overlay info */}
                     <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
                       <div className="flex justify-between items-end">
@@ -104,7 +105,7 @@ export default function ExplorePage() {
                             </div>
                           )}
                         </div>
-                        <button 
+                        <button
                           className="text-white bg-pink-500 rounded-full p-2 hover:bg-pink-600 transition"
                           onClick={(e) => {
                             e.preventDefault();
@@ -115,7 +116,7 @@ export default function ExplorePage() {
                         </button>
                       </div>
                     </div>
-                    
+
                     {/* Online status indicator */}
                     {profile.online && (
                       <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
