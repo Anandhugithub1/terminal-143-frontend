@@ -17,18 +17,14 @@ export default function ExplorePage() {
   const [activeFilters, setActiveFilters] = useState(['All']);
 
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchProfiles({ preferences }));
-    }
+    if (status === 'idle') dispatch(fetchProfiles({ preferences }));
   }, [status, dispatch, preferences]);
 
   const handleRefresh = () => dispatch(fetchProfiles({ preferences }));
 
   const toggleFilter = (filter) => {
     setActiveFilters((prev) =>
-      prev.includes(filter)
-        ? prev.filter((f) => f !== filter)
-        : [...prev, filter]
+      prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]
     );
   };
 
@@ -60,7 +56,7 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* Profiles grid */}
+      {/* Masonry-style profiles */}
       <div className="px-4 pt-4">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center mt-24 text-gray-500">
@@ -73,35 +69,36 @@ export default function ExplorePage() {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          <div className="columns-2 sm:columns-3 md:columns-4 gap-4 space-y-4">
             {profiles.map((profile) => {
               const firstImage = profile.images?.[0] || placeholderImage;
               return (
                 <Link
                   to={`/profile/${profile.userId}`}
                   key={profile.userId}
-                  className="group block rounded-lg overflow-hidden shadow hover:shadow-lg transition"
+                  className="inline-block w-full mb-4 break-inside-avoid rounded-lg overflow-hidden shadow hover:shadow-lg transition"
                 >
-                  <div className="relative aspect-square bg-gray-100">
+                  <div className="relative">
                     <img
                       src={firstImage}
                       alt={profile.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-auto object-cover"
+                      loading="lazy"
                     />
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                    {/* Info overlay */}
-                    <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <h3 className="text-white font-semibold text-base">
-                        {profile.name || 'Unnamed'}{profile.age && `, ${profile.age}`}
-                      </h3>
-                      {profile.location && (
-                        <div className="flex items-center text-white text-xs mt-1">
-                          <MapPinIcon className="h-4 w-4 mr-1" />
-                          <span>{profile.location}</span>
-                        </div>
-                      )}
+                    {/* Overlay on hover */}
+                    <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-end">
+                      <div>
+                        <h3 className="text-white font-semibold text-base">
+                          {profile.name || 'Unnamed'}{profile.age && `, ${profile.age}`}
+                        </h3>
+                        {profile.location && (
+                          <div className="flex items-center text-white text-xs mt-1">
+                            <MapPinIcon className="h-4 w-4 mr-1" />
+                            <span>{profile.location}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
                     {/* Like button */}
