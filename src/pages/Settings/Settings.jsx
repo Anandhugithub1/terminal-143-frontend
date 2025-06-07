@@ -1,7 +1,7 @@
 // src/pages/SettingsPage.jsx
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Sliders, User, Lock, LogOut, HelpCircle, Info } from 'lucide-react';
+import { ArrowLeft, Sliders, User, Lock,Trash2, LogOut, HelpCircle, Info } from 'lucide-react';
 import '@fontsource-variable/inter';
 
 const menuItems = [
