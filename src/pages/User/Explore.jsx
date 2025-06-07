@@ -22,7 +22,7 @@ export default function ExplorePage() {
     }
   }, [status, dispatch, preferences]);
 
-  const handleRefresh = () => window.location.reload();
+  const handleRefresh = () => dispatch(fetchProfiles({ preferences }));
 
   const toggleFilter = (filter) => {
     setActiveFilters((prev) =>
@@ -38,21 +38,21 @@ export default function ExplorePage() {
   const isEmpty = profiles.length === 0;
 
   return (
-    <div className="relative bg-white min-h-screen pb-20">
+    <div className="relative bg-gray-50 min-h-screen pb-20">
       <TopNav />
 
-      {/* Filter bar only (more modern look, no heading/subheading) */}
-      <div className="sticky top-16 z-10 bg-white px-4 py-3 border-b">
-        <div className="flex overflow-x-auto space-x-3 scrollbar-hide">
-          {['All', 'Nearby', 'Popular', 'New', ].map((filter) => (
+      {/* Filter bar */}
+      <div className="sticky top-16 z-10 bg-gray-50 px-4 py-2 border-b border-gray-200">
+        <div className="flex space-x-3 overflow-x-auto scrollbar-hide">
+          {['All', 'Nearby', 'Popular', 'New'].map((filter) => (
             <button
               key={filter}
               onClick={() => toggleFilter(filter)}
-              className={`px-4 py-2 rounded-full whitespace-nowrap flex-shrink-0 transition ${
+              className={`px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400 \$
                 activeFilters.includes(filter)
-                  ? 'bg-pink-500 text-white'
-                  : 'bg-gray-100 text-gray-700'
-              }`}
+                  ? 'bg-white text-gray-800 shadow-sm'
+                  : 'bg-gray-200 text-gray-600'
+              `}
             >
               {filter}
             </button>
@@ -61,65 +61,60 @@ export default function ExplorePage() {
       </div>
 
       {/* Profiles grid */}
-      <div className="px-2 pt-4">
+      <div className="px-4 pt-4">
         {isEmpty ? (
-          <div className="flex flex-col items-center justify-center mt-20 text-gray-500">
-            <p className="text-lg mb-4">No profiles available</p>
+          <div className="flex flex-col items-center justify-center mt-24 text-gray-500">
+            <p className="text-lg mb-6">No profiles available</p>
             <button
               onClick={handleRefresh}
-              className="px-6 py-3 bg-pink-500 text-white rounded-full shadow hover:bg-pink-600 transition"
+              className="px-6 py-2 bg-white text-gray-800 rounded-full shadow hover:shadow-md transition"
             >
-              Refresh
+              Retry
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {profiles.map((profile) => {
-              const firstImage =
-                profile.images?.length > 0 ? profile.images[0] : placeholderImage;
+              const firstImage = profile.images?.[0] || placeholderImage;
               return (
                 <Link
                   to={`/profile/${profile.userId}`}
                   key={profile.userId}
-                  className="break-inside-avoid relative group"
+                  className="group block rounded-lg overflow-hidden shadow hover:shadow-lg transition"
                 >
-                  <div className="overflow-hidden rounded-xl aspect-[3/4] relative">
+                  <div className="relative aspect-square bg-gray-100">
                     <img
                       src={firstImage}
                       alt={profile.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
 
-                    {/* Profile overlay info */}
-                    <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
-                      <div className="flex justify-between items-end">
-                        <div>
-                          <h3 className="text-white font-bold text-lg">
-                            {profile.name || 'Unnamed'}
-                            {profile.age && `, ${profile.age}`}
-                          </h3>
-                          {profile.location && (
-                            <div className="flex items-center text-white/90 text-sm">
-                              <MapPinIcon className="h-4 w-4 mr-1" />
-                              <span>{profile.location}</span>
-                            </div>
-                          )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                    {/* Info overlay */}
+                    <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <h3 className="text-white font-semibold text-base">
+                        {profile.name || 'Unnamed'}{profile.age && `, ${profile.age}`}
+                      </h3>
+                      {profile.location && (
+                        <div className="flex items-center text-white text-xs mt-1">
+                          <MapPinIcon className="h-4 w-4 mr-1" />
+                          <span>{profile.location}</span>
                         </div>
-                        <button
-                          className="text-white bg-pink-500 rounded-full p-2 hover:bg-pink-600 transition"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            // Handle like functionality
-                          }}
-                        >
-                          <HeartIcon className="h-5 w-5" />
-                        </button>
-                      </div>
+                      )}
                     </div>
 
-                    {/* Online status indicator */}
+                    {/* Like button */}
+                    <button
+                      className="absolute top-3 right-3 bg-white rounded-full p-1.5 shadow hover:shadow-md transition hidden group-hover:block"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <HeartIcon className="h-5 w-5 text-gray-800" />
+                    </button>
+
+                    {/* Online indicator */}
                     {profile.online && (
-                      <div className="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                      <span className="absolute top-3 left-3 block w-3 h-3 bg-green-400 rounded-full border-2 border-white" />
                     )}
                   </div>
                 </Link>
