@@ -30,9 +30,8 @@ export default function UserHomePage() {
   // Check if we've reached the end of the profiles
   const isEnd = profiles.length > 0 && idx >= profiles.length;
 
-  // Refresh handler resets status then fetches new profiles
+  // Refresh handler does full page reload
   const handleRefresh = () => {
-    // full page reload to get fresh data
     window.location.reload();
   };
 
@@ -74,7 +73,7 @@ export default function UserHomePage() {
   };
 
   return (
-    <div className="bg-white min-h-screen pb-20">
+    <div className="relative bg-white min-h-screen pb-20">
       <TopNav />
 
       {requestError && (
@@ -95,11 +94,14 @@ export default function UserHomePage() {
         onMessageClick={() => console.log('Message clicked for', profile.name)}
       />
 
-      <ActionControls
-        onReject={() => setIdx((i) => Math.min(i + 1, profiles.length))}
-        onRefresh={handleRefresh}
-        onLike={() => setIdx((i) => Math.min(i + 1, profiles.length))}
-      />
+      {/* Action buttons positioned relative to card container */}
+      <div className="absolute bottom-32 inset-x-0 flex justify-center z-20">
+        <ActionControls
+          onReject={() => setIdx((i) => Math.min(i + 1, profiles.length))}
+          onRefresh={handleRefresh}
+          onLike={() => setIdx((i) => Math.min(i + 1, profiles.length))}
+        />
+      </div>
 
       <DetailSection profile={profile} />
       <BottomNav />
