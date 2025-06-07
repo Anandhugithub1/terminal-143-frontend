@@ -32,10 +32,8 @@ export default function UserHomePage() {
 
   // Refresh handler resets status then fetches new profiles
   const handleRefresh = () => {
-    if (status !== 'loading') {
-      dispatch(resetProfilesStatus());
-      dispatch(fetchProfiles({ preferences }));
-    }
+    // full page reload to get fresh data
+    window.location.reload();
   };
 
   // If error fetching profiles
