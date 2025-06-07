@@ -35,6 +35,7 @@ import NotFoundPage from './pages/404/404.jsx';
 import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
 import ChatPage from './pages/User/Chat/Chat.jsx';  
 import ChatList from './pages/User/Chat/ChatList.jsx'; // Import the ChatList component
+import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -69,6 +70,7 @@ const route = createBrowserRouter(
 
    <Route path="chat" element={<ChatPage />} />
    <Route path="chat-list" element={<ChatList />} />
+   <Route path="explore" element={<ExplorePage />} />
 
 
     </Route>
