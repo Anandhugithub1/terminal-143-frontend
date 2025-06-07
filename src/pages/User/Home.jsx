@@ -74,6 +74,7 @@ export default function UserHomePage() {
 
   return (
     <div className="relative bg-white min-h-screen pb-20">
+      
       <TopNav />
 
       {requestError && (
@@ -95,13 +96,14 @@ export default function UserHomePage() {
       />
 
       {/* Action buttons positioned relative to card container */}
-      <div className="absolute bottom-32 inset-x-0 flex justify-center z-20">
-        <ActionControls
-          onReject={() => setIdx((i) => Math.min(i + 1, profiles.length))}
-          onRefresh={handleRefresh}
-          onLike={() => setIdx((i) => Math.min(i + 1, profiles.length))}
-        />
-      </div>
+      <div className="absolute bottom-32 inset-x-0">
+    <ActionControls
+      className="mx-auto"  // centers the inner flex
+      onReject={() => setIdx(i => Math.min(i + 1, profiles.length))}
+      onRefresh={handleRefresh}
+      onLike={() => setIdx(i => Math.min(i + 1, profiles.length))}
+    />
+  </div>
 
       <DetailSection profile={profile} />
       <BottomNav />
