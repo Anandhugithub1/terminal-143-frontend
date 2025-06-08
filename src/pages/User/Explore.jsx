@@ -81,7 +81,7 @@ export default function ExplorePage() {
       <TopNav />
 
       {/* Filter bar */}
-      <div className="sticky top-16 z-10 bg-gray-50 px-4 py-2 border-b border-gray-200">
+      <div className="sticky top-16 left-0 right-0 z-10 bg-gray-50 px-4 py-2 border-b border-gray-200">
         <div className="flex flex-wrap gap-2 justify-center md:justify-start overflow-x-auto scrollbar-hide">
           {['All', 'Nearby', 'Popular', 'New'].map((filter) => (
             <button
