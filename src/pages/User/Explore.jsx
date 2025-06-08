@@ -81,9 +81,6 @@ export default function ExplorePage() {
       {/* Top navigation */}
       <TopNav />
 
-      {/* Spacer for TopNav height */}
-      <div className="h-16" />
-
       {/* Filter bar */}
       <div className="sticky top-0 left-0 right-0 z-20 bg-gray-50 px-4 py-2 border-b border-gray-200">
         <div className="flex flex-wrap gap-2 justify-center md:justify-start overflow-x-auto scrollbar-hide">
@@ -103,11 +100,8 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* Spacer to offset sticky filter */}
-      <div className="h-12" />
-
       {/* Profiles container */}
-      <div className="px-4 pb-20">
+      <div className="pt-2 px-4 pb-20">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center mt-24 text-gray-500">
             <p className="text-lg mb-6">No profiles available</p>
