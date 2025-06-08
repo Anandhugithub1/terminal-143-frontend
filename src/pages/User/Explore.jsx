@@ -15,7 +15,7 @@ const ProfileCard = memo(({ profile }) => {
   return (
     <Link
       to={`/profile/${profile.userId}`}
-      className="group inline-block w-full mb-4 rounded-lg overflow-hidden shadow hover:shadow-lg transition"
+      className="group block mb-4 break-inside-avoid rounded-lg overflow-hidden shadow hover:shadow-lg transition"
     >
       <div className="relative">
         <img
@@ -80,18 +80,18 @@ export default function ExplorePage() {
     <div className="relative bg-gray-50 min-h-screen pb-20">
       <TopNav />
 
-      {/* Filter bar: responsive wrap */}
+      {/* Filter bar */}
       <div className="sticky top-16 z-10 bg-gray-50 px-4 py-2 border-b border-gray-200">
-        <div className="flex flex-wrap gap-2 overflow-x-auto scrollbar-hide">
+        <div className="flex flex-wrap gap-2 justify-center md:justify-start overflow-x-auto scrollbar-hide">
           {['All', 'Nearby', 'Popular', 'New'].map((filter) => (
             <button
               key={filter}
               onClick={() => toggleFilter(filter)}
-              className={`px-3 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400 \$
+              className={`px-4 py-1.5 rounded-full whitespace-nowrap text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-gray-400 ${
                 activeFilters.includes(filter)
                   ? 'bg-white text-gray-800 shadow-sm'
                   : 'bg-gray-200 text-gray-600'
-              `}
+              }`}
             >
               {filter}
             </button>
@@ -99,7 +99,7 @@ export default function ExplorePage() {
         </div>
       </div>
 
-      {/* Profiles: masonry mobile, grid desktop */}
+      {/* Profiles: columns on mobile, grid on desktop */}
       <div className="px-4 pt-4">
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center mt-24 text-gray-500">
@@ -112,7 +112,7 @@ export default function ExplorePage() {
             </button>
           </div>
         ) : (
-          <div className="space-y-4 md:grid md:grid-cols-4 md:space-y-0 md:gap-4">
+          <div className="columns-2 sm:columns-3 gap-4 space-y-4 md:columns-none md:grid md:grid-cols-4 md:gap-4 md:space-y-0">
             {profiles.map((profile) => (
               <ProfileCard key={profile.userId} profile={profile} />
             ))}
