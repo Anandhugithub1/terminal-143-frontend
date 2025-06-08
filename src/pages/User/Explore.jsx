@@ -14,8 +14,10 @@ import {
   ArrowsPointingOutIcon,
   SparklesIcon
 } from '@heroicons/react/24/outline';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
-// Memoized ProfileCard with optimizations
+// Memoized ProfileCard
 const ProfileCard = memo(({ profile }) => {
   const firstImage = profile.images?.[0] || placeholderImage;
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -27,7 +29,10 @@ const ProfileCard = memo(({ profile }) => {
     >
       <div className="relative aspect-[3/4]">
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse rounded-xl" />
+          <Skeleton 
+            className="absolute inset-0 !rounded-xl" 
+            containerClassName="absolute inset-0"
+          />
         )}
         <img
           src={firstImage}
@@ -77,20 +82,23 @@ const ProfileCard = memo(({ profile }) => {
   );
 });
 
-// Skeleton loader for better loading experience
+// Skeleton loader using react-loading-skeleton
 const ProfileCardSkeleton = memo(() => (
-  <div className="mb-4 break-inside-avoid rounded-xl overflow-hidden shadow-md">
+  <div className="mb-4 break-inside-avoid rounded-xl overflow-hidden">
     <div className="relative aspect-[3/4]">
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse rounded-xl" />
+      <Skeleton 
+        className="!rounded-xl h-full" 
+        containerClassName="absolute inset-0"
+      />
     </div>
-    <div className="p-3">
-      <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-      <div className="h-3 bg-gray-100 rounded w-1/2"></div>
+    <div className="pt-3">
+      <Skeleton width="70%" height={20} />
+      <Skeleton width="40%" height={16} className="mt-2" />
     </div>
   </div>
 ));
 
-// Memoized filter button component
+// Filter button component
 const FilterButton = memo(({ active, onClick, children }) => (
   <button
     onClick={onClick}
@@ -201,7 +209,7 @@ export default function ExplorePage() {
         ) : isEmpty ? (
           <div className="flex flex-col items-center justify-center mt-12 text-center">
             <div className="bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full p-6 mb-6">
-              <div className="bg-gray-200 border-2 border-dashed rounded-xl w-16 h-16 mx-auto" />
+              <Skeleton circle width={64} height={64} />
             </div>
             <h3 className="text-xl font-bold text-gray-700 mb-2">No profiles found</h3>
             <p className="text-gray-500 mb-6 max-w-md">
