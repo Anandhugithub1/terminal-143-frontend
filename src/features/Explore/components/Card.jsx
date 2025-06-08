@@ -6,10 +6,9 @@ import {
     MapPinIcon, 
     SparklesIcon
   } from '@heroicons/react/24/outline';
-  import Link from 'react-router-dom';
   // Filter button co
 import 'react-loading-skeleton/dist/skeleton.css';
-
+import { Link } from 'react-router-dom';
 // Memoized ProfileCard
 export const ProfileCard = memo(({ profile }) => {
     const firstImage = profile.images?.[0] || placeholderImage;
