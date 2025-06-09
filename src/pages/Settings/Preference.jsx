@@ -1,10 +1,10 @@
 // src/pages/PreferencesPage.jsx
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, User, UserPlus, Heart, Smile, Star } from 'lucide-react';
+import { ArrowLeft, User, UserPlus, Heart, Smile, Star, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
-import { fetchProfile, updateProfileData } from '../../features/UserProfile'; // assuming updateProfilePreferences exists
+import { fetchProfile, updateProfileData } from '../../features/UserProfile';
 import '@fontsource-variable/inter';
 
 const PREFERENCES = [
@@ -24,14 +24,12 @@ const PreferencesPage = () => {
 
   const [selectedPreferences, setSelectedPreferences] = useState([]);
 
-  // Load profile when idle
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchProfile());
     }
   }, [dispatch, status]);
 
-  // When profile loaded → sync preferences
   useEffect(() => {
     if (profile?.preferences) {
       setSelectedPreferences(profile.preferences);
@@ -47,10 +45,9 @@ const PreferencesPage = () => {
   };
 
   const handleSave = () => {
-    // Call redux action to update profile
     dispatch(updateProfileData(selectedPreferences))
       .then(() => {
-        navigate(-1); // Go back after saving
+        navigate(-1);
       })
       .catch((err) => {
         console.error('Failed to update preferences', err);
@@ -77,14 +74,19 @@ const PreferencesPage = () => {
               <button
                 key={value}
                 onClick={() => togglePreference(value)}
-                className={`flex w-full items-center space-x-3 p-3 border rounded-lg transition text-left ${
+                className={`flex w-full items-center justify-between p-3 border rounded-lg transition text-left ${
                   isSelected
-                    ? 'bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white border-transparent shadow-lg'
-                    : 'border-gray-200 text-gray-800 hover:bg-gray-50'
-                }`}
+                    ? 'border-gradient-primary border-2' // thicker border when selected
+                    : 'border-gray-200'
+                } bg-white`}
               >
-                <div className={isSelected ? 'text-white' : 'text-gray-600'}>{icon}</div>
-                <span className="font-medium">{label}</span>
+                <div className="flex items-center space-x-3">
+                  <div className="text-gray-600">{icon}</div>
+                  <span className="font-medium text-gray-800">{label}</span>
+                </div>
+                {isSelected && (
+                  <Check size={20} className="text-gradient-primary" />
+                )}
               </button>
             );
           })}
