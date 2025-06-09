@@ -60,11 +60,7 @@ const router = createBrowserRouter(
           </RequireProfileIncomplete>
         }
       />
-
-      {/* Protected routes */}
-      <Route element={<AuthenticatedRoute />}>
-        <Route path="home" element={<UserHomePage />} />
-        <Route path="settings" element={<SettingsPage />} />
+ <Route path="settings" element={<SettingsPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="edit-profile" element={<ProfileEditPage />} />
         <Route path="share-qr" element={<ShareQRCodePage />} />
@@ -72,6 +68,10 @@ const router = createBrowserRouter(
         <Route path="chat-list" element={<ChatList />} />
         <Route path="explore" element={<ExplorePage />} />
         <Route path="preferences" element={<PreferencesPage />} />
+      {/* Protected routes */}
+      <Route element={<AuthenticatedRoute />}>
+        <Route path="home" element={<UserHomePage />} />
+       
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />
