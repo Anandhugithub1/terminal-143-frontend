@@ -70,9 +70,10 @@ const router = createBrowserRouter(
         <Route path="preferences" element={<PreferencesPage />} />
       {/* Protected routes */}
       <Route element={<AuthenticatedRoute />}>
-        <Route path="home" element={<UserHomePage />} />
        
       </Route>
+      <Route path="home" element={<UserHomePage />} />
+
 
       <Route path="*" element={<NotFoundPage />} />
     </Route>
