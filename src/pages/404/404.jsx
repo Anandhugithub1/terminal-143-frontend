@@ -39,7 +39,7 @@ const NotFoundPage = () => {
   const navigate = useNavigate();
 
   const handleGoBack = useCallback(() => navigate(-1), [navigate]);
-  const handleHome = useCallback(() => navigate('/'), [navigate]);
+  const handleHome = useCallback(() => navigate('/home'), [navigate]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
