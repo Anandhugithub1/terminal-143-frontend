@@ -4,7 +4,7 @@ import { ArrowLeft, User, UserPlus, Heart, Smile, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
-import { fetchProfile, updateProfilePreferences } from '../../features/UserProfile'; // assuming updateProfilePreferences exists
+import { fetchProfile, updateProfileData } from '../../features/UserProfile'; // assuming updateProfilePreferences exists
 import '@fontsource-variable/inter';
 
 const PREFERENCES = [
@@ -48,7 +48,7 @@ const PreferencesPage = () => {
 
   const handleSave = () => {
     // Call redux action to update profile
-    dispatch(updateProfilePreferences(selectedPreferences))
+    dispatch(updateProfileData(selectedPreferences))
       .then(() => {
         navigate(-1); // Go back after saving
       })
