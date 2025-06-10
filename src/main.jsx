@@ -65,8 +65,7 @@ const route = createBrowserRouter(
    <Route path='share-qr' element={<ShareQRCodePage />} />
    <Route path="*" element={<NotFoundPage />} />
 
-   <Route path="chat" element={<ChatPage />} />
-   <Route path="chat-list" element={<ChatList />} />
+
    <Route path="explore" element={<ExplorePage />} />
    <Route Component={PreferencesPage} path="preferences" />
 
