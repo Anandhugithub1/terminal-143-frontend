@@ -3,6 +3,7 @@ import React from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
+import ReactCountryFlag from 'react-country-flag';
 
 const LANGUAGES = {
   ENGLISH: 'en',
@@ -15,6 +16,28 @@ const LANGUAGES = {
   PORTUGUESE: 'pt',
   FRENCH: 'fr',
   GERMAN: 'de',
+  JAPANESE: 'ja',
+  KOREAN: 'ko',
+  ARABIC: 'ar',
+  VIETNAMESE: 'vi',
+  TURKISH: 'tr',
+  TAMIL: 'ta',
+  URDU: 'ur',
+  DUTCH: 'nl',
+  GREEK: 'el',
+  POLISH: 'pl',
+  SWEDISH: 'sv',
+  HEBREW: 'he',
+  INDONESIAN: 'id',
+  FILIPINO: 'fil',
+  MALAY: 'ms',
+  UKRAINIAN: 'uk',
+  CZECH: 'cs',
+  ROMANIAN: 'ro',
+  HUNGARIAN: 'hu',
+  DANISH: 'da',
+  NORWEGIAN: 'no',
+  FINNISH: 'fi',
 };
 
 const STD_STATUS = {
@@ -24,11 +47,37 @@ const STD_STATUS = {
 };
 
 const languageOptions = [
-  { label: 'English', value: LANGUAGES.ENGLISH },
-  { label: 'Spanish', value: LANGUAGES.SPANISH },
-  { label: 'French', value: LANGUAGES.FRENCH },
-  { label: 'German', value: LANGUAGES.GERMAN },
-  { label: 'Mandarin', value: LANGUAGES.CHINESE },
+  { label: 'English', value: LANGUAGES.ENGLISH, countryCode: 'GB' },
+  { label: 'Spanish', value: LANGUAGES.SPANISH, countryCode: 'ES' },
+  { label: 'French', value: LANGUAGES.FRENCH, countryCode: 'FR' },
+  { label: 'German', value: LANGUAGES.GERMAN, countryCode: 'DE' },
+  { label: 'Mandarin', value: LANGUAGES.CHINESE, countryCode: 'CN' },
+  { label: 'Thai', value: LANGUAGES.THAI, countryCode: 'TH' },
+  { label: 'Russian', value: LANGUAGES.RUSSIAN, countryCode: 'RU' },
+  { label: 'Mexican', value: LANGUAGES.MEXICAN, countryCode: 'MX' },
+  { label: 'Italian', value: LANGUAGES.ITALIAN, countryCode: 'IT' },
+  { label: 'Portuguese', value: LANGUAGES.PORTUGUESE, countryCode: 'PT' },
+  { label: 'Japanese', value: LANGUAGES.JAPANESE, countryCode: 'JP' },
+  { label: 'Korean', value: LANGUAGES.KOREAN, countryCode: 'KR' },
+  { label: 'Arabic', value: LANGUAGES.ARABIC, countryCode: 'SA' },
+  { label: 'Vietnamese', value: LANGUAGES.VIETNAMESE, countryCode: 'VN' },
+  { label: 'Turkish', value: LANGUAGES.TURKISH, countryCode: 'TR' },
+  { label: 'Tamil', value: LANGUAGES.TAMIL, countryCode: 'IN' },
+  { label: 'Dutch', value: LANGUAGES.DUTCH, countryCode: 'NL' },
+  { label: 'Greek', value: LANGUAGES.GREEK, countryCode: 'GR' },
+  { label: 'Polish', value: LANGUAGES.POLISH, countryCode: 'PL' },
+  { label: 'Swedish', value: LANGUAGES.SWEDISH, countryCode: 'SE' },
+  { label: 'Hebrew', value: LANGUAGES.HEBREW, countryCode: 'IL' },
+  { label: 'Indonesian', value: LANGUAGES.INDONESIAN, countryCode: 'ID' },
+  { label: 'Filipino', value: LANGUAGES.FILIPINO, countryCode: 'PH' },
+  { label: 'Malay', value: LANGUAGES.MALAY, countryCode: 'MY' },
+  { label: 'Ukrainian', value: LANGUAGES.UKRAINIAN, countryCode: 'UA' },
+  { label: 'Czech', value: LANGUAGES.CZECH, countryCode: 'CZ' },
+  { label: 'Romanian', value: LANGUAGES.ROMANIAN, countryCode: 'RO' },
+  { label: 'Hungarian', value: LANGUAGES.HUNGARIAN, countryCode: 'HU' },
+  { label: 'Danish', value: LANGUAGES.DANISH, countryCode: 'DK' },
+  { label: 'Norwegian', value: LANGUAGES.NORWEGIAN, countryCode: 'NO' },
+  { label: 'Finnish', value: LANGUAGES.FINNISH, countryCode: 'FI' },
 ];
 
 const statusOptions = [
@@ -42,8 +91,10 @@ const Step2Bio = () => {
   const navigate = useNavigate();
   const charLimit = 500;
 
-  // Extract or initialize healthStatus
-  const healthStatus = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
+  const healthStatus = formData.healthStatus || {
+    stdStatus: '',
+    lastTestedDate: '',
+  };
 
   const handleNext = () => navigate('/complete/photo');
   const handleBack = () => navigate('/complete/basic');
@@ -51,7 +102,7 @@ const Step2Bio = () => {
   const toggleLanguage = (code) => {
     const known = formData.languagesKnown || [];
     const updated = known.includes(code)
-      ? known.filter(c => c !== code)
+      ? known.filter((c) => c !== code)
       : [...known, code];
     setFormData({ ...formData, languagesKnown: updated });
   };
@@ -89,7 +140,7 @@ const Step2Bio = () => {
       <div className="relative mb-8">
         <textarea
           value={formData.bio || ''}
-          onChange={e =>
+          onChange={(e) =>
             setFormData({
               ...formData,
               bio: e.target.value.slice(0, charLimit),
@@ -104,24 +155,29 @@ const Step2Bio = () => {
       </div>
 
       {/* Languages Known */}
-      <div className="mb-6">
-        <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
-        <div className="flex flex-wrap gap-2">
-          {languageOptions.map(({ label, value }) => (
-            <button
-              key={value}
-              onClick={() => toggleLanguage(value)}
-              className={`px-4 py-2 rounded-full text-sm ${
-                formData.languagesKnown?.includes(value)
-                  ? 'bg-pink-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Languages Known */}
+<div className="mb-6">
+  <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
+  <select
+    multiple
+    value={formData.languagesKnown || []}
+    onChange={(e) => {
+      const selectedOptions = Array.from(e.target.selectedOptions).map(
+        (option) => option.value
+      );
+      setFormData({ ...formData, languagesKnown: selectedOptions });
+    }}
+    className="w-full p-3 bg-gray-50 rounded-xl border border-gray-300 h-[200px]"
+  >
+    {languageOptions.map(({ label, value }) => (
+      <option key={value} value={value}>
+        {label}
+      </option>
+    ))}
+  </select>
+  <p className="text-sm text-gray-400 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple</p>
+</div>
+
 
       {/* STD Status */}
       <div className="mb-6">
