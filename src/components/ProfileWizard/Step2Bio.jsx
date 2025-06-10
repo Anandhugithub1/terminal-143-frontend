@@ -3,21 +3,33 @@ import React from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
-import { languageOptions } from '../../Utlis/utlis';
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOptions,
-  ListboxOption,
-} from '@headlessui/react';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
-import ReactCountryFlag from 'react-country-flag';
+
+const LANGUAGES = {
+  ENGLISH: 'en',
+  THAI: 'th',
+  RUSSIAN: 'ru',
+  CHINESE: 'zh',
+  SPANISH: 'es',
+  MEXICAN: 'mx',
+  ITALIAN: 'it',
+  PORTUGUESE: 'pt',
+  FRENCH: 'fr',
+  GERMAN: 'de',
+};
 
 const STD_STATUS = {
   POSITIVE: 'p',
   NEGATIVE: 'n',
   PREFER_NOT_TO_SAY: 'pns',
 };
+
+const languageOptions = [
+  { label: 'English', value: LANGUAGES.ENGLISH },
+  { label: 'Spanish', value: LANGUAGES.SPANISH },
+  { label: 'French', value: LANGUAGES.FRENCH },
+  { label: 'German', value: LANGUAGES.GERMAN },
+  { label: 'Mandarin', value: LANGUAGES.CHINESE },
+];
 
 const statusOptions = [
   { label: 'Positive', value: STD_STATUS.POSITIVE },
@@ -30,16 +42,18 @@ const Step2Bio = () => {
   const navigate = useNavigate();
   const charLimit = 500;
 
-  const healthStatus = formData.healthStatus || {
-    stdStatus: '',
-    lastTestedDate: '',
-  };
+  // Extract or initialize healthStatus
+  const healthStatus = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
 
   const handleNext = () => navigate('/complete/photo');
   const handleBack = () => navigate('/complete/basic');
 
-  const handleLanguagesChange = (selected) => {
-    setFormData({ ...formData, languagesKnown: selected });
+  const toggleLanguage = (code) => {
+    const known = formData.languagesKnown || [];
+    const updated = known.includes(code)
+      ? known.filter(c => c !== code)
+      : [...known, code];
+    setFormData({ ...formData, languagesKnown: updated });
   };
 
   const handleStatusChange = (e) => {
@@ -75,7 +89,7 @@ const Step2Bio = () => {
       <div className="relative mb-8">
         <textarea
           value={formData.bio || ''}
-          onChange={(e) =>
+          onChange={e =>
             setFormData({
               ...formData,
               bio: e.target.value.slice(0, charLimit),
@@ -92,76 +106,21 @@ const Step2Bio = () => {
       {/* Languages Known */}
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
-        <Listbox
-          value={formData.languagesKnown || []}
-          onChange={handleLanguagesChange}
-          multiple
-        >
-          <div className="relative mt-1">
-            <ListboxButton className="relative w-full cursor-default rounded-xl bg-gray-50 py-3 pl-4 pr-10 text-left border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 sm:text-sm">
-              <span className="block truncate">
-                {formData.languagesKnown?.length > 0
-                  ? languageOptions
-                      .filter((opt) =>
-                        formData.languagesKnown.includes(opt.value)
-                      )
-                      .map((opt) => opt.label)
-                      .join(', ')
-                  : 'Select languages'}
-              </span>
-              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <ChevronUpDownIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </span>
-            </ListboxButton>
-
-            <ListboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {languageOptions.map(({ label, value, countryCode }) => (
-                <ListboxOption
-                  key={value}
-                  value={value}
-                  className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? 'bg-pink-100 text-pink-900' : 'text-gray-900'
-                    }`
-                  }
-                >
-                  {({ selected }) => (
-                    <>
-                      <span
-                        className={`block truncate flex items-center gap-2 ${
-                          selected ? 'font-medium' : 'font-normal'
-                        }`}
-                      >
-                        <ReactCountryFlag
-                          countryCode={countryCode}
-                          svg
-                          style={{
-                            width: '1.5em',
-                            height: '1.5em',
-                            borderRadius: '50%',
-                          }}
-                          title={countryCode}
-                        />
-                        {label}
-                      </span>
-                      {selected ? (
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-pink-600">
-                          <CheckIcon
-                            className="h-5 w-5"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      ) : null}
-                    </>
-                  )}
-                </ListboxOption>
-              ))}
-            </ListboxOptions>
-          </div>
-        </Listbox>
+        <div className="flex flex-wrap gap-2">
+          {languageOptions.map(({ label, value }) => (
+            <button
+              key={value}
+              onClick={() => toggleLanguage(value)}
+              className={`px-4 py-2 rounded-full text-sm ${
+                formData.languagesKnown?.includes(value)
+                  ? 'bg-pink-500 text-white'
+                  : 'bg-gray-200 text-gray-700'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* STD Status */}
