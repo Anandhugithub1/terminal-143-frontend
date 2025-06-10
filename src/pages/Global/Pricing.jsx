@@ -1,14 +1,17 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { motion } from "framer-motion";
-import Navbar from "../../components/Layout/Navbar";
-import Footer from "../../components/Layout/Footer";
+
 import { PrimaryButton, SecondaryButton } from "../../shared/Button";
 import { itemVariants, containerVariants } from "../../Utlis/animation_variants";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { plans, faqs } from "../../Utlis/Global/pricing";
 import PricingCard from "../../components/Cards/PricingCard";
 
+// Lazy-loaded components
+const Navbar   = React.lazy(() => import('../../components/Layout/Navbar'));
+
+const Footer   = React.lazy(() => import('../../components/Layout/Footer'));
 const PricingPage = () => {
     
   return (
