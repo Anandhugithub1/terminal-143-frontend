@@ -1,14 +1,17 @@
 // src/pages/SettingsPage.jsx
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Sliders, Lock, Trash2, LogOut, HelpCircle, Info } from 'lucide-react';
+import { ArrowLeft, Sliders, Lock, Trash2, LogOut, HelpCircle, Info ,Globe} from 'lucide-react';
 import '@fontsource-variable/inter';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
 
 const menuItems = [
+  { label: 'Language', icon: <Globe size={20} />, to: '/language' }, // new line
+
   { label: 'Change Password', icon: <Lock size={20} />, to: '/change-password' },
   { label: 'Preferences', icon: <Sliders size={20} />, to: '/preferences' },
   { label: 'Delete Account', icon: <Trash2 size={20} />, to: '/delete-account' },
+
   { label: 'Help Centre', icon: <HelpCircle size={20} />, to: '/help' },
   { label: 'About App', icon: <Info size={20} />, to: '/about' },
 ];
@@ -44,15 +47,7 @@ const SettingsPage = () => {
 
       <div className="p-4">
         <nav className="mt-6 space-y-4">
-          <button
-            onClick={() => setShowLogoutModal(true)}
-            className="flex w-full items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-left"
-          >
-            <div className="text-gray-600">
-              <LogOut size={20} />
-            </div>
-            <span className="text-gray-800 font-medium">Logout</span>
-          </button>
+        
 
           {menuItems.map(({ label, icon, to }) => (
             <Link
@@ -64,6 +59,15 @@ const SettingsPage = () => {
               <span className="text-gray-800 font-medium">{label}</span>
             </Link>
           ))}
+            <button
+            onClick={() => setShowLogoutModal(true)}
+            className="flex w-full items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-left"
+          >
+            <div className="text-gray-600">
+              <LogOut size={20} />
+            </div>
+            <span className="text-gray-800 font-medium">Logout</span>
+          </button>
         </nav>
       </div>
 

@@ -31,7 +31,7 @@ import ProfileEditPage  from './pages/User/Profile/ProfileEdit.jsx';
 import ShareQRCodePage from './pages/User/Profile/Qrcode.jsx';
 import NotFoundPage from './pages/404/404.jsx';
 import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
-
+import LanguagePage from './pages/Settings/Language.jsx';
 import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
 import PreferencesPage from './pages/Settings/Preference.jsx';
 const route = createBrowserRouter(
@@ -42,9 +42,11 @@ const route = createBrowserRouter(
       <Route
   path="complete/*"
   element={
+    <RequireProfileIncomplete>
       <WizardProvider>
         <AddDetails />
       </WizardProvider>
+    </RequireProfileIncomplete>
   }
 />
 
@@ -62,6 +64,7 @@ const route = createBrowserRouter(
    <Route path='edit-profile' element={<ProfileEditPage />} />
    <Route path='share-qr' element={<ShareQRCodePage />} />
    <Route path="*" element={<NotFoundPage />} />
+   <Route path="language" element={<LanguagePage />} />
 
 
    <Route path="explore" element={<ExplorePage />} />
