@@ -38,7 +38,7 @@ export function DetailSection({ profile }) {
             <HiOutlineLocationMarker />
             <span>{profile.location || "Unknown"}</span>
             <span>•</span>
-            <span>{profile.job || "—"}</span>
+            {/* <span>{profile.job || "—"}</span> */}
           </div>
         </section>
 
