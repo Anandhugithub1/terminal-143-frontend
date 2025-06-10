@@ -55,7 +55,6 @@ const route = createBrowserRouter(
       <Route path="verify" element={<EmailOTPVerification />} />
       <Route path="forgot-password" element={<ForgotAndResetPassword />} />
       <Route path="choose-category" element={<ChooseCategory />} />
-      <Route path="select-language" element={<SelectLanguage />} />
       <Route path="home" element={<UserHomePage />} />
       <Route path="pricing" element={<PricingPage />} />
    <Route path="settings" element={<SettingsPage />}/>
