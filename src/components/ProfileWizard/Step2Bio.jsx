@@ -1,97 +1,101 @@
 /* ========== Step2Bio.jsx ========== */
-import React from 'react';
-import { useWizard } from '../../contexts/ProfileWizard';
-import { useNavigate } from 'react-router-dom';
-import { ProgressBar } from './Progess';
-import ReactCountryFlag from 'react-country-flag';
-import { Listbox } from '@headlessui/react';
-import { CheckIcon, ChevronUpDownIcon, TrashIcon } from '@heroicons/react/20/solid';
+import React from "react";
+import { useWizard } from "../../contexts/ProfileWizard";
+import { useNavigate } from "react-router-dom";
+import { ProgressBar } from "./Progess";
+import ReactCountryFlag from "react-country-flag";
+import { Listbox } from "@headlessui/react";
+import {
+  CheckIcon,
+  ChevronUpDownIcon,
+  TrashIcon,
+} from "@heroicons/react/20/solid";
 
 const STD_STATUS = {
-  POSITIVE: 'p',
-  NEGATIVE: 'n',
-  PREFER_NOT_TO_SAY: 'pns',
+  POSITIVE: "p",
+  NEGATIVE: "n",
+  PREFER_NOT_TO_SAY: "pns",
 };
- const LANGUAGES = {
-  ENGLISH: 'en',
-  THAI: 'th',
-  RUSSIAN: 'ru',
-  CHINESE: 'zh',
-  SPANISH: 'es',
-  MEXICAN: 'mx',
-  ITALIAN: 'it',
-  PORTUGUESE: 'pt',
-  FRENCH: 'fr',
-  GERMAN: 'de',
-  JAPANESE: 'ja',
-  KOREAN: 'ko',
-  ARABIC: 'ar',
-  VIETNAMESE: 'vi',
-  TURKISH: 'tr',
-  TAMIL: 'ta',
-  DUTCH: 'nl',
-  GREEK: 'el',
-  POLISH: 'pl',
-  SWEDISH: 'sv',
-  HEBREW: 'he',
-  INDONESIAN: 'id',
-  FILIPINO: 'fil',
-  MALAY: 'ms',
-  UKRAINIAN: 'uk',
-  CZECH: 'cs',
-  ROMANIAN: 'ro',
-  HUNGARIAN: 'hu',
-  DANISH: 'da',
-  NORWEGIAN: 'no',
-  FINNISH: 'fi',
+const LANGUAGES = {
+  ENGLISH: "en",
+  THAI: "th",
+  RUSSIAN: "ru",
+  CHINESE: "zh",
+  SPANISH: "es",
+  MEXICAN: "mx",
+  ITALIAN: "it",
+  PORTUGUESE: "pt",
+  FRENCH: "fr",
+  GERMAN: "de",
+  JAPANESE: "ja",
+  KOREAN: "ko",
+  ARABIC: "ar",
+  VIETNAMESE: "vi",
+  TURKISH: "tr",
+  TAMIL: "ta",
+  DUTCH: "nl",
+  GREEK: "el",
+  POLISH: "pl",
+  SWEDISH: "sv",
+  HEBREW: "he",
+  INDONESIAN: "id",
+  FILIPINO: "fil",
+  MALAY: "ms",
+  UKRAINIAN: "uk",
+  CZECH: "cs",
+  ROMANIAN: "ro",
+  HUNGARIAN: "hu",
+  DANISH: "da",
+  NORWEGIAN: "no",
+  FINNISH: "fi",
 };
 
- const languageOptions = [
-  { label: 'English', value: LANGUAGES.ENGLISH, countryCode: 'GB' },
-  { label: 'Spanish', value: LANGUAGES.SPANISH, countryCode: 'ES' },
-  { label: 'French', value: LANGUAGES.FRENCH, countryCode: 'FR' },
-  { label: 'German', value: LANGUAGES.GERMAN, countryCode: 'DE' },
-  { label: 'Mandarin', value: LANGUAGES.CHINESE, countryCode: 'CN' },
-  { label: 'Thai', value: LANGUAGES.THAI, countryCode: 'TH' },
-  { label: 'Russian', value: LANGUAGES.RUSSIAN, countryCode: 'RU' },
-  { label: 'Mexican', value: LANGUAGES.MEXICAN, countryCode: 'MX' },
-  { label: 'Italian', value: LANGUAGES.ITALIAN, countryCode: 'IT' },
-  { label: 'Portuguese', value: LANGUAGES.PORTUGUESE, countryCode: 'PT' },
-  { label: 'Japanese', value: LANGUAGES.JAPANESE, countryCode: 'JP' },
-  { label: 'Korean', value: LANGUAGES.KOREAN, countryCode: 'KR' },
-  { label: 'Arabic', value: LANGUAGES.ARABIC, countryCode: 'SA' },
-  { label: 'Vietnamese', value: LANGUAGES.VIETNAMESE, countryCode: 'VN' },
-  { label: 'Turkish', value: LANGUAGES.TURKISH, countryCode: 'TR' },
-  { label: 'Tamil', value: LANGUAGES.TAMIL, countryCode: 'IN' },
-  { label: 'Dutch', value: LANGUAGES.DUTCH, countryCode: 'NL' },
-  { label: 'Greek', value: LANGUAGES.GREEK, countryCode: 'GR' },
-  { label: 'Polish', value: LANGUAGES.POLISH, countryCode: 'PL' },
-  { label: 'Swedish', value: LANGUAGES.SWEDISH, countryCode: 'SE' },
-  { label: 'Hebrew', value: LANGUAGES.HEBREW, countryCode: 'IL' },
-  { label: 'Indonesian', value: LANGUAGES.INDONESIAN, countryCode: 'ID' },
-  { label: 'Filipino', value: LANGUAGES.FILIPINO, countryCode: 'PH' },
-  { label: 'Malay', value: LANGUAGES.MALAY, countryCode: 'MY' },
-  { label: 'Ukrainian', value: LANGUAGES.UKRAINIAN, countryCode: 'UA' },
-  { label: 'Czech', value: LANGUAGES.CZECH, countryCode: 'CZ' },
-  { label: 'Romanian', value: LANGUAGES.ROMANIAN, countryCode: 'RO' },
-  { label: 'Hungarian', value: LANGUAGES.HUNGARIAN, countryCode: 'HU' },
-  { label: 'Danish', value: LANGUAGES.DANISH, countryCode: 'DK' },
-  { label: 'Norwegian', value: LANGUAGES.NORWEGIAN, countryCode: 'NO' },
-  { label: 'Finnish', value: LANGUAGES.FINNISH, countryCode: 'FI' },
+const languageOptions = [
+  { label: "English", value: LANGUAGES.ENGLISH, countryCode: "GB" },
+  { label: "Spanish", value: LANGUAGES.SPANISH, countryCode: "ES" },
+  { label: "French", value: LANGUAGES.FRENCH, countryCode: "FR" },
+  { label: "German", value: LANGUAGES.GERMAN, countryCode: "DE" },
+  { label: "Mandarin", value: LANGUAGES.CHINESE, countryCode: "CN" },
+  { label: "Thai", value: LANGUAGES.THAI, countryCode: "TH" },
+  { label: "Russian", value: LANGUAGES.RUSSIAN, countryCode: "RU" },
+  { label: "Mexican", value: LANGUAGES.MEXICAN, countryCode: "MX" },
+  { label: "Italian", value: LANGUAGES.ITALIAN, countryCode: "IT" },
+  { label: "Portuguese", value: LANGUAGES.PORTUGUESE, countryCode: "PT" },
+  { label: "Japanese", value: LANGUAGES.JAPANESE, countryCode: "JP" },
+  { label: "Korean", value: LANGUAGES.KOREAN, countryCode: "KR" },
+  { label: "Arabic", value: LANGUAGES.ARABIC, countryCode: "SA" },
+  { label: "Vietnamese", value: LANGUAGES.VIETNAMESE, countryCode: "VN" },
+  { label: "Turkish", value: LANGUAGES.TURKISH, countryCode: "TR" },
+  { label: "Tamil", value: LANGUAGES.TAMIL, countryCode: "IN" },
+  { label: "Dutch", value: LANGUAGES.DUTCH, countryCode: "NL" },
+  { label: "Greek", value: LANGUAGES.GREEK, countryCode: "GR" },
+  { label: "Polish", value: LANGUAGES.POLISH, countryCode: "PL" },
+  { label: "Swedish", value: LANGUAGES.SWEDISH, countryCode: "SE" },
+  { label: "Hebrew", value: LANGUAGES.HEBREW, countryCode: "IL" },
+  { label: "Indonesian", value: LANGUAGES.INDONESIAN, countryCode: "ID" },
+  { label: "Filipino", value: LANGUAGES.FILIPINO, countryCode: "PH" },
+  { label: "Malay", value: LANGUAGES.MALAY, countryCode: "MY" },
+  { label: "Ukrainian", value: LANGUAGES.UKRAINIAN, countryCode: "UA" },
+  { label: "Czech", value: LANGUAGES.CZECH, countryCode: "CZ" },
+  { label: "Romanian", value: LANGUAGES.ROMANIAN, countryCode: "RO" },
+  { label: "Hungarian", value: LANGUAGES.HUNGARIAN, countryCode: "HU" },
+  { label: "Danish", value: LANGUAGES.DANISH, countryCode: "DK" },
+  { label: "Norwegian", value: LANGUAGES.NORWEGIAN, countryCode: "NO" },
+  { label: "Finnish", value: LANGUAGES.FINNISH, countryCode: "FI" },
 ];
 const statusOptions = [
-  { label: 'Positive', value: STD_STATUS.POSITIVE },
-  { label: 'Negative', value: STD_STATUS.NEGATIVE },
-  { label: 'Prefer not to say', value: STD_STATUS.PREFER_NOT_TO_SAY },
+  { label: "Positive", value: STD_STATUS.POSITIVE },
+  { label: "Negative", value: STD_STATUS.NEGATIVE },
+  { label: "Prefer not to say", value: STD_STATUS.PREFER_NOT_TO_SAY },
 ];
 
 const socialMediaPlatformOptions = [
-  'IG',
-  'FB',
-  'Telegram',
-  'Line',
-  'Wechat',
-  'Other',
+  "IG",
+  "FB",
+  "Telegram",
+  "Line",
+  "Wechat",
+  "Other",
 ];
 
 const Step2Bio = () => {
@@ -99,11 +103,14 @@ const Step2Bio = () => {
   const navigate = useNavigate();
   const charLimit = 500;
 
-  const healthStatus = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
+  const healthStatus = formData.healthStatus || {
+    stdStatus: "",
+    lastTestedDate: "",
+  };
   const socialMediaLinks = formData.socialMediaLinks || [];
 
-  const handleNext = () => navigate('/complete/photo');
-  const handleBack = () => navigate('/complete/basic');
+  const handleNext = () => navigate("/complete/photo");
+  const handleBack = () => navigate("/complete/basic");
 
   const handleLanguagesChange = (selected) => {
     setFormData({ ...formData, languagesKnown: selected });
@@ -139,7 +146,10 @@ const Step2Bio = () => {
   };
 
   const handleAddSocialMedia = () => {
-    const updatedLinks = [...socialMediaLinks, { platform: '', usernameOrLink: '' }];
+    const updatedLinks = [
+      ...socialMediaLinks,
+      { platform: "", usernameOrLink: "" },
+    ];
     setFormData({ ...formData, socialMediaLinks: updatedLinks });
   };
 
@@ -160,7 +170,7 @@ const Step2Bio = () => {
       {/* Bio Field */}
       <div className="relative mb-8">
         <textarea
-          value={formData.bio || ''}
+          value={formData.bio || ""}
           onChange={(e) =>
             setFormData({
               ...formData,
@@ -171,7 +181,7 @@ const Step2Bio = () => {
           className="w-full p-4 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500 resize-none min-h-[160px]"
         />
         <div className="absolute bottom-3 right-3 text-sm text-gray-400">
-          {(formData.bio?.length || 0)}/{charLimit}
+          {formData.bio?.length || 0}/{charLimit}
         </div>
       </div>
 
@@ -188,13 +198,18 @@ const Step2Bio = () => {
               <span className="block truncate">
                 {formData.languagesKnown?.length > 0
                   ? languageOptions
-                      .filter((opt) => formData.languagesKnown.includes(opt.value))
+                      .filter((opt) =>
+                        formData.languagesKnown.includes(opt.value)
+                      )
                       .map((opt) => opt.label)
-                      .join(', ')
-                  : 'Select languages'}
+                      .join(", ")
+                  : "Select languages"}
               </span>
               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                <ChevronUpDownIcon
+                  className="h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
               </span>
             </Listbox.Button>
 
@@ -205,7 +220,7 @@ const Step2Bio = () => {
                   value={value}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? 'bg-pink-100 text-pink-900' : 'text-gray-900'
+                      active ? "bg-pink-100 text-pink-900" : "text-gray-900"
                     }`
                   }
                 >
@@ -213,16 +228,16 @@ const Step2Bio = () => {
                     <>
                       <span
                         className={`block truncate flex items-center gap-2 ${
-                          selected ? 'font-medium' : 'font-normal'
+                          selected ? "font-medium" : "font-normal"
                         }`}
                       >
                         <ReactCountryFlag
                           countryCode={countryCode}
                           svg
                           style={{
-                            width: '1.5em',
-                            height: '1.5em',
-                            borderRadius: '50%',
+                            width: "1.5em",
+                            height: "1.5em",
+                            borderRadius: "50%",
                           }}
                           title={countryCode}
                         />
@@ -276,42 +291,45 @@ const Step2Bio = () => {
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-2">Social Media Links 🔗</h3>
         {socialMediaLinks.map((link, index) => (
-  <div
-    key={index}
-    className="flex flex-col sm:flex-row gap-2 mb-3 sm:items-center"
-  >
-    <select
-      value={link.platform}
-      onChange={(e) => handleSocialMediaChange(index, 'platform', e.target.value)}
-      className="flex-1 p-3 bg-gray-50 rounded-xl border border-gray-300"
-    >
-      <option value="" disabled>
-        Select platform
-      </option>
-      {socialMediaPlatformOptions.map((platform) => (
-        <option key={platform} value={platform}>
-          {platform}
-        </option>
-      ))}
-    </select>
-    <input
-      type="text"
-      placeholder="Username or HTTPS Link"
-      value={link.usernameOrLink}
-      onChange={(e) => handleSocialMediaChange(index, 'usernameOrLink', e.target.value)}
-      className="flex-1 p-3 bg-gray-50 rounded-xl border border-gray-300"
-    />
-    <button
-      type="button"
-      onClick={() => handleRemoveSocialMedia(index)}
-      className="p-2 text-red-500 hover:text-red-700"
-      title="Remove"
-    >
-      <TrashIcon className="h-5 w-5" />
-    </button>
-  </div>
-))}
-
+          <div
+            key={index}
+            className="flex flex-col sm:flex-row gap-2 mb-3 sm:items-center"
+          >
+            <select
+              value={link.platform}
+              onChange={(e) =>
+                handleSocialMediaChange(index, "platform", e.target.value)
+              }
+              className="flex-1 p-3 bg-gray-50 rounded-xl border border-gray-300"
+            >
+              <option value="" disabled>
+                Select platform
+              </option>
+              {socialMediaPlatformOptions.map((platform) => (
+                <option key={platform} value={platform}>
+                  {platform}
+                </option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="Username or HTTPS Link"
+              value={link.usernameOrLink}
+              onChange={(e) =>
+                handleSocialMediaChange(index, "usernameOrLink", e.target.value)
+              }
+              className="flex-1 p-3 bg-gray-50 rounded-xl border border-gray-300"
+            />
+            <button
+              type="button"
+              onClick={() => handleRemoveSocialMedia(index)}
+              className="p-2 text-red-500 hover:text-red-700"
+              title="Remove"
+            >
+              <TrashIcon className="h-5 w-5" />
+            </button>
+          </div>
+        ))}
 
         <button
           type="button"
