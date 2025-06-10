@@ -42,11 +42,9 @@ const route = createBrowserRouter(
       <Route
   path="complete/*"
   element={
-    <RequireProfileIncomplete>
       <WizardProvider>
         <AddDetails />
       </WizardProvider>
-    </RequireProfileIncomplete>
   }
 />
 
