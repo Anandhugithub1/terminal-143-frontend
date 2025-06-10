@@ -4,81 +4,15 @@ import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import ReactCountryFlag from 'react-country-flag';
-
-const LANGUAGES = {
-  ENGLISH: 'en',
-  THAI: 'th',
-  RUSSIAN: 'ru',
-  CHINESE: 'zh',
-  SPANISH: 'es',
-  MEXICAN: 'mx',
-  ITALIAN: 'it',
-  PORTUGUESE: 'pt',
-  FRENCH: 'fr',
-  GERMAN: 'de',
-  JAPANESE: 'ja',
-  KOREAN: 'ko',
-  ARABIC: 'ar',
-  VIETNAMESE: 'vi',
-  TURKISH: 'tr',
-  TAMIL: 'ta',
-  URDU: 'ur',
-  DUTCH: 'nl',
-  GREEK: 'el',
-  POLISH: 'pl',
-  SWEDISH: 'sv',
-  HEBREW: 'he',
-  INDONESIAN: 'id',
-  FILIPINO: 'fil',
-  MALAY: 'ms',
-  UKRAINIAN: 'uk',
-  CZECH: 'cs',
-  ROMANIAN: 'ro',
-  HUNGARIAN: 'hu',
-  DANISH: 'da',
-  NORWEGIAN: 'no',
-  FINNISH: 'fi',
-};
+import { languageOptions } from '../../Utlis/utlis';
+import { Listbox } from '@headlessui/react';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 
 const STD_STATUS = {
   POSITIVE: 'p',
   NEGATIVE: 'n',
   PREFER_NOT_TO_SAY: 'pns',
 };
-
-const languageOptions = [
-  { label: 'English', value: LANGUAGES.ENGLISH, countryCode: 'GB' },
-  { label: 'Spanish', value: LANGUAGES.SPANISH, countryCode: 'ES' },
-  { label: 'French', value: LANGUAGES.FRENCH, countryCode: 'FR' },
-  { label: 'German', value: LANGUAGES.GERMAN, countryCode: 'DE' },
-  { label: 'Mandarin', value: LANGUAGES.CHINESE, countryCode: 'CN' },
-  { label: 'Thai', value: LANGUAGES.THAI, countryCode: 'TH' },
-  { label: 'Russian', value: LANGUAGES.RUSSIAN, countryCode: 'RU' },
-  { label: 'Mexican', value: LANGUAGES.MEXICAN, countryCode: 'MX' },
-  { label: 'Italian', value: LANGUAGES.ITALIAN, countryCode: 'IT' },
-  { label: 'Portuguese', value: LANGUAGES.PORTUGUESE, countryCode: 'PT' },
-  { label: 'Japanese', value: LANGUAGES.JAPANESE, countryCode: 'JP' },
-  { label: 'Korean', value: LANGUAGES.KOREAN, countryCode: 'KR' },
-  { label: 'Arabic', value: LANGUAGES.ARABIC, countryCode: 'SA' },
-  { label: 'Vietnamese', value: LANGUAGES.VIETNAMESE, countryCode: 'VN' },
-  { label: 'Turkish', value: LANGUAGES.TURKISH, countryCode: 'TR' },
-  { label: 'Tamil', value: LANGUAGES.TAMIL, countryCode: 'IN' },
-  { label: 'Dutch', value: LANGUAGES.DUTCH, countryCode: 'NL' },
-  { label: 'Greek', value: LANGUAGES.GREEK, countryCode: 'GR' },
-  { label: 'Polish', value: LANGUAGES.POLISH, countryCode: 'PL' },
-  { label: 'Swedish', value: LANGUAGES.SWEDISH, countryCode: 'SE' },
-  { label: 'Hebrew', value: LANGUAGES.HEBREW, countryCode: 'IL' },
-  { label: 'Indonesian', value: LANGUAGES.INDONESIAN, countryCode: 'ID' },
-  { label: 'Filipino', value: LANGUAGES.FILIPINO, countryCode: 'PH' },
-  { label: 'Malay', value: LANGUAGES.MALAY, countryCode: 'MY' },
-  { label: 'Ukrainian', value: LANGUAGES.UKRAINIAN, countryCode: 'UA' },
-  { label: 'Czech', value: LANGUAGES.CZECH, countryCode: 'CZ' },
-  { label: 'Romanian', value: LANGUAGES.ROMANIAN, countryCode: 'RO' },
-  { label: 'Hungarian', value: LANGUAGES.HUNGARIAN, countryCode: 'HU' },
-  { label: 'Danish', value: LANGUAGES.DANISH, countryCode: 'DK' },
-  { label: 'Norwegian', value: LANGUAGES.NORWEGIAN, countryCode: 'NO' },
-  { label: 'Finnish', value: LANGUAGES.FINNISH, countryCode: 'FI' },
-];
 
 const statusOptions = [
   { label: 'Positive', value: STD_STATUS.POSITIVE },
@@ -91,20 +25,13 @@ const Step2Bio = () => {
   const navigate = useNavigate();
   const charLimit = 500;
 
-  const healthStatus = formData.healthStatus || {
-    stdStatus: '',
-    lastTestedDate: '',
-  };
+  const healthStatus = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
 
   const handleNext = () => navigate('/complete/photo');
   const handleBack = () => navigate('/complete/basic');
 
-  const toggleLanguage = (code) => {
-    const known = formData.languagesKnown || [];
-    const updated = known.includes(code)
-      ? known.filter((c) => c !== code)
-      : [...known, code];
-    setFormData({ ...formData, languagesKnown: updated });
+  const handleLanguagesChange = (selected) => {
+    setFormData({ ...formData, languagesKnown: selected });
   };
 
   const handleStatusChange = (e) => {
@@ -155,29 +82,71 @@ const Step2Bio = () => {
       </div>
 
       {/* Languages Known */}
-      {/* Languages Known */}
-<div className="mb-6">
-  <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
-  <select
-    multiple
-    value={formData.languagesKnown || []}
-    onChange={(e) => {
-      const selectedOptions = Array.from(e.target.selectedOptions).map(
-        (option) => option.value
-      );
-      setFormData({ ...formData, languagesKnown: selectedOptions });
-    }}
-    className="w-full p-3 bg-gray-50 rounded-xl border border-gray-300 h-[200px]"
-  >
-    {languageOptions.map(({ label, value }) => (
-      <option key={value} value={value}>
-        {label}
-      </option>
-    ))}
-  </select>
-  <p className="text-sm text-gray-400 mt-1">Hold Ctrl (Windows) or Cmd (Mac) to select multiple</p>
-</div>
+      <div className="mb-6">
+        <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
+        <Listbox
+          value={formData.languagesKnown || []}
+          onChange={handleLanguagesChange}
+          multiple
+        >
+          <div className="relative mt-1">
+            <Listbox.Button className="relative w-full cursor-default rounded-xl bg-gray-50 py-3 pl-4 pr-10 text-left border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 sm:text-sm">
+              <span className="block truncate">
+                {formData.languagesKnown?.length > 0
+                  ? languageOptions
+                      .filter((opt) => formData.languagesKnown.includes(opt.value))
+                      .map((opt) => opt.label)
+                      .join(', ')
+                  : 'Select languages'}
+              </span>
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <ChevronUpDownIcon className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              </span>
+            </Listbox.Button>
 
+            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-xl bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-50">
+              {languageOptions.map(({ label, value, countryCode }) => (
+                <Listbox.Option
+                  key={value}
+                  value={value}
+                  className={({ active }) =>
+                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                      active ? 'bg-pink-100 text-pink-900' : 'text-gray-900'
+                    }`
+                  }
+                >
+                  {({ selected }) => (
+                    <>
+                      <span
+                        className={`block truncate flex items-center gap-2 ${
+                          selected ? 'font-medium' : 'font-normal'
+                        }`}
+                      >
+                        <ReactCountryFlag
+                          countryCode={countryCode}
+                          svg
+                          style={{
+                            width: '1.5em',
+                            height: '1.5em',
+                            borderRadius: '50%',
+                          }}
+                          title={countryCode}
+                        />
+                        {label}
+                      </span>
+                      {selected ? (
+                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-pink-600">
+                          <CheckIcon className="h-5 w-5" aria-hidden="true" />
+                        </span>
+                      ) : null}
+                    </>
+                  )}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </div>
+        </Listbox>
+      </div>
 
       {/* STD Status */}
       <div className="mb-6">
