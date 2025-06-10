@@ -29,8 +29,6 @@ export const ProfileInfo = memo(({
   lastSeen,
   about,
   gender,
-  top,
-  compatibility,
   distance,
   // onMessageClick,
   // onConnectClick,
@@ -63,8 +61,7 @@ export const ProfileInfo = memo(({
 
     <div className="flex items-center space-x-2 mt-2">
       <Badge icon={<FaVenus size={12} />} label={gender} />
-      <Badge icon={<FaStar size={12} />} label={top} iconClass="text-yellow-400" />
-      <Badge icon={<RxHeart size={12} />} label={`${compatibility}%`} iconClass="text-red-500" />
+    
     </div>
 
     <div className="flex items-center text-sm mt-2">
