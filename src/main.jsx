@@ -31,8 +31,7 @@ import ProfileEditPage  from './pages/User/Profile/ProfileEdit.jsx';
 import ShareQRCodePage from './pages/User/Profile/Qrcode.jsx';
 import NotFoundPage from './pages/404/404.jsx';
 import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
-import ChatPage from './pages/User/Chat/Chat.jsx';  
-import ChatList from './pages/User/Chat/ChatList.jsx'; // Import the ChatList component
+
 import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
 import PreferencesPage from './pages/Settings/Preference.jsx';
 const route = createBrowserRouter(
