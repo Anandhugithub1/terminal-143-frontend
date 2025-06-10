@@ -2,7 +2,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { WizardProvider } from './contexts/ProfileWizard.jsx';
-import '@fontsource-variable/inter';
 import './App.css';
 import './i18n/i18n.js'
 import {store} from './Redux/store.js'; 
