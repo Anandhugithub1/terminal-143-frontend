@@ -19,7 +19,6 @@ import { Login } from './pages/Auth/Login.jsx';
 import { Register } from './pages/Auth/Register.jsx';
 import EmailOTPVerification from './pages/Auth/OtpVerification.jsx';
 import { ForgotAndResetPassword } from './pages/Auth/ForgotPassword.jsx';
-import SelectLanguage from './pages/User/Select_lang.jsx';
 import UserHomePage from './pages/User/Home.jsx'
 import AddDetails from './pages/User/Add/Add_Details.jsx';
 import ChooseCategory from './pages/Auth/ChooseCategory.jsx';
