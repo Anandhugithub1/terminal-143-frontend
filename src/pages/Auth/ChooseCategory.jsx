@@ -40,7 +40,7 @@ const ChooseCategory = () => {
       <div className="flex justify-end p-4">
         <button
           className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-full shadow-sm transition-colors"
-          onClick={() => navigate('/select-language')}
+          onClick={() => navigate('/language')}
         >
           <img src={LanguageIcon} alt="Language Icon" className="h-5 w-5" />
           <span className="text-sm font-medium">

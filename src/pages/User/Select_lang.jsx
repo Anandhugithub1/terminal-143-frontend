@@ -1,41 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-const LANGUAGES = {
-  ENGLISH: 'en',
-  FRENCH: 'fr',
-  GERMAN: 'de',
-  CHINESE: 'zh',
-  JAPANESE: 'ja',
-  ARABIC: 'ar',
-};
+import ReactCountryFlag from 'react-country-flag';
+
+// Supported languages
+const LANGUAGES = [
+  { code: 'en', countryCode: 'US', label: 'English' },
+  { code: 'th', countryCode: 'TH', label: 'Thai' },
+  { code: 'ru', countryCode: 'RU', label: 'Russian' },
+  { code: 'zh', countryCode: 'CN', label: 'Chinese' },
+  { code: 'ko', countryCode: 'KR', label: 'Korean' },
+  { code: 'ms', countryCode: 'MY', label: 'Malay' },
+];
 
 const SelectLanguage = () => {
-  const [selectedLang, setSelectedLang] = useState(LANGUAGES.ENGLISH);
   const navigate = useNavigate();
-
-  const getLanguageLabel = (code) => {
-    switch (code) {
-      case LANGUAGES.ENGLISH:
-        return 'English';
-      case LANGUAGES.FRENCH:
-        return 'France';
-      case LANGUAGES.GERMAN:
-        return 'Germany';
-      case LANGUAGES.CHINESE:
-        return 'Chinese';
-      case LANGUAGES.JAPANESE:
-        return 'Japanese';
-      case LANGUAGES.ARABIC:
-        return 'Arabic';
-      default:
-        return 'Unknown';
-    }
-  };
+  const [selectedLang, setSelectedLang] = useState(localStorage.getItem('selectedLanguage') || 'en');
 
   const handleSelectLanguage = (langCode) => {
     setSelectedLang(langCode);
     localStorage.setItem('selectedLanguage', langCode);
-
+    // i18n.changeLanguage(langCode); // if using i18n library
   };
 
   return (
@@ -65,18 +49,30 @@ const SelectLanguage = () => {
 
         {/* Language List */}
         <div className="flex-1">
-          {Object.values(LANGUAGES).map((langCode, index) => {
-            const label = getLanguageLabel(langCode);
-            const isSelected = selectedLang === langCode;
+          {LANGUAGES.map(({ code, countryCode, label }, index) => {
+            const isSelected = selectedLang === code;
             return (
               <div
-                key={langCode}
-                onClick={() => handleSelectLanguage(langCode)}
+                key={code}
+                onClick={() => handleSelectLanguage(code)}
                 className={`flex justify-between items-center px-8 py-4 ${
                   index === 0 ? '' : 'border-t border-gray-200'
                 } cursor-pointer hover:bg-gray-50 transition`}
               >
-                <span className="text-lg">{label}</span>
+                <div className="flex items-center space-x-4">
+                  <ReactCountryFlag
+                    countryCode={countryCode}
+                    svg
+                    style={{
+                      width: '1.8em',
+                      height: '1.8em',
+                      borderRadius: '50%',
+                      boxShadow: '0 0 0.5px rgba(0,0,0,0.3)',
+                    }}
+                    aria-label={countryCode}
+                  />
+                  <span className="text-lg">{label}</span>
+                </div>
                 {isSelected && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
