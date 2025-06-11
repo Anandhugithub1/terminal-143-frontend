@@ -9,7 +9,7 @@ export function EditableSection({
   iconMap = [],
 }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState(isBio ? (value || '') : '');
+  const [inputValue, setInputValue] = useState('');
   const [selectedInterests, setSelectedInterests] = useState([]);
   const inputRef = useRef(null);
 
@@ -26,11 +26,9 @@ export function EditableSection({
   }, [value, iconMap, isBio]);
 
   useEffect(() => {
-    if (isEditing && inputRef.current) {
+    if (isEditing && inputRef.current && isBio) {
       inputRef.current.focus();
-      if (isBio) {
-        inputRef.current.selectionStart = inputRef.current.value.length;
-      }
+      inputRef.current.selectionStart = inputRef.current.value.length;
     }
   }, [isEditing, isBio]);
 
@@ -50,7 +48,7 @@ export function EditableSection({
     setIsEditing(false);
     if (isBio) {
       setInputValue(value || '');
-    } else if (Array.isArray(value)) {
+    } else {
       setSelectedInterests(
         iconMap.map(item => ({
           ...item,
@@ -109,7 +107,7 @@ export function EditableSection({
                 ref={inputRef}
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+                className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
                 rows={4}
                 placeholder="Tell something about yourself..."
               />
