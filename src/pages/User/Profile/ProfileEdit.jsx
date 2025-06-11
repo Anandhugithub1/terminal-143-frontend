@@ -14,6 +14,9 @@ export default function ProfileEditPage() {
   const [showUpload, setShowUpload] = useState(false);
   const galleryRef = useRef(null);
   const cameraRef = useRef(null);
+  const [isEditingBio, setIsEditingBio] = useState(false);
+const [bioInput, setBioInput] = useState(profile.bio || '');
+
   const {
     profile,
     status,
@@ -88,13 +91,86 @@ export default function ProfileEditPage() {
         </section>
 
         <div className="p-5 space-y-6">
-          {/* Bio Section - Using EditableSection */}
-          <EditableSection
-  title="My Bio"
-  value={profile.bio || ''}   // ✅ Make sure it's a string
-  onSave={(newBio) => updateField('bio', newBio)}
-  isBio={true}
-/>
+          {/* Bio Edit Inline */} 
+<section className="bg-gray-100 rounded-2xl p-5">
+  <div className="flex justify-between items-start mb-3">
+    <h2 className="text-sm font-semibold text-gray-800">My Bio</h2>
+
+    {!isEditingBio ? (
+      <button
+        onClick={() => {
+          setIsEditingBio(true);
+          setBioInput(profile.bio || '');
+        }}
+        className="text-pink-600 hover:text-pink-700 flex items-center"
+      >
+        <Edit2 size={16} className="mr-1" />
+        <span className="text-sm font-medium">Edit</span>
+      </button>
+    ) : (
+      <div className="flex space-x-2">
+        <button
+          onClick={() => {
+            setIsEditingBio(false);
+            setBioInput(profile.bio || '');
+          }}
+          className="text-gray-500 hover:text-gray-700"
+        >
+          <X size={18} />
+        </button>
+        <button
+          onClick={() => {
+            updateField('bio', bioInput.trim());
+            setIsEditingBio(false);
+          }}
+          className="text-pink-600 hover:text-pink-700"
+        >
+          <Check size={18} />
+        </button>
+      </div>
+    )}
+  </div>
+
+  {isEditingBio ? (
+    <div className="mt-2">
+      <textarea
+        value={bioInput}
+        onChange={(e) => setBioInput(e.target.value)}
+        className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none z-50 relative"
+        rows={4}
+        placeholder="Tell something about yourself..."
+      />
+      <div className="flex justify-end mt-3 space-x-2">
+        <button
+          onClick={() => {
+            setIsEditingBio(false);
+            setBioInput(profile.bio || '');
+          }}
+          className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg text-sm font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            updateField('bio', bioInput.trim());
+            setIsEditingBio(false);
+          }}
+          className="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-lg text-sm font-medium"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  ) : (
+    <p className="text-sm text-gray-600 whitespace-pre-line">
+      {profile.bio?.trim() ? (
+        profile.bio
+      ) : (
+        <span className="text-gray-400 italic">Click "Edit" to add your bio</span>
+      )}
+    </p>
+  )}
+</section>
 
 
           {/* About Me Fields */}
