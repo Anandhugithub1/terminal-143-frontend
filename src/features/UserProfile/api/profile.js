@@ -8,17 +8,30 @@ export const fetchMyProfile = () =>
   axios.get(`${PROFILE_BASE}/user/profile`, { withCredentials: true });
 
 /** Patch any profile fields */
-export const updateProfileData = (payload) => {
+/** Patch any profile fields */
+export const updateProfileData = async (payload) => {
+  try {
+    const response = await fetch('https://userapi.terminal143.com/user/update', {
+      method: 'PATCH',
+      credentials: 'include', // same as axios's withCredentials: true
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
 
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to update profile');
+    }
 
-  return axios.patch(
-    'https://userapi.terminal143.com/user/update',
-    payload,
-    { withCredentials: true }
-
-
-  );
+    return await response.json();
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
 };
+
 
 /** Get presigned URL for image upload */
 export const getPresignedUrl = ({ fileType, photoIndex }) => {
