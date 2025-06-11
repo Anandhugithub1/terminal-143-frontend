@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfile } from '../features/UserProfile';
-import { updateProfileData, uploadProfileImage } from '../features/UserProfile';
+import { updateField, uploadProfileImage } from '../features/UserProfile';
 
 export function useEditableProfile() {
   const dispatch = useDispatch();
@@ -28,7 +28,7 @@ export function useEditableProfile() {
       ? { [key]: value } 
       : { [key]: value };
     
-    dispatch(updateProfileData(payload));
+    dispatch(updateField(payload));
   };
 
   const uploadImage = (file, photoIndex) => {
