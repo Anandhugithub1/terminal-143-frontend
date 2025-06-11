@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, ChevronLeft, Edit2 } from 'lucide-react';
 import '@fontsource-variable/inter';
@@ -16,6 +16,9 @@ export default function ProfileEditPage() {
   const cameraRef = useRef(null);
   const [isEditingBio, setIsEditingBio] = useState(false);
 const [bioInput, setBioInput] = useState(profile.bio || '');
+useEffect(() => {
+  setBioInput(profile.bio || '');
+}, [profile.bio]);
 
   const {
     profile,
