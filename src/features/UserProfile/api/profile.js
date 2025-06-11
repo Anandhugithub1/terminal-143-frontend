@@ -15,7 +15,7 @@ export const updateProfileData = async (payload) => {
       method: 'POST',
       credentials: 'include', // same as axios's withCredentials: true
       headers: {
-        'Content-Type': 'application/json',
+        'content-type': 'application/json',
       },
       body: JSON.stringify(payload),
     });
