@@ -90,11 +90,12 @@ export default function ProfileEditPage() {
         <div className="p-5 space-y-6">
           {/* Bio Section - Using EditableSection */}
           <EditableSection
-            title="My Bio"
-            value={profile.bio || ''}
-            onSave={(newBio) => updateField('bio', newBio)}
-            isBio={true}
-          />
+  title="My Bio"
+  value={profile.bio || ''}   // ✅ Make sure it's a string
+  onSave={(newBio) => updateField('bio', newBio)}
+  isBio={true}
+/>
+
 
           {/* About Me Fields */}
           <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
