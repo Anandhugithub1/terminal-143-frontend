@@ -45,7 +45,7 @@ const PreferencesPage = () => {
   };
 
   const handleSave = () => {
-    dispatch(updateProfileData(selectedPreferences))
+    dispatch(updateProfileData({ preferences: selectedPreferences }))
       .then(() => {
         navigate(-1);
       })
@@ -53,6 +53,7 @@ const PreferencesPage = () => {
         console.error('Failed to update preferences', err);
       });
   };
+  
 
   return (
     <div className="min-h-screen bg-white font-inter relative">
