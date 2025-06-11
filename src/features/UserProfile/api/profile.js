@@ -4,15 +4,15 @@ import axios from 'axios';
 const PROFILE_BASE = 'https://userapi.terminal143.com';
 
 /** Fetch the current user's profile */
-export const fetchMyProfile = () =>
+export const fetchMyProfile = () => 
   axios.get(`${PROFILE_BASE}/user/profile`, { withCredentials: true });
 
-/** Patch any profile fields */
-/** Patch any profile fields */
+/** Post any profile fields */
+/** Post any profile fields */
 export const updateProfileData = async (payload) => {
   try {
     const response = await fetch('https://userapi.terminal143.com/user/update', {
-      method: 'PATCH',
+      method: 'POST',
       credentials: 'include', // same as axios's withCredentials: true
       headers: {
         'Content-Type': 'application/json',
