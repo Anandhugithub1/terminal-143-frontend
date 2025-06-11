@@ -14,8 +14,8 @@ export function EditableSection({
   const inputRef = useRef(null);
 
   useEffect(() => {
-    setInputValue(value);
-
+    setInputValue(value || ''); // ✅ always a string for bio
+  
     if (!isBio && Array.isArray(value)) {
       setSelectedInterests(
         iconMap.map(item => ({
@@ -27,7 +27,7 @@ export function EditableSection({
       setSelectedInterests(iconMap.map(item => ({ ...item, selected: false })));
     }
   }, [value, iconMap, isBio]);
-
+  
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
