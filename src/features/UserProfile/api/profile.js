@@ -12,7 +12,7 @@ export const updateProfileData = (payload) => {
 
 
   return axios.patch(
-    `${PROFILE_BASE}/user/update`,
+    'https://userapi.terminal143.com/user/update',
     payload,
     { withCredentials: true }
 
