@@ -4,7 +4,8 @@ import { User, ChevronLeft, Edit2 } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { interestMap, getProfileFields } from '../../../Utlis/utlis';
 import { useEditableProfile } from '../../../Hooks/EditProfile';
-import { EditableField, UploadOptions } from '../../../components/User_Home/ProfileEdit';
+import { EditableField } from '../../../components/User_Home/ProfileEdit';
+import { EditableSection } from '../../../components/User_Home/EditableSection';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 export default function ProfileEditPage() {
@@ -17,30 +18,26 @@ export default function ProfileEditPage() {
     profile,
     status,
     localAvatar,
-    localBio,
-    editField,
-    editBio,
+    updateField,
     uploadImage,
   } = useEditableProfile();
 
-  // While `profile` is still null (status: 'idle' or 'loading'), render a loading indicator:
-  if (status === 'idle' || status === 'loading' || profile === null) {
-    return (
-      <LoadingSpinner/>
-    );
-  }
-
-  // At this point, `profile` is guaranteed to be a non-null object
-  const fields = getProfileFields(profile);
-  const interests = (profile.interest || []).map((key) => ({
+  // Convert interestMap to array for EditableSection
+  const allInterests = Object.entries(interestMap).map(([key, value]) => ({
     key,
-    ...interestMap[key],
+    label: value.label,
+    icon: value.icon,
   }));
 
-  
+  // While `profile` is still null, render a loading indicator
+  if (status === 'idle' || status === 'loading' || profile === null) {
+    return <LoadingSpinner />;
+  }
+
+  const fields = getProfileFields(profile);
 
   const handlePhotoClick = () => setShowUpload((v) => !v);
-  const handleFileChange = (e, source) => {
+  const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
     uploadImage(file, userType === 'fm' ? 0 : undefined);
@@ -75,7 +72,7 @@ export default function ProfileEditPage() {
                 type="file"
                 accept="image/*"
                 ref={galleryRef}
-                onChange={(e) => handleFileChange(e, 'gallery')}
+                onChange={handleFileChange}
                 className="hidden"
               />
               <input
@@ -83,38 +80,21 @@ export default function ProfileEditPage() {
                 accept="image/*"
                 capture="environment"
                 ref={cameraRef}
-                onChange={(e) => handleFileChange(e, 'camera')}
+                onChange={handleFileChange}
                 className="hidden"
               />
-
-              {showUpload && (
-                <UploadOptions
-                  onCamera={() => {
-                    cameraRef.current.click();
-                    setShowUpload(false);
-                  }}
-                  onGallery={() => {
-                    galleryRef.current.click();
-                    setShowUpload(false);
-                  }}
-                  onCancel={() => setShowUpload(false)}
-                />
-              )}
             </div>
           </div>
         </section>
 
         <div className="p-5 space-y-6">
-          {/* Bio Section */}
-          <section className="bg-gray-100 rounded-2xl p-5 flex justify-between items-start">
-            <div>
-              <h2 className="text-sm font-semibold text-gray-800">My Bio</h2>
-              <p className="mt-2 text-sm text-gray-600">{localBio}</p>
-            </div>
-            <button onClick={editBio} className="text-pink-600 text-sm font-medium hover:underline">
-              Edit
-            </button>
-          </section>
+          {/* Bio Section - Using EditableSection */}
+          <EditableSection
+            title="My Bio"
+            value={profile.bio || ''}
+            onSave={(newBio) => updateField('bio', newBio)}
+            isBio={true}
+          />
 
           {/* About Me Fields */}
           <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
@@ -127,29 +107,19 @@ export default function ProfileEditPage() {
                 icon={f.icon}
                 label={f.label}
                 value={f.value}
-                onEdit={() => editField(f.key, f.value)}
+                onEdit={() => updateField(f.key, f.value)}
               />
             ))}
           </section>
 
-          {/* Interests */}
-          <section className="bg-gray-100 rounded-2xl p-5">
-            <div className="flex justify-between items-center mb-3">
-              <h2 className="text-sm font-semibold text-gray-800">Interests</h2>
-              <button className="text-pink-600 text-sm font-medium hover:underline">Edit</button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {interests.map(({ key, label, icon: Icon }) => (
-                <div
-                  key={key}
-                  className="flex items-center space-x-1 px-3 py-1 bg-white border border-gray-200 rounded-full text-sm hover:bg-gray-50 transition"
-                >
-                  <Icon size={16} className="text-pink-600" />
-                  <span className="text-gray-700">{label}</span>
-                </div>
-              ))}
-            </div>
-          </section>
+          {/* Interests Section - Using EditableSection */}
+          <EditableSection
+            title="Interests"
+            value={profile.interest || []}
+            onSave={(selected) => updateField('interest', selected)}
+            iconMap={allInterests}
+            isBio={false}
+          />
         </div>
       </main>
     </div>
