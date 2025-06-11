@@ -10,14 +10,20 @@ export function EditableSection({
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState(value);
-  const [selectedInterests, setSelectedInterests] = useState(
-    iconMap.map(item => ({ ...item, selected: false }))
-  );
+  const [selectedInterests, setSelectedInterests] = useState([]);
   const inputRef = useRef(null);
-  
+
   useEffect(() => {
     setInputValue(value);
-    if (isBio) {
+
+    if (!isBio && Array.isArray(value)) {
+      setSelectedInterests(
+        iconMap.map(item => ({
+          ...item,
+          selected: value.includes(item.key),
+        }))
+      );
+    } else if (isBio) {
       setSelectedInterests(iconMap.map(item => ({ ...item, selected: false })));
     }
   }, [value, iconMap, isBio]);
@@ -46,14 +52,20 @@ export function EditableSection({
   const handleCancel = () => {
     setInputValue(value);
     setIsEditing(false);
-    if (!isBio) {
-      setSelectedInterests(iconMap.map(item => ({ ...item, selected: false })));
+
+    if (!isBio && Array.isArray(value)) {
+      setSelectedInterests(
+        iconMap.map(item => ({
+          ...item,
+          selected: value.includes(item.key),
+        }))
+      );
     }
   };
 
   const toggleInterest = (key) => {
-    setSelectedInterests(prev => 
-      prev.map(item => 
+    setSelectedInterests(prev =>
+      prev.map(item =>
         item.key === key ? { ...item, selected: !item.selected } : item
       )
     );
@@ -63,9 +75,9 @@ export function EditableSection({
     <section className="bg-gray-100 rounded-2xl p-5">
       <div className="flex justify-between items-start mb-3">
         <h2 className="text-sm font-semibold text-gray-800">{title}</h2>
-        
+
         {!isEditing ? (
-          <button 
+          <button
             onClick={() => setIsEditing(true)}
             className="text-pink-600 hover:text-pink-700 flex items-center"
           >
@@ -74,14 +86,14 @@ export function EditableSection({
           </button>
         ) : (
           <div className="flex space-x-2">
-            <button 
+            <button
               onClick={handleCancel}
               className="text-gray-500 hover:text-gray-700"
               aria-label="Cancel"
             >
               <X size={18} />
             </button>
-            <button 
+            <button
               onClick={handleSave}
               className="text-pink-600 hover:text-pink-700"
               aria-label="Save"
@@ -126,8 +138,8 @@ export function EditableSection({
                   key={key}
                   onClick={() => toggleInterest(key)}
                   className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm transition ${
-                    selected 
-                      ? 'bg-pink-100 border border-pink-300 text-pink-700' 
+                    selected
+                      ? 'bg-pink-100 border border-pink-300 text-pink-700'
                       : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'
                   }`}
                 >
@@ -149,15 +161,23 @@ export function EditableSection({
           </p>
         ) : (
           <div className="flex flex-wrap gap-2">
-            {iconMap.map(({ key, label, icon: Icon }) => (
-              <div
-                key={key}
-                className="flex items-center space-x-1 px-3 py-1 bg-white border border-gray-200 rounded-full text-sm"
-              >
-                <Icon size={16} className="text-pink-600" />
-                <span className="text-gray-700">{label}</span>
-              </div>
-            ))}
+            {Array.isArray(value) && value.length > 0 ? (
+              iconMap
+                .filter(item => value.includes(item.key))
+                .map(({ key, label, icon: Icon }) => (
+                  <div
+                    key={key}
+                    className="flex items-center space-x-1 px-3 py-1 bg-white border border-gray-200 rounded-full text-sm"
+                  >
+                    <Icon size={16} className="text-pink-600" />
+                    <span className="text-gray-700">{label}</span>
+                  </div>
+                ))
+            ) : (
+              <span className="text-sm text-gray-400 italic">
+                Click "Edit" to select your {title.toLowerCase()}
+              </span>
+            )}
           </div>
         )
       )}
