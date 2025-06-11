@@ -12,7 +12,7 @@ export const updateProfileData = (payload) => {
 
 
   return axios.patch(
-    `${PROFILE_BASE}/update`,
+    `${PROFILE_BASE}/user/update`,
     payload,
     { withCredentials: true }
 
