@@ -103,14 +103,22 @@ export function EditableSection({
         <div className="mt-2">
           {isBio ? (
             <>
-              <textarea
-                ref={inputRef}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
-                rows={4}
-                placeholder="Tell something about yourself..."
-              />
+          <div className="relative z-30">
+  <textarea
+    ref={inputRef}
+    value={inputValue}
+    onChange={(e) => setInputValue(e.target.value) 
+
+        console.log('Bio change:', e.target.value);
+
+        
+    }
+    className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none z-50 relative"
+    rows={4}
+    placeholder="Tell something about yourself..."
+  />
+</div>
+
               <div className="flex justify-end mt-3 space-x-2">
                 <button
                   onClick={handleCancel}
