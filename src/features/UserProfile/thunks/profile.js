@@ -26,15 +26,20 @@ export const fetchProfile = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
   'userProfile/updateProfile',
-  async (payload, { rejectWithValue }) => {
+  async (payload, { rejectWithValue, dispatch }) => { // ✅ Added dispatch here
     try {
       const { data } = await apiUpdate(payload);
+
+      // ✅ Trigger fetchProfile after successful update
+      dispatch(fetchProfile());
+
       return data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.error || err.message);
     }
   }
 );
+
 
 export const fetchPresignedUrl = createAsyncThunk(
   'userProfile/fetchPresignedUrl',

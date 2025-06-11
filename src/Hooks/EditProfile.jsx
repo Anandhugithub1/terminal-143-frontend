@@ -13,6 +13,7 @@ export function useEditableProfile() {
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchProfile());
+      
     }
   }, [dispatch, status]);
 
@@ -29,6 +30,8 @@ export function useEditableProfile() {
       : { [key]: value };
     
     dispatch(updateProfile(payload));
+    window.location.reload(); // 🔁 Force full page reload after update
+
   };
 
   const uploadImage = (file, photoIndex) => {
