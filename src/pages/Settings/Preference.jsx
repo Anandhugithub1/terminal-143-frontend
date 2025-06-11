@@ -4,7 +4,7 @@ import { ArrowLeft, User, UserPlus, Heart, Smile, Star, Check } from 'lucide-rea
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
-import { fetchProfile, updateProfileData } from '../../features/UserProfile';
+import { fetchProfile, updateProfile } from '../../features/UserProfile';
 import '@fontsource-variable/inter';
 
 const PREFERENCES = [
@@ -45,7 +45,7 @@ const PreferencesPage = () => {
   };
 
   const handleSave = () => {
-    dispatch(updateProfileData({ preferences: selectedPreferences }))
+    dispatch(updateProfile({ preferences: selectedPreferences }))
       .then(() => {
         navigate(-1);
       })
