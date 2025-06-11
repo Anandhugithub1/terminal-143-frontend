@@ -20,7 +20,7 @@ export default function ProfileEditPage() {
     profile,
     status,
     localAvatar,
-    updateField,
+    updateProfileData,
     uploadImage,
   } = useEditableProfile();
 
@@ -124,7 +124,7 @@ export default function ProfileEditPage() {
                   </button>
                   <button
                     onClick={() => {
-                      updateField('bio', bioInput.trim());
+                      updateProfileData('bio', bioInput.trim());
                       setIsEditingBio(false);
                     }}
                     className="text-pink-600 hover:text-pink-700"
@@ -156,7 +156,7 @@ export default function ProfileEditPage() {
                   </button>
                   <button
                     onClick={() => {
-                      updateField('bio', bioInput.trim());
+                      updateProfileData('bio', bioInput.trim());
                       setIsEditingBio(false);
                     }}
                     className="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-lg text-sm font-medium"
@@ -187,7 +187,7 @@ export default function ProfileEditPage() {
                 icon={f.icon}
                 label={f.label}
                 value={f.value}
-                onEdit={() => updateField(f.key, f.value)}
+                onEdit={() => updateProfileData(f.key, f.value)}
               />
             ))}
           </section>
@@ -196,7 +196,7 @@ export default function ProfileEditPage() {
           <EditableSection
             title="Interests"
             value={profile.interest || []}
-            onSave={(selected) => updateField('interest', selected)}
+            onSave={(selected) => updateProfileData('interest', selected)}
             iconMap={allInterests}
             isBio={false}
           />

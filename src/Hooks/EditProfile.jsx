@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfile } from '../features/UserProfile';
-import { updateField, uploadProfileImage } from '../features/UserProfile';
+import { updateProfile, uploadProfileImage } from '../features/UserProfile';
 
 export function useEditableProfile() {
   const dispatch = useDispatch();
@@ -22,13 +22,13 @@ export function useEditableProfile() {
     }
   }, [status, profile]);
 
-  const updateField = (key, value) => {
+  const updateProfileData = (key, value) => {
     // For interests, we need to handle array to object conversion if needed
     const payload = key === 'interest' && Array.isArray(value) 
       ? { [key]: value } 
       : { [key]: value };
     
-    dispatch(updateField(payload));
+    dispatch(updateProfile(payload));
   };
 
   const uploadImage = (file, photoIndex) => {
@@ -40,7 +40,7 @@ export function useEditableProfile() {
     profile,
     status,
     localAvatar,
-    updateField,
+    updateProfileData,
     uploadImage,
   };
 }
