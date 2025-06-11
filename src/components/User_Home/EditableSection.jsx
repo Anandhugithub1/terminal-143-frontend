@@ -1,59 +1,56 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Edit, Check, X } from 'lucide-react';
 
-export function EditableSection({ 
-  title, 
-  value, 
-  onSave, 
-  isBio = false, 
-  iconMap = [] 
+export function EditableSection({
+  title,
+  value,
+  onSave,
+  isBio = false,
+  iconMap = [],
 }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [inputValue, setInputValue] = useState(value);
+  const [inputValue, setInputValue] = useState(isBio ? (value || '') : '');
   const [selectedInterests, setSelectedInterests] = useState([]);
   const inputRef = useRef(null);
 
   useEffect(() => {
-    setInputValue(value || ''); // ✅ always a string for bio
-  
-    if (!isBio && Array.isArray(value)) {
-      setSelectedInterests(
-        iconMap.map(item => ({
-          ...item,
-          selected: value.includes(item.key),
-        }))
-      );
-    } else if (isBio) {
-      setSelectedInterests(iconMap.map(item => ({ ...item, selected: false })));
+    if (isBio) {
+      setInputValue(value || '');
+    } else if (Array.isArray(value)) {
+      const updated = iconMap.map(item => ({
+        ...item,
+        selected: value.includes(item.key),
+      }));
+      setSelectedInterests(updated);
     }
   }, [value, iconMap, isBio]);
-  
+
   useEffect(() => {
     if (isEditing && inputRef.current) {
       inputRef.current.focus();
       if (isBio) {
-        inputRef.current.selectionStart = inputValue.length;
+        inputRef.current.selectionStart = inputRef.current.value.length;
       }
     }
-  }, [isEditing]);
+  }, [isEditing, isBio]);
 
   const handleSave = () => {
     if (isBio) {
-      onSave(inputValue);
+      onSave(inputValue.trim());
     } else {
-      const selected = selectedInterests
+      const selectedKeys = selectedInterests
         .filter(item => item.selected)
         .map(item => item.key);
-      onSave(selected);
+      onSave(selectedKeys);
     }
     setIsEditing(false);
   };
 
   const handleCancel = () => {
-    setInputValue(value);
     setIsEditing(false);
-
-    if (!isBio && Array.isArray(value)) {
+    if (isBio) {
+      setInputValue(value || '');
+    } else if (Array.isArray(value)) {
       setSelectedInterests(
         iconMap.map(item => ({
           ...item,
@@ -150,36 +147,36 @@ export function EditableSection({
             </div>
           )}
         </div>
+      ) : isBio ? (
+        <p className="text-sm text-gray-600 whitespace-pre-line">
+          {value?.trim() ? (
+            value
+          ) : (
+            <span className="text-gray-400 italic">
+              Click "Edit" to add your {title.toLowerCase()}
+            </span>
+          )}
+        </p>
       ) : (
-        isBio ? (
-          <p className="text-sm text-gray-600 whitespace-pre-line">
-            {value || (
-              <span className="text-gray-400 italic">
-                Click "Edit" to add your {title.toLowerCase()}
-              </span>
-            )}
-          </p>
-        ) : (
-          <div className="flex flex-wrap gap-2">
-            {Array.isArray(value) && value.length > 0 ? (
-              iconMap
-                .filter(item => value.includes(item.key))
-                .map(({ key, label, icon: Icon }) => (
-                  <div
-                    key={key}
-                    className="flex items-center space-x-1 px-3 py-1 bg-white border border-gray-200 rounded-full text-sm"
-                  >
-                    <Icon size={16} className="text-pink-600" />
-                    <span className="text-gray-700">{label}</span>
-                  </div>
-                ))
-            ) : (
-              <span className="text-sm text-gray-400 italic">
-                Click "Edit" to select your {title.toLowerCase()}
-              </span>
-            )}
-          </div>
-        )
+        <div className="flex flex-wrap gap-2">
+          {Array.isArray(value) && value.length > 0 ? (
+            iconMap
+              .filter(item => value.includes(item.key))
+              .map(({ key, label, icon: Icon }) => (
+                <div
+                  key={key}
+                  className="flex items-center space-x-1 px-3 py-1 bg-white border border-gray-200 rounded-full text-sm"
+                >
+                  <Icon size={16} className="text-pink-600" />
+                  <span className="text-gray-700">{label}</span>
+                </div>
+              ))
+          ) : (
+            <span className="text-sm text-gray-400 italic">
+              Click "Edit" to select your {title.toLowerCase()}
+            </span>
+          )}
+        </div>
       )}
     </section>
   );
