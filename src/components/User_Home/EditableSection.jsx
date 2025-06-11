@@ -107,12 +107,10 @@ export function EditableSection({
   <textarea
     ref={inputRef}
     value={inputValue}
-    onChange={(e) => setInputValue(e.target.value) 
-
+    onChange={(e) => {
         console.log('Bio change:', e.target.value);
-
-        
-    }
+        setInputValue(e.target.value);
+      }}
     className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none z-50 relative"
     rows={4}
     placeholder="Tell something about yourself..."
