@@ -17,14 +17,14 @@ export default function PublicProfilePage() {
   const { data: profile, isLoading: isProfileLoading, error: profileError } = useProfileByLink(profileLink);
 
   // Fetch current user's profile to determine access
-  const { data: userProfile, isLoading: isUserLoading, error: userError } = useSelector((state) => state.userProfile);
+  const { data: userProfile, isLoading: isUserLoading } = useSelector((state) => state.userProfile);
 
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
 
   // Show full profile only if fetchProfile succeeded
-  const hasAccess = Boolean(userProfile) && !userError;
+  const hasAccess = Boolean(userProfile);
 
   const age = profile?.dob
     ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
