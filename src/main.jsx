@@ -34,6 +34,8 @@ import LanguagePage from './pages/Settings/Language.jsx';
 import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
 import PreferencesPage from './pages/Settings/Preference.jsx';
 import PublicProfilePage from './pages/User/Profile/PublicProfile.jsx';
+import '@fontsource-variable/inter';
+
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>

@@ -1,5 +1,6 @@
 
 import './App.css'
+import '@fontsource-variable/inter';
 
 import { Outlet } from 'react-router-dom'
 function App() {
