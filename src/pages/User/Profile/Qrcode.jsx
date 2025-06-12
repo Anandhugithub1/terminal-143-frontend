@@ -35,9 +35,9 @@ export default function ShareQRCodePage() {
   };
 
   const handleCopyLink = () => {
-    if (!qrCodeUrl) return;
+    if (!profileLink) return;
     navigator.clipboard
-      .writeText(qrCodeUrl)
+      .writeText(profileLink)
       .then(() => showToast('Copied to clipboard'))
       .catch(() => showToast('Copy failed'));
   };
