@@ -64,8 +64,8 @@ const route = createBrowserRouter(
    <Route path='share-qr' element={<ShareQRCodePage />} />
    <Route path="*" element={<NotFoundPage />} />
    <Route path="language" element={<LanguagePage />} />
-   <Route path="/public/:profileLink" element={<PublicProfilePage />} />
 
+   <Route path="/profile/:type/:gender/:level/:username" element={<PublicProfilePage />} />
 
 
    <Route path="explore" element={<ExplorePage />} />

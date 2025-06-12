@@ -6,8 +6,12 @@ import { useProfileByLink } from '../../../Hooks/getProfileByLink';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 export default function PublicProfilePage() {
-  const { profileLink } = useParams(); // URL param
+  const { type, gender, level, username } = useParams();
   const navigate = useNavigate();
+
+  // Build the profileLink from route params
+  const profileLink = `${type}/${gender}/${level}/${username}`;
+
   const { data: profile, isLoading, error } = useProfileByLink(profileLink);
 
   if (isLoading) return <LoadingSpinner />;
