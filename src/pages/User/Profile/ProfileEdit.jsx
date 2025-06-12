@@ -32,7 +32,7 @@ export default function ProfileEditPage() {
     if (profile?.bio) setBioInput(profile.bio);
   }, [profile?.bio]);
 
-  if (status === 'idle' || status === 'loading' || profile === null) {
+  if (status === 'idle' || status === 'loading' || !profile) {
     return <LoadingSpinner />;
   }
 
