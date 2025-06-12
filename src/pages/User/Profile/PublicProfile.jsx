@@ -13,20 +13,18 @@ export default function PublicProfilePage() {
   const { type, gender, level, username } = useParams();
   const profileLink = `${type}/${gender}/${level}/${username}`;
 
-  const { data: profile, isLoading: isProfileLoading, error } = useProfileByLink(profileLink);
+  // Fetch displayed profile by link
+  const { data: profile, isLoading: isProfileLoading, error: profileError } = useProfileByLink(profileLink);
 
-  // Fetch logged-in user's own profile
-  const userProfileState = useSelector((state) => state.userProfile);
-  const { data: userProfile, isLoading: isUserLoading } = userProfileState;
+  // Fetch current user's profile to determine access
+  const { data: userProfile, isLoading: isUserLoading, error: userError } = useSelector((state) => state.userProfile);
 
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
 
-  const isOwner =
-    userProfile && profile
-      ? userProfile.username === profile.username || userProfile.id === profile.id
-      : false;
+  // Show full profile only if fetchProfile succeeded
+  const hasAccess = Boolean(userProfile) && !userError;
 
   const age = profile?.dob
     ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
@@ -34,7 +32,7 @@ export default function PublicProfilePage() {
 
   const ProtectedSection = ({ children }) => (
     <div className="relative bg-white rounded-xl shadow-sm p-5 mb-6 overflow-hidden">
-      {!isOwner ? (
+      {!hasAccess ? (
         <div className="pointer-events-none blur-sm select-none opacity-60">{children}</div>
       ) : (
         children
@@ -43,7 +41,7 @@ export default function PublicProfilePage() {
   );
 
   if (isProfileLoading || isUserLoading) return <LoadingSpinner />;
-  if (error) return <div className="text-center mt-10 text-red-500">{error.message}</div>;
+  if (profileError) return <div className="text-center mt-10 text-red-500">{profileError.message}</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-40 relative">
@@ -74,7 +72,7 @@ export default function PublicProfilePage() {
       </div>
 
       {/* Main Content */}
-      <div className={`mt-16 px-4 max-w-2xl mx-auto ${!isOwner ? 'blur-sm pointer-events-none select-none opacity-60' : ''}`}>
+      <div className={`mt-16 px-4 max-w-2xl mx-auto ${!hasAccess ? 'blur-sm pointer-events-none select-none opacity-60' : ''}`}>
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center items-center gap-2">
@@ -99,7 +97,7 @@ export default function PublicProfilePage() {
           </div>
         </div>
 
-        {/* Sections */}
+        {/* Bio */}
         {profile.bio && (
           <ProtectedSection>
             <div className="flex items-center gap-2 mb-3">
@@ -110,6 +108,7 @@ export default function PublicProfilePage() {
           </ProtectedSection>
         )}
 
+        {/* Gallery */}
         {profile.photos?.length > 0 && (
           <ProtectedSection>
             <div className="flex items-center gap-2 mb-4">
@@ -134,6 +133,7 @@ export default function PublicProfilePage() {
           </ProtectedSection>
         )}
 
+        {/* Interests */}
         {profile.interest?.length > 0 && (
           <ProtectedSection>
             <div className="flex items-center gap-2 mb-4">
@@ -154,8 +154,8 @@ export default function PublicProfilePage() {
         )}
       </div>
 
-      {/* Login/Register Prompt for Non-Owners */}
-      {!isOwner && (
+      {/* Prompt for Unauthenticated Users */}
+      {!hasAccess && (
         <div className="fixed bottom-4 w-full flex flex-col items-center gap-3 px-4 z-10">
           <button
             onClick={() => navigate('/login')}
