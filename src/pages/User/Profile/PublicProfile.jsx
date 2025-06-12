@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Cake, MapPin, Star, Image, Smile, Phone, Mail, MessageSquare, User, Map, Heart } from 'lucide-react';
+import { Cake, MapPin, Star, Image, Smile, User, Heart } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { useProfileByLink } from '../../../Hooks/getProfileByLink';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
@@ -77,7 +77,7 @@ export default function PublicProfilePage() {
           <div className="flex flex-wrap items-center justify-center gap-4 mt-3 text-gray-700">
             <div className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
               <User size={16} className="mr-1.5 text-pink-500" />
-              <span>{profile.userType === 'mp' ? 'Model' : 'Regular User'}</span>
+              <span>Model</span>
             </div>
             <div className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
               <Cake size={16} className="mr-1.5 text-pink-500" />
@@ -136,52 +136,6 @@ export default function PublicProfilePage() {
 
           {/* Right Sidebar */}
           <div className="space-y-6">
-            {/* Contact Info */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <MapPin size={20} className="text-blue-500" />
-                Contact Information
-              </h3>
-
-              <div className="space-y-4">
-                {profile.phone && (
-                  <div className="flex items-start gap-3">
-                    <div className="mt-1 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                      <Phone size={16} className="text-blue-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Phone</p>
-                      <p className="font-medium">{profile.phone}</p>
-                    </div>
-                  </div>
-                )}
-
-                {profile.email && (
-                  <div className="flex items-start gap-3">
-                    <div className="mt-1 w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center">
-                      <Mail size={16} className="text-pink-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-medium">{profile.email}</p>
-                    </div>
-                  </div>
-                )}
-
-                {profile.location && (
-                  <div className="flex items-start gap-3">
-                    <div className="mt-1 w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
-                      <Map size={16} className="text-purple-500" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Location</p>
-                      <p className="font-medium">{profile.location}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Interests */}
             {profile.interest?.length > 0 && (
               <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
