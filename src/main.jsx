@@ -33,6 +33,7 @@ import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx'
 import LanguagePage from './pages/Settings/Language.jsx';
 import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
 import PreferencesPage from './pages/Settings/Preference.jsx';
+import PublicProfilePage from './pages/User/Profile/PublicProfile.jsx';
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -63,6 +64,8 @@ const route = createBrowserRouter(
    <Route path='share-qr' element={<ShareQRCodePage />} />
    <Route path="*" element={<NotFoundPage />} />
    <Route path="language" element={<LanguagePage />} />
+   <Route path="/public/:profileLink" element={<PublicProfilePage />} />
+
 
 
    <Route path="explore" element={<ExplorePage />} />
