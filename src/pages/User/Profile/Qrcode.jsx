@@ -19,6 +19,8 @@ export default function ShareQRCodePage() {
   const error   = useSelector((state) => state.userProfile.error);
 
   const qrCodeUrl = profile?.qrCodeUrl;
+  const profileLink = profile?.profileLink;
+
   const [toast, setToast] = useState({ open: false, message: '' });
 
   useEffect(() => {
@@ -33,21 +35,21 @@ export default function ShareQRCodePage() {
   };
 
   const handleCopyLink = () => {
-    if (!qrCodeUrl) return;
+    if (!profileLink) return;
     navigator.clipboard
-      .writeText(qrCodeUrl)
+      .writeText(profileLink)
       .then(() => showToast('Copied to clipboard'))
       .catch(() => showToast('Copy failed'));
   };
 
   const handleShare = async () => {
-    if (!qrCodeUrl) return;
+    if (!profileLink) return;
     if (navigator.share) {
       try {
         await navigator.share({
           title: `${profile.name}'s Profile`,
           text: `View my MatchMaker profile!`,
-          url: qrCodeUrl,
+          url: profileLink,
         });
         showToast('Shared successfully');
       } catch {
@@ -106,7 +108,7 @@ export default function ShareQRCodePage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleCopyLink}
-                disabled={!qrCodeUrl}
+                disabled={!profileLink}
                 className="w-full py-4 px-6 flex items-center justify-center bg-white border-2 border-pink-200 rounded-xl text-pink-600 font-semibold hover:bg-pink-50 transition-colors disabled:opacity-50"
               >
                 <Copy className="mr-3" size={20} />
@@ -117,7 +119,7 @@ export default function ShareQRCodePage() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleShare}
-                disabled={!qrCodeUrl}
+                disabled={!profileLink}
                 className="w-full py-4 px-6 flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50"
               >
                 <Share2 className="mr-3" size={20} />
