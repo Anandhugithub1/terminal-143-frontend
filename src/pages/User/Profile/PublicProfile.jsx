@@ -18,41 +18,17 @@ export default function PublicProfilePage() {
     ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
     : '—';
 
-  const ProtectedSection = ({ children, title, icon }) => (
-    <div className="relative bg-white rounded-xl shadow-sm p-5 mb-6 overflow-hidden">
-      {!isLoggedIn && (
-        <>
-          <div className="blur-sm select-none">{children}</div>
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] flex flex-col items-center justify-center gap-4 p-6 z-10">
-            <div className="bg-gray-100 p-3 rounded-full">
-              {icon || <Lock size={24} className="text-gray-600" />}
+    const ProtectedSection = ({ children }) => (
+        <div className="relative bg-white rounded-xl shadow-sm p-5 mb-6 overflow-hidden">
+          {!isLoggedIn ? (
+            <div className="pointer-events-none blur-sm select-none opacity-60">
+              {children}
             </div>
-            <h3 className="text-xl font-bold text-gray-800 text-center">
-              {title} Locked
-            </h3>
-            <p className="text-gray-600 text-center max-w-md">
-              Create an account or sign in to view {title.toLowerCase()} details
-            </p>
-            <div className="flex gap-3 mt-2">
-              <button 
-                onClick={() => navigate('/login')}
-                className="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-medium rounded-lg shadow-md hover:opacity-90 transition-opacity"
-              >
-                Log In
-              </button>
-              <button 
-                onClick={() => navigate('/register')}
-                className="px-5 py-2.5 bg-white text-gray-800 border border-gray-300 font-medium rounded-lg shadow-md hover:bg-gray-50 transition-colors"
-              >
-                Register
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-      {isLoggedIn && children}
-    </div>
-  );
+          ) : (
+            children
+          )}
+        </div>
+      );
 
   if (isLoading) return <LoadingSpinner />;
   if (error) return <div className="text-center mt-10 text-red-500">{error.message}</div>;
