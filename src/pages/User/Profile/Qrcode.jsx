@@ -34,13 +34,7 @@ export default function ShareQRCodePage() {
     setTimeout(() => setToast({ open: false, message: '' }), 3000);
   };
 
-  const handleCopyLink = () => {
-    if (!profileLink) return;
-    navigator.clipboard
-      .writeText(profileLink)
-      .then(() => showToast('Copied to clipboard'))
-      .catch(() => showToast('Copy failed'));
-  };
+ 
 
   const handleShare = async () => {
     if (!profileLink) return;
@@ -104,17 +98,7 @@ export default function ShareQRCodePage() {
             </div>
 
             <div className="w-full space-y-4">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleCopyLink}
-                disabled={!profileLink}
-                className="w-full py-4 px-6 flex items-center justify-center bg-white border-2 border-pink-200 rounded-xl text-pink-600 font-semibold hover:bg-pink-50 transition-colors disabled:opacity-50"
-              >
-                <Copy className="mr-3" size={20} />
-                Copy Profile Link
-              </motion.button>
-
+             
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
