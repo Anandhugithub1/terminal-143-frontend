@@ -29,11 +29,13 @@ export function useEditableProfile() {
   const uploadImage = async (file, photoIndex = 0) => {
     const localURL = URL.createObjectURL(file);
     setLocalAvatar(localURL); // temporary preview
-
+console.log('Uploading image:', file.name, file.size);
     try {
-      const { publicUrl } = await dispatch(uploadProfileImage({ file, photoIndex })).unwrap();
-      setLocalAvatar(publicUrl);
-      await dispatch(updateProfile({ photo: publicUrl }));
+      const result = await dispatch(uploadProfileImage({ file, photoIndex })).unwrap();
+      console.log('uploadImage: Uploaded result', result);
+      
+    await dispatch(updateProfile({ photo: result.publicUrl }));
+    setLocalAvatar(result.publicUrl);
     } catch (error) {
       console.error('Upload failed:', error);
     }

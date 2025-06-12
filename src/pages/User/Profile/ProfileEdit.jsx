@@ -90,11 +90,12 @@ export default function ProfileEditPage() {
 
           <div className="flex flex-col items-center mt-6">
             <div className="relative">
-              <img
-                src={localAvatar || '/path/to/avatar.jpg'}
-                alt="Profile avatar"
-                className="w-24 h-24 rounded-full border-4 border-pink-400 object-cover"
-              />
+            <img
+  src={(localAvatar || '/path/to/avatar.jpg') + `?t=${Date.now()}`}
+  alt="Profile avatar"
+  className="w-24 h-24 rounded-full border-4 border-pink-400 object-cover"
+/>
+
               <button
                 onClick={handlePhotoClick}
                 className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow"
