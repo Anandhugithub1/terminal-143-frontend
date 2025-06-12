@@ -168,7 +168,7 @@ export default function PublicProfilePage() {
             Log in to View Full Profile
           </button>
           <button
-            onClick={() => navigate('/register')}
+            onClick={() => navigate('/choose-category')}
             className="text-white text-sm font-semibold px-6 py-3 rounded-full w-full max-w-md shadow-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transition-all duration-300"
           >
             Create Free Account
@@ -177,3 +177,4 @@ export default function PublicProfilePage() {
       )}
     </div>
   );
+}
