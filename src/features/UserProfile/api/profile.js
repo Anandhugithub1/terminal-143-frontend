@@ -23,11 +23,15 @@ export const updateProfileData = (payload) => {
 
 
 export const getProfileByLink = async (link) => {
+  const fullUrl = `https://terminal143.com/profile/${link}`;
+
   const res = await axios.get(`${PROFILE_BASE}/user/by-link`, {
-    params: { url: link },
+    params: { url: fullUrl },
   });
-  return res.data.profile; 
+
+  return res.data.profile;
 };
+
 
 /** Get presigned URL for image upload */
 export const getPresignedUrl = ({ fileType, photoIndex }) => {
