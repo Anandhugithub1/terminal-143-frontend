@@ -39,13 +39,23 @@ export default function ProfileEditPage() {
   const fields = getProfileFields(profile);
 
   const handlePhotoClick = () => setShowUpload((v) => !v);
-
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
-    if (file) {
-      uploadImage(file, userType === 'fm' ? 0 : undefined);
+  
+    if (!file) {
+      console.warn('No file selected');
+      return;
     }
+  
+    console.log('New file selected:', file.name, file.size);
+  
+    // 🔥 Check: Is this file different from `profile.photo`?
+    uploadImage(file, userType === 'fm' ? 0 : undefined);
+  
+    // ✅ Clear the input so that selecting the same file again works
+    e.target.value = '';
   };
+  
 
   const openGallery = () => {
     galleryRef.current?.click();
