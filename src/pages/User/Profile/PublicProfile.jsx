@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useMemo,useState } from 'react';
+import React, { Suspense, lazy, useMemo, useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   Cake,
@@ -13,29 +13,46 @@ import '@fontsource-variable/inter';
 import { useProfileByLink } from '../../../Hooks/getProfileByLink';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 import { Button } from '../../../shared/Button';
-import { LoginRegisterModal } from '../../../components/PublicProfile/InterestsSection';
-// Lazy load heavy sections for performance
-const GallerySection = lazy(() =>
-  import('../../../components/PublicProfile/Gallery')
-);
-const InterestsSection = lazy(() =>
-  import('../../../components/PublicProfile/InterestsSection')
-);
+import LoginRegisterModal from '../../../components/PublicProfile/InterestsSection';
+
+const GallerySection = lazy(() => import('../../../components/PublicProfile/Gallery'));
+const InterestsSection = lazy(() => import('../../../components/PublicProfile/InterestsSection'));
 
 export default function PublicProfilePage() {
   const { type, gender, level, username } = useParams();
   const profileLink = `${type}/${gender}/${level}/${username}`;
   const { data: profile, isLoading, error } = useProfileByLink(profileLink);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const isLocked = true; 
+  const [modalTriggered, setModalTriggered] = useState(false);
+  const isLocked = true;
 
   const age = useMemo(() => {
     if (!profile?.dob) return '—';
-    const years =
-      (Date.now() - new Date(profile.dob).getTime()) /
-      (1000 * 60 * 60 * 24 * 365);
+    const years = (Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365);
     return Math.floor(years);
   }, [profile]);
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (!modalTriggered) {
+        setShowAuthModal(true);
+        setModalTriggered(true);
+      }
+    }, 3000);
+
+    const onScroll = () => {
+      if (!modalTriggered) {
+        setShowAuthModal(true);
+        setModalTriggered(true);
+      }
+    };
+
+    window.addEventListener('scroll', onScroll);
+    return () => {
+      clearTimeout(delay);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [modalTriggered]);
 
   if (isLoading) {
     return (
@@ -49,16 +66,8 @@ export default function PublicProfilePage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] p-4">
         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-sm text-center">
-          <span
-            role="img"
-            aria-label="warning"
-            className="text-red-500 text-6xl mb-4"
-          >
-            ⚠️
-          </span>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
-            Profile Unavailable
-          </h2>
+          <span role="img" aria-label="warning" className="text-red-500 text-6xl mb-4">⚠️</span>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Profile Unavailable</h2>
           <p className="text-gray-600 mb-4">{error.message}</p>
           <button
             onClick={() => window.location.reload()}
@@ -73,11 +82,7 @@ export default function PublicProfilePage() {
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-28">
-      {/* ...cover/header code remains unchanged */}
-
       <main className="mt-20 container mx-auto px-4 lg:px-8">
-        {/* Profile Header remains same */}
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             {profile.bio && (
@@ -123,7 +128,6 @@ export default function PublicProfilePage() {
             )}
           </div>
 
-          {/* Sidebar */}
           <aside className="space-y-8">
             {profile.interest?.length > 0 && (
               <section className="relative">
@@ -148,7 +152,6 @@ export default function PublicProfilePage() {
         </div>
       </main>
 
-      {/* Floating Button */}
       <div className="fixed bottom-4 right-4 z-50">
         <button
           onClick={() => setShowAuthModal(true)}
@@ -158,8 +161,7 @@ export default function PublicProfilePage() {
         </button>
       </div>
 
-      {/* Modal */}
-      {showAuthModal && <LoginRegisterModal onClose={() => setShowAuthModal(false)} />}
+      {showAuthModal && <LoginRegisterModal />}
     </div>
   );
 }

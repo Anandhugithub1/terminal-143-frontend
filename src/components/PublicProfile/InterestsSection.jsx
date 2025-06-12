@@ -25,25 +25,25 @@ export default function InterestsSection({ items }) {
 import { Link } from 'react-router-dom';
 import { X } from 'lucide-react';
 
-export  function LoginRegisterModal({ onClose }) {
+
+
+
+export  function LoginPopupModal() {
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl relative">
-        <button
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
-        >
-          <X size={20} />
-        </button>
-        <h2 className="text-2xl font-bold mb-4 text-center">Join to Unlock Full Profile</h2>
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center px-4">
+      <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+        <h2 className="text-xl font-bold text-center mb-3">Unlock Full Profile</h2>
+        <p className="text-gray-600 text-sm text-center mb-6">
+          Please register or login to view the complete profile details.
+        </p>
         <div className="flex flex-col gap-3">
-          <Link to="/register" className="w-full">
+          <Link to="/register">
             <button className="w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold hover:opacity-90">
               Register
             </button>
           </Link>
-          <Link to="/login" className="w-full">
-            <button className="w-full py-3 rounded-xl bg-white border text-gray-700 font-semibold hover:bg-gray-50">
+          <Link to="/login">
+            <button className="w-full py-3 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50">
               Login
             </button>
           </Link>
@@ -52,3 +52,4 @@ export  function LoginRegisterModal({ onClose }) {
     </div>
   );
 }
+
