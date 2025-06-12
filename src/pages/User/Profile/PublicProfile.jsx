@@ -1,17 +1,16 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Cake, MapPin, Heart, Star, Image, Smile, MessageCircle } from 'lucide-react';
+import { Cake, MapPin, Heart, Star, Image, Smile } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { useProfileByLink } from '../../../Hooks/getProfileByLink';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function PublicProfilePage() {
-  const { type, gender, level, username } = useParams();
-  const profileLink = `${type}/${gender}/${level}/${username}`;
+  const { type, level, username } = useParams();
+  const profileLink = `${type}/${level}/${username}`;
   const { data: profile, isLoading, error } = useProfileByLink(profileLink);
 
-  // Calculate age safely
   const calculateAge = (dob) => {
     if (!dob) return '—';
     try {
@@ -26,15 +25,14 @@ export default function PublicProfilePage() {
 
   const age = calculateAge(profile?.dob);
 
-  // Get gradient based on gender
+  const gender = profile?.gender?.toLowerCase();
+
   const getGradient = () => {
     switch (gender) {
-      case 'male': 
+      case 'male':
         return 'from-blue-300 via-cyan-300 to-teal-300';
       case 'female':
         return 'from-pink-300 via-purple-300 to-indigo-300';
-      case 'couple':
-        return 'from-amber-300 via-orange-300 to-red-300';
       default:
         return 'from-gray-200 via-gray-300 to-gray-400';
     }
@@ -51,8 +49,8 @@ export default function PublicProfilePage() {
           <p className="text-gray-600 mb-4">
             {error.message || "The profile you're looking for doesn't exist or has been removed."}
           </p>
-          <button 
-            onClick={() => window.history.back()} 
+          <button
+            onClick={() => window.history.back()}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-full transition"
           >
             Go Back
@@ -64,12 +62,9 @@ export default function PublicProfilePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f0f9ff] font-inter pb-10">
-      {/* Cover Photo Section */}
+      {/* Cover Photo */}
       <div className={`relative w-full h-40 md:h-52 ${isLoading ? 'bg-gray-200' : getGradient()}`}>
-        {/* White curve overlay */}
         <div className="absolute bottom-0 left-0 w-full h-10 bg-white rounded-t-3xl z-0" />
-        
-        {/* Profile Photo */}
         <div className="absolute left-1/2 -bottom-10 transform -translate-x-1/2 z-10">
           {isLoading ? (
             <Skeleton circle width={120} height={120} />
@@ -101,7 +96,7 @@ export default function PublicProfilePage() {
 
       {/* Profile Content */}
       <div className="mt-16 px-4 max-w-2xl mx-auto">
-        {/* Profile Header */}
+        {/* Header */}
         <div className="text-center mb-8">
           {isLoading ? (
             <>
@@ -113,10 +108,7 @@ export default function PublicProfilePage() {
             </>
           ) : (
             <>
-              <div className="flex justify-center items-center gap-2 mb-2">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">{profile.name}</h1>
-              </div>
-              
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{profile.name}</h1>
               <div className="flex flex-wrap items-center justify-center gap-3 mt-2 text-gray-600 text-sm md:text-base">
                 <div className="flex items-center bg-gray-100 px-3 py-1 rounded-full">
                   <Cake size={16} className="mr-1 text-pink-500" />
@@ -133,28 +125,7 @@ export default function PublicProfilePage() {
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-center gap-4 mb-8">
-          {isLoading ? (
-            <>
-              <Skeleton width={120} height={40} borderRadius={50} />
-              <Skeleton width={120} height={40} borderRadius={50} />
-            </>
-          ) : (
-            <>
-              <button className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-6 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition">
-                <Heart size={18} className="fill-white" />
-                Connect
-              </button>
-              <button className="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-full font-medium shadow-sm hover:bg-gray-50 transition">
-                <MessageCircle size={18} />
-                Message
-              </button>
-            </>
-          )}
-        </div>
-
-        {/* Bio Section */}
+        {/* Bio */}
         {(isLoading || profile?.bio) && (
           <div className="bg-white rounded-2xl shadow-sm p-5 mb-6 border border-gray-100">
             {isLoading ? (
@@ -187,8 +158,8 @@ export default function PublicProfilePage() {
                     <Skeleton key={i} className="aspect-square rounded-xl" />
                   ))
                 : profile.photos.slice(0, 6).map((url, i) => (
-                    <div 
-                      key={i} 
+                    <div
+                      key={i}
                       className="aspect-square rounded-xl overflow-hidden shadow-md group relative"
                     >
                       <img
