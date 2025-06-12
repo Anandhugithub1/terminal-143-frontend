@@ -1,27 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Cake, MapPin, Heart, Star, Image, Smile } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { useProfileByLink } from '../../../Hooks/getProfileByLink';
+import { fetchProfile } from '../../../features/Userprofile';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 export default function PublicProfilePage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { type, gender, level, username } = useParams();
   const profileLink = `${type}/${gender}/${level}/${username}`;
-  const { data: profile, isLoading, error } = useProfileByLink(profileLink);
 
-  // In real app, this would come from auth context
-  const [isLoggedIn] = useState(false); 
+  const { data: profile, isLoading: isProfileLoading, error } = useProfileByLink(profileLink);
+
+  // Fetch logged-in user's own profile
+  const userProfileState = useSelector((state) => state.userProfile);
+  const { data: userProfile, isLoading: isUserLoading } = userProfileState;
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
+
+  const isOwner =
+    userProfile && profile
+      ? userProfile.username === profile.username || userProfile.id === profile.id
+      : false;
 
   const age = profile?.dob
     ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
     : '—';
 
-  // Protected section component
   const ProtectedSection = ({ children }) => (
     <div className="relative bg-white rounded-xl shadow-sm p-5 mb-6 overflow-hidden">
-      {!isLoggedIn ? (
+      {!isOwner ? (
         <div className="pointer-events-none blur-sm select-none opacity-60">{children}</div>
       ) : (
         children
@@ -29,12 +42,12 @@ export default function PublicProfilePage() {
     </div>
   );
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isProfileLoading || isUserLoading) return <LoadingSpinner />;
   if (error) return <div className="text-center mt-10 text-red-500">{error.message}</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-40 relative">
-      {/* Cover + Profile Container */}
+      {/* Cover + Avatar */}
       <div className="relative w-full h-52 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300">
         <div className="absolute bottom-0 left-0 w-full h-12 bg-white rounded-t-3xl z-0" />
         <div className="absolute left-1/2 bottom-[-3rem] transform -translate-x-1/2 z-10">
@@ -49,7 +62,7 @@ export default function PublicProfilePage() {
               alt="Profile"
               className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg"
               onError={(e) => {
-                e.target.onerror = null; 
+                e.target.onerror = null;
                 e.target.src = '/default-avatar.jpg';
               }}
             />
@@ -60,8 +73,9 @@ export default function PublicProfilePage() {
         </div>
       </div>
 
-      {/* Content Area */}
-      <div className={`mt-16 px-4 max-w-2xl mx-auto ${!isLoggedIn ? 'blur-sm pointer-events-none select-none opacity-60' : ''}`}>
+      {/* Main Content */}
+      <div className={`mt-16 px-4 max-w-2xl mx-auto ${!isOwner ? 'blur-sm pointer-events-none select-none opacity-60' : ''}`}>
+        {/* Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center items-center gap-2">
             <h1 className="text-3xl font-bold text-gray-900">{profile.name}</h1>
@@ -71,7 +85,6 @@ export default function PublicProfilePage() {
               </div>
             )}
           </div>
-
           <div className="flex items-center justify-center gap-3 mt-2 text-gray-600">
             <div className="flex items-center">
               <Cake size={16} className="mr-1 text-pink-500" />
@@ -86,7 +99,7 @@ export default function PublicProfilePage() {
           </div>
         </div>
 
-        {/* Bio */}
+        {/* Sections */}
         {profile.bio && (
           <ProtectedSection>
             <div className="flex items-center gap-2 mb-3">
@@ -97,7 +110,6 @@ export default function PublicProfilePage() {
           </ProtectedSection>
         )}
 
-        {/* Gallery */}
         {profile.photos?.length > 0 && (
           <ProtectedSection>
             <div className="flex items-center gap-2 mb-4">
@@ -112,7 +124,7 @@ export default function PublicProfilePage() {
                     alt={`Gallery ${i + 1}`}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
-                      e.target.onerror = null; 
+                      e.target.onerror = null;
                       e.target.src = '/default-gallery.jpg';
                     }}
                   />
@@ -122,7 +134,6 @@ export default function PublicProfilePage() {
           </ProtectedSection>
         )}
 
-        {/* Interests */}
         {profile.interest?.length > 0 && (
           <ProtectedSection>
             <div className="flex items-center gap-2 mb-4">
@@ -143,8 +154,8 @@ export default function PublicProfilePage() {
         )}
       </div>
 
-      {/* Auth Prompt */}
-      {!isLoggedIn && (
+      {/* Login/Register Prompt for Non-Owners */}
+      {!isOwner && (
         <div className="fixed bottom-4 w-full flex flex-col items-center gap-3 px-4 z-10">
           <button
             onClick={() => navigate('/login')}
