@@ -10,9 +10,9 @@ export default function PublicProfilePage() {
   const { type, gender, level, username } = useParams();
   const profileLink = `${type}/${gender}/${level}/${username}`;
   const { data: profile, isLoading, error } = useProfileByLink(profileLink);
-  
+
   // In a real app, this would come from authentication context
-  const [isLoggedIn] = useState(false); 
+  const [isLoggedIn] = useState(false);
 
   const age = profile?.dob
     ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
@@ -23,9 +23,9 @@ export default function PublicProfilePage() {
       {!isLoggedIn && (
         <>
           <div className="blur-sm select-none">{children}</div>
-          <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] flex flex-col items-center justify-center gap-4 p-6">
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px] flex flex-col items-center justify-center gap-4 p-6 z-10">
             <div className="bg-gray-100 p-3 rounded-full">
-              <Lock size={24} className="text-gray-600" />
+              {icon || <Lock size={24} className="text-gray-600" />}
             </div>
             <h3 className="text-xl font-bold text-gray-800 text-center">
               {title} Locked
@@ -112,7 +112,7 @@ export default function PublicProfilePage() {
 
         {/* Bio Section */}
         {profile.bio && (
-          <ProtectedSection title="Bio" icon={<Smile />}>
+          <ProtectedSection title="Bio" icon={<Smile size={24} className="text-pink-500" />}>
             <div className="flex items-center gap-2 mb-3">
               <Smile size={20} className="text-pink-500" />
               <h3 className="text-lg font-semibold text-gray-800">About Me</h3>
@@ -144,7 +144,7 @@ export default function PublicProfilePage() {
 
         {/* Interests */}
         {profile.interest?.length > 0 && (
-          <ProtectedSection title="Interests" icon={<Heart />}>
+          <ProtectedSection title="Interests" icon={<Heart size={24} className="text-red-500" />}>
             <div className="flex items-center gap-2 mb-4">
               <Heart size={20} className="text-red-500" />
               <h3 className="text-lg font-semibold text-gray-800">Interests</h3>
