@@ -136,23 +136,22 @@ export default function PublicProfilePage() {
       {/* 🔐 Floating Auth Prompt */}
       {!isLoggedIn && (
         <>
-          <div className="fixed bottom-20 left-0 right-0 flex justify-center">
-            <button
-              onClick={() => navigate('/login')}
-              className="text-sm text-gray-600 underline hover:text-gray-800 transition"
-            >
-              Already have an account? Log In
-            </button>
-          </div>
-
-          <div className="fixed bottom-4 left-4 right-4">
-            <button
-              onClick={() => navigate('/register')}
-              className="w-full py-3 text-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl shadow-lg hover:opacity-90 transition"
-            >
-              Register to See Full Profile
-            </button>
-          </div>
+          <div className="fixed bottom-24 w-full flex justify-center">
+      <button
+        onClick={() => navigate('/login')}
+        className="bg-[#1a73e8] text-white font-medium px-6 py-3 rounded-full shadow-md hover:bg-[#1669c1] transition"
+      >
+        Log in
+      </button>
+    </div>
+    <div className="fixed bottom-4 w-full flex justify-center px-4">
+      <button
+        onClick={() => navigate('/register')}
+        className="bg-[#1a73e8] text-white font-medium px-6 py-3 rounded-full shadow-md hover:bg-[#1669c1] transition w-full max-w-xs"
+      >
+        Register to See Full Profile
+      </button>
+    </div>
         </>
       )}
     </div>
