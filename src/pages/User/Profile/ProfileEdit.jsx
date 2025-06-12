@@ -5,7 +5,7 @@ import '@fontsource-variable/inter';
 
 import { interestMap, getProfileFields } from '../../../Utlis/utlis';
 import { useEditableProfile } from '../../../Hooks/EditProfile';
-import { EditableField } from '../../../components/User_Home/ProfileEdit';
+import { EditableField, UploadOptions } from '../../../components/User_Home/ProfileEdit';
 import { EditableSection } from '../../../components/User_Home/EditableSection';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
@@ -28,7 +28,6 @@ export default function ProfileEditPage() {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bioInput, setBioInput] = useState('');
 
-  // Set initial bioInput once profile is available
   useEffect(() => {
     if (profile?.bio) setBioInput(profile.bio);
   }, [profile?.bio]);
@@ -46,6 +45,20 @@ export default function ProfileEditPage() {
     if (file) {
       uploadImage(file, userType === 'fm' ? 0 : undefined);
     }
+  };
+
+  const openGallery = () => {
+    galleryRef.current?.click();
+    setShowUpload(false);
+  };
+
+  const openCamera = () => {
+    cameraRef.current?.click();
+    setShowUpload(false);
+  };
+
+  const cancelUpload = () => {
+    setShowUpload(false);
   };
 
   const allInterests = Object.entries(interestMap).map(([key, value]) => ({
@@ -78,6 +91,15 @@ export default function ProfileEditPage() {
               >
                 <Edit2 size={16} className="text-gray-600" />
               </button>
+
+              {showUpload && (
+                <UploadOptions
+                  onCamera={openCamera}
+                  onGallery={openGallery}
+                  onCancel={cancelUpload}
+                />
+              )}
+
               <input
                 type="file"
                 accept="image/*"
@@ -102,7 +124,6 @@ export default function ProfileEditPage() {
           <section className="bg-gray-100 rounded-2xl p-5">
             <div className="flex justify-between items-start mb-3">
               <h2 className="text-sm font-semibold text-gray-800">My Bio</h2>
-
               {!isEditingBio ? (
                 <button
                   onClick={() => setIsEditingBio(true)}
