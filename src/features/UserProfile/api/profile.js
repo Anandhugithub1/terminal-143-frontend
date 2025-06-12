@@ -11,7 +11,7 @@ export const fetchMyProfile = () =>
 export const updateProfileData = (payload) => {
 
 
-  return axios.post(
+  return axios.patch(
     'https://userapi.terminal143.com/user/update',
     payload,
     { withCredentials: true }
