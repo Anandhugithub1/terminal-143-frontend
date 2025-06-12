@@ -77,7 +77,6 @@ export default function PublicProfilePage() {
           <div className="flex flex-wrap items-center justify-center gap-4 mt-3 text-gray-700">
             <div className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
               <User size={16} className="mr-1.5 text-pink-500" />
-              <span>Model</span>
             </div>
             <div className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
               <Cake size={16} className="mr-1.5 text-pink-500" />
