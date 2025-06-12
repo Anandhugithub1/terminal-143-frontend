@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Cake, MapPin, Heart, Star, Image, Smile, Phone, Mail, MessageSquare, User, Map } from 'lucide-react';
+import { Cake, MapPin, Star, Image, Smile, Phone, Mail, MessageSquare, User, Map, Heart } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { useProfileByLink } from '../../../Hooks/getProfileByLink';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
@@ -15,7 +15,7 @@ export default function PublicProfilePage() {
       <LoadingSpinner size="lg" />
     </div>
   );
-  
+
   if (error) return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-md text-center">
@@ -36,21 +36,12 @@ export default function PublicProfilePage() {
     ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
     : '—';
 
-  // Mock contact info for demonstration
-  const contactInfo = {
-    phone: "+1 (555) 123-4567",
-    email: "jane.doe@example.com",
-    location: "New York, NY"
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-10">
-      {/* Cover Photo with Gradient Overlay */}
+      {/* Cover Photo */}
       <div className="relative w-full h-64">
         <div className="absolute inset-0 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-500 rounded-b-3xl" />
         <div className="absolute bottom-0 left-0 w-full h-16 bg-white rounded-t-3xl z-0" />
-        
-        {/* Profile Photo */}
         <div className="absolute left-1/2 bottom-[-3rem] transform -translate-x-1/2 z-10">
           <div className="relative">
             <div className="bg-white p-1 rounded-full shadow-xl">
@@ -72,9 +63,8 @@ export default function PublicProfilePage() {
         </div>
       </div>
 
-      {/* Profile Content */}
       <div className="mt-20 px-4 max-w-4xl mx-auto">
-        {/* Profile Header */}
+        {/* Header */}
         <div className="text-center mb-8">
           <div className="flex justify-center items-center gap-2 mb-3">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900">{profile.name}</h1>
@@ -84,18 +74,15 @@ export default function PublicProfilePage() {
               </div>
             )}
           </div>
-          
           <div className="flex flex-wrap items-center justify-center gap-4 mt-3 text-gray-700">
             <div className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
               <User size={16} className="mr-1.5 text-pink-500" />
               <span>{profile.userType === 'mp' ? 'Model' : 'Regular User'}</span>
             </div>
-            
             <div className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
               <Cake size={16} className="mr-1.5 text-pink-500" />
               <span>{age} years</span>
             </div>
-            
             {profile.location && (
               <div className="flex items-center bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
                 <MapPin size={16} className="mr-1.5 text-blue-500" />
@@ -105,22 +92,9 @@ export default function PublicProfilePage() {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-center gap-4 mb-10">
-          <button className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium py-2.5 px-6 rounded-full shadow-md hover:shadow-lg transition-shadow">
-            <MessageSquare size={18} />
-            <span>Message</span>
-          </button>
-          <button className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-medium py-2.5 px-6 rounded-full shadow-md hover:shadow-lg transition-shadow">
-            <Heart size={18} />
-            <span>Connect</span>
-          </button>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column */}
+          {/* Left Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Bio Section */}
             {profile.bio && (
               <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
                 <div className="flex items-center gap-2 mb-4">
@@ -131,7 +105,6 @@ export default function PublicProfilePage() {
               </div>
             )}
 
-            {/* Gallery */}
             {profile.photos?.length > 0 && (
               <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
                 <div className="flex items-center gap-2 mb-4">
@@ -143,10 +116,7 @@ export default function PublicProfilePage() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {profile.photos.map((url, i) => (
-                    <div 
-                      key={i} 
-                      className="aspect-square rounded-xl overflow-hidden shadow-md group relative"
-                    >
+                    <div key={i} className="aspect-square rounded-xl overflow-hidden shadow-md group relative">
                       <img
                         src={url}
                         alt={`Gallery ${i + 1}`}
@@ -164,50 +134,52 @@ export default function PublicProfilePage() {
             )}
           </div>
 
-          {/* Right Column */}
+          {/* Right Sidebar */}
           <div className="space-y-6">
-            {/* Contact Card */}
+            {/* Contact Info */}
             <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
               <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <MapPin size={20} className="text-blue-500" />
                 Contact Information
               </h3>
-              
+
               <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="mt-1 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-                    <Phone size={16} className="text-blue-500" />
+                {profile.phone && (
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
+                      <Phone size={16} className="text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Phone</p>
+                      <p className="font-medium">{profile.phone}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Phone</p>
-                    <p className="font-medium">{contactInfo.phone}</p>
+                )}
+
+                {profile.email && (
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center">
+                      <Mail size={16} className="text-pink-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Email</p>
+                      <p className="font-medium">{profile.email}</p>
+                    </div>
                   </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="mt-1 w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center">
-                    <Mail size={16} className="text-pink-500" />
+                )}
+
+                {profile.location && (
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
+                      <Map size={16} className="text-purple-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Location</p>
+                      <p className="font-medium">{profile.location}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="font-medium">{contactInfo.email}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="mt-1 w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center">
-                    <Map size={16} className="text-purple-500" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Location</p>
-                    <p className="font-medium">{contactInfo.location}</p>
-                  </div>
-                </div>
+                )}
               </div>
-              
-              <button className="mt-5 w-full bg-gradient-to-r from-green-500 to-teal-500 text-white font-medium py-2.5 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                Request Contact
-              </button>
             </div>
 
             {/* Interests */}
@@ -229,25 +201,6 @@ export default function PublicProfilePage() {
                 </div>
               </div>
             )}
-
-            {/* Stats */}
-            <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Profile Stats</h3>
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="p-3 bg-gradient-to-br from-pink-50 to-purple-50 rounded-xl">
-                  <div className="text-2xl font-bold text-gray-800">1.2K</div>
-                  <div className="text-xs text-gray-600">Followers</div>
-                </div>
-                <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl">
-                  <div className="text-2xl font-bold text-gray-800">356</div>
-                  <div className="text-xs text-gray-600">Following</div>
-                </div>
-                <div className="p-3 bg-gradient-to-br from-green-50 to-teal-50 rounded-xl">
-                  <div className="text-2xl font-bold text-gray-800">89</div>
-                  <div className="text-xs text-gray-600">Posts</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
