@@ -11,7 +11,6 @@ export default function PublicProfilePage() {
   const profileLink = `${type}/${gender}/${level}/${username}`;
   const { data: profile, isLoading, error } = useProfileByLink(profileLink);
 
-  // 🔒 Fake auth state
   const [isLoggedIn] = useState(false);
 
   const age = profile?.dob
@@ -32,12 +31,10 @@ export default function PublicProfilePage() {
   if (error) return <div className="text-center mt-10 text-red-500">{error.message}</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-24 relative">
+    <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-40 relative">
       {/* Cover + Profile Container */}
       <div className="relative w-full h-52 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300">
         <div className="absolute bottom-0 left-0 w-full h-12 bg-white rounded-t-3xl z-0" />
-
-        {/* Profile Photo (Always Visible) */}
         <div className="absolute left-1/2 bottom-[-3rem] transform -translate-x-1/2 z-10">
           <div className="relative">
             <img
@@ -57,9 +54,8 @@ export default function PublicProfilePage() {
         </div>
       </div>
 
-      {/* Profile Content */}
+      {/* Blurred Content */}
       <div className={`mt-16 px-4 max-w-2xl mx-auto ${!isLoggedIn ? 'blur-sm pointer-events-none select-none opacity-60' : ''}`}>
-        {/* Profile Header */}
         <div className="text-center mb-6">
           <div className="flex justify-center items-center gap-2">
             <h1 className="text-3xl font-bold text-gray-900">{profile.name}</h1>
@@ -84,7 +80,7 @@ export default function PublicProfilePage() {
           </div>
         </div>
 
-        {/* Bio Section */}
+        {/* Bio */}
         {profile.bio && (
           <ProtectedSection>
             <div className="flex items-center gap-2 mb-3">
@@ -137,22 +133,27 @@ export default function PublicProfilePage() {
         )}
       </div>
 
-      {/* Log In / Register Buttons for Logged-out Users */}
+      {/* 🔐 Floating Auth Prompt */}
       {!isLoggedIn && (
-        <div className="fixed bottom-4 inset-x-0 flex justify-center gap-3 z-50 px-4">
-          <button
-            onClick={() => navigate('/login')}
-            className="px-5 py-2.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-medium rounded-lg shadow-md hover:opacity-90 transition-opacity"
-          >
-            Log In
-          </button>
-          <button
-            onClick={() => navigate('/register')}
-            className="px-5 py-2.5 bg-white text-gray-800 border border-gray-300 font-medium rounded-lg shadow-md hover:bg-gray-50 transition-colors"
-          >
-            Register
-          </button>
-        </div>
+        <>
+          <div className="fixed bottom-20 left-0 right-0 flex justify-center">
+            <button
+              onClick={() => navigate('/login')}
+              className="text-sm text-gray-600 underline hover:text-gray-800 transition"
+            >
+              Already have an account? Log In
+            </button>
+          </div>
+
+          <div className="fixed bottom-4 left-4 right-4">
+            <button
+              onClick={() => navigate('/register')}
+              className="w-full py-3 text-lg font-semibold text-white bg-gradient-to-r from-pink-500 to-purple-600 rounded-xl shadow-lg hover:opacity-90 transition"
+            >
+              Register to See Full Profile
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
