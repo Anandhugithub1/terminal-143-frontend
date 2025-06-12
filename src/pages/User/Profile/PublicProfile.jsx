@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Cake, MapPin, Heart, Star, Image, Smile } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { useProfileByLink } from '../../../Hooks/getProfileByLink';
-import { fetchProfile } from '../../../features/Userprofile';
+import { fetchProfile } from '../../../features/UserProfile';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 export default function PublicProfilePage() {
