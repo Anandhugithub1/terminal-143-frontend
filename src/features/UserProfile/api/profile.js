@@ -20,6 +20,15 @@ export const updateProfileData = (payload) => {
   );
 };
 
+
+
+export const getProfileByLink = async (link) => {
+  const res = await axios.get(`${PROFILE_BASE}/user/by-link`, {
+    params: { url: link },
+  });
+  return res.data.profile; 
+};
+
 /** Get presigned URL for image upload */
 export const getPresignedUrl = ({ fileType, photoIndex }) => {
   
@@ -45,3 +54,9 @@ export const completeProfileApi = (payload) => {
     }
   );
 };
+
+export const getProfileBYLink= (link) => {
+  return axios.get(
+    `${PROFILE_BASE}/user/profile/${link}`,
+  );
+}
