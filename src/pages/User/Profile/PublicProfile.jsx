@@ -16,7 +16,7 @@ import { Button } from '../../../shared/Button';
 
 // Lazy load heavy sections for performance
 const GallerySection = lazy(() =>
-  import('../../../components/PublicProfile/GallerySection')
+  import('../../../components/PublicProfile/Gallery')
 );
 const InterestsSection = lazy(() =>
   import('../../../components/PublicProfile/InterestsSection')
