@@ -139,24 +139,25 @@ export default function PublicProfilePage() {
        {!isLoggedIn && (
   <>
     {/* Login Button (Top) */}
-    <div className="fixed bottom-24 w-full flex justify-center">
-      <button
-        onClick={() => navigate('/login')}
-        className="bg-white text-black text-sm font-medium px-6 py-3 rounded-full w-full max-w-xs shadow hover:bg-[#1669c1] transition"
-      >
-        Log in
-      </button>
-    </div>
+<div className="fixed bottom-24 w-full flex justify-center">
+  <button
+    onClick={() => navigate('/login')}
+    className="bg-white text-transparent bg-clip-text bg-gradient-to-r from-gradient-primary to-gradient-secondary text-sm font-medium px-6 py-3 rounded-full w-full max-w-xs shadow hover:bg-gray-100 transition"
+  >
+    Log in
+  </button>
+</div>
 
-    {/* Register Button (Bottom) */}
-    <div className="fixed bottom-4 w-full flex justify-center">
-      <button
-        onClick={() => navigate('/register')}
-        className=" text-white text-sm font-medium px-6 py-3 rounded-full w-full max-w-xs shadow bg-gradient-to-r from-gradient-primary to-gradient-secondary transition"
-      >
-        Register to See Full Profile
-      </button>
-    </div>
+{/* Register Button (Bottom) */}
+<div className="fixed bottom-4 w-full flex justify-center">
+  <button
+    onClick={() => navigate('/register')}
+    className="text-white text-sm font-medium px-6 py-3 rounded-full w-full max-w-xs shadow bg-gradient-to-r from-gradient-primary to-gradient-secondary transition"
+  >
+    Register to See Full Profile
+  </button>
+</div>
+
   </>
 )}
 
