@@ -202,15 +202,17 @@ export default function ProfileEditPage() {
             <div className="px-5 py-3 border-b border-gray-200">
               <h2 className="text-sm font-semibold text-gray-800">About Me</h2>
             </div>
-            {fields.map((f) => (
-              <EditableField
-                key={f.key}
-                icon={f.icon}
-                label={f.label}
-                value={f.value}
-                onEdit={() => updateProfileData(f.key, f.value)}
-              />
-            ))}
+            {fields
+  .filter((f) => f.key !== 'gender' && f.key !== 'location')
+  .map((f) => (
+    <EditableField
+      key={f.key}
+      icon={f.icon}
+      label={f.label}
+      value={f.value}
+      onSave={(newValue) => updateProfileData(f.key, newValue)}
+    />
+))}
           </section>
 
           {/* Interests */}
