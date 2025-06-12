@@ -21,11 +21,16 @@ export default function PublicProfilePage() {
     <div className="min-h-screen bg-gradient-to-b from-white to-[#f7f9fc] font-inter">
       {/* Cover Photo */}
       <div className="relative w-full h-80 bg-gray-100 overflow-hidden">
-        <img
-          src={profile.photo || profile.profilePhoto || '/default-avatar.jpg'}
-          alt="Profile"
-          className="w-full h-full object-cover"
-        />
+      <img
+  src={
+    (profile.userType === 'mp' && profile.photos?.[0]) ||
+    profile.photo ||
+    profile.profilePhoto ||
+    '/default-avatar.jpg'
+  }
+  alt="Profile"
+  className="w-full h-full object-cover"
+/>
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
       </div>
