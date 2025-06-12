@@ -142,7 +142,7 @@ export default function PublicProfilePage() {
     <div className="fixed bottom-24 w-full flex justify-center">
       <button
         onClick={() => navigate('/login')}
-        className="bg-white text-white text-sm font-medium px-6 py-3 rounded-full w-full max-w-xs shadow hover:bg-[#1669c1] transition"
+        className="bg-white text-black text-sm font-medium px-6 py-3 rounded-full w-full max-w-xs shadow hover:bg-[#1669c1] transition"
       >
         Log in
       </button>
