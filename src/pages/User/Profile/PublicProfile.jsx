@@ -13,18 +13,18 @@ export default function PublicProfilePage() {
   const { type, gender, level, username } = useParams();
   const profileLink = `${type}/${gender}/${level}/${username}`;
 
-  // Fetch displayed profile by link
+  // Fetch the target profile
   const { data: profile, isLoading: isProfileLoading, error: profileError } = useProfileByLink(profileLink);
 
-  // Fetch current user's profile to determine access
-  const { data: userProfile, isLoading: isUserLoading } = useSelector((state) => state.userProfile);
+  // Fetch current user's own profile to check access
+  const { currentUser, status: userStatus, error: userError } = useSelector((state) => state.userProfile);
 
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
 
-  // Show full profile only if fetchProfile succeeded
-  const hasAccess = Boolean(userProfile);
+  // Allow full view only if fetchProfile succeeded
+  const hasAccess = userStatus === 'succeeded';
 
   const age = profile?.dob
     ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
@@ -40,8 +40,12 @@ export default function PublicProfilePage() {
     </div>
   );
 
-  if (isProfileLoading || isUserLoading) return <LoadingSpinner />;
+  if (isProfileLoading || userStatus === 'loading') return <LoadingSpinner />;
   if (profileError) return <div className="text-center mt-10 text-red-500">{profileError.message}</div>;
+  if (userError && userStatus === 'failed') {
+    // treat failed fetch as no access
+    console.error('User profile fetch failed:', userError);
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-40 relative">
@@ -173,4 +177,3 @@ export default function PublicProfilePage() {
       )}
     </div>
   );
-}
