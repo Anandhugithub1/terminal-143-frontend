@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfile } from '../features/UserProfile';
-import { updateProfile, uploadProfileImage } from '../features/UserProfile';
+import { fetchProfile, updateProfile, uploadProfileImage } from '../features/UserProfile';
 
 export function useEditableProfile() {
   const dispatch = useDispatch();
@@ -13,30 +12,31 @@ export function useEditableProfile() {
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchProfile());
-      
     }
   }, [dispatch, status]);
 
   useEffect(() => {
     if (status === 'succeeded' && profile) {
-      setLocalAvatar(profile.profilePhoto || profile.photo || '');
+      setLocalAvatar(profile.photo || ''); // ✅ use only `photo`
     }
   }, [status, profile]);
 
   const updateProfileData = (key, value) => {
-    // For interests, we need to handle array to object conversion if needed
-    const payload = key === 'interest' && Array.isArray(value) 
-      ? { [key]: value } 
-      : { [key]: value };
-    
+    const payload = { [key]: value };
     dispatch(updateProfile(payload));
-    window.location.reload(); // 🔁 Force full page reload after update
-
   };
 
-  const uploadImage = (file, photoIndex) => {
-    setLocalAvatar(URL.createObjectURL(file));
-    dispatch(uploadProfileImage({ file, photoIndex }));
+  const uploadImage = async (file, photoIndex = 0) => {
+    const localURL = URL.createObjectURL(file);
+    setLocalAvatar(localURL); // temporary preview
+
+    try {
+      const { publicUrl } = await dispatch(uploadProfileImage({ file, photoIndex })).unwrap();
+      setLocalAvatar(publicUrl);
+      await dispatch(updateProfile({ photo: publicUrl }));
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
   };
 
   return {

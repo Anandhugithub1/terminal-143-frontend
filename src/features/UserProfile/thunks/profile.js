@@ -73,10 +73,7 @@ export const uploadProfileImage = createAsyncThunk(
         throw new Error(`Upload failed: ${res.status} - ${errText}`);
       }
 
-      // ✅ After upload, update profile with image URL
-      await thunkAPI.dispatch(
-        updateProfile({ photo: publicUrl })
-      ).unwrap();
+      
 
       return { publicUrl, photoIndex };
     } catch (err) {
