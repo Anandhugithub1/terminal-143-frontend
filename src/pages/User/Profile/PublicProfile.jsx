@@ -160,6 +160,11 @@ export default function PublicProfilePage() {
           </button>
         </div>
       )}
+
+      {/* Security Measures */}
+      <div className="fixed bottom-2 right-2 text-xs text-gray-400">
+         Secure Public Profile
+      </div>
     </div>
   );
 }
