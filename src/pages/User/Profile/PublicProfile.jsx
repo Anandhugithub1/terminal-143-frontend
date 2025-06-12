@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { Cake, MapPin, QrCode } from 'lucide-react';
+import { Cake, MapPin, Heart, Star, Image, Smile } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { useProfileByLink } from '../../../Hooks/getProfileByLink';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
@@ -18,63 +18,85 @@ export default function PublicProfilePage() {
     : '—';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-[#f7f9fc] font-inter">
+    <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-10">
       {/* Cover Photo */}
-      <div className="relative w-full h-80 bg-gray-100 overflow-hidden">
-      <img
-  src={
-    (profile.userType === 'mp' && profile.photos?.[0]) ||
-    profile.photo ||
-    profile.profilePhoto ||
-    '/default-avatar.jpg'
-  }
-  alt="Profile"
-  className="w-full h-full object-cover"
-/>
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+      <div className="relative w-full h-60 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        
+        {/* Profile Photo */}
+        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2">
+          <div className="relative">
+            <img
+              src={
+                (profile.userType === 'mp' && profile.photos?.[0]) ||
+                profile.photo ||
+                profile.profilePhoto ||
+                '/default-avatar.jpg'
+              }
+              alt="Profile"
+              className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg"
+            />
+            <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-white flex items-center justify-center">
+              <Heart size={16} className="fill-pink-500 text-pink-500" />
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Profile Card */}
-      <div className="-mt-20 mx-4 bg-white rounded-3xl shadow-lg p-6 relative z-10">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">{profile.name}</h1>
-          <p className="text-gray-500 mt-1">
-            {age} years {profile.location && `• ${profile.location}`}
-          </p>
-
-          {profile.qrCodeUrl && (
-            <a
-              href={`https://${profile.qrCodeUrl}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-1 text-sm text-blue-600 hover:underline"
-            >
-              <QrCode size={16} /> View QR Code
-            </a>
-          )}
+      {/* Profile Content */}
+      <div className="mt-16 px-4 max-w-2xl mx-auto">
+        {/* Profile Header */}
+        <div className="text-center mb-6">
+          <div className="flex justify-center items-center gap-2">
+            <h1 className="text-3xl font-bold text-gray-900">{profile.name}</h1>
+            {profile.isVerified && (
+              <div className="bg-blue-100 p-1 rounded-full">
+                <Star size={16} className="fill-blue-500 text-blue-500" />
+              </div>
+            )}
+          </div>
+          
+          <div className="flex items-center justify-center gap-3 mt-2 text-gray-600">
+            <div className="flex items-center">
+              <Cake size={16} className="mr-1 text-pink-500" />
+              <span>{age} years</span>
+            </div>
+            {profile.location && (
+              <div className="flex items-center">
+                <MapPin size={16} className="mr-1 text-blue-500" />
+                <span>{profile.location}</span>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Bio */}
+        {/* Bio Section */}
         {profile.bio && (
-          <div className="mt-6">
-            <h3 className="text-sm font-semibold text-gray-800 mb-1">About Me</h3>
-            <p className="text-sm text-gray-700 leading-relaxed">{profile.bio}</p>
+          <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Smile size={20} className="text-pink-500" />
+              <h3 className="text-lg font-semibold text-gray-800">About Me</h3>
+            </div>
+            <p className="text-gray-700 leading-relaxed">{profile.bio}</p>
           </div>
         )}
 
         {/* Gallery */}
         {profile.photos?.length > 0 && (
-          <div className="mt-6">
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">Gallery</h3>
-            <div className="grid grid-cols-3 gap-2 rounded-lg overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Image size={20} className="text-purple-500" />
+              <h3 className="text-lg font-semibold text-gray-800">Gallery</h3>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {profile.photos.map((url, i) => (
-                <img
-                  key={i}
-                  src={url}
-                  alt={`Gallery ${i}`}
-                  className="w-full h-28 object-cover rounded-lg"
-                />
+                <div key={i} className="aspect-square rounded-xl overflow-hidden shadow-md">
+                  <img
+                    src={url}
+                    alt={`Gallery ${i + 1}`}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -82,13 +104,16 @@ export default function PublicProfilePage() {
 
         {/* Interests */}
         {profile.interest?.length > 0 && (
-          <div className="mt-6">
-            <h3 className="text-sm font-semibold text-gray-800 mb-2">Interests</h3>
+          <div className="bg-white rounded-xl shadow-sm p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <Heart size={20} className="text-red-500" />
+              <h3 className="text-lg font-semibold text-gray-800">Interests</h3>
+            </div>
             <div className="flex flex-wrap gap-2">
               {profile.interest.map((item, i) => (
                 <span
                   key={i}
-                  className="bg-pink-100 text-pink-700 text-xs px-3 py-1 rounded-full"
+                  className="bg-gradient-to-r from-pink-50 to-purple-50 text-pink-700 text-sm px-4 py-2 rounded-full border border-pink-100 shadow-sm"
                 >
                   {item}
                 </span>
