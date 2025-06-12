@@ -60,7 +60,6 @@ export const uploadProfileImage = createAsyncThunk(
         .dispatch(fetchPresignedUrl({ fileType: file.type, photoIndex }))
         .unwrap();
 
-      // ✅ Use fetch instead of axios
       const res = await fetch(presignedUrl, {
         method: 'PUT',
         headers: {
@@ -74,12 +73,18 @@ export const uploadProfileImage = createAsyncThunk(
         throw new Error(`Upload failed: ${res.status} - ${errText}`);
       }
 
+      // ✅ After upload, update profile with image URL
+      await thunkAPI.dispatch(
+        updateProfile({ photo: publicUrl })
+      ).unwrap();
+
       return { publicUrl, photoIndex };
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message || 'Upload failed');
     }
   }
 );
+
 
 /** Thunk to complete profile (final submission) */
 export const completeProfile = createAsyncThunk(
