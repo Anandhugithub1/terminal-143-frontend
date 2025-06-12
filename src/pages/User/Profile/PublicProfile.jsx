@@ -2,8 +2,8 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Cake, MapPin, ChevronLeft } from 'lucide-react';
 import '@fontsource-variable/inter';
-import { useProfileByLink } from '../../';
-import { LoadingSpinner } from '../../../Hooks/getProfileByLink';
+import { useProfileByLink } from '../../../Hooks/getProfileByLink';
+import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 export default function PublicProfilePage() {
   const { profileLink } = useParams(); // URL param
