@@ -20,29 +20,31 @@ export default function PublicProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-10">
       {/* Cover Photo */}
-      <div className="relative w-full h-60 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-        
-        {/* Profile Photo */}
-<div className="absolute bottom-[-4rem] left-1/2 transform -translate-x-1/2">
-  <div className="relative">
-    <img
-      src={
-        (profile.userType === 'mp' && profile.photos?.[0]) ||
-        profile.photo ||
-        profile.profilePhoto ||
-        '/default-avatar.jpg'
-      }
-      alt="Profile"
-      className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg"
-    />
-    <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-white flex items-center justify-center">
-      <Heart size={16} className="fill-pink-500 text-pink-500" />
+  {/* Cover + Profile Container */}
+<div className="relative w-full h-52 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300">
+  {/* Rounded white bottom */}
+  <div className="absolute bottom-0 left-0 w-full h-12 bg-white rounded-t-3xl z-0" />
+
+  {/* Profile Photo */}
+  <div className="absolute left-1/2 bottom-[-3rem] transform -translate-x-1/2 z-10">
+    <div className="relative">
+      <img
+        src={
+          (profile.userType === 'mp' && profile.photos?.[0]) ||
+          profile.photo ||
+          profile.profilePhoto ||
+          '/default-avatar.jpg'
+        }
+        alt="Profile"
+        className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg"
+      />
+      <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-white flex items-center justify-center">
+        <Heart size={16} className="fill-pink-500 text-pink-500" />
+      </div>
     </div>
   </div>
 </div>
 
-      </div>
 
       {/* Profile Content */}
       <div className="mt-16 px-4 max-w-2xl mx-auto">
