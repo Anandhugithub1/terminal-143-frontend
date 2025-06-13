@@ -97,7 +97,7 @@ export default function ProfileEditPage() {
           <div className="flex flex-col items-center mt-6">
             <div className="relative">
             <img
-  src={(localAvatar || '/path/to/avatar.jpg') `}`}
+  src={(localAvatar || '/path/to/avatar.jpg') + `?t=${Date.now()}`}
   alt="Profile avatar"
   className="w-24 h-24 rounded-full border-4 border-pink-400 object-cover"
 />
