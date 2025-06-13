@@ -1,25 +1,44 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProfile, updateProfile, uploadProfileImage } from '../features/UserProfile';
+import {
+  fetchProfile,
+  updateProfile,
+  uploadProfileImage,
+} from '../features/UserProfile';
 
 export function useEditableProfile() {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.userProfile.currentUser);
-  const status = useSelector((state) => state.userProfile.status);
+  const reduxStatus = useSelector((state) => state.userProfile.status);
 
   const [localAvatar, setLocalAvatar] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
 
+  // Fetch profile initially
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchProfile());
+    if (reduxStatus === 'idle') {
+      fetchProfileData();
     }
-  }, [dispatch, status]);
+  }, [reduxStatus]);
 
+  // Update local avatar when profile changes
   useEffect(() => {
-    if (status === 'succeeded' && profile) {
+    if (reduxStatus === 'succeeded' && profile) {
       setLocalAvatar(profile.photo || '');
     }
-  }, [status, profile]);
+  }, [reduxStatus, profile]);
+
+  const fetchProfileData = async () => {
+    try {
+      setIsFetching(true);
+      await dispatch(fetchProfile()).unwrap();
+    } catch (err) {
+      console.error('Profile fetch failed:', err);
+    } finally {
+      setIsFetching(false);
+    }
+  };
 
   const updateProfileData = (key, value) => {
     const payload = { [key]: value };
@@ -29,29 +48,36 @@ export function useEditableProfile() {
   const uploadImage = async (file, photoIndex = 0) => {
     const localURL = URL.createObjectURL(file);
     setLocalAvatar(localURL); // temporary preview
+    setIsUploading(true);
+
     try {
       const result = await dispatch(uploadProfileImage({ file, photoIndex })).unwrap();
-      
-      await dispatch(updateProfile({ photo: result.publicUrl }));
-      setLocalAvatar(result.publicUrl);
 
-       // ✅ Force full reload after update is done
-    setTimeout(() => {
-      window.location.reload(); // full hard reload to reset cache
-    }, 300);
+      // Bust CDN cache with timestamp
+      const timestampedUrl = `${result.publicUrl}?t=${Date.now()}`;
 
-      // ✅ Refetch profile to ensure cache busting, latest photo, etc.
-      await dispatch(fetchProfile());
+      await dispatch(updateProfile({ photo: timestampedUrl }));
+      setLocalAvatar(timestampedUrl);
+
+      await fetchProfileData();
+
+      // Force reload to ensure CloudFront invalidation is respected
+      window.location.reload();
     } catch (error) {
-      console.error('Upload failed:', error);
+      console.error('Image upload failed:', error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return {
     profile,
-    status,
+    status: reduxStatus,
+    isUploading,
+    isFetching,
     localAvatar,
     updateProfileData,
     uploadImage,
+    refetch: fetchProfileData,
   };
 }
