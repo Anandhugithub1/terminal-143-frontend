@@ -17,7 +17,7 @@ export function useEditableProfile() {
 
   useEffect(() => {
     if (status === 'succeeded' && profile) {
-      setLocalAvatar(profile.photo || ''); // ✅ use only `photo`
+      setLocalAvatar(profile.photo || '');
     }
   }, [status, profile]);
 
@@ -29,13 +29,14 @@ export function useEditableProfile() {
   const uploadImage = async (file, photoIndex = 0) => {
     const localURL = URL.createObjectURL(file);
     setLocalAvatar(localURL); // temporary preview
-console.log('Uploading image:', file.name, file.size);
     try {
       const result = await dispatch(uploadProfileImage({ file, photoIndex })).unwrap();
-      console.log('uploadImage: Uploaded result', result);
       
-    await dispatch(updateProfile({ photo: result.publicUrl }));
-    setLocalAvatar(result.publicUrl);
+      await dispatch(updateProfile({ photo: result.publicUrl }));
+      setLocalAvatar(result.publicUrl);
+
+      // ✅ Refetch profile to ensure cache busting, latest photo, etc.
+      await dispatch(fetchProfile());
     } catch (error) {
       console.error('Upload failed:', error);
     }
