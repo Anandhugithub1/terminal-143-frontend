@@ -33,7 +33,8 @@ export function useEditableProfile() {
       const result = await dispatch(uploadProfileImage({ file, photoIndex })).unwrap();
       
       await dispatch(updateProfile({ photo: result.publicUrl }));
-      setLocalAvatar(result.publicUrl);
+      const timestampedUrl = `${result.publicUrl}?t=${Date.now()}`;
+setLocalAvatar(timestampedUrl);
 
       // ✅ Refetch profile to ensure cache busting, latest photo, etc.
       await dispatch(fetchProfile());
