@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProfiles } from '../../features/Profiles';
 import ProfileCard from '../../components/Cards/ProfileCard';
@@ -10,7 +10,7 @@ import AlertMessage from '../../components/Ui/Alerts';
 import { LoadingSpinner } from '../../components/Ui/Spinner';
 import placeholderImage from '../../assets/woman.png';
 import { useSwipeable } from 'react-swipeable';
-import { motion, useAnimation } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const SWIPE_THRESHOLD = 100;
 
@@ -18,10 +18,9 @@ export default function UserHomePage() {
   const dispatch = useDispatch();
   const { list: profiles, status, error } = useSelector((state) => state.profiles);
   const [idx, setIdx] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState('');
   const preferences = useMemo(() => ['F'], []);
-  const controls = useAnimation();
-  const swipeRef = useRef();
 
   useEffect(() => {
     if (status === 'idle') {
@@ -30,24 +29,19 @@ export default function UserHomePage() {
   }, [status, dispatch, preferences]);
 
   const isEnd = profiles.length > 0 && idx >= profiles.length;
-
   const handleRefresh = () => window.location.reload();
   const handleConnect = async (userId) => {/* TODO */};
 
-  const handleSwipe = async (deltaX) => {
-    if (deltaX > SWIPE_THRESHOLD) {
-      await controls.start({ x: 500, opacity: 0 });
-      setIdx((i) => Math.min(i + 1, profiles.length));
-    } else if (deltaX < -SWIPE_THRESHOLD) {
-      await controls.start({ x: -500, opacity: 0 });
-      setIdx((i) => Math.min(i + 1, profiles.length));
-    } else {
-      controls.start({ x: 0, opacity: 1 });
-    }
-  };
-
   const swipeHandlers = useSwipeable({
-    onSwiped: ({ deltaX }) => handleSwipe(deltaX),
+    onSwiped: ({ deltaX }) => {
+      if (deltaX > SWIPE_THRESHOLD) {
+        setDirection(1); // right
+        setIdx((i) => Math.min(i + 1, profiles.length));
+      } else if (deltaX < -SWIPE_THRESHOLD) {
+        setDirection(-1); // left
+        setIdx((i) => Math.min(i + 1, profiles.length));
+      }
+    },
     trackMouse: true,
     trackTouch: true,
     preventScrollOnSwipe: false,
@@ -82,33 +76,41 @@ export default function UserHomePage() {
         </div>
       )}
 
-      {/* Full Profile Swipeable Section */}
-      <motion.div
-        {...swipeHandlers}
-        animate={controls}
-        initial={{ x: 0, opacity: 1 }}
-        className="relative"
-        drag="x"
-        dragConstraints={{ left: 0, right: 0 }}
-        onDragEnd={(_, info) => handleSwipe(info.offset.x)}
-        ref={swipeRef}
-      >
-        <ProfileCard
-          profile={profile}
-          placeholderImage={placeholderImage}
-          onConnectClick={() => handleConnect(profile.userId)}
-          onMessageClick={() => console.log('Message clicked')}
-        />
+      {/* Swipeable and Animated Profile View */}
+      <div className="relative" {...swipeHandlers}>
+        <AnimatePresence initial={false} mode="wait">
+          <motion.div
+            key={idx}
+            initial={{ x: direction === 1 ? 300 : -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: direction === 1 ? -300 : 300, opacity: 0 }}
+            transition={{ duration: 0.35 }}
+            className="relative"
+          >
+            <ProfileCard
+              profile={profile}
+              placeholderImage={placeholderImage}
+              onConnectClick={() => handleConnect(profile.userId)}
+              onMessageClick={() => console.log('Message clicked')}
+            />
 
-        <ActionControls
-          className="fixed bottom-32 inset-x-0"
-          onReject={() => setIdx(i => Math.min(i + 1, profiles.length))}
-          onRefresh={handleRefresh}
-          onLike={() => setIdx(i => Math.min(i + 1, profiles.length))}
-        />
+            <ActionControls
+              className="fixed bottom-32 inset-x-0"
+              onReject={() => {
+                setDirection(-1);
+                setIdx((i) => Math.min(i + 1, profiles.length));
+              }}
+              onRefresh={handleRefresh}
+              onLike={() => {
+                setDirection(1);
+                setIdx((i) => Math.min(i + 1, profiles.length));
+              }}
+            />
 
-        <DetailSection profile={profile} />
-      </motion.div>
+            <DetailSection profile={profile} />
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
       <BottomNav />
     </div>
