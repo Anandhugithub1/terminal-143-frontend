@@ -13,7 +13,6 @@ import { DetailSection } from '../../components/User_Home/Details';
 import { ActionControls } from '../../components/User_Home/LocationBar';
 import AlertMessage from '../../components/Ui/Alerts';
 import placeholderImage from '../../assets/woman.png';
-
 import ProfileSkeleton from '../../components/User_Home/ProfileSkeleton';
 import SwipeDeck from '../../components/User_Home/SwipeDeck';
 
@@ -23,25 +22,24 @@ export default function UserHomePage() {
     (state) => state.profiles,
     shallowEqual
   );
+
   const [idx, setIdx] = useState(0);
   const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState('');
-  const preferences = useMemo(() => ['F'], []);
 
   // Initial fetch
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchProfiles({ limit: 10 }));
-
     }
-  }, [status, dispatch, preferences]);
+  }, [status, dispatch]);
 
   const isEnd = profiles.length > 0 && idx >= profiles.length;
 
   const handleRefresh = useCallback(() => {
     setIdx(0);
-    dispatch(fetchProfiles({ preferences }));
-  }, [dispatch, preferences]);
+    dispatch(fetchProfiles({ limit: 10 }));
+  }, [dispatch]);
 
   // advance by ±1 on swipe or button
   const advance = useCallback(
@@ -53,15 +51,12 @@ export default function UserHomePage() {
   );
 
   if (status === 'loading') return <ProfileSkeleton />;
-
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
   if (isEnd) {
     return (
       <div className="bg-white min-h-screen flex flex-col items-center justify-center">
-        <p className="text-gray-500 text-lg">
-          Reached the end of profiles
-        </p>
+        <p className="text-gray-500 text-lg">Reached the end of profiles</p>
         <button
           onClick={handleRefresh}
           className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
@@ -73,10 +68,32 @@ export default function UserHomePage() {
   }
 
   const rawProfile = profiles[idx] || {};
-  const images = rawProfile.images?.length
-    ? rawProfile.images
+
+  const images = rawProfile.photos?.length
+    ? rawProfile.photos
     : [placeholderImage];
-  const profile = { ...rawProfile, images };
+
+  const profile = {
+    name: rawProfile.name || 'Unknown',
+    age: rawProfile.age || 'N/A',
+    about: rawProfile.bio || '',
+    gender: rawProfile.gender === 'F' ? 'Female' : rawProfile.gender === 'M' ? 'Male' : rawProfile.gender,
+    images,
+    location: rawProfile.location || 'Unknown',
+    popularity: rawProfile.popularity || 0,
+    healthStatus: rawProfile.healthStatus || { status: 'Unknown', lastTestedDate: 'Unknown' },
+    stdStatus: rawProfile.stdStatus || 'Unknown',
+    lastSeen: rawProfile.lastSeen || 'Unknown',
+    job: rawProfile.jobTitle || '',
+    languages: rawProfile.languagesKnown?.length
+      ? rawProfile.languagesKnown
+      : rawProfile.language
+      ? [rawProfile.language]
+      : [],
+    interests: rawProfile.interest || [],
+    userId: rawProfile.username,
+    suggestionIndex: rawProfile.suggestionIndex,
+  };
 
   return (
     <div className="relative bg-white min-h-screen pb-20">
