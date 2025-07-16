@@ -1,17 +1,19 @@
-/* ================= features/profiles/thunks.js ================= */
+/* ================= features/profiles/thunk.js ================= */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getMatchProviders } from './profilesapi';
+import { getMatchProviders } from './api';
 
 export const fetchProfiles = createAsyncThunk(
   'profiles/fetchProfiles',
-  async ({ preferences, userType }, thunkAPI) => {
+  /**
+   * payloadCreator now just takes { limit }
+   * and returns the array with suggestionIndex included.
+   */
+  async ({ limit = 10 }, thunkAPI) => {
     try {
-      const items = await getMatchProviders({ preferences, userType });
-      return items;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.error || 'Unable to fetch profiles.'
-      );
+      const profiles = await getMatchProviders({ limit });
+      return profiles;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
     }
   }
 );

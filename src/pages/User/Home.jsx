@@ -31,7 +31,8 @@ export default function UserHomePage() {
   // Initial fetch
   useEffect(() => {
     if (status === 'idle') {
-      dispatch(fetchProfiles({ preferences }));
+      dispatch(fetchProfiles({ limit: 10 }));
+
     }
   }, [status, dispatch, preferences]);
 

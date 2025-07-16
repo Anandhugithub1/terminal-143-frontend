@@ -3,15 +3,18 @@ import axios from 'axios';
 
 const BASE_URL = 'https://userapi.terminal143.com';
 
-
-export const getMatchProviders = async ({ preferences, limit = 10, }) => {
+/**
+ * Fetches the next batch of suggested profiles.
+ * Now only takes a `limit` — the handler uses Redis to page under the hood.
+ */
+export const getMatchProviders = async ({ limit = 10 }) => {
   const response = await axios.get(
-    `${BASE_URL}/match-providers/all`,
-    
+    `${BASE_URL}/user/recommendations`,
     {
-      params: { limit, preferences: JSON.stringify(preferences) },
+      params: { limit },
       withCredentials: true,
     }
   );
-  return response.data.items || [];
+  // handler now returns { profiles: [ { …, suggestionIndex }, … ] }
+  return response.data.profiles || [];
 };
