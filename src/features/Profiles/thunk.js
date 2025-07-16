@@ -1,6 +1,6 @@
 /* ================= features/profiles/thunk.js ================= */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getMatchProviders } from './api';
+import { getMatchProviders } from './profilesapi';
 
 export const fetchProfiles = createAsyncThunk(
   'profiles/fetchProfiles',
