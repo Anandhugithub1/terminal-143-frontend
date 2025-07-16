@@ -45,11 +45,20 @@ export default function UserHomePage() {
   const advance = useCallback(
     (dir) => {
       setDirection(dir);
-      setIdx((i) => Math.min(i + 1, profiles.length));
+      setIdx((i) => {
+        const next = i + 1;
+  
+        // If next index exceeds current list length, fetch more
+        if (next >= profiles.length) {
+          dispatch(fetchProfiles({ limit: 10 }));
+        }
+  
+        return next;
+      });
     },
-    [profiles.length]
+    [dispatch, profiles.length]
   );
-
+  
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
