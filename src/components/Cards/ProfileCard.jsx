@@ -11,16 +11,13 @@
   const ProfileCard = ({ profile,onMessageClick,onConnectClick,placeholderImage }) => {
     const { images = [], name, age, lastSeen = 'just now', about, gender, top, compatibility, distance } = profile;
     const [photoIdx, setPhotoIdx] = useState(0);
-    const lastIdx = images.length - 1;
-
     const onNext = useCallback(() => {
-      setPhotoIdx(idx => Math.min(idx + 1, lastIdx));
-    }, [lastIdx]);
-
+      setPhotoIdx(idx => (idx + 1) % images.length);
+    }, [images.length]);
+    
     const onPrev = useCallback(() => {
-      setPhotoIdx(idx => Math.max(idx - 1, 0));
-    }, []);
-
+      setPhotoIdx(idx => (idx - 1 + images.length) % images.length);
+    }, [images.length]);
     if (!images.length) return null;
 
     return (
