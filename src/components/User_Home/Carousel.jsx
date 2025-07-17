@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -13,30 +13,25 @@ export const PhotoCarousel = memo(({
   onError,
   className = '',
 }) => {
-  const [touchStartX, setTouchStartX] = useState(null);
-  const [touchEndX, setTouchEndX] = useState(null);
+  const startXRef = useRef(0);
   const containerRef = useRef();
 
   // Handle touch start
   const handleTouchStart = (e) => {
-    setTouchStartX(e.touches[0].clientX);
+    startXRef.current = e.touches[0].clientX;
   };
 
-  // Handle touch end
+  // Handle touch end and detect swipe
   const handleTouchEnd = (e) => {
-    if (touchStartX === null) return;
     const endX = e.changedTouches[0].clientX;
-    setTouchEndX(endX);
-    const deltaX = touchStartX - endX;
-    const threshold = 50; // minimum swipe distance in px
+    const deltaX = startXRef.current - endX;
+    const threshold = 50; // swipe distance in px
 
     if (deltaX > threshold) {
       onNext();
     } else if (deltaX < -threshold) {
       onPrev();
     }
-    setTouchStartX(null);
-    setTouchEndX(null);
   };
 
   // Preload next/prev images
@@ -54,7 +49,7 @@ export const PhotoCarousel = memo(({
     preloadImage(images[prevIdx]);
   }, [activeIdx, images]);
 
-  // Progress bar
+  // Progress bar segments
   const segments = useMemo(
     () => (
       <div className="absolute top-1 left-0 right-0 flex justify-center px-2 pt-1 space-x-1 z-10 pointer-events-none">
@@ -68,9 +63,7 @@ export const PhotoCarousel = memo(({
                 'bg-gray-200/80 shadow-sm shadow-black/30': idx !== activeIdx,
               }
             )}
-            style={{
-              width: `max(4vw, 24px)`,
-            }}
+            style={{ width: `max(4vw, 24px)` }}
           />
         ))}
       </div>
@@ -78,13 +71,10 @@ export const PhotoCarousel = memo(({
     [images, activeIdx]
   );
 
-  const handleError = useCallback(
-    (e) => {
-      if (placeholderImage) e.currentTarget.src = placeholderImage;
-      onError?.(e);
-    },
-    [placeholderImage, onError]
-  );
+  const handleError = (e) => {
+    if (placeholderImage) e.currentTarget.src = placeholderImage;
+    onError?.(e);
+  };
 
   // Skip animation on first load
   const hasLoadedOnce = useRef(false);
@@ -94,10 +84,11 @@ export const PhotoCarousel = memo(({
 
   return (
     <div className={classnames('relative w-full h-full', className)}>
-      {/* Touch overlay for touch detection */}
+      {/* Touch overlay for detecting horizontal swipes, allow vertical scroll */}
       <div
         ref={containerRef}
         className="absolute inset-0 z-20"
+        style={{ touchAction: 'pan-y' }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       />
@@ -123,17 +114,10 @@ export const PhotoCarousel = memo(({
               objectFit: 'cover',
               objectPosition: 'center',
             }}
-            initial={
-              hasLoadedOnce.current
-                ? { opacity: 0, scale: 0.98 }
-                : false
-            }
+            initial={hasLoadedOnce.current ? { opacity: 0, scale: 0.98 } : false}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.02 }}
-            transition={{
-              duration: 0.3,
-              ease: 'easeInOut',
-            }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
           />
         </AnimatePresence>
 
