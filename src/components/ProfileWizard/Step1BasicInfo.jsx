@@ -164,7 +164,6 @@ const Step1BasicInfo = () => {
         </div>
 
         {/* Social Media Links */}
-        // Inside your Step1BasicInfo component, replace the Social Media Links block with this:
 
 <div className="mt-6">
   <label className="block text-sm font-medium text-gray-700 mb-2">
