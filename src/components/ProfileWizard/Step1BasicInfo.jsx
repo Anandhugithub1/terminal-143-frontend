@@ -189,7 +189,7 @@ const Step1BasicInfo = () => {
         type="text"
         value={socialInput}
         onChange={e => setSocialInput(e.target.value)}
-        placeholder="Username or https://link"
+        placeholder="Username or Profile Link"
         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
       />
     </div>
