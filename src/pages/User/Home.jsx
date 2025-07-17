@@ -56,7 +56,8 @@ export default function UserHomePage() {
     (dir) => {
       const current = profiles[idx];
       if (current) {
-        seenMutation.mutate({ profilePk: current.pk, profileSk: current.sk, direction: dir });
+        seenMutation.mutate({   suggestionIndex: current.suggestionIndex,
+          direction: dir });
       }
       setDirection(dir);
       setIdx((i) => {
