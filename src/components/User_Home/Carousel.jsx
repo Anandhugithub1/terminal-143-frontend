@@ -16,21 +16,6 @@ export const PhotoCarousel = memo(({
   const imageRef = useRef();
   const hasLoadedOnce = useRef(false);
 
-  // Handle touch tap only on the image
-  const handleTouch = (e) => {
-    if (!imageRef.current) return;
-
-    const touch = e.changedTouches[0];
-    const bounds = imageRef.current.getBoundingClientRect();
-    const touchX = touch.clientX - bounds.left;
-
-    if (touchX < bounds.width / 2) {
-      onPrev();
-    } else {
-      onNext();
-    }
-  };
-
   // Preload next/prev images
   useEffect(() => {
     const preloadImage = (src) => {
@@ -81,6 +66,20 @@ export const PhotoCarousel = memo(({
 
   return (
     <div className={classnames('relative w-full h-full', className)}>
+      {/* Left tap zone */}
+      <div
+        className="absolute top-0 left-0 w-1/2 h-full z-10"
+        onClick={onPrev}
+        onTouchStart={onPrev}
+      />
+
+      {/* Right tap zone */}
+      <div
+        className="absolute top-0 right-0 w-1/2 h-full z-10"
+        onClick={onNext}
+        onTouchStart={onNext}
+      />
+
       <motion.div
         className="relative overflow-hidden select-none w-full h-full"
         initial={{ scale: 1 }}
@@ -93,12 +92,11 @@ export const PhotoCarousel = memo(({
             src={images[activeIdx]}
             srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
             alt={`${alt} photo ${activeIdx + 1}`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover pointer-events-none"
             draggable="false"
             loading="lazy"
             decoding="async"
             onError={handleError}
-            onTouchEnd={handleTouch}
             style={{
               maxHeight: '100vh',
               objectFit: 'cover',
