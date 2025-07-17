@@ -18,6 +18,8 @@ export const LoginForm = () => {
   const navigate = useNavigate();
 
   const isLoading = useSelector(selectLoading);
+  const isError = useSelector(selectError);
+
   const errorMessage = useSelector(selectError);
   const auth = useSelector(selectAuth);
   const { isSuccess, profileCompleted } = auth;
@@ -95,9 +97,9 @@ export const LoginForm = () => {
           </Link>
         </div>
 
-        {errorMessage && (
-          <p className="text-red-500 text-sm">{errorMessage}</p>
-        )}
+        {isError && errorMessage && (
+  <p className="text-red-500 text-sm">{errorMessage}</p>
+)}
 
         <Button type="submit" disabled={isLoading}>
           {isLoading ? <Loader /> : 'Log In'}
