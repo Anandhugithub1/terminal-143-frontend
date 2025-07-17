@@ -13,18 +13,20 @@ export const PhotoCarousel = memo(({
   onError,
   className = '',
 }) => {
-  const containerRef = useRef();
+  const imageRef = useRef();
+  const hasLoadedOnce = useRef(false);
 
-  // Handle touch tap only on image
+  // Handle touch tap only on the image
   const handleTouch = (e) => {
-    const touchX = e.changedTouches[0].clientX;
-    const imageRect = containerRef.current.getBoundingClientRect();
-    const relativeX = touchX - imageRect.left;
-    const third = imageRect.width / 3;
+    if (!imageRef.current) return;
 
-    if (relativeX < third) {
+    const touch = e.changedTouches[0];
+    const bounds = imageRef.current.getBoundingClientRect();
+    const touchX = touch.clientX - bounds.left;
+
+    if (touchX < bounds.width / 2) {
       onPrev();
-    } else if (relativeX > 2 * third) {
+    } else {
       onNext();
     }
   };
@@ -67,12 +69,12 @@ export const PhotoCarousel = memo(({
   );
 
   const handleError = (e) => {
-    if (placeholderImage) e.currentTarget.src = placeholderImage;
+    if (placeholderImage) {
+      e.currentTarget.src = placeholderImage;
+    }
     onError?.(e);
   };
 
-  // Skip animation on first load
-  const hasLoadedOnce = useRef(false);
   useEffect(() => {
     hasLoadedOnce.current = true;
   }, [activeIdx]);
@@ -86,16 +88,16 @@ export const PhotoCarousel = memo(({
       >
         <AnimatePresence initial={false} mode="wait">
           <motion.img
-            ref={containerRef}
+            ref={imageRef}
             key={images[activeIdx]}
             src={images[activeIdx]}
             srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
             alt={`${alt} photo ${activeIdx + 1}`}
             className="w-full h-full object-cover"
             draggable="false"
-            onError={handleError}
             loading="lazy"
             decoding="async"
+            onError={handleError}
             onTouchEnd={handleTouch}
             style={{
               maxHeight: '100vh',
@@ -103,7 +105,11 @@ export const PhotoCarousel = memo(({
               objectPosition: 'center',
               touchAction: 'manipulation',
             }}
-            initial={hasLoadedOnce.current ? { opacity: 0, scale: 0.98 } : false}
+            initial={
+              hasLoadedOnce.current
+                ? { opacity: 0, scale: 0.98 }
+                : false
+            }
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.02 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
