@@ -51,7 +51,7 @@ export default function RequestsPage() {
           <div className="bg-gray-100 p-6 rounded-xl shadow max-w-sm mx-auto">
             <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-3" />
             <h2 className="text-lg font-bold">No Requests Yet</h2>
-            <p className="text-sm text-gray-500">You haven't made any requests.</p>
+            <p className="text-sm text-gray-500">You haven't  any requests.</p>
           </div>
         </div>
         <BottomNav />
