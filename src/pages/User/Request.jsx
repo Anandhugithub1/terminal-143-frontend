@@ -6,18 +6,7 @@ import BottomNav from '../../components/Layout/BottomNavigation';
 
 // Demo request data
 const demoRequests = [
-  {
-    id: 1,
-    title: 'Photo Feedback',
-    description: 'Please review my profile pictures and give feedback.',
-    date: '2025-07-16',
-  },
-  {
-    id: 2,
-    title: 'Plan Meetup',
-    description: 'Suggest a cool cafe for a first date.',
-    date: '2025-07-15',
-  },
+
 ];
 
 export default function RequestsPage() {
