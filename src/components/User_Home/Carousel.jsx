@@ -7,7 +7,7 @@ export const PhotoCarousel = memo(({
   images,
   activeIdx,
   onNext,
-  onPrev,
+  onPrev, // not used anymore in touch, but kept for completeness
   alt,
   placeholderImage,
   onError,
@@ -16,19 +16,9 @@ export const PhotoCarousel = memo(({
   const imageRef = useRef();
   const hasLoadedOnce = useRef(false);
 
-  // Handle touch tap only on the image
-  const handleTouch = (e) => {
-    if (!imageRef.current) return;
-
-    const touch = e.changedTouches[0];
-    const bounds = imageRef.current.getBoundingClientRect();
-    const touchX = touch.clientX - bounds.left;
-
-    if (touchX < bounds.width / 2) {
-      onPrev();
-    } else {
-      onNext();
-    }
+  // Handle tap anywhere on image: always go to next
+  const handleTouch = () => {
+    onNext();
   };
 
   // Preload next/prev images
