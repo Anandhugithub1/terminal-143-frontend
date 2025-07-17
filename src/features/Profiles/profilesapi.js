@@ -23,7 +23,7 @@ export const getMatchProviders = async ({ limit = 10 }) => {
 
 
 export async function postSeen({ profilePk, profileSk, direction }) {
-  const response = await axios.post('/api/record-seen', {
+  const response = await axios.post('/user/swipe ', {
     profilePk,
     profileSk,
     direction,
