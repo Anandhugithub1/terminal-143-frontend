@@ -1,5 +1,4 @@
-import { useSwipeable } from 'react-swipeable';
-import React, { memo, useMemo, useCallback, useEffect, useRef } from 'react';
+import React, { memo, useMemo, useCallback, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,28 +13,31 @@ export const PhotoCarousel = memo(({
   onError,
   className = '',
 }) => {
+  const [touchStartX, setTouchStartX] = useState(null);
+  const [touchEndX, setTouchEndX] = useState(null);
   const containerRef = useRef();
-  const isHorizontalSwipe = useRef(false);
 
-  const handlers = useSwipeable({
-    onSwiping: (e) => {
-      isHorizontalSwipe.current = Math.abs(e.deltaX) > Math.abs(e.deltaY);
-      // DO NOT call e.event.preventDefault() here → allows vertical scroll
-    },
-    onSwipedLeft: () => {
-      if (isHorizontalSwipe.current) onNext();
-    },
-    onSwipedRight: () => {
-      if (isHorizontalSwipe.current) onPrev();
-    },
-    trackMouse: true,
-    trackTouch: true,
-    delta: 10,
-    preventScrollOnSwipe: false, // allow vertical scroll
-    rotationAngle: 15,
-    nodeRef: containerRef,
-  });
-  
+  // Handle touch start
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  // Handle touch end
+  const handleTouchEnd = (e) => {
+    if (touchStartX === null) return;
+    const endX = e.changedTouches[0].clientX;
+    setTouchEndX(endX);
+    const deltaX = touchStartX - endX;
+    const threshold = 50; // minimum swipe distance in px
+
+    if (deltaX > threshold) {
+      onNext();
+    } else if (deltaX < -threshold) {
+      onPrev();
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
 
   // Preload next/prev images
   useEffect(() => {
@@ -92,12 +94,12 @@ export const PhotoCarousel = memo(({
 
   return (
     <div className={classnames('relative w-full h-full', className)}>
-      {/* Swipe overlay - invisible layer for swipe detection */}
+      {/* Touch overlay for touch detection */}
       <div
         ref={containerRef}
         className="absolute inset-0 z-20"
-
-        {...handlers}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       />
 
       <motion.div
@@ -124,7 +126,7 @@ export const PhotoCarousel = memo(({
             initial={
               hasLoadedOnce.current
                 ? { opacity: 0, scale: 0.98 }
-                : false // skip animation on first load
+                : false
             }
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.02 }}
