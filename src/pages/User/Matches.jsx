@@ -3,7 +3,8 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../components/Layout/TopNavigation';
 import BottomNav from '../../components/Layout/BottomNavigation';
-import placeholderImage from '../assets/woman.png';
+import placeholderImage from '../../assets/woman.png';
+
 
 // Demo data for matches
 const demoMatches = [
