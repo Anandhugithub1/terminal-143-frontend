@@ -6,7 +6,42 @@ import BottomNav from '../../components/Layout/BottomNavigation';
 import placeholderImage from '../../assets/woman.png';
 
 // Demo data remains the same
-const demoMatches = [ /* unchanged */ ];
+// const demoMatches = [ /* unchanged */ ];
+const demoMatches = [
+    {
+      id: 1,
+      name: 'Alice',
+      age: 25,
+      gender: 'Female',
+      bio: 'Loves hiking and outdoor adventures.',
+      socialMediaLinks: [
+        { platform: 'IG', usernameOrLink: '@alice_hikes' },
+        { platform: 'Telegram', usernameOrLink: '@aliceTG' },
+      ],
+    },
+    {
+      id: 2,
+      name: 'Bob',
+      age: 28,
+      gender: 'Male',
+      bio: 'Coffee enthusiast and book lover.',
+      socialMediaLinks: [
+        { platform: 'FB', usernameOrLink: 'fb.com/bob.latte' },
+      ],
+    },
+    {
+      id: 3,
+      name: 'Clara',
+      age: 22,
+      gender: 'Female',
+      bio: 'Tech geek who enjoys painting on weekends.',
+      socialMediaLinks: [
+        { platform: 'Line', usernameOrLink: '@claraPaints' },
+        { platform: 'IG', usernameOrLink: '@clara.tech' },
+      ],
+    },
+  ];
+
 
 export default function MatchesPage() {
   const [matches, setMatches] = useState([]);
