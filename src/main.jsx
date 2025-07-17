@@ -35,7 +35,7 @@ import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage c
 import PreferencesPage from './pages/Settings/Preference.jsx';
 import PublicProfilePage from './pages/User/Profile/PublicProfile.jsx';
 import MatchesPage from './pages/User/Matches.jsx';
-
+import RequestsPage from './pages/User/Request.jsx';
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -67,6 +67,7 @@ const route = createBrowserRouter(
    <Route path="*" element={<NotFoundPage />} />
    <Route path="language" element={<LanguagePage />} />
    <Route path="matches" element={<MatchesPage />} />
+   <Route path="requests" element={<RequestsPage />} />
 
    <Route path="/profile/:type/:gender/:level/:username" element={<PublicProfilePage />} />
 
