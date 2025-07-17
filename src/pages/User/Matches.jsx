@@ -63,22 +63,22 @@ export default function MatchesPage() {
     return (
       <div className="bg-white min-h-screen flex flex-col">
         <TopNav />
-        <main className="px-4 pt-6 pb-20">
-          <h1 className="text-2xl font-bold mb-5">Loading Matches...</h1>
-          <div className="space-y-5">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="flex gap-4 items-start bg-gray-50 p-4 rounded-xl shadow-sm">
-                <Skeleton circle width={64} height={64} />
-                <div className="flex-1 space-y-2">
-                  <Skeleton height={20} width="40%" />
-                  <Skeleton height={16} width="80%" />
-                  <Skeleton height={16} width="60%" />
-                  <Skeleton height={16} width="70%" />
-                </div>
+        <div className="p-4 pt-6 space-y-4">
+          <h1 className="text-2xl font-bold">Loading Matches...</h1>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div
+              key={i}
+              className="rounded-2xl shadow-md p-4 bg-gray-50 flex gap-4 items-center"
+            >
+              <Skeleton circle width={64} height={64} />
+              <div className="flex-1">
+                <Skeleton height={20} width="50%" />
+                <Skeleton height={16} width="80%" />
+                <Skeleton height={16} width="60%" />
               </div>
-            ))}
-          </div>
-        </main>
+            </div>
+          ))}
+        </div>
         <BottomNav />
       </div>
     );
@@ -88,13 +88,13 @@ export default function MatchesPage() {
     return (
       <div className="bg-white min-h-screen flex flex-col">
         <TopNav />
-        <main className="flex-1 flex items-center justify-center px-6 pb-20">
-          <div className="text-center p-8 bg-gray-100 rounded-2xl max-w-sm shadow">
-            <div className="w-16 h-16 bg-gray-300 border-dashed border-2 rounded-xl mx-auto mb-4" />
-            <h2 className="text-xl font-semibold mb-1">No matches yet</h2>
-            <p className="text-gray-600">Start swiping to find your perfect match!</p>
+        <div className="flex-1 flex items-center justify-center text-center p-6">
+          <div className="bg-gray-100 p-6 rounded-xl shadow max-w-sm mx-auto">
+            <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-3" />
+            <h2 className="text-lg font-bold">No Matches Yet</h2>
+            <p className="text-sm text-gray-500">Start swiping to find someone special.</p>
           </div>
-        </main>
+        </div>
         <BottomNav />
       </div>
     );
@@ -103,62 +103,55 @@ export default function MatchesPage() {
   return (
     <div className="bg-white min-h-screen pb-20">
       <TopNav />
-      <main className="px-4 pt-4">
-        <h1 className="text-2xl font-semibold mb-6">Your Matches</h1>
+      <div className="px-4 pt-4">
+        <h1 className="text-2xl font-bold mb-4">Your Matches</h1>
 
-        <div className="space-y-5">
+        <div className="grid grid-cols-1 gap-6">
           {matches.map((match) => (
             <div
               key={match.id}
-              className="bg-gray-50 p-5 rounded-2xl border border-gray-100 shadow hover:shadow-md transition"
+              className="bg-white rounded-3xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg"
             >
-              <div className="flex gap-4 items-start">
-                <div className="relative">
-                  <img
-                    src={placeholderImage}
-                    alt={`${match.name}'s avatar`}
-                    className="w-16 h-16 rounded-xl object-cover border-2 border-white shadow"
-                    loading="lazy"
-                  />
-                  <div className="absolute -bottom-1 -right-1 bg-blue-500 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center">
-                    {match.age}
+              <div className="flex gap-4">
+                <img
+                  src={placeholderImage}
+                  alt={`${match.name}'s profile`}
+                  className="w-20 h-20 rounded-2xl object-cover"
+                  loading="lazy"
+                />
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-800">{match.name}, {match.age}</h2>
+                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">{match.bio}</p>
                   </div>
-                </div>
 
-                <div className="flex-1">
-                  <h2 className="text-lg font-bold">{match.name}</h2>
-                  <p className="text-gray-600 text-sm mt-1 mb-3">{match.bio}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {match.socialMediaLinks.map((link, i) => {
+                      const displayLink = link.usernameOrLink.startsWith('@')
+                        ? link.usernameOrLink
+                        : `@${link.usernameOrLink}`;
+                      const fallback = `https://www.google.com/search?q=${link.usernameOrLink}`;
 
-                  {match.socialMediaLinks.length > 0 && (
-                    <div className="space-y-1">
-                      <p className="text-xs text-gray-500 font-medium uppercase">Connect</p>
-                      <div className="flex flex-wrap gap-2">
-                        {match.socialMediaLinks.map((link, i) => {
-                          const isUrl = link.usernameOrLink.startsWith('http');
-                          const linkText = link.usernameOrLink.replace(/^@/, '');
-                          const fallbackLink = `https://www.google.com/search?q=${link.usernameOrLink}`;
-                          return (
-                            <a
-                              key={i}
-                              href={isUrl ? link.usernameOrLink : fallbackLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 bg-white px-3 py-1.5 rounded-lg border border-gray-200 shadow-sm hover:bg-blue-50 transition"
-                            >
-                              <span className="text-base">{platformIcons[link.platform] || '🔗'}</span>
-                              <span className="text-blue-600 font-medium">@{linkText}</span>
-                            </a>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
+                      return (
+                        <a
+                          key={i}
+                          href={fallback}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-full border border-blue-200 hover:bg-blue-100 transition"
+                        >
+                          <span className="mr-1">{platformIcons[link.platform] || '🔗'}</span>
+                          {displayLink}
+                        </a>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
-      </main>
+      </div>
       <BottomNav />
     </div>
   );
