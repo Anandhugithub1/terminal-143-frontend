@@ -34,6 +34,7 @@ import LanguagePage from './pages/Settings/Language.jsx';
 import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
 import PreferencesPage from './pages/Settings/Preference.jsx';
 import PublicProfilePage from './pages/User/Profile/PublicProfile.jsx';
+import MatchesPage from './pages/User/Matches.jsx';
 
 const route = createBrowserRouter(
   createRoutesFromElements(
@@ -65,6 +66,7 @@ const route = createBrowserRouter(
    <Route path='share-qr' element={<ShareQRCodePage />} />
    <Route path="*" element={<NotFoundPage />} />
    <Route path="language" element={<LanguagePage />} />
+   <Route path="matches" element={<MatchesPage />} />
 
    <Route path="/profile/:type/:gender/:level/:username" element={<PublicProfilePage />} />
 
