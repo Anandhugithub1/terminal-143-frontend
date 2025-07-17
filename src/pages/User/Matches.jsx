@@ -5,12 +5,12 @@ import TopNav from '../../components/Layout/TopNavigation';
 import BottomNav from '../../components/Layout/BottomNavigation';
 import placeholderImage from '../../assets/woman.png';
 
-// Demo data for matches with age and social media links
 const demoMatches = [
   {
     id: 1,
     name: 'Alice',
     age: 25,
+    gender: 'Female',
     bio: 'Loves hiking and outdoor adventures.',
     socialMediaLinks: [
       { platform: 'IG', usernameOrLink: '@alice_hikes' },
@@ -21,6 +21,7 @@ const demoMatches = [
     id: 2,
     name: 'Bob',
     age: 28,
+    gender: 'Male',
     bio: 'Coffee enthusiast and book lover.',
     socialMediaLinks: [
       { platform: 'FB', usernameOrLink: 'fb.com/bob.latte' },
@@ -30,6 +31,7 @@ const demoMatches = [
     id: 3,
     name: 'Clara',
     age: 22,
+    gender: 'Female',
     bio: 'Tech geek who enjoys painting on weekends.',
     socialMediaLinks: [
       { platform: 'Line', usernameOrLink: '@claraPaints' },
@@ -88,32 +90,38 @@ export default function MatchesPage() {
       <TopNav />
 
       <div className="px-4 pt-4 space-y-4">
-        <h1 className="text-2xl font-semibold">Matches</h1>
+        <h1 className="text-2xl font-semibold text-gray-800">Your Matches</h1>
 
         {matches.map(match => (
           <div
             key={match.id}
-            className="flex items-start space-x-4 bg-gray-50 p-4 rounded-lg shadow-sm"
+            className="flex items-start space-x-4 bg-gray-50 p-4 rounded-xl border hover:shadow-md transition duration-200"
           >
             <img
               src={placeholderImage}
               alt={match.name}
-              className="w-12 h-12 rounded-full object-cover"
+              className="w-14 h-14 rounded-full object-cover border"
             />
-            <div>
-              <p className="font-medium">{match.name}, {match.age}</p>
-              <p className="text-sm text-gray-600">{match.bio}</p>
-              <div className="mt-1 text-sm text-blue-600 space-y-1">
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-semibold text-gray-800">
+                  {match.name}, {match.age}
+                </p>
+                <span className="text-sm text-gray-500 italic">{match.gender}</span>
+              </div>
+              <p className="text-sm text-gray-600 mt-1">{match.bio}</p>
+
+              <div className="mt-2 text-sm space-y-1">
                 {match.socialMediaLinks.map((link, i) => (
                   <div key={i}>
-                    {link.platform}:&nbsp;
+                    <span className="text-gray-600">{link.platform}:</span>{' '}
                     <a
                       href={
                         link.usernameOrLink.startsWith('http')
                           ? link.usernameOrLink
                           : '#'
                       }
-                      className="underline"
+                      className="text-blue-600 hover:underline"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
