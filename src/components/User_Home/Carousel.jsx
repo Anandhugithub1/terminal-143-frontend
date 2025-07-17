@@ -13,24 +13,19 @@ export const PhotoCarousel = memo(({
   onError,
   className = '',
 }) => {
-  const startXRef = useRef(0);
   const containerRef = useRef();
 
-  // Handle touch start
-  const handleTouchStart = (e) => {
-    startXRef.current = e.touches[0].clientX;
-  };
+  // Handle touch tap only on image
+  const handleTouch = (e) => {
+    const touchX = e.changedTouches[0].clientX;
+    const imageRect = containerRef.current.getBoundingClientRect();
+    const relativeX = touchX - imageRect.left;
+    const third = imageRect.width / 3;
 
-  // Handle touch end and detect swipe
-  const handleTouchEnd = (e) => {
-    const endX = e.changedTouches[0].clientX;
-    const deltaX = startXRef.current - endX;
-    const threshold = 50; // swipe distance in px
-
-    if (deltaX > threshold) {
-      onNext();
-    } else if (deltaX < -threshold) {
+    if (relativeX < third) {
       onPrev();
+    } else if (relativeX > 2 * third) {
+      onNext();
     }
   };
 
@@ -84,15 +79,6 @@ export const PhotoCarousel = memo(({
 
   return (
     <div className={classnames('relative w-full h-full', className)}>
-      {/* Touch overlay for detecting horizontal swipes, allow vertical scroll */}
-      <div
-        ref={containerRef}
-        className="absolute inset-0 z-20"
-        style={{ touchAction: 'pan-y' }}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      />
-
       <motion.div
         className="relative overflow-hidden select-none w-full h-full"
         initial={{ scale: 1 }}
@@ -100,6 +86,7 @@ export const PhotoCarousel = memo(({
       >
         <AnimatePresence initial={false} mode="wait">
           <motion.img
+            ref={containerRef}
             key={images[activeIdx]}
             src={images[activeIdx]}
             srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
@@ -109,10 +96,12 @@ export const PhotoCarousel = memo(({
             onError={handleError}
             loading="lazy"
             decoding="async"
+            onTouchEnd={handleTouch}
             style={{
               maxHeight: '100vh',
               objectFit: 'cover',
               objectPosition: 'center',
+              touchAction: 'manipulation',
             }}
             initial={hasLoadedOnce.current ? { opacity: 0, scale: 0.98 } : false}
             animate={{ opacity: 1, scale: 1 }}
