@@ -1,11 +1,10 @@
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-} from 'react';
+// src/pages/UserHomePage.jsx
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { fetchProfiles } from '../../features/Profiles';
+import { postSeen } from '../../features/Profiles/profilesapi';
 import ProfileCard from '../../components/Cards/ProfileCard';
 import BottomNav from '../../components/Layout/BottomNavigation';
 import TopNav from '../../components/Layout/TopNavigation';
@@ -27,6 +26,13 @@ export default function UserHomePage() {
   const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState('');
 
+  // React Query mutation for recordSeen using axios helper
+  const seenMutation = useMutation(postSeen, {
+    onError: (err) => {
+      setRequestError(err.response?.data?.error || err.message);
+    },
+  });
+
   // Initial fetch
   useEffect(() => {
     if (status === 'idle') {
@@ -41,24 +47,25 @@ export default function UserHomePage() {
     dispatch(fetchProfiles({ limit: 10 }));
   }, [dispatch]);
 
-  // advance by ±1 on swipe or button
+  // advance by ±1 on swipe or button, record 'seen'
   const advance = useCallback(
     (dir) => {
+      const current = profiles[idx];
+      if (current) {
+        seenMutation.mutate({ profilePk: current.pk, profileSk: current.sk, direction: dir });
+      }
       setDirection(dir);
       setIdx((i) => {
         const next = i + 1;
-  
-        // If next index exceeds current list length, fetch more
         if (next >= profiles.length) {
           dispatch(fetchProfiles({ limit: 10 }));
         }
-  
         return next;
       });
     },
-    [dispatch, profiles.length]
+    [dispatch, idx, profiles, seenMutation]
   );
-  
+
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
@@ -77,10 +84,7 @@ export default function UserHomePage() {
   }
 
   const rawProfile = profiles[idx] || {};
-
-  const images = rawProfile.photos?.length
-    ? rawProfile.photos
-    : [placeholderImage];
+  const images = rawProfile.photos?.length ? rawProfile.photos : [placeholderImage];
 
   const profile = {
     name: rawProfile.name || 'Unknown',
@@ -91,7 +95,6 @@ export default function UserHomePage() {
     location: rawProfile.location || 'Unknown',
     popularity: rawProfile.popularity || 0,
     healthStatus: rawProfile.healthStatus || { status: 'Unknown', lastTestedDate: 'Unknown' },
-    stdStatus: rawProfile.stdStatus || 'Unknown',
     lastSeen: rawProfile.lastSeen || 'Unknown',
     job: rawProfile.jobTitle || '',
     languages: rawProfile.languagesKnown?.length

@@ -1,6 +1,5 @@
 /* ================= features/profiles/api.js ================= */
 import axios from 'axios';
-
 const BASE_URL = 'https://userapi.terminal143.com';
 
 /**
@@ -18,3 +17,16 @@ export const getMatchProviders = async ({ limit = 10 }) => {
   // handler now returns { profiles: [ { …, suggestionIndex }, … ] }
   return response.data.profiles || [];
 };
+
+
+
+
+
+export async function postSeen({ profilePk, profileSk, direction }) {
+  const response = await axios.post('/api/record-seen', {
+    profilePk,
+    profileSk,
+    direction,
+  });
+  return response.data;
+}
