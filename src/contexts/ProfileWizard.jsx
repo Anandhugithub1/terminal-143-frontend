@@ -8,6 +8,7 @@ export const WizardProvider = ({ children }) => {
     name: '',
     bio: '',
     age: '',
+    socialMediaLinks: [],
     profilePhoto: null,
     interests: [],
     languages: [],
