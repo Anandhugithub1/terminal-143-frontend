@@ -8,7 +8,7 @@ import { Button } from '../../../shared/Button';
 import Loader from '../../../components/Ui/Loading';
 
 import { loginUser } from '../authThunks';
-import { selectLoading, selectError, selectAuth } from '../authSelectors';
+import { selectLoading, selectError, selectAuth,selectMessage } from '../authSelectors';
 
 export const LoginForm = () => {
   const [emailPhone, setEmailPhone] = useState('');
@@ -20,7 +20,7 @@ export const LoginForm = () => {
   const isLoading = useSelector(selectLoading);
   const isError = useSelector(selectError);
 
-  const errorMessage = useSelector(selectError);
+  const errorMessage = useSelector(selectMessage);
   const auth = useSelector(selectAuth);
   const { isSuccess, profileCompleted } = auth;
 
