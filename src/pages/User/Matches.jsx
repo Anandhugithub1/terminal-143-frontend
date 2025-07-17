@@ -5,19 +5,43 @@ import TopNav from '../../components/Layout/TopNavigation';
 import BottomNav from '../../components/Layout/BottomNavigation';
 import placeholderImage from '../../assets/woman.png';
 
-
-// Demo data for matches
+// Demo data for matches with age and social media links
 const demoMatches = [
-  { id: 1, name: 'Alice', bio: 'Loves hiking and outdoor adventures.' },
-  { id: 2, name: 'Bob', bio: 'Coffee enthusiast and book lover.' },
-  { id: 3, name: 'Clara', bio: 'Tech geek who enjoys painting on weekends.' },
+  {
+    id: 1,
+    name: 'Alice',
+    age: 25,
+    bio: 'Loves hiking and outdoor adventures.',
+    socialMediaLinks: [
+      { platform: 'IG', usernameOrLink: '@alice_hikes' },
+      { platform: 'Telegram', usernameOrLink: '@aliceTG' },
+    ],
+  },
+  {
+    id: 2,
+    name: 'Bob',
+    age: 28,
+    bio: 'Coffee enthusiast and book lover.',
+    socialMediaLinks: [
+      { platform: 'FB', usernameOrLink: 'fb.com/bob.latte' },
+    ],
+  },
+  {
+    id: 3,
+    name: 'Clara',
+    age: 22,
+    bio: 'Tech geek who enjoys painting on weekends.',
+    socialMediaLinks: [
+      { platform: 'Line', usernameOrLink: '@claraPaints' },
+      { platform: 'IG', usernameOrLink: '@clara.tech' },
+    ],
+  },
 ];
 
 export default function MatchesPage() {
   const [matches, setMatches] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Simulate loading delay
   useEffect(() => {
     const timer = setTimeout(() => {
       setMatches(demoMatches);
@@ -26,7 +50,6 @@ export default function MatchesPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Loading skeleton
   if (isLoading) {
     return (
       <div className="bg-white min-h-screen flex flex-col">
@@ -48,7 +71,6 @@ export default function MatchesPage() {
     );
   }
 
-  // No matches
   if (!matches.length) {
     return (
       <div className="bg-white min-h-screen flex flex-col">
@@ -71,7 +93,7 @@ export default function MatchesPage() {
         {matches.map(match => (
           <div
             key={match.id}
-            className="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-sm"
+            className="flex items-start space-x-4 bg-gray-50 p-4 rounded-lg shadow-sm"
           >
             <img
               src={placeholderImage}
@@ -79,8 +101,27 @@ export default function MatchesPage() {
               className="w-12 h-12 rounded-full object-cover"
             />
             <div>
-              <p className="font-medium">{match.name}</p>
-              <p className="text-sm text-gray-500">{match.bio}</p>
+              <p className="font-medium">{match.name}, {match.age}</p>
+              <p className="text-sm text-gray-600">{match.bio}</p>
+              <div className="mt-1 text-sm text-blue-600 space-y-1">
+                {match.socialMediaLinks.map((link, i) => (
+                  <div key={i}>
+                    {link.platform}:&nbsp;
+                    <a
+                      href={
+                        link.usernameOrLink.startsWith('http')
+                          ? link.usernameOrLink
+                          : '#'
+                      }
+                      className="underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.usernameOrLink}
+                    </a>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         ))}
