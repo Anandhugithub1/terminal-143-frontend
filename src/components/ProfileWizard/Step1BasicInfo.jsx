@@ -26,28 +26,64 @@ const calculateAge = (dob) => {
   return age;
 };
 
+const SOCIAL_PLATFORMS = ['IG', 'FB', 'Telegram', 'Line', 'Wechat', 'Other'];
+
 const Step1BasicInfo = () => {
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [socialPlatform, setSocialPlatform] = useState('');
+  const [socialInput, setSocialInput] = useState('');
 
   const currentYear = new Date().getFullYear();
   const minDob = '1950-01-01';
   const maxDob = `${currentYear}-12-31`;
 
+  const validateLink = (value) => {
+    const urlPattern = /^https:\/\/[^\s/$.?#].[^\s]*$/i;
+    if (value.startsWith('http://')) return false;
+    if (value.startsWith('https://')) return urlPattern.test(value);
+    return true; // Allow usernames
+  };
+
+  const addSocialLink = () => {
+    if (!socialPlatform || !socialInput.trim()) return;
+
+    if (!validateLink(socialInput.trim())) {
+      setError('Invalid link. Must be https:// or plain username.');
+      return;
+    }
+
+    const updatedLinks = [
+      ...(formData.socialMediaLinks || []),
+      {
+        platform: socialPlatform,
+        usernameOrLink: socialInput.trim(),
+      },
+    ];
+
+    setFormData({ ...formData, socialMediaLinks: updatedLinks });
+    setSocialInput('');
+    setSocialPlatform('');
+    setError('');
+  };
+
+  const removeSocialLink = (index) => {
+    const updated = [...(formData.socialMediaLinks || [])];
+    updated.splice(index, 1);
+    setFormData({ ...formData, socialMediaLinks: updated });
+  };
+
   const handleNext = () => {
-    // Name required
     if (!formData.name.trim()) {
       setError('Full name is required.');
       return;
     }
-    // Age validation
     const age = calculateAge(formData.dob);
     if (age < 18) {
       setError('You must be at least 18 years old to continue.');
       return;
     }
-    // Clear errors and proceed
     setError('');
     navigate('/complete/bio');
   };
@@ -70,7 +106,6 @@ const Step1BasicInfo = () => {
   return (
     <div className="animate-fade-in">
       <ProgressBar step={1} totalSteps={4} />
-
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome! 👋</h2>
         <p className="text-gray-500">Let's start with the basics</p>
@@ -78,17 +113,15 @@ const Step1BasicInfo = () => {
 
       <div className="space-y-6">
         {/* Full Name */}
-        <div>
-          <InputField
-            id="fullName"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            placeholder="Full Name *"
-            className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
+        <InputField
+          id="fullName"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          placeholder="Full Name *"
+          className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
+        />
 
-        {/* Date of Birth */}
+        {/* DOB */}
         <div>
           <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
             Date of Birth *
@@ -98,19 +131,16 @@ const Step1BasicInfo = () => {
             type="date"
             value={formData.dob}
             onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-            placeholder="Date of Birth"
             min={minDob}
             max={maxDob}
             className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
           />
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <p className="text-sm text-red-600">{error}</p>
-        )}
+        {/* Error */}
+        {error && <p className="text-sm text-red-600">{error}</p>}
 
-        {/* Preferences (Multi-checkbox) */}
+        {/* Preferences */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Who are you interested in?
@@ -132,9 +162,59 @@ const Step1BasicInfo = () => {
             ))}
           </div>
         </div>
+
+        {/* Social Media Links */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Add Social Media Links (optional)
+          </label>
+          <div className="flex gap-2">
+            <select
+              value={socialPlatform}
+              onChange={(e) => setSocialPlatform(e.target.value)}
+              className="flex-1 border-gray-300 rounded-lg p-2"
+            >
+              <option value="">Platform</option>
+              {SOCIAL_PLATFORMS.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+            <InputField
+              value={socialInput}
+              onChange={(e) => setSocialInput(e.target.value)}
+              placeholder="Username or Link"
+              className="flex-1 border-gray-300 rounded-lg p-2"
+            />
+            <button
+              onClick={addSocialLink}
+              className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600"
+            >
+              Add
+            </button>
+          </div>
+
+          {/* Display added links */}
+          {formData.socialMediaLinks?.length > 0 && (
+            <ul className="mt-3 space-y-2">
+              {formData.socialMediaLinks.map((link, idx) => (
+                <li key={idx} className="flex justify-between items-center bg-gray-100 px-3 py-2 rounded-lg">
+                  <span className="text-sm text-gray-700">
+                    <strong>{link.platform}:</strong> {link.usernameOrLink}
+                  </span>
+                  <button
+                    onClick={() => removeSocialLink(idx)}
+                    className="text-red-500 text-xs hover:underline"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
 
-      {/* Continue Button */}
+      {/* Continue */}
       <button
         onClick={handleNext}
         className="mt-8 w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-4 rounded-xl transition-all transform hover:scale-[1.01] shadow-lg shadow-pink-500/20"
