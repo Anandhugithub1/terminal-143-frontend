@@ -4,7 +4,7 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { fetchProfiles } from '../../features/Profiles';
-import { postSeen } from '../../features/Profiles/profilesapi';
+import { postSeen } from '../../features/Profiles';
 import ProfileCard from '../../components/Cards/ProfileCard';
 import BottomNav from '../../components/Layout/BottomNavigation';
 import TopNav from '../../components/Layout/TopNavigation';
@@ -27,11 +27,15 @@ export default function UserHomePage() {
   const [requestError, setRequestError] = useState('');
 
   // React Query mutation for recordSeen using axios helper
-  const seenMutation = useMutation(postSeen, {
+  const seenMutation = useMutation({
+    mutationFn: postSeen,
     onError: (err) => {
       setRequestError(err.response?.data?.error || err.message);
     },
   });
+    
+
+  
 
   // Initial fetch
   useEffect(() => {
