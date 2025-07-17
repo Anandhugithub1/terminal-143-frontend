@@ -86,11 +86,11 @@ export default function ShareQRCodePage() {
             </div>
 
          <div className="relative p-6 bg-white rounded-2xl shadow-inner border-4 border-dotted border-pink-100">
-  <img
-    src={qrCodeUrl}
+         <img
+    src={qrCodeUrl?.startsWith('http') ? qrCodeUrl : `https://${qrCodeUrl}`}
     alt="Dating profile QR code"
     className="w-64 h-64 object-contain bg-gray-100"
-    loading="eager"
+    loading="lazy"
   />
 
               <div className="absolute inset-0 flex items-center justify-center">
