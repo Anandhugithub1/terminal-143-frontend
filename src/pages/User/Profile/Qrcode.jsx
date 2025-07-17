@@ -86,12 +86,16 @@ export default function ShareQRCodePage() {
             </div>
 
             <div className="relative p-6 bg-white rounded-2xl shadow-inner border-4 border-dotted border-pink-100">
-              <img
-                src={qrCodeUrl}
-                alt="Dating profile QR code"
-                className="w-64 h-64 object-contain"
-                loading="lazy"
-              />
+  <img
+    src={qrCodeUrl}
+    alt="Dating profile QR code"
+    className="w-64 h-64 object-contain border border-red-500"
+    loading="eager"
+    onError={(e) => {
+      console.error('Image failed to load:', qrCodeUrl);
+     
+    }}
+  />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-16 h-16 bg-pink-500/10 rounded-full animate-pulse" />
               </div>
