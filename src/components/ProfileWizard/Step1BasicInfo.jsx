@@ -164,54 +164,75 @@ const Step1BasicInfo = () => {
         </div>
 
         {/* Social Media Links */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Add Social Media Links (optional)
-          </label>
-          <div className="flex gap-2">
-            <select
-              value={socialPlatform}
-              onChange={(e) => setSocialPlatform(e.target.value)}
-              className="flex-1 border-gray-300 rounded-lg p-2"
-            >
-              <option value="">Platform</option>
-              {SOCIAL_PLATFORMS.map((p) => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-            <InputField
-              value={socialInput}
-              onChange={(e) => setSocialInput(e.target.value)}
-              placeholder="Username or Link"
-              className="flex-1 border-gray-300 rounded-lg p-2"
-            />
-            <button
-              onClick={addSocialLink}
-              className="bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600"
-            >
-              Add
-            </button>
-          </div>
+        // Inside your Step1BasicInfo component, replace the Social Media Links block with this:
 
-          {/* Display added links */}
-          {formData.socialMediaLinks?.length > 0 && (
-            <ul className="mt-3 space-y-2">
-              {formData.socialMediaLinks.map((link, idx) => (
-                <li key={idx} className="flex justify-between items-center bg-gray-100 px-3 py-2 rounded-lg">
-                  <span className="text-sm text-gray-700">
-                    <strong>{link.platform}:</strong> {link.usernameOrLink}
-                  </span>
-                  <button
-                    onClick={() => removeSocialLink(idx)}
-                    className="text-red-500 text-xs hover:underline"
-                  >
-                    Remove
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+<div className="mt-6">
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Add Social Media Links <span className="text-xs text-gray-400">(optional)</span>
+  </label>
+
+  {/* Input Row */}
+  <div className="flex flex-wrap items-center gap-2 mb-3">
+    <div className="flex-1 min-w-[120px]">
+      <select
+        value={socialPlatform}
+        onChange={e => setSocialPlatform(e.target.value)}
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+      >
+        <option value="" disabled>Choose platform</option>
+        {SOCIAL_PLATFORMS.map(p => (
+          <option key={p} value={p}>{p}</option>
+        ))}
+      </select>
+    </div>
+    <div className="flex-2 flex-grow min-w-[180px]">
+      <input
+        type="text"
+        value={socialInput}
+        onChange={e => setSocialInput(e.target.value)}
+        placeholder="Username or https://link"
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-400"
+      />
+    </div>
+    <button
+      onClick={addSocialLink}
+      disabled={!socialPlatform || !socialInput.trim()}
+      className={`px-4 py-2 rounded-lg font-medium
+        ${socialPlatform && socialInput.trim()
+          ? 'bg-pink-500 text-white hover:bg-pink-600'
+          : 'bg-gray-200 text-gray-500 cursor-not-allowed'}`}
+    >
+      Add
+    </button>
+  </div>
+
+  {/* Validation Error */}
+  {error && (
+    <p className="text-xs text-red-600 mb-2">{error}</p>
+  )}
+
+  {/* Chips List */}
+  {formData.socialMediaLinks?.length > 0 && (
+    <div className="flex flex-wrap gap-2">
+      {formData.socialMediaLinks.map((link, idx) => (
+        <span
+          key={idx}
+          className="flex items-center space-x-1 bg-gray-100 px-3 py-1 rounded-full text-sm"
+        >
+          <strong className="uppercase">{link.platform}</strong>
+          <span className="truncate max-w-[120px]">{link.usernameOrLink}</span>
+          <button
+            onClick={() => removeSocialLink(idx)}
+            className="flex-none text-gray-400 hover:text-red-500"
+          >
+            ✕
+          </button>
+        </span>
+      ))}
+    </div>
+  )}
+</div>
+
       </div>
 
       {/* Continue */}
