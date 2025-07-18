@@ -10,17 +10,19 @@ export default function SwipeDeck({
   direction,
   profilesLength,
   onAdvance,
+  onRightSwipe, // <-- Accept the prop
   children,
 }) {
   const onSwiped = useCallback(
     ({ deltaX }) => {
       if (deltaX > SWIPE_THRESHOLD) {
         onAdvance(1);
+        onRightSwipe?.(); // <-- Actually call it here
       } else if (deltaX < -SWIPE_THRESHOLD) {
         onAdvance(-1);
       }
     },
-    [onAdvance]
+    [onAdvance, onRightSwipe]
   );
 
   const handlers = useSwipeable({
@@ -40,3 +42,4 @@ export default function SwipeDeck({
     </div>
   );
 }
+
