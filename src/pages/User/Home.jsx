@@ -52,6 +52,8 @@ export default function UserHomePage() {
   const advance = useCallback(
     (dir) => {
       const current = profiles[idx];
+      console.log('Advancing profile:', current?.username, 'Direction:', dir);
+      console.log(profiles);
       if (!current) return;
   
       seenMutation.mutate({ suggestionIndex: current.suggestionIndex, direction: dir });
