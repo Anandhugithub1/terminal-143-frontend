@@ -53,14 +53,17 @@ export default function UserHomePage() {
     (dir) => {
       const current = profiles[idx];
       if (!current) return;
-
-      if (dir === 1 && !profileLoading && current.username) {
-        console.log('➡️ Sending match request for:', current.username);
-        sendMatchRequest(current.username);
-      }
-
+  
       seenMutation.mutate({ suggestionIndex: current.suggestionIndex, direction: dir });
+  
+      // ✅ Match request only on right swipe (dir === 1)
+      if (dir === 1 && !profileLoading && current.username) {
+        console.log('Sending match request for:', current.userId);
 
+        sendMatchRequest(current.userId);
+
+      }
+  
       setDirection(dir);
       setIdx((prev) => {
         const next = prev + 1;
@@ -72,7 +75,7 @@ export default function UserHomePage() {
     },
     [idx, profiles, dispatch, seenMutation, profileLoading, sendMatchRequest]
   );
-
+  
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
