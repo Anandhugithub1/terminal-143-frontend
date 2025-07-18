@@ -37,7 +37,10 @@ export const useSendMatchRequest = () => {
 
 
       
-      const res = await axios.post(PROFILE_BASE,payload);
+
+      const res = await axios.post(PROFILE_BASE, payload, {
+        withCredentials: true,
+      });
       console.log('✅ [hook] mutationFn success:', res.data);
       return res.data;
     },
