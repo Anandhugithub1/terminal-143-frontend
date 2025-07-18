@@ -50,20 +50,15 @@ export default function UserHomePage() {
   }, [dispatch]);
 
   const advance = useCallback(
-    (dir) => {
-      const current = profiles[idx];
-      console.log('Advancing profile:', current?.username, 'Direction:', dir);
-      console.log(profiles);
+    (dir, current) => {
       if (!current) return;
   
+      console.log('Advancing profile:', current?.username, 'Direction:', dir);
       seenMutation.mutate({ suggestionIndex: current.suggestionIndex, direction: dir });
   
-      // ✅ Match request only on right swipe (dir === 1)
       if (dir === 1 && !profileLoading && current.username) {
         console.log('Sending match request for:', current.userId);
-
         sendMatchRequest(current.userId);
-
       }
   
       setDirection(dir);
@@ -75,8 +70,9 @@ export default function UserHomePage() {
         return next;
       });
     },
-    [idx, profiles, dispatch, seenMutation, profileLoading, sendMatchRequest]
+    [profiles.length, dispatch, seenMutation, profileLoading, sendMatchRequest]
   );
+  
   
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
