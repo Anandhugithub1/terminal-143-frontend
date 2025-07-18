@@ -25,16 +25,17 @@ export const LoginForm = () => {
   const { isSuccess, profileCompleted } = auth;
 
   useEffect(() => {
-    // only run navigation when login succeeds
     if (isSuccess) {
-      // if profileCompleted is null/undefined/false/empty → complete profile
       if (!profileCompleted) {
         navigate('/complete');
+      } else if (auth.userType === 'mp') {
+        navigate('/requests');
       } else {
         navigate('/home');
       }
     }
-  }, [isSuccess, profileCompleted, navigate]);
+  }, [isSuccess, profileCompleted, auth.userType, navigate]);
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
