@@ -9,20 +9,23 @@ import {
 import { RiUserLine, RiUserFill, RiFileListLine, RiFileListFill } from 'react-icons/ri';
 
 const BottomNav = () => {
-  // Read userType from localStorage
   const userType = localStorage.getItem('userType');
 
-  // Define tabs for different user types
   let tabs = [];
 
   if (userType === 'mp') {
-    // For 'mp' users, show only Requests and Profile
     tabs = [
       {
         name: 'Requests',
         path: '/requests',
         icon: ({ isActive }) =>
           isActive ? <RiFileListFill size="1.4em" /> : <RiFileListLine size="1.4em" />,
+      },
+      {
+        name: 'Matches',
+        path: '/matches',
+        icon: ({ isActive }) =>
+          isActive ? <AiFillHeart size="1.4em" /> : <AiOutlineHeart size="1.4em" />,
       },
       {
         name: 'Profile',
@@ -32,7 +35,6 @@ const BottomNav = () => {
       },
     ];
   } else {
-    // Base tabs: Home and Profile
     tabs = [
       {
         name: 'Home',
@@ -48,7 +50,6 @@ const BottomNav = () => {
       },
     ];
 
-    // Conditionally add Matches tab for 'fm' users
     if (userType === 'fm') {
       tabs.splice(1, 0, {
         name: 'Matches',
