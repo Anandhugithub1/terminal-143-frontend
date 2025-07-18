@@ -56,7 +56,7 @@ export default function UserHomePage() {
   
       // ✅ Match request only on right swipe
       if (dir === 1 && !profileLoading && current.username) {
-        console.log('🔥 Sending match request for:', current.username);
+        console.log(' Sending match request for:', current.username);
         sendMatchRequest(current.username);
       }
   
@@ -144,7 +144,7 @@ export default function UserHomePage() {
   profilesLength={profiles.length}
   onAdvance={advance}
   onRightSwipe={() => {
-    console.log('Swiped right!'); // 🧪 Test log
+    console.log('Swiped right!'); 
 console.log('Sending match request for:', profile.userId);
   
   }}
