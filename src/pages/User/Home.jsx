@@ -50,36 +50,26 @@ export default function UserHomePage() {
   // Advance (swipe or manual), record seen & optionally match
   const advance = useCallback(
     (dir) => {
-      console.log('🛠️ advance() called with dir:', dir, 'idx:', idx);
+      console.log('🛠 advance() called dir:', dir, 'idx:', idx);
       setDirection(dir);
-  
       setIdx((prev) => {
-        console.log('  ↪️ inside setIdx, prev index =', prev);
-        console.log('  ↪️ full profiles array =', profiles);
-  
         const current = profiles[prev];
-        console.log('  ↪️ current profile at prev =', current);
+        console.log('  ↪️ current profile:', current);
   
         if (current) {
-          console.log('  ↪️ profileLoading =', profileLoading);
-  
           seenMutation.mutate({
             suggestionIndex: current.suggestionIndex,
             direction: dir,
           });
   
-          if (dir === 1 && !profileLoading && current.userId) {
-            console.log('➡️ Sending match request for:', current.userId);
-            sendMatchRequest(current.userId);
+          // ALWAYS send match if we have an ID
+          const recipientId = current.username || current.pk || current.id;
+          if (dir === 1 && recipientId) {
+            console.log('➡️ Sending match request for:', recipientId);
+            sendMatchRequest(recipientId);
           } else {
-            console.log('  ↪️ Skipped match:', {
-              dir,
-              profileLoading,
-              hasUserId: Boolean(current.userId),
-            });
+            console.log('  ↪️ No recipientId found, skipping match');
           }
-        } else {
-          console.log('  ↪️ No current profile at this index');
         }
   
         const next = prev + 1;
@@ -89,8 +79,9 @@ export default function UserHomePage() {
         return next;
       });
     },
-    [idx, profiles, dispatch, seenMutation, profileLoading, sendMatchRequest]
+    [idx, profiles, dispatch, seenMutation, sendMatchRequest]
   );
+  
   
 
   if (status === 'loading') return <ProfileSkeleton />;
