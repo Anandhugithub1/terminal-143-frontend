@@ -1,12 +1,21 @@
-// src/hooks/useSendMatchRequest.js
+import { useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { useSelector, shallowEqual } from 'react-redux';
+import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import axios from 'axios';
+import { fetchProfile } from '../features/UserProfile';	
 
 export const useSendMatchRequest = () => {
-  const userState = useSelector(state => state.user, shallowEqual) || {};
+  const dispatch = useDispatch();
+  const userState = useSelector((state) => state.user, shallowEqual) || {};
   const currentUser = userState.userProfile;
   const profileStatus = userState.status || 'idle';
+
+  // Auto-fetch profile if not yet loaded
+  useEffect(() => {
+    if (profileStatus === 'idle') {
+      dispatch(fetchProfile());
+    }
+  }, [profileStatus, dispatch]);
 
   const mutation = useMutation({
     mutationFn: async ({ recipient }) => {
@@ -25,15 +34,15 @@ export const useSendMatchRequest = () => {
       console.log('✅ [hook] mutationFn success:', res.data);
       return res.data;
     },
-    onError: err => console.error('❌ [hook] mutation error:', err),
-    onSuccess: data => console.log('✅ [hook] onSuccess:', data),
+    onError: (err) => console.error('❌ [hook] mutation error:', err),
+    onSuccess: (data) => console.log('✅ [hook] onSuccess:', data),
   });
 
   return {
-    send: recipient => {
+    send: (recipient) => {
       console.log('→ [hook] send() called for:', recipient);
-      if (profileStatus === 'idle' || !currentUser?.PK) {
-        console.warn('⚠️ [hook] Aborting; profileStatus or currentUser missing');
+      if (!currentUser?.PK || !currentUser?.username) {
+        console.warn('⚠️ [hook] Aborting; user profile not ready');
         return;
       }
       mutation.mutate({ recipient });
