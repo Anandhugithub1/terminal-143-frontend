@@ -53,16 +53,14 @@ export default function UserHomePage() {
     (dir) => {
       const current = profiles[idx];
       if (!current) return;
-  
-      // ✅ Match request only on right swipe using current profile (not stale one)
+
       if (dir === 1 && !profileLoading && current.username) {
         console.log('➡️ Sending match request for:', current.username);
-        sendMatchRequest(current.username); // use `current.username` not stale `profile`
+        sendMatchRequest(current.username);
       }
-  
-      // ✅ Log the "seen" action with direction
+
       seenMutation.mutate({ suggestionIndex: current.suggestionIndex, direction: dir });
-  
+
       setDirection(dir);
       setIdx((prev) => {
         const next = prev + 1;
@@ -74,8 +72,6 @@ export default function UserHomePage() {
     },
     [idx, profiles, dispatch, seenMutation, profileLoading, sendMatchRequest]
   );
-  
-  
 
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
@@ -138,19 +134,12 @@ export default function UserHomePage() {
         </div>
       )}
 
-      
-
-<SwipeDeck
-  idx={idx}
-  direction={direction}
-  profilesLength={profiles.length}
-  onAdvance={advance}
-  // onRightSwipe={() => {
-  //   console.log('Swiped right!'); 
-  
-  // }}
->
-
+      <SwipeDeck
+        idx={idx}
+        direction={direction}
+        profilesLength={profiles.length}
+        onAdvance={advance}
+      >
         <ProfileCard
           profile={profile}
           placeholderImage={placeholderImage}
@@ -167,8 +156,6 @@ export default function UserHomePage() {
 
         <DetailSection profile={profile} />
       </SwipeDeck>
-
-      
 
       <BottomNav />
     </div>
