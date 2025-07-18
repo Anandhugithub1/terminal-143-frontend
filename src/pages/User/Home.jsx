@@ -145,7 +145,6 @@ export default function UserHomePage() {
   onAdvance={advance}
   onRightSwipe={() => {
     console.log('Swiped right!'); 
-console.log('Sending match request for:', profile.userId);
   
   }}
 >
