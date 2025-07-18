@@ -1,24 +1,44 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../components/Layout/TopNavigation';
 import BottomNav from '../../components/Layout/BottomNavigation';
 
-// Demo request data
-const demoRequests = [
-
-];
+// Utility to calculate age from DOB (ISO date string)
+function calculateAge(dob) {
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
 
 export default function RequestsPage() {
   const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const PROFILE_BASE = 'https://userapi.terminal143.com/match/requests';
+
+
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setRequests(demoRequests);
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
+    async function fetchRequests() {
+      try {
+        const response = await axios.get(PROFILE_BASE);
+        // Expecting { requests: [ { request: {...}, profile: {...} } ] }
+        setRequests(response.data.requests || []);
+      } catch (err) {
+        console.error('Error fetching match requests', err);
+        setError('Could not load requests. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchRequests();
   }, []);
 
   if (isLoading) {
@@ -43,6 +63,18 @@ export default function RequestsPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="bg-white min-h-screen flex flex-col">
+        <TopNav />
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-red-500">{error}</p>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
+
   if (!requests.length) {
     return (
       <div className="bg-white min-h-screen flex flex-col">
@@ -51,7 +83,7 @@ export default function RequestsPage() {
           <div className="bg-gray-100 p-6 rounded-xl shadow max-w-sm mx-auto">
             <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-3" />
             <h2 className="text-lg font-bold">No Requests Yet</h2>
-            <p className="text-sm text-gray-500">You have no   requests.</p>
+            <p className="text-sm text-gray-500">You have no requests.</p>
           </div>
         </div>
         <BottomNav />
@@ -60,21 +92,46 @@ export default function RequestsPage() {
   }
 
   return (
-    <div className="bg-white min-h-screen pb-20">
+    <div className="bg-white min-h-screen pb-20 flex flex-col">
       <TopNav />
-      <div className="px-4 pt-4">
-        <h1 className="text-2xl font-bold mb-4">Your Requests</h1>
+      <div className="px-4 pt-4 flex-1">
+        <h1 className="text-2xl font-bold mb-4">Your Match Requests</h1>
         <div className="grid grid-cols-1 gap-6">
-          {requests.map((req) => (
+          {requests.map(({ request, profile }) => (
             <div
-              key={req.id}
-              className="bg-white rounded-3xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg"
+              key={request.senderUsername}
+              className="bg-white rounded-3xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg flex flex-col sm:flex-row items-center gap-4"
             >
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold text-gray-800">{req.title}</h2>
-                <span className="text-sm text-gray-500">{req.date}</span>
+              {/* Profile photo */}
+              {profile?.photo ? (
+                <img
+                  src={profile.photo}
+                  alt={profile.name}
+                  className="w-20 h-20 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-20 h-20 bg-gray-200 rounded-full" />
+              )}
+
+              {/* Profile info */}
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold text-gray-800">
+                  {profile?.name || request.senderUsername}, {profile?.dob ? calculateAge(profile.dob) : ''}
+                </h2>
+                <p className="text-sm text-gray-600 mt-1 line-clamp-3">
+                  {profile?.bio || 'No bio provided.'}
+                </p>
               </div>
-              <p className="text-sm text-gray-600 mt-2 line-clamp-3">{req.description}</p>
+
+              {/* Request status and actions */}
+              <div className="text-center">
+                <p className="text-sm text-gray-500 mb-2">
+                  Sent at: {new Date(request.sentAt).toLocaleDateString()}
+                </p>
+                <p className="text-sm font-medium text-blue-600 capitalize">
+                  {request.status}
+                </p>
+              </div>
             </div>
           ))}
         </div>
