@@ -10,14 +10,15 @@ export default function SwipeDeck({
   direction,
   profilesLength,
   onAdvance,
-  onRightSwipe, // <-- Accept the prop
+  onRightSwipe,
   children,
 }) {
   const onSwiped = useCallback(
     ({ deltaX }) => {
       if (deltaX > SWIPE_THRESHOLD) {
+        console.log('Detected right swipe'); // ✅ log here
         onAdvance(1);
-        onRightSwipe?.(); // <-- Actually call it here
+        onRightSwipe?.();
       } else if (deltaX < -SWIPE_THRESHOLD) {
         onAdvance(-1);
       }
@@ -29,11 +30,15 @@ export default function SwipeDeck({
     onSwiped,
     trackMouse: true,
     trackTouch: true,
-    preventScrollOnSwipe: false,
+    preventScrollOnSwipe: true, // better UX on mobile
   });
 
   return (
-    <div className="relative" {...handlers}>
+    <div
+      {...handlers}
+      className="relative w-full h-full touch-pan-y" // ✅ Ensure full touch coverage
+      style={{ minHeight: '100vh' }} // Important for touch to register!
+    >
       <AnimatePresence initial={false} mode="wait">
         <AnimatedCard idx={idx} direction={direction}>
           {children}
@@ -42,4 +47,3 @@ export default function SwipeDeck({
     </div>
   );
 }
-
