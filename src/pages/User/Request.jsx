@@ -110,12 +110,12 @@ export default function RequestsPage() {
     <div className="bg-white min-h-screen pb-24 flex flex-col">
       <TopNav />
       <div className="px-4 pt-4 flex-1">
-        <h1 className="text-2xl font-bold mb-4">Your Match Requests</h1>
+        <h1 className="text-2xl font-bold mb-4 text-gray-800">Your Match Requests</h1>
         <div className="space-y-4">
           {requests.map(({ request, profile }) => (
             <div
               key={request.senderUsername}
-              className="bg-white rounded-2xl p-4 shadow border border-gray-100 flex items-start gap-4"
+              className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 flex items-start gap-4"
             >
               {/* Profile Photo */}
               {profile?.photo ? (
@@ -147,23 +147,23 @@ export default function RequestsPage() {
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col items-center gap-2">
-  <span className="text-xs text-blue-500 font-medium capitalize">{request.status}</span>
-  {request.status === 'pending' && (
-    <div className="flex gap-2 mt-2">
-      <button
-        onClick={() => handleAction(request.senderUsername, 'accept')}
-        className="px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-gradient-primary to-gradient-secondary shadow-md hover:opacity-90 transition-all"
-      >
-        Accept
-      </button>
-      <button
-        onClick={() => handleAction(request.senderUsername, 'reject')}
-        className="px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-rose-500 to-rose-600 shadow-md hover:opacity-90 transition-all"
-      >
-        Reject
-      </button>
-    </div>
+              <div className="flex flex-col items-center gap-2 min-w-[100px]">
+                <span className="text-xs text-blue-500 font-medium capitalize">{request.status}</span>
+                {request.status === 'pending' && (
+                  <div className="flex flex-col gap-2 mt-2 w-full">
+                    <button
+                      onClick={() => handleAction(request.senderUsername, 'accept')}
+                      className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-gradient-primary to-gradient-secondary shadow-md hover:opacity-90 transition-all"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => handleAction(request.senderUsername, 'reject')}
+                      className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-pink-400 to-pink-500 shadow-md hover:opacity-90 transition-all"
+                    >
+                      Reject
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
