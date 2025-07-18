@@ -30,7 +30,6 @@ export default function SwipeDeck({
     onSwiped,
     trackMouse: true,
     trackTouch: true,
-    preventScrollOnSwipe: true, // better UX on mobile
   });
 
   return (
