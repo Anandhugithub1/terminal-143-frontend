@@ -50,28 +50,31 @@ export default function UserHomePage() {
   }, [dispatch]);
 
   const advance = useCallback(
-    (dir, current) => {
+    dir => {
+      const current = profiles[idx];
+      console.log('🔥 advance() dir:', dir, 'idx:', idx, 'current:', current);
       if (!current) return;
   
-      console.log('Advancing profile:', current?.username, 'Direction:', dir);
-      seenMutation.mutate({ suggestionIndex: current.suggestionIndex, direction: dir });
+      seenMutation.mutate({
+        suggestionIndex: current.suggestionIndex,
+        direction: dir,
+      });
   
       if (dir === 1 && !profileLoading && current.username) {
-        console.log('Sending match request for:', current.userId);
-        sendMatchRequest(current.userId);
+        console.log('➡️ advance() sending match request for:', current.username);
+        sendMatchRequest(current.username);
       }
   
       setDirection(dir);
-      setIdx((prev) => {
+      setIdx(prev => {
         const next = prev + 1;
-        if (next >= profiles.length) {
-          dispatch(fetchProfiles({ limit: 10 }));
-        }
+        if (next >= profiles.length) dispatch(fetchProfiles({ limit: 10 }));
         return next;
       });
     },
-    [profiles.length, dispatch, seenMutation, profileLoading, sendMatchRequest]
+    [idx, profiles, dispatch, seenMutation, profileLoading, sendMatchRequest]
   );
+  
   
   
   if (status === 'loading') return <ProfileSkeleton />;
