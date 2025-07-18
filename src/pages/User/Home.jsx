@@ -134,16 +134,7 @@ export default function UserHomePage() {
     <div className="relative bg-white min-h-screen pb-20">
       <TopNav />
 
-      {/* Test Match Button */}
-      <button
-        onClick={() => {
-          console.log('🛠️ Test Match button clicked');
-          advance(1);
-        }}
-        className="fixed top-20 right-4 px-4 py-2 bg-green-500 text-white rounded shadow"
-      >
-        Test Match
-      </button>
+     
 
       {requestError && (
         <div className="px-4 mt-4">
