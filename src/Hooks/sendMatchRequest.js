@@ -4,10 +4,10 @@ import { useSelector, shallowEqual } from 'react-redux';
 import axios from 'axios';
 
 export const useSendMatchRequest = () => {
-  const { userProfile: currentUser, status: profileStatus } = useSelector(
-    (state) => state.user,
-    shallowEqual
-  );
+  const userState = useSelector((state) => state.user, shallowEqual) || {};
+
+  const currentUser = userState.userProfile || null;
+  const profileStatus = userState.status || 'idle';
 
   const mutation = useMutation({
     mutationFn: async ({ recipient }) => {
