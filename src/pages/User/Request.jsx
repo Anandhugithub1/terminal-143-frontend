@@ -5,8 +5,10 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../components/Layout/TopNavigation';
 import BottomNav from '../../components/Layout/BottomNavigation';
 import { ConfirmationModal } from '../../components/Ui/Confirmation';
-import {calculateAge} from '../../Utlis/utlis';
+import { calculateAge } from '../../Utlis/utlis';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProfile } from '../../features/UserProfile/thunks/profile';
 
 export default function RequestsPage() {
   const [requests, setRequests] = useState([]);
@@ -16,8 +18,15 @@ export default function RequestsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
 
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.userProfile.currentUser);
+
   const PROFILE_BASE = 'https://userapi.terminal143.com/match/requests';
   const REQUEST_ACTION_URL = 'https://userapi.terminal143.com/match/requests/action';
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   useEffect(() => {
     async function fetchRequests() {
@@ -31,17 +40,30 @@ export default function RequestsPage() {
         setIsLoading(false);
       }
     }
+
     fetchRequests();
   }, []);
 
   const confirmAction = async () => {
     const { senderUsername, action } = selectedRequest;
+
+    if (!currentUser?.PK || !currentUser?.SK) {
+      alert('User identity missing.');
+      return;
+    }
+
     try {
       await axios.post(
         REQUEST_ACTION_URL,
-        { senderUsername, action },
+        {
+          senderUsername,
+          action,
+          recipientPK: currentUser.PK,
+          recipientSK: currentUser.SK,
+        },
         { withCredentials: true }
       );
+
       setRequests((prev) =>
         prev.filter((r) => r.request.senderUsername !== senderUsername)
       );
@@ -59,6 +81,7 @@ export default function RequestsPage() {
     setModalOpen(true);
   };
 
+  // --- UI Loading States ---
   if (isLoading) {
     return (
       <div className="bg-white min-h-screen flex flex-col">
@@ -109,6 +132,7 @@ export default function RequestsPage() {
     );
   }
 
+  // --- Main UI ---
   return (
     <div className="bg-white min-h-screen pb-24 flex flex-col">
       <TopNav />
