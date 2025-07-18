@@ -28,9 +28,7 @@ export default function SwipeDeck({
 
   const handlers = useSwipeable({
     onSwiped,
-    onSwiping: (eventData) => {
-    console.log('Swiping...', eventData); // 👈 Log swipe events
-  },
+   
     trackMouse: true,
     trackTouch: true,
   });
