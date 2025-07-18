@@ -2,13 +2,14 @@ import { useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import axios from 'axios';
-import { fetchProfile } from '../features/UserProfile';	
+import { fetchProfile } from '../features/UserProfile';
 
 export const useSendMatchRequest = () => {
   const dispatch = useDispatch();
-  const userState = useSelector((state) => state.user, shallowEqual) || {};
-  const currentUser = userState.userProfile;
-  const profileStatus = userState.status || 'idle';
+  // Fetch from the correct slice: userProfile
+  const userProfileState = useSelector((state) => state.userProfile, shallowEqual) || {};
+  const currentUser = userProfileState.currentUser; // assuming shape { currentUser, status }
+  const profileStatus = userProfileState.status || 'idle';
 
   // Auto-fetch profile if not yet loaded
   useEffect(() => {
@@ -47,7 +48,7 @@ export const useSendMatchRequest = () => {
       }
       mutation.mutate({ recipient });
     },
-    isSending: mutation.isPending,
+    isSending: mutation.isLoading,
     error: mutation.error,
     profileLoading: profileStatus === 'idle',
   };
