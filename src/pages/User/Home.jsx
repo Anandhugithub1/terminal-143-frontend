@@ -12,7 +12,7 @@ import TopNav from '../../components/Layout/TopNavigation';
 import { DetailSection } from '../../components/User_Home/Details';
 import { ActionControls } from '../../components/User_Home/LocationBar';
 import AlertMessage from '../../components/Ui/Alerts';
-import useSendMatchRequest from '../../Hooks/sendMatchRequest'
+// import useSendMatchRequest from '../../Hooks/sendMatchRequest'
 import placeholderImage from '../../assets/woman.png';
 import ProfileSkeleton from '../../components/User_Home/ProfileSkeleton';
 import SwipeDeck from '../../components/User_Home/SwipeDeck';
@@ -27,7 +27,7 @@ export default function UserHomePage() {
   const [idx, setIdx] = useState(0);
   const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState('');
- const { send: sendMatchRequest, isLoading: isSending, error: sendError } = useSendMatchRequest();
+//  const { send: sendMatchRequest, isLoading: isSending, error: sendError } = useSendMatchRequest();
 
   // React Query mutation for recordSeen using axios helper
   const seenMutation = useMutation({
@@ -67,9 +67,9 @@ export default function UserHomePage() {
 
         // → if user swiped right, send match request:
         if (dir === 1) {
-          sendMatchRequest(current.username, {
-            onError: err => setRequestError(err.response?.data?.error || err.message),
-          });
+          // sendMatchRequest(current.username, {
+          //   onError: err => setRequestError(err.response?.data?.error || err.message),
+          // });
         }
       setDirection(dir);
       setIdx((i) => {
