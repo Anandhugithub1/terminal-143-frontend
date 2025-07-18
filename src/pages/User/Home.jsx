@@ -16,18 +16,17 @@ import SwipeDeck from '../../components/User_Home/SwipeDeck';
 
 export default function UserHomePage() {
   const dispatch = useDispatch();
-  const { list: profiles, status, error } = useSelector((state) => state.profiles, shallowEqual);
+  const { list: profiles, status, error } = useSelector(
+    (state) => state.profiles,
+    shallowEqual
+  );
 
   const [idx, setIdx] = useState(0);
   const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState('');
 
-  const {
-    send: sendMatchRequest,
-    isSending,
-    error: sendError,
-    profileLoading,
-  } = useSendMatchRequest();
+  const { send: sendMatchRequest, isSending, error: sendError, profileLoading } =
+    useSendMatchRequest();
 
   const seenMutation = useMutation({
     mutationFn: postSeen,
@@ -36,10 +35,9 @@ export default function UserHomePage() {
     },
   });
 
+  // Initial load
   useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchProfiles({ limit: 10 }));
-    }
+    if (status === 'idle') dispatch(fetchProfiles({ limit: 10 }));
   }, [status, dispatch]);
 
   const isEnd = profiles.length > 0 && idx >= profiles.length;
@@ -49,29 +47,25 @@ export default function UserHomePage() {
     dispatch(fetchProfiles({ limit: 10 }));
   }, [dispatch]);
 
+  // Advance (swipe or manual), record seen & optionally match
   const advance = useCallback(
     (dir) => {
-      // Update the swipe direction immediately (for animations, if you need it)
+      console.log('🛠️ advance() called with dir:', dir, 'idx:', idx);
       setDirection(dir);
-  
-      // Use the functional form of setIdx so we get the up‑to‑date `prev` value
       setIdx((prev) => {
         const current = profiles[prev];
         if (current) {
-          // 1️⃣ record seen
           seenMutation.mutate({
             suggestionIndex: current.suggestionIndex,
             direction: dir,
           });
-  
-          // 2️⃣ send match if right swipe
+
           if (dir === 1 && !profileLoading && current.username) {
             console.log('➡️ Sending match request for:', current.username);
             sendMatchRequest(current.username);
           }
         }
-  
-        // 3️⃣ bump index
+
         const next = prev + 1;
         if (next >= profiles.length) {
           dispatch(fetchProfiles({ limit: 10 }));
@@ -79,12 +73,9 @@ export default function UserHomePage() {
         return next;
       });
     },
-    [profiles, profileLoading, sendMatchRequest, seenMutation, dispatch]
+    [idx, profiles, dispatch, seenMutation, profileLoading, sendMatchRequest]
   );
-  
-  
-  
-  
+
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
@@ -135,6 +126,17 @@ export default function UserHomePage() {
     <div className="relative bg-white min-h-screen pb-20">
       <TopNav />
 
+      {/* Test Match Button */}
+      <button
+        onClick={() => {
+          console.log('🛠️ Test Match button clicked');
+          advance(1);
+        }}
+        className="fixed top-20 right-4 px-4 py-2 bg-green-500 text-white rounded shadow"
+      >
+        Test Match
+      </button>
+
       {requestError && (
         <div className="px-4 mt-4">
           <AlertMessage
@@ -146,26 +148,19 @@ export default function UserHomePage() {
         </div>
       )}
 
-      <SwipeDeck
-        idx={idx}
-        direction={direction}
-        profilesLength={profiles.length}
-        onAdvance={advance}
-      >
+      <SwipeDeck idx={idx} direction={direction} profilesLength={profiles.length} onAdvance={advance}>
         <ProfileCard
           profile={profile}
           placeholderImage={placeholderImage}
           onConnectClick={() => {}}
           onMessageClick={() => console.log('Message clicked')}
         />
-
         <ActionControls
           className="fixed bottom-32 inset-x-0"
           onReject={() => advance(-1)}
           onRefresh={handleRefresh}
           onLike={() => advance(1)}
         />
-
         <DetailSection profile={profile} />
       </SwipeDeck>
 
