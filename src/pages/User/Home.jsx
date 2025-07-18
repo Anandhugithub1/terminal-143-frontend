@@ -141,8 +141,8 @@ export default function UserHomePage() {
   onRightSwipe={() => {
     console.log('Swiped right!'); // 🧪 Test log
 
-    if (!profileLoading && profile.username) {
-      sendMatchRequest(profile.username);
+    if (!profileLoading && profile.userId) {
+      sendMatchRequest(profile.userId);
     }
   }}
 >
