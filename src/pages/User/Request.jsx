@@ -28,7 +28,10 @@ export default function RequestsPage() {
   useEffect(() => {
     async function fetchRequests() {
       try {
-        const response = await axios.get(PROFILE_BASE);
+        const response = await axios.get(PROFILE_BASE, {
+          withCredentials: true,
+        });
+        
         // Expecting { requests: [ { request: {...}, profile: {...} } ] }
         setRequests(response.data.requests || []);
       } catch (err) {
