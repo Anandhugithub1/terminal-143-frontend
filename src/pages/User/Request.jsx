@@ -22,7 +22,7 @@ export default function RequestsPage() {
   const currentUser = useSelector((state) => state.userProfile.currentUser);
 
   const PROFILE_BASE = 'https://userapi.terminal143.com/match/requests';
-  const REQUEST_ACTION_URL = 'https://userapi.terminal143.com/match/requests/action';
+  const REQUEST_ACTION_URL = 'https://userapi.terminal143.com/match/request/respond';
 
   useEffect(() => {
     dispatch(fetchProfile());
