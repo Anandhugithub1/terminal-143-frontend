@@ -27,7 +27,13 @@ export default function UserHomePage() {
   const [idx, setIdx] = useState(0);
   const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState('');
- const { send: sendMatchRequest, isLoading: isSending, error: sendError } = useSendMatchRequest();
+
+ const {
+  send: sendMatchRequest,
+  isSending,
+  error: sendError,
+  profileLoading,
+} =  useSendMatchRequest();
 
   // React Query mutation for recordSeen using axios helper
   const seenMutation = useMutation({
@@ -67,8 +73,9 @@ export default function UserHomePage() {
 
         // → if user swiped right, send match request:
         if (dir === 1) {
-          sendMatchRequest(current.username);
-
+          if (dir === 1 && !profileLoading) {
+            sendMatchRequest(current.username);
+          }
         }
       setDirection(dir);
       setIdx((i) => {
