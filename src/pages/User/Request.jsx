@@ -45,9 +45,15 @@ export default function RequestsPage() {
   }, []);
 
   const confirmAction = async () => {
-    const { senderUsername, action } = selectedRequest;
+    const { senderUsername, action, senderPK, senderSK } = selectedRequest;
 
-    if (!currentUser?.PK || !currentUser?.SK) {
+    // Normalize recipient PK/SK (handles DynamoDB AttributeValue shape)
+    const rawPK = currentUser?.PK;
+    const rawSK = currentUser?.SK;
+    const recipientPK = rawPK && typeof rawPK === 'object' ? rawPK.S : rawPK;
+    const recipientSK = rawSK && typeof rawSK === 'object' ? rawSK.S : rawSK;
+
+    if (!recipientPK || !recipientSK) {
       alert('User identity missing.');
       return;
     }
@@ -55,18 +61,11 @@ export default function RequestsPage() {
     try {
       await axios.post(
         REQUEST_ACTION_URL,
-        {
-          senderUsername,
-          action,
-          recipientPK: currentUser.PK,
-          recipientSK: currentUser.SK,
-        },
+        { senderUsername, action, senderPK, senderSK, recipientPK, recipientSK },
         { withCredentials: true }
       );
 
-      setRequests((prev) =>
-        prev.filter((r) => r.request.senderUsername !== senderUsername)
-      );
+      setRequests((prev) => prev.filter((r) => r.request.senderUsername !== senderUsername));
     } catch (err) {
       console.error(`Failed to ${action} request`, err);
       alert(`Could not ${action} request. Please try again.`);
@@ -76,8 +75,8 @@ export default function RequestsPage() {
     }
   };
 
-  const openModal = (senderUsername, name, action) => {
-    setSelectedRequest({ senderUsername, name, action });
+  const openModal = (senderUsername, name, action, senderPK, senderSK) => {
+    setSelectedRequest({ senderUsername, name, action, senderPK, senderSK });
     setModalOpen(true);
   };
 
@@ -158,9 +157,7 @@ export default function RequestsPage() {
                 <h2 className="text-lg font-semibold text-gray-800">
                   {profile?.name || request.senderUsername}
                   {profile?.dob && (
-                    <span className="text-gray-500 text-sm ml-1">
-                      ({calculateAge(profile.dob)})
-                    </span>
+                    <span className="text-gray-500 text-sm ml-1">({calculateAge(profile.dob)})</span>
                   )}
                 </h2>
                 <p className="text-sm text-gray-600 mt-1 line-clamp-3">
@@ -177,7 +174,13 @@ export default function RequestsPage() {
                   <div className="flex flex-col gap-2 mt-2 w-full">
                     <button
                       onClick={() =>
-                        openModal(request.senderUsername, profile?.name || request.senderUsername, 'accept')
+                        openModal(
+                          request.senderUsername,
+                          profile?.name || request.senderUsername,
+                          'accept',
+                          request.senderPK,
+                          request.senderSK
+                        )
                       }
                       className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-gradient-primary to-gradient-secondary shadow-md hover:opacity-90 transition-all"
                     >
@@ -185,7 +188,13 @@ export default function RequestsPage() {
                     </button>
                     <button
                       onClick={() =>
-                        openModal(request.senderUsername, profile?.name || request.senderUsername, 'reject')
+                        openModal(
+                          request.senderUsername,
+                          profile?.name || request.senderUsername,
+                          'reject',
+                          request.senderPK,
+                          request.senderSK
+                        )
                       }
                       className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-pink-400 to-pink-500 shadow-md hover:opacity-90 transition-all"
                     >
@@ -200,7 +209,6 @@ export default function RequestsPage() {
       </div>
       <BottomNav />
 
-      {/* Modal */}
       <ConfirmationModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
