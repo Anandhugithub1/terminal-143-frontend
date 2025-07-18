@@ -4,8 +4,9 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../components/Layout/TopNavigation';
 import BottomNav from '../../components/Layout/BottomNavigation';
+import { ConfirmationModal } from '../../components/Ui/Confirmation';
 
-// Utility to calculate age from DOB (ISO date string)
+
 function calculateAge(dob) {
   const birthDate = new Date(dob);
   const today = new Date();
@@ -17,10 +18,15 @@ function calculateAge(dob) {
   return age;
 }
 
+
+
 export default function RequestsPage() {
   const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
 
   const PROFILE_BASE = 'https://userapi.terminal143.com/match/requests';
   const REQUEST_ACTION_URL = 'https://userapi.terminal143.com/match/requests/action';
@@ -40,7 +46,8 @@ export default function RequestsPage() {
     fetchRequests();
   }, []);
 
-  const handleAction = async (senderUsername, action) => {
+  const confirmAction = async () => {
+    const { senderUsername, action } = selectedRequest;
     try {
       await axios.post(
         REQUEST_ACTION_URL,
@@ -53,7 +60,15 @@ export default function RequestsPage() {
     } catch (err) {
       console.error(`Failed to ${action} request`, err);
       alert(`Could not ${action} request. Please try again.`);
+    } finally {
+      setModalOpen(false);
+      setSelectedRequest(null);
     }
+  };
+
+  const openModal = (senderUsername, name, action) => {
+    setSelectedRequest({ senderUsername, name, action });
+    setModalOpen(true);
   };
 
   if (isLoading) {
@@ -117,7 +132,6 @@ export default function RequestsPage() {
               key={request.senderUsername}
               className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 flex items-start gap-4"
             >
-              {/* Profile Photo */}
               {profile?.photo ? (
                 <img
                   src={profile.photo}
@@ -128,7 +142,6 @@ export default function RequestsPage() {
                 <div className="w-16 h-16 bg-gray-200 rounded-full" />
               )}
 
-              {/* Profile Info */}
               <div className="flex-1">
                 <h2 className="text-lg font-semibold text-gray-800">
                   {profile?.name || request.senderUsername}
@@ -146,19 +159,22 @@ export default function RequestsPage() {
                 </p>
               </div>
 
-              {/* Actions */}
               <div className="flex flex-col items-center gap-2 min-w-[100px]">
                 <span className="text-xs text-blue-500 font-medium capitalize">{request.status}</span>
                 {request.status === 'pending' && (
                   <div className="flex flex-col gap-2 mt-2 w-full">
                     <button
-                      onClick={() => handleAction(request.senderUsername, 'accept')}
+                      onClick={() =>
+                        openModal(request.senderUsername, profile?.name || request.senderUsername, 'accept')
+                      }
                       className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-gradient-primary to-gradient-secondary shadow-md hover:opacity-90 transition-all"
                     >
                       Accept
                     </button>
                     <button
-                      onClick={() => handleAction(request.senderUsername, 'reject')}
+                      onClick={() =>
+                        openModal(request.senderUsername, profile?.name || request.senderUsername, 'reject')
+                      }
                       className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-pink-400 to-pink-500 shadow-md hover:opacity-90 transition-all"
                     >
                       Reject
@@ -171,6 +187,15 @@ export default function RequestsPage() {
         </div>
       </div>
       <BottomNav />
+
+      {/* Modal */}
+      <ConfirmationModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={confirmAction}
+        action={selectedRequest?.action}
+        name={selectedRequest?.name}
+      />
     </div>
   );
 }
