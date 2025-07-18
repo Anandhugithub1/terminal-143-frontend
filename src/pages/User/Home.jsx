@@ -145,10 +145,10 @@ export default function UserHomePage() {
   direction={direction}
   profilesLength={profiles.length}
   onAdvance={advance}
-  onRightSwipe={() => {
-    console.log('Swiped right!'); 
+  // onRightSwipe={() => {
+  //   console.log('Swiped right!'); 
   
-  }}
+  // }}
 >
 
         <ProfileCard
