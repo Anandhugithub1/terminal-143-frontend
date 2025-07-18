@@ -12,7 +12,7 @@ import TopNav from '../../components/Layout/TopNavigation';
 import { DetailSection } from '../../components/User_Home/Details';
 import { ActionControls } from '../../components/User_Home/LocationBar';
 import AlertMessage from '../../components/Ui/Alerts';
-import useSendMatchRequest from '../../Hooks/sendMatchRequest'
+import {useSendMatchRequest} from '../../Hooks/sendMatchRequest'
 import placeholderImage from '../../assets/woman.png';
 import ProfileSkeleton from '../../components/User_Home/ProfileSkeleton';
 import SwipeDeck from '../../components/User_Home/SwipeDeck';
