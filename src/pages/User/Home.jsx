@@ -67,9 +67,8 @@ export default function UserHomePage() {
 
         // → if user swiped right, send match request:
         if (dir === 1) {
-          sendMatchRequest(current.username, {
-            onError: err => setRequestError(err.response?.data?.error || err.message),
-          });
+          sendMatchRequest(current.username); // ✅ just pass recipient
+
         }
       setDirection(dir);
       setIdx((i) => {
