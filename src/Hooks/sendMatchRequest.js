@@ -30,8 +30,14 @@ export const useSendMatchRequest = () => {
         senderPK: currentUser.PK,
         senderUsername: currentUser.username,
       };
+
+      const PROFILE_BASE = 'https://userapi.terminal143.com/match/request';
+
       console.log('📡 [hook] POST /api/match/request payload:', payload);
-      const res = await axios.post('/api/match/request', payload);
+
+
+      
+      const res = await axios.post(PROFILE_BASE,payload);
       console.log('✅ [hook] mutationFn success:', res.data);
       return res.data;
     },
