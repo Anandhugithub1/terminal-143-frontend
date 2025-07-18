@@ -52,20 +52,36 @@ export default function UserHomePage() {
     (dir) => {
       console.log('🛠️ advance() called with dir:', dir, 'idx:', idx);
       setDirection(dir);
+  
       setIdx((prev) => {
+        console.log('  ↪️ inside setIdx, prev index =', prev);
+        console.log('  ↪️ full profiles array =', profiles);
+  
         const current = profiles[prev];
+        console.log('  ↪️ current profile at prev =', current);
+  
         if (current) {
+          console.log('  ↪️ profileLoading =', profileLoading);
+  
           seenMutation.mutate({
             suggestionIndex: current.suggestionIndex,
             direction: dir,
           });
-
+  
           if (dir === 1 && !profileLoading && current.userId) {
             console.log('➡️ Sending match request for:', current.userId);
-            sendMatchRequest(current.userId)
+            sendMatchRequest(current.userId);
+          } else {
+            console.log('  ↪️ Skipped match:', {
+              dir,
+              profileLoading,
+              hasUserId: Boolean(current.userId),
+            });
           }
+        } else {
+          console.log('  ↪️ No current profile at this index');
         }
-
+  
         const next = prev + 1;
         if (next >= profiles.length) {
           dispatch(fetchProfiles({ limit: 10 }));
@@ -75,6 +91,7 @@ export default function UserHomePage() {
     },
     [idx, profiles, dispatch, seenMutation, profileLoading, sendMatchRequest]
   );
+  
 
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
