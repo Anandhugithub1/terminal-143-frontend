@@ -50,30 +50,38 @@ export default function UserHomePage() {
   }, [dispatch]);
 
   const advance = useCallback(
-    dir => {
-      const current = profiles[idx];
-      console.log('🔥 advance() dir:', dir, 'idx:', idx, 'current:', current);
-      if (!current) return;
-  
-      seenMutation.mutate({
-        suggestionIndex: current.suggestionIndex,
-        direction: dir,
-      });
-  
-      if (dir === 1 && !profileLoading && current.username) {
-        console.log('➡️ advance() sending match request for:', current.username);
-        sendMatchRequest(current.username);
-      }
-  
+    (dir) => {
+      // Update the swipe direction immediately (for animations, if you need it)
       setDirection(dir);
-      setIdx(prev => {
+  
+      // Use the functional form of setIdx so we get the up‑to‑date `prev` value
+      setIdx((prev) => {
+        const current = profiles[prev];
+        if (current) {
+          // 1️⃣ record seen
+          seenMutation.mutate({
+            suggestionIndex: current.suggestionIndex,
+            direction: dir,
+          });
+  
+          // 2️⃣ send match if right swipe
+          if (dir === 1 && !profileLoading && current.username) {
+            console.log('➡️ Sending match request for:', current.username);
+            sendMatchRequest(current.username);
+          }
+        }
+  
+        // 3️⃣ bump index
         const next = prev + 1;
-        if (next >= profiles.length) dispatch(fetchProfiles({ limit: 10 }));
+        if (next >= profiles.length) {
+          dispatch(fetchProfiles({ limit: 10 }));
+        }
         return next;
       });
     },
-    [idx, profiles, dispatch, seenMutation, profileLoading, sendMatchRequest]
+    [profiles, profileLoading, sendMatchRequest, seenMutation, dispatch]
   );
+  
   
   
   
