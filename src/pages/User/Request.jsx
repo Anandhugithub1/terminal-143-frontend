@@ -148,22 +148,22 @@ export default function RequestsPage() {
 
               {/* Actions */}
               <div className="flex flex-col items-center gap-2">
-                <span className="text-xs text-blue-500 font-medium capitalize">{request.status}</span>
-                {request.status === 'pending' && (
-                  <div className="flex gap-2 mt-2">
-                    <button
-                      onClick={() => handleAction(request.senderUsername, 'accept')}
-                      className="px-3 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() => handleAction(request.senderUsername, 'reject')}
-                      className="px-3 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
-                    >
-                      Reject
-                    </button>
-                  </div>
+  <span className="text-xs text-blue-500 font-medium capitalize">{request.status}</span>
+  {request.status === 'pending' && (
+    <div className="flex gap-2 mt-2">
+      <button
+        onClick={() => handleAction(request.senderUsername, 'accept')}
+        className="px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-gradient-primary to-gradient-secondary shadow-md hover:opacity-90 transition-all"
+      >
+        Accept
+      </button>
+      <button
+        onClick={() => handleAction(request.senderUsername, 'reject')}
+        className="px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-rose-500 to-rose-600 shadow-md hover:opacity-90 transition-all"
+      >
+        Reject
+      </button>
+    </div>
                 )}
               </div>
             </div>
