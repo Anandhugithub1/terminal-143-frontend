@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../components/Layout/TopNavigation';
 import BottomNav from '../../components/Layout/BottomNavigation';
 import placeholderImage from '../../assets/woman.png';
-
-const demoMatches = [
-
-];
 
 const platformIcons = {
   IG: '📸',
@@ -19,13 +16,30 @@ const platformIcons = {
 export default function MatchesPage() {
   const [matches, setMatches] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  const MATCHES_API = 'https://userapi.terminal143.com/match/list'; // adjust endpoint if needed
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMatches(demoMatches);
-      setIsLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
+    async function fetchMatches() {
+      try {
+        const response = await axios.get(MATCHES_API, { withCredentials: true });
+        const data = response.data.matches;
+        if (Array.isArray(data) && data.length > 0) {
+          setMatches(data);
+        } else {
+          setMatches([]);
+        }
+      } catch (err) {
+        console.error('Error fetching matches:', err);
+        setIsError(true);
+        setMatches([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMatches();
   }, []);
 
   if (isLoading) {
@@ -53,15 +67,20 @@ export default function MatchesPage() {
     );
   }
 
-  if (!matches.length) {
+  // Error or no matches
+  if (isError || !matches.length) {
     return (
       <div className="bg-white min-h-screen flex flex-col">
         <TopNav />
         <div className="flex-1 flex items-center justify-center text-center p-6">
           <div className="bg-gray-100 p-6 rounded-xl shadow max-w-sm mx-auto">
             <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-3" />
-            <h2 className="text-lg font-bold">No Matches Yet</h2>
-            <p className="text-sm text-gray-500">Start swiping to find someone special.</p>
+            <h2 className="text-lg font-bold">No Matches Found</h2>
+            <p className="text-sm text-gray-500">
+              {isError
+                ? 'Could not load matches. Please try again later.'
+                : 'Start swiping to find someone special.'}
+            </p>
           </div>
         </div>
         <BottomNav />
@@ -78,39 +97,43 @@ export default function MatchesPage() {
         <div className="grid grid-cols-1 gap-6">
           {matches.map((match) => (
             <div
-              key={match.id}
+              key={match.username} // or match.id
               className="bg-white rounded-3xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg"
             >
               <div className="flex gap-4">
                 <img
-                  src={placeholderImage}
+                  src={match.photo || placeholderImage}
                   alt={`${match.name}'s profile`}
                   className="w-20 h-20 rounded-2xl object-cover"
                   loading="lazy"
                 />
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
-                    <h2 className="text-lg font-bold text-gray-800">{match.name}, {match.age}</h2>
-                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">{match.bio}</p>
+                    <h2 className="text-lg font-bold text-gray-800">
+                      {match.name}, {match.age}
+                    </h2>
+                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                      {match.bio}
+                    </p>
                   </div>
 
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {match.socialMediaLinks.map((link, i) => {
-                      const displayLink = link.usernameOrLink.startsWith('@')
+                    {match.socialMediaLinks?.map((link, i) => {
+                      const display = link.usernameOrLink.startsWith('@')
                         ? link.usernameOrLink
                         : `@${link.usernameOrLink}`;
-                      const fallback = `https://www.google.com/search?q=${link.usernameOrLink}`;
+                      const url = link.url || `https://www.google.com/search?q=${link.usernameOrLink}`;
 
                       return (
                         <a
                           key={i}
-                          href={fallback}
+                          href={url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-full border border-blue-200 hover:bg-blue-100 transition"
                         >
                           <span className="mr-1">{platformIcons[link.platform] || '🔗'}</span>
-                          {displayLink}
+                          {display}
                         </a>
                       );
                     })}
