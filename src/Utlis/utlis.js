@@ -110,6 +110,16 @@ export const interestMap = {
   return age;
 }
 
+
+export const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+};
+
 export function computeAge(dob) {
   if (!dob) return '';
   const birth = new Date(dob);
