@@ -7,7 +7,8 @@ import BottomNav from '../../../components/Layout/BottomNavigation';
 import { Edit2, Share2, MapPin, Cake } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { fetchProfile } from '../../../features/UserProfile';
-import { LoadingSpinner } from '../../../components/Ui/Spinner';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -23,8 +24,31 @@ export default function ProfilePage() {
     }
   }, [dispatch, status]);
 
+  // Skeleton loading state
   if (status !== 'succeeded') {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex flex-col h-screen bg-white font-inter">
+        <TopNav />
+        <main className="flex-1 overflow-y-auto px-4">
+          <div className="flex flex-col items-center mt-6">
+            <Skeleton circle width={96} height={96} />
+            <Skeleton width={120} height={24} className="mt-4" />
+            <div className="flex items-center gap-3 mt-2">
+              <Skeleton width={80} height={16} />
+              <Skeleton width={40} height={16} />
+            </div>
+          </div>
+          <div className="mt-6 text-center px-6">
+            <Skeleton count={3} />
+          </div>
+          <div className="mt-8 flex flex-col gap-4 px-6">
+            <Skeleton width="100%" height={48} />
+            <Skeleton width="100%" height={48} />
+          </div>
+        </main>
+        <BottomNav />
+      </div>
+    );
   }
 
   const age = profile.dob
