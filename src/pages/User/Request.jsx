@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMatchRequests } from '../../features/UserActions/api';
 import { useMatchRequestResponse } from '../../features/UserActions/api';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -11,7 +11,12 @@ import BottomNav from '../../components/Layout/BottomNavigation';
 import { ConfirmationModal } from '../../components/Ui/Confirmation';
 import RequestItem from '../../features/UserActions/components/RequestItem';
 
+import { fetchProfile } from '../../features/UserProfile';
+
 export default function RequestsPage() {
+
+  const dispatch = useDispatch();
+
   const [modalOpen, setModalOpen] = useState(false);
   const currentUser = useSelector((state) => state.userProfile.currentUser);
 
@@ -64,6 +69,11 @@ export default function RequestsPage() {
   
     setModalOpen(false);
   };
+  useEffect(() => {
+    if (!currentUser) {
+      dispatch(fetchProfile());
+    }
+  }, [currentUser, dispatch]);
   
 
   const renderContent = () => {
