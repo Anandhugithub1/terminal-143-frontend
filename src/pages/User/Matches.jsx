@@ -30,6 +30,7 @@ export default function MatchesPage() {
       try {
         const response = await axios.get(MATCHES_API, { withCredentials: true });
         const data = response.data.matches;
+        console.log('Fetched matches:', data);
         setMatches(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error('Error fetching matches:', err);
