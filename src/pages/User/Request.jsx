@@ -28,12 +28,22 @@ export default function RequestsPage() {
 
   const confirmAction = () => {
     if (!selectedRequest) return;
-    
+  
     const { senderUsername, action, senderPK, senderSK, recipientPK, recipientSK } = selectedRequest;
-    
+  
+    // ✅ Log the payload before sending
+    console.log("Sending match response payload:", {
+      senderUsername,
+      action,
+      senderPK,
+      senderSK,
+      recipientPK,
+      recipientSK,
+    });
+  
     // Track processing request
     setProcessingRequests(prev => new Set(prev).add(senderUsername));
-    
+  
     mutation.mutate(
       { senderUsername, action, senderPK, senderSK, recipientPK, recipientSK },
       {
@@ -42,13 +52,14 @@ export default function RequestsPage() {
             const updated = new Set(prev);
             updated.delete(senderUsername);
             return updated;
-          })
+          });
         }
       }
     );
-    
+  
     setModalOpen(false);
   };
+  
 
   const renderContent = () => {
     if (isLoading) {
