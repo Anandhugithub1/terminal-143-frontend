@@ -19,7 +19,8 @@ export default function RequestsPage() {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [processingRequests, setProcessingRequests] = useState(new Set());
 
-  const { data: requests = [], isLoading, error } = useMatchRequests();
+  // Destructure refetch to reload requests
+  const { data: requests = [], isLoading, error, refetch } = useMatchRequests();
   const mutation = useMatchRequestResponse();
 
   // Ensure current user profile is loaded
@@ -66,6 +67,8 @@ export default function RequestsPage() {
       { senderUsername, action, senderPK, senderSK, recipientPK, recipientSK },
       {
         onSettled: () => {
+          // Refresh the requests list from server
+          refetch();
           setProcessingRequests((prev) => {
             const updated = new Set(prev);
             updated.delete(senderUsername);
