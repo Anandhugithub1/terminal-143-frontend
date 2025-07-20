@@ -27,13 +27,15 @@ export default function RequestsPage() {
   const mutation = useMatchRequestResponse();
 
   const openModal = (request, profile, action) => {
-    setSelectedRequest({
-      ...request,
-      name: profile?.name || request.senderUsername,
-      action
-    });
-    setModalOpen(true);
-  };
+  setSelectedRequest({
+    senderUsername: request.senderUsername,
+    senderPK: request.senderPK,
+    senderSK: profile?.SK, // ✅ Fix: now pulling SK from profile
+    name: profile?.name || request.senderUsername,
+    action,
+  });
+};
+
 
   const confirmAction = () => {
     if (!selectedRequest || !currentUser) return;

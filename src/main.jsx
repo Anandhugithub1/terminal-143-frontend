@@ -36,6 +36,9 @@ import PreferencesPage from './pages/Settings/Preference.jsx';
 import PublicProfilePage from './pages/User/Profile/PublicProfile.jsx';
 import MatchesPage from './pages/User/Matches.jsx';
 import RequestsPage from './pages/User/Request.jsx';
+
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -88,6 +91,9 @@ createRoot(document.getElementById('root')).render(
       
       <RouterProvider router={route} />
     </Provider>
+
+    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+
     </QueryClientProvider>
 
   </StrictMode>,
