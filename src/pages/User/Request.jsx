@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useMatchRequests } from '../../features/UserActions/api';
 import { useMatchRequestResponse } from '../../features/UserActions/api';
-import { useSelector,useDispatch } from 'react-redux';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchProfile } from '../../features/UserProfile';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../components/Layout/TopNavigation';
@@ -11,40 +11,46 @@ import BottomNav from '../../components/Layout/BottomNavigation';
 import { ConfirmationModal } from '../../components/Ui/Confirmation';
 import RequestItem from '../../features/UserActions/components/RequestItem';
 
-import { fetchProfile } from '../../features/UserProfile';
-
 export default function RequestsPage() {
-
   const dispatch = useDispatch();
-
-  const [modalOpen, setModalOpen] = useState(false);
   const currentUser = useSelector((state) => state.userProfile.currentUser);
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [processingRequests, setProcessingRequests] = useState(new Set());
 
   const { data: requests = [], isLoading, error } = useMatchRequests();
   const mutation = useMatchRequestResponse();
 
+  // Ensure current user profile is loaded
+  useEffect(() => {
+    if (!currentUser) {
+      dispatch(fetchProfile());
+    }
+  }, [currentUser, dispatch]);
+
+  // Open confirmation modal
   const openModal = (request, profile, action) => {
-  setSelectedRequest({
-    senderUsername: request.senderUsername,
-    senderPK: request.senderPK,
-    senderSK: profile?.SK, // ✅ Fix: now pulling SK from profile
-    name: profile?.name || request.senderUsername,
-    action,
-  });
-};
+    setSelectedRequest({
+      senderUsername: request.senderUsername,
+      senderPK: request.senderPK,
+      senderSK: profile?.SK,
+      name: profile?.name || request.senderUsername,
+      action,
+    });
+    setModalOpen(true);
+  };
 
-
+  // Handle confirmation action
   const confirmAction = () => {
     if (!selectedRequest || !currentUser) return;
-  
+
     const { senderUsername, action, senderPK, senderSK } = selectedRequest;
-    const recipientPK = currentUser?.PK;
-    const recipientSK = currentUser?.SK;
-  
-    console.log("Sending match response payload:", {
+    const recipientPK = currentUser.PK;
+    const recipientSK = currentUser.SK;
+
+    // Log payload
+    console.log('Sending match response payload:', {
       senderUsername,
       action,
       senderPK,
@@ -52,32 +58,27 @@ export default function RequestsPage() {
       recipientPK,
       recipientSK,
     });
-  
-    // Track processing request
-    setProcessingRequests(prev => new Set(prev).add(senderUsername));
-  
+
+    // Track processing state
+    setProcessingRequests((prev) => new Set(prev).add(senderUsername));
+
     mutation.mutate(
       { senderUsername, action, senderPK, senderSK, recipientPK, recipientSK },
       {
         onSettled: () => {
-          setProcessingRequests(prev => {
+          setProcessingRequests((prev) => {
             const updated = new Set(prev);
             updated.delete(senderUsername);
             return updated;
           });
-        }
+        },
       }
     );
-  
+
     setModalOpen(false);
   };
-  useEffect(() => {
-    if (!currentUser) {
-      dispatch(fetchProfile());
-    }
-  }, [currentUser, dispatch]);
-  
 
+  // Render content based on state
   const renderContent = () => {
     if (isLoading) {
       return (
@@ -100,9 +101,7 @@ export default function RequestsPage() {
     if (error) {
       return (
         <div className="flex-1 flex items-center justify-center p-4">
-          <p className="text-red-500 text-center">
-            Could not load requests. Please try again later.
-          </p>
+          <p className="text-red-500 text-center">Could not load requests. Please try again later.</p>
         </div>
       );
     }
