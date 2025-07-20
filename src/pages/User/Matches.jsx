@@ -93,69 +93,80 @@ export default function MatchesPage() {
         <h1 className="text-2xl font-bold mb-4">Your Matches</h1>
 
         <div className="grid grid-cols-1 gap-6">
-          {matches.map((match) => (
-            <div
-              key={match.username || match.name}
-              className="bg-white rounded-3xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg"
-            >
-              <div className="flex gap-4">
-                <a href={match.profileLink} target="_blank" rel="noopener noreferrer">
-                  <img
-                    src={match.photo || placeholderImage}
-                    alt={`${match.name}'s profile`}
-                    className="w-20 h-20 rounded-2xl object-cover"
-                    loading="lazy"
-                  />
+        {matches.map((match) => (
+  <div
+    key={match.username || match.name}
+    className="bg-white rounded-3xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg"
+  >
+    <div className="flex gap-4">
+      <a href={match.profileLink} target="_blank" rel="noopener noreferrer">
+        <img
+          src={match.photo || placeholderImage}
+          alt={`${match.name}'s profile`}
+          className="w-20 h-20 rounded-2xl object-cover"
+          loading="lazy"
+        />
+      </a>
+
+      <div className="flex-1 flex flex-col justify-between">
+        <div>
+          <a
+            href={match.profileLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-lg font-bold text-gray-800 hover:underline"
+          >
+            {match.name}
+            {match.dob && (
+              <span className="ml-1 text-gray-500 text-sm">
+                {`, ${Math.floor(
+                  (new Date() - new Date(match.dob)) / (365.25 * 24 * 60 * 60 * 1000)
+                )}`}
+              </span>
+            )}
+          </a>
+          <div className="flex items-center text-sm text-gray-500 mt-1">
+            {genderIcon[match.gender] && (
+              <span className="mr-1 text-blue-600">{genderIcon[match.gender]}</span>
+            )}
+            <span className="capitalize">
+              {match.gender === 'M' ? 'Male' : match.gender === 'F' ? 'Female' : ''}
+            </span>
+          </div>
+          {match.bio && (
+            <p className="text-sm text-gray-600 mt-1 line-clamp-2">{match.bio}</p>
+          )}
+        </div>
+
+        {/* Conditionally show socialMediaLinks only if present */}
+        {Array.isArray(match.socialMediaLinks) && match.socialMediaLinks.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {match.socialMediaLinks.map((link, i) => {
+              const display = link.usernameOrLink?.startsWith('@')
+                ? link.usernameOrLink
+                : `@${link.usernameOrLink}`;
+              const url = link.url || `https://www.google.com/search?q=${link.usernameOrLink}`;
+
+              return (
+                <a
+                  key={i}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-full border border-blue-200 hover:bg-blue-100 transition"
+                >
+                  <span className="mr-1">{platformIcons[link.platform] || '🔗'}</span>
+                  {display}
                 </a>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+))}
 
-                <div className="flex-1 flex flex-col justify-between">
-                  <div>
-                    <a
-                      href={match.profileLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-lg font-bold text-gray-800 hover:underline"
-                    >
-                      {match.name}, {match.age}
-                    </a>
-                    <div className="flex items-center text-sm text-gray-500 mt-1">
-                      {genderIcon[match.gender] && (
-                        <span className="mr-1 text-blue-600">{genderIcon[match.gender]}</span>
-                      )}
-                      <span className="capitalize">{match.gender === 'M' ? 'Male' : 'Female'}</span>
-                    </div>
-                    {match.bio && (
-                      <p className="text-sm text-gray-600 mt-1 line-clamp-2">{match.bio}</p>
-                    )}
-                  </div>
-
-                  {match.socialMediaLinks?.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {match.socialMediaLinks.map((link, i) => {
-                        const display = link.usernameOrLink.startsWith('@')
-                          ? link.usernameOrLink
-                          : `@${link.usernameOrLink}`;
-                        const url = link.url || `https://www.google.com/search?q=${link.usernameOrLink}`;
-
-                        return (
-                          <a
-                            key={i}
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-full border border-blue-200 hover:bg-blue-100 transition"
-                          >
-                            <span className="mr-1">{platformIcons[link.platform] || '🔗'}</span>
-                            {display}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
       <BottomNav />
