@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useMatchRequests } from '../../features/UserActions/api';
 import { useMatchRequestResponse } from '../../features/UserActions/api';
+import { useSelector } from 'react-redux';
+
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../components/Layout/TopNavigation';
@@ -11,6 +13,8 @@ import RequestItem from '../../features/UserActions/components/RequestItem';
 
 export default function RequestsPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const currentUser = useSelector((state) => state.userProfile.currentUser);
+
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [processingRequests, setProcessingRequests] = useState(new Set());
 
@@ -27,11 +31,12 @@ export default function RequestsPage() {
   };
 
   const confirmAction = () => {
-    if (!selectedRequest) return;
+    if (!selectedRequest || !currentUser) return;
   
-    const { senderUsername, action, senderPK, senderSK, recipientPK, recipientSK } = selectedRequest;
+    const { senderUsername, action, senderPK, senderSK } = selectedRequest;
+    const recipientPK = currentUser?.PK;
+    const recipientSK = currentUser?.SK;
   
-    // ✅ Log the payload before sending
     console.log("Sending match response payload:", {
       senderUsername,
       action,
