@@ -1,11 +1,12 @@
 {
-    "appName": "Terminal143",
-    "links": {
-      "about": "เกี่ยวกับ",
-      "pricing": "ราคา",
-      "login": "เข้าสู่ระบบ"
-    },
-    "cta": {
-      "createProfile": "สร้างโปรไฟล์ฟรี",
-      "viewPricing": "ดูราคา"
-    } }
+  "appName": "Terminal143",
+  "links": {
+    "about": "เกี่ยวกับ",
+    "pricing": "ราคา",
+    "login": "เข้าสู่ระบบ"
+  },
+  "cta": {
+    "createProfile": "สร้างโปรไฟล์ฟรี",
+    "viewPricing": "ดูราคา"
+  }
+}

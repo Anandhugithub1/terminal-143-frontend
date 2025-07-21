@@ -17,10 +17,12 @@ const ChooseCategory = () => {
     provider: 'mp',
     match: 'fm',
   };
-
+ 
   // load persisted language
   useEffect(() => {
-    const lang = localStorage.getItem('selectedLanguage');
+    // const lang = localStorage.getItem('selectedLanguage');
+    const lang = localStorage.getItem('lang') || localStorage.getItem('selectedLanguage');
+
     if (lang) setSelectedLang(lang);
   }, []);
 

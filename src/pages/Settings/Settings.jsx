@@ -40,7 +40,7 @@ const SettingsPage = () => {
     sessionStorage.clear();
 
     // Redirect to logout or login page
-    navigate('/logout');
+    navigate('/login');
   };
 
   const handleLogoutAllDevices = () => {

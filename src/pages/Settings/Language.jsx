@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Check } from 'lucide-react';
 import '@fontsource-variable/inter';
+import i18n from '../../i18n/i18n'; // Assuming you have i18n setup
 import clsx from 'clsx';
 import ReactCountryFlag from 'react-country-flag';
 
@@ -23,7 +24,7 @@ const LanguagePage = () => {
   const handleLanguageChange = (code) => {
     setSelectedLang(code);
     localStorage.setItem('lang', code);
-    // i18n.changeLanguage(code); // Uncomment if using i18n
+    i18n.changeLanguage(code); // Uncomment if using i18n
   };
 
   return (
