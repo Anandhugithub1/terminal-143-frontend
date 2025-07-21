@@ -28,9 +28,9 @@ const ChooseCategory = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white">
+    <div className="min-h-screen bg-white relative pb-32"> {/* add bottom padding for footer height */}
       {/* Language selector */}
-      <div className="flex justify-end p-4 flex-shrink-0">
+      <div className="flex justify-end p-4">
         <button
           className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-full shadow-sm transition-colors"
           onClick={() => navigate('/select-language')}
@@ -53,11 +53,11 @@ const ChooseCategory = () => {
       </div>
 
       {/* Main content scrollable */}
-      <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-4">
+      <div className="overflow-y-auto px-4 pt-2 pb-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-left mb-6 sm:mb-8">
           Choose Category
         </h1>
-        <div className="w-full max-w-md sm:max-w-lg space-y-4 sm:space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           <MatchProviderCard
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
@@ -71,8 +71,8 @@ const ChooseCategory = () => {
         </div>
       </div>
 
-      {/* Continue button in footer */}
-      <div className="px-4 pb-4 flex-shrink-0 bg-white">
+      {/* Continue button fixed at bottom */}
+      <div className="fixed bottom-0 left-0 w-full px-4 py-4 bg-white shadow-t z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <button
           onClick={handleContinue}
           className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 sm:py-4 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm sm:text-base"
