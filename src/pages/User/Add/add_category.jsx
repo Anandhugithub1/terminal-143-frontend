@@ -23,9 +23,10 @@ const ChooseCategory = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-white pb-32"> {/* reserve space for footer */}
+    // Make the container exactly screen height and prevent body scroll
+    <div className="h-screen overflow-hidden bg-white relative">
       {/* Header */}
-      <div className="p-4 flex justify-end">
+      <div className="flex-shrink-0 p-4 flex justify-end">
         <button
           className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-full shadow-sm transition"
           onClick={() => navigate('/select-language')}
@@ -40,8 +41,8 @@ const ChooseCategory = () => {
         </button>
       </div>
 
-      {/* Scrollable content */}
-      <div className="overflow-auto px-4 pt-2">
+      {/* Scrollable content area takes remaining space */}
+      <div className="overflow-auto px-4 pt-2 pb-32 h-[calc(100vh-68px)]"> {/* 68px header approx + reserve for footer */}
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
           Choose Category
         </h1>
@@ -59,7 +60,7 @@ const ChooseCategory = () => {
         </div>
       </div>
 
-      {/* Fixed footer */}
+      {/* Fixed footer remains always visible */}
       <div className="fixed bottom-0 left-0 w-full px-4 py-4 bg-white shadow-inner z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <button
           onClick={handleContinue}
