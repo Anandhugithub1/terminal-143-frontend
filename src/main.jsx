@@ -7,6 +7,9 @@ import './i18n/i18n.js'
 import {store} from './Redux/store.js'; 
 import { Provider } from 'react-redux';
 import { QueryClientProvider } from '@tanstack/react-query';
+
+import ProtectedRouteFM from './routes/ProtectedRouteFM.jsx';
+
 import { queryClient } from './shared/lib/client.js';
 import {
   createBrowserRouter,
@@ -61,7 +64,17 @@ const route = createBrowserRouter(
       <Route path="verify" element={<EmailOTPVerification />} />
       <Route path="forgot-password" element={<ForgotAndResetPassword />} />
       <Route path="choose-category" element={<ChooseCategory />} />
-      <Route path="home" element={<UserHomePage />} />
+
+      <Route
+  path="home"
+  element={
+    <ProtectedRouteFM>
+      <UserHomePage />
+    </ProtectedRouteFM>
+  }
+/>
+
+
       <Route path="pricing" element={<PricingPage />} />
    <Route path="settings" element={<SettingsPage />}/>
    <Route path="profile" element={<ProfilePage />} />
