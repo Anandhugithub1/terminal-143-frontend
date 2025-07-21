@@ -1,0 +1,16 @@
+{
+    "settings": "설정",
+    "language": "언어",
+    "changePassword": "비밀번호 변경",
+    "preferences": "환경 설정",
+    "deleteAccount": "계정 삭제",
+    "helpCentre": "도움말 센터",
+    "aboutApp": "앱 정보",
+    "logout": "로그아웃",
+    "logoutOptions": "로그아웃 옵션",
+    "logoutThisDevice": "이 장치에서 로그아웃",
+    "logoutAllDevices": "모든 장치에서 로그아웃",
+    "cancel": "취소",
+    "logoutAllAlert": "모든 장치에서 로그아웃은 아직 사용할 수 없습니다."
+  }
+  

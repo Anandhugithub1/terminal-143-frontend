@@ -27,7 +27,7 @@ i18n
     },
 
     // your namespaces (must match your filenames)
-    ns: ['common', 'home', 'nav' ,'auth'],
+    ns: ['common', 'home', 'nav' ,'auth','settings'],
     defaultNS: 'common',
 
     // turn on/react options

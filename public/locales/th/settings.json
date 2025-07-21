@@ -1,0 +1,16 @@
+{
+    "settings": "การตั้งค่า",
+    "language": "ภาษา",
+    "changePassword": "เปลี่ยนรหัสผ่าน",
+    "preferences": "การตั้งค่าความชอบ",
+    "deleteAccount": "ลบบัญชี",
+    "helpCentre": "ศูนย์ช่วยเหลือ",
+    "aboutApp": "เกี่ยวกับแอป",
+    "logout": "ออกจากระบบ",
+    "logoutOptions": "ตัวเลือกการออกจากระบบ",
+    "logoutThisDevice": "ออกจากอุปกรณ์นี้",
+    "logoutAllDevices": "ออกจากทุกอุปกรณ์",
+    "cancel": "ยกเลิก",
+    "logoutAllAlert": "ยังไม่สามารถออกจากทุกอุปกรณ์ได้ในขณะนี้"
+  }
+  

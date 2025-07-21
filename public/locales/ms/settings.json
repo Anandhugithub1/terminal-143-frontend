@@ -1,0 +1,16 @@
+{
+    "settings": "Tetapan",
+    "language": "Bahasa",
+    "changePassword": "Tukar Kata Laluan",
+    "preferences": "Keutamaan",
+    "deleteAccount": "Padam Akaun",
+    "helpCentre": "Pusat Bantuan",
+    "aboutApp": "Tentang Aplikasi",
+    "logout": "Log Keluar",
+    "logoutOptions": "Pilihan Log Keluar",
+    "logoutThisDevice": "Log keluar dari peranti ini",
+    "logoutAllDevices": "Log keluar dari semua peranti",
+    "cancel": "Batal",
+    "logoutAllAlert": "Ciri log keluar dari semua peranti belum tersedia."
+  }
+  

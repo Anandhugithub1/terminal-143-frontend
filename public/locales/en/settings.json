@@ -1,0 +1,16 @@
+{
+    "settings": "Settings",
+    "language": "Language",
+    "changePassword": "Change Password",
+    "preferences": "Preferences",
+    "deleteAccount": "Delete Account",
+    "helpCentre": "Help Centre",
+    "aboutApp": "About App",
+    "logout": "Logout",
+    "logoutOptions": "Log out options",
+    "logoutThisDevice": "Logout from This Device",
+    "logoutAllDevices": "Logout from All Devices",
+    "cancel": "Cancel",
+    "logoutAllAlert": "Logout from all devices is not yet available."
+  }
+  
