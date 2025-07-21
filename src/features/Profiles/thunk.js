@@ -11,10 +11,10 @@ export const fetchProfiles = createAsyncThunk(
     } catch (err) {
       const status = err.response?.status;
 
-      // if (status === 401 || status === 403) {
-      //   window.location.href = '/login';
-      //   return thunkAPI.rejectWithValue('Unauthorized');
-      // }
+      if (status === 401 || status === 403) {
+        window.location.href = '/login';
+        return thunkAPI.rejectWithValue('Unauthorized');
+      }
 
       return thunkAPI.rejectWithValue(
         typeof err.response?.data === 'string'
