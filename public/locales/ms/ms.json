@@ -1,0 +1,36 @@
+{
+    "emailOrPhone": "Emel atau nombor telefon",
+    "gender": "Jantina",
+    "select": "Pilih",
+    "male": "Lelaki",
+    "female": "Perempuan",
+    "transFemale": "Trans Perempuan",
+    "transMale": "Trans Lelaki",
+    "other": "Lain-lain",
+    "createPassword": "Cipta kata laluan",
+    "confirmPassword": "Sahkan kata laluan",
+    "passwordRequirements": "Mengandungi sekurang-kurangnya 1 nombor, 1 huruf kecil, 1 huruf besar, dan 1 aksara khas.",
+    "passwordMismatch": "Kata laluan tidak sepadan",
+    "selectGender": "Sila pilih jantina anda",
+    "registering": "Mendaftar...",
+    "getStarted": "Mulakan",
+    "alreadyHaveAccount": "Sudah ada akaun?",
+    "signIn": "Log masuk",
+  
+    "chooseCategory": "Pilih kategori",
+    "continue": "Teruskan",
+    "english": "Bahasa Inggeris",
+    "matchProvider": "Penyedia Padanan",
+    "createProfiles": "Cipta profil",
+    "addBioPhotos": "Tambah bio & gambar",
+    "respondAndChat": "Balas permintaan dan sembang",
+    "freeForever": "Percuma selama-lamanya",
+  
+    "findMatch": "Cari padanan",
+    "matchByLocation": "Padanan mengikut lokasi",
+    "matchByLanguages": "Padanan mengikut bahasa",
+    "matchByInterests": "Padanan mengikut minat",
+    "betaAccess": "Akses Beta",
+    "freeNoCard": "100% Percuma • Tiada kad diperlukan"
+  }
+  
