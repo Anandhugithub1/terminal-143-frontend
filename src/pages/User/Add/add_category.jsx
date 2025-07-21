@@ -41,7 +41,7 @@ const ChooseCategory = () => {
       </div>
 
       {/* Scrollable content */}
-      <div className="flex-1 overflow-auto px-4 pb-[80px]">
+      <div className="flex-1 overflow-auto px-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
           Choose Category
         </h1>
@@ -59,8 +59,8 @@ const ChooseCategory = () => {
         </div>
       </div>
 
-      {/* Fixed footer */}
-      <div className="fixed bottom-0 left-0 w-full px-4 py-3 bg-white shadow-inner z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      {/* Footer - now part of the flex layout */}
+      <div className="flex-shrink-0 px-4 py-3 bg-white shadow-inner">
         <button
           onClick={handleContinue}
           className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 rounded-full hover:opacity-90 transition text-sm sm:text-base"
