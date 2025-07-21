@@ -11,6 +11,16 @@
     "logoutThisDevice": "이 장치에서 로그아웃",
     "logoutAllDevices": "모든 장치에서 로그아웃",
     "cancel": "취소",
-    "logoutAllAlert": "모든 장치에서 로그아웃은 아직 사용할 수 없습니다."
+    "logoutAllAlert": "모든 장치에서 로그아웃은 아직 사용할 수 없습니다.",
+
+
+    "title": "환경 설정",
+    "selectPrompt": "선호 항목을 선택하세요:",
+    "male": "남성",
+    "female": "여성",
+    "toFemale": "여성에게 관심 있음",
+    "toMale": "남성에게 관심 있음",
+    "others": "기타",
+    "save": "환경 설정 저장",
   }
   

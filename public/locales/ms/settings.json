@@ -11,6 +11,16 @@
     "logoutThisDevice": "Log keluar dari peranti ini",
     "logoutAllDevices": "Log keluar dari semua peranti",
     "cancel": "Batal",
-    "logoutAllAlert": "Ciri log keluar dari semua peranti belum tersedia."
+    "logoutAllAlert": "Ciri log keluar dari semua peranti belum tersedia.",
+
+
+    "title": "Keutamaan",
+    "selectPrompt": "Pilih keutamaan anda:",
+    "male": "Lelaki",
+    "female": "Perempuan",
+    "toFemale": "Kepada Perempuan",
+    "toMale": "Kepada Lelaki",
+    "others": "Lain-lain",
+    "save": "Simpan Keutamaan",
   }
   

@@ -11,6 +11,17 @@
     "logoutThisDevice": "Logout from This Device",
     "logoutAllDevices": "Logout from All Devices",
     "cancel": "Cancel",
-    "logoutAllAlert": "Logout from all devices is not yet available."
+    "logoutAllAlert": "Logout from all devices is not yet available.",
+
+
+"title": "Preferences",
+    "selectPrompt": "Select your preferences:",
+    "male": "Male",
+    "female": "Female",
+    "toFemale": "To Female",
+    "toMale": "To Male",
+    "others": "Others",
+    "save": "Save Preferences",
+  
   }
   

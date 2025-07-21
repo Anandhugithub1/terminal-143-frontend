@@ -7,15 +7,22 @@ import { PrimaryButton, SecondaryButton } from '../../shared/Button';
 import { fetchProfile, updateProfile } from '../../features/UserProfile';
 import '@fontsource-variable/inter';
 
-const PREFERENCES = [
-  { label: 'Male', value: 'M', icon: <User size={20} /> },
-  { label: 'Female', value: 'F', icon: <UserPlus size={20} /> },
-  { label: 'To Female', value: 'tF', icon: <Heart size={20} /> },
-  { label: 'To Male', value: 'tM', icon: <Smile size={20} /> },
-  { label: 'Others', value: 'Ot', icon: <Star size={20} /> },
-];
+import { useTranslation } from 'react-i18next';
+
+
+
 
 const PreferencesPage = () => {
+
+
+  const { t } = useTranslation('settings');
+  const PREFERENCES = [
+    { label: t('male'), value: 'M', icon: <User size={20} /> },
+    { label: t('female'), value: 'F', icon: <UserPlus size={20} /> },
+    { label: t('toFemale'), value: 'tF', icon: <Heart size={20} /> },
+    { label: t('toMale'), value: 'tM', icon: <Smile size={20} /> },
+    { label: t('others'), value: 'Ot', icon: <Star size={20} /> },
+  ];
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -61,11 +68,11 @@ const PreferencesPage = () => {
         <button onClick={() => navigate(-1)} aria-label="Back">
           <ArrowLeft size={24} />
         </button>
-        <h1 className="ml-4 text-lg font-semibold">Preferences</h1>
+        <h1 className="ml-4 text-lg font-semibold">{t('title')}</h1>
       </header>
 
       <div className="p-4">
-        <h2 className="text-gray-700 text-md font-medium mb-4">Select your preferences:</h2>
+        <h2 className="text-gray-700 text-md font-medium mb-4">{t('selectPrompt')}</h2>
 
         <nav className="space-y-3">
           {PREFERENCES.map(({ label, value, icon }) => {
@@ -95,10 +102,11 @@ const PreferencesPage = () => {
 
         <div className="mt-6 flex flex-col gap-3">
           <PrimaryButton onClick={handleSave} to="#">
-            Save Preferences
+            {t('save')} 
           </PrimaryButton>
           <SecondaryButton onClick={() => navigate(-1)} to="#">
-            Cancel
+            {t('cancel')}
+
           </SecondaryButton>
         </div>
       </div>
