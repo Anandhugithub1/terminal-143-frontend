@@ -23,8 +23,8 @@ const ChooseCategory = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white overflow-hidden">
-      {/* Header - made more compact */}
+    <div className="flex flex-col h-screen bg-white">
+      {/* Header */}
       <div className="flex-shrink-0 p-3 sm:p-4 flex justify-end">
         <button
           className="flex items-center space-x-1 sm:space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full shadow-sm transition text-xs sm:text-sm"
@@ -40,11 +40,12 @@ const ChooseCategory = () => {
         </button>
       </div>
 
-      {/* Scrollable content with Continue button placed just below cards */}
-      <div className="flex-1 overflow-auto px-3 sm:px-4 py-3">
+      {/* Cards list and sticky Continue button inside scrollable area */}
+      <div className="flex-1 overflow-auto px-3 sm:px-4">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
           Choose Category
         </h1>
+
         <div className="space-y-2 sm:space-y-4">
           <MatchProviderCard
             selectedCategory={selectedCategory}
@@ -58,8 +59,8 @@ const ChooseCategory = () => {
           />
         </div>
 
-        {/* Continue button below cards */}
-        <div className="mt-6 flex justify-center">
+        {/* Sticky Continue button always visible at bottom of initial view */}
+        <div className="sticky bottom-0 bg-white pt-4 pb-3 flex justify-center">
           <button
             onClick={handleContinue}
             className="w-full max-w-md bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-2.5 sm:py-3 rounded-full hover:opacity-90 transition text-xs sm:text-sm md:text-base"
