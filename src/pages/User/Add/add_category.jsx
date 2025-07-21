@@ -9,8 +9,6 @@ import LanguageIcon from '../../../assets/svgs/language.svg';
 const ChooseCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const navigate = useNavigate();
-  // pull everything we need from context
-
   const [selectedLang, setSelectedLang] = useState('en');
 
   const USER_TYPE_MAP = {
@@ -18,7 +16,6 @@ const ChooseCategory = () => {
     match: 'fm',
   };
 
-  // load persisted language
   useEffect(() => {
     const lang = localStorage.getItem('selectedLanguage');
     if (lang) setSelectedLang(lang);
@@ -26,15 +23,12 @@ const ChooseCategory = () => {
 
   const handleContinue = () => {
     if (!selectedCategory) return;
-
     const userTypeValue = USER_TYPE_MAP[selectedCategory];
     navigate('/register', { state: { userType: userTypeValue } });
-
-    
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white flex flex-col pb-20"> {/* add bottom padding */}
       {/* Language selector */}
       <div className="flex justify-end p-4">
         <button
@@ -77,8 +71,8 @@ const ChooseCategory = () => {
         </div>
       </div>
 
-      {/* Continue button */}
-      <div className="px-4 pb-4 sm:pb-6 flex justify-center">
+      {/* Continue button fixed at bottom */}
+      <div className="fixed bottom-0 left-0 w-full px-4 py-4 bg-white shadow-inner flex justify-center">
         <button
           onClick={handleContinue}
           className="w-full max-w-md bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 sm:py-4 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm sm:text-base"
