@@ -85,7 +85,7 @@ const ChooseCategory = () => {
       </div>
 
       {/* Continue button */}
-      <div className="sticky bottom-0 px-4 py-4 sm:py-6 bg-inherit flex justify-center">
+      <div className="sticky bottom-0 px-4 py-4 sm:py-6  flex justify-center">
 
 
         <button
