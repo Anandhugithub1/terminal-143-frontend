@@ -11,7 +11,6 @@ export const fetchProfiles = createAsyncThunk(
     } catch (err) {
       const status = err.response?.status;
 
-      🔐 Redirect to login if unauthorized
       // if (status === 401 || status === 403) {
       //   window.location.href = '/login';
       //   return thunkAPI.rejectWithValue('Unauthorized');
