@@ -23,8 +23,7 @@ const ChooseCategory = () => {
   };
 
   return (
-    // Make the container exactly screen height and prevent body scroll
-    <div className="h-screen overflow-hidden bg-white relative">
+    <div className="flex flex-col h-screen bg-white overflow-hidden">
       {/* Header */}
       <div className="flex-shrink-0 p-4 flex justify-end">
         <button
@@ -41,8 +40,8 @@ const ChooseCategory = () => {
         </button>
       </div>
 
-      {/* Scrollable content area takes remaining space */}
-      <div className="overflow-auto px-4 pt-2 pb-32 h-[calc(100vh-68px)]"> {/* 68px header approx + reserve for footer */}
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-auto px-4 pb-[80px]">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
           Choose Category
         </h1>
@@ -60,7 +59,7 @@ const ChooseCategory = () => {
         </div>
       </div>
 
-      {/* Fixed footer remains always visible */}
+      {/* Fixed footer */}
       <div className="fixed bottom-0 left-0 w-full px-4 py-4 bg-white shadow-inner z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <button
           onClick={handleContinue}
