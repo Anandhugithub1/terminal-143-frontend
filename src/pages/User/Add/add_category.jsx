@@ -10,7 +10,6 @@ const ChooseCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const navigate = useNavigate();
   const [selectedLang, setSelectedLang] = useState('en');
-
   const USER_TYPE_MAP = { provider: 'mp', match: 'fm' };
 
   useEffect(() => {
@@ -24,9 +23,9 @@ const ChooseCategory = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="relative min-h-screen bg-white pb-32"> {/* reserve space for footer */}
       {/* Header */}
-      <div className="flex-shrink-0 p-4 flex justify-end">
+      <div className="p-4 flex justify-end">
         <button
           className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-full shadow-sm transition"
           onClick={() => navigate('/select-language')}
@@ -41,36 +40,34 @@ const ChooseCategory = () => {
         </button>
       </div>
 
-      {/* Scrollable area with sticky footer */}
-      <div className="flex-1 overflow-auto">
-        <div className="px-4 pt-2 pb-20"> {/* padding bottom equal to footer height */}
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
-            Choose Category
-          </h1>
-          <div className="space-y-4 sm:space-y-6">
-            <MatchProviderCard
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              womanInRedShirt={womanInRedShirt}
-            />
-            <FindMatchCard
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              manInWhiteShirt={manInWhiteShirt}
-            />
-          </div>
+      {/* Scrollable content */}
+      <div className="overflow-auto px-4 pt-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">
+          Choose Category
+        </h1>
+        <div className="space-y-4 sm:space-y-6">
+          <MatchProviderCard
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            womanInRedShirt={womanInRedShirt}
+          />
+          <FindMatchCard
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            manInWhiteShirt={manInWhiteShirt}
+          />
         </div>
+      </div>
 
-        {/* Sticky continue footer */}
-        <div className="sticky bottom-0 w-full bg-white px-4 py-4 shadow-inner z-50">
-          <button
-            onClick={handleContinue}
-            className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 rounded-full hover:opacity-90 transition text-sm sm:text-base"
-            disabled={!selectedCategory}
-          >
-            Continue
-          </button>
-        </div>
+      {/* Fixed footer */}
+      <div className="fixed bottom-0 left-0 w-full px-4 py-4 bg-white shadow-inner z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        <button
+          onClick={handleContinue}
+          className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 rounded-full hover:opacity-90 transition text-sm sm:text-base"
+          disabled={!selectedCategory}
+        >
+          Continue
+        </button>
       </div>
     </div>
   );
