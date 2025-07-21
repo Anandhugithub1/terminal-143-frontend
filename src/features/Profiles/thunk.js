@@ -4,16 +4,24 @@ import { getMatchProviders } from './profilesapi';
 
 export const fetchProfiles = createAsyncThunk(
   'profiles/fetchProfiles',
-  /**
-   * payloadCreator now just takes { limit }
-   * and returns the array with suggestionIndex included.
-   */
   async ({ limit = 10 }, thunkAPI) => {
     try {
       const profiles = await getMatchProviders({ limit });
       return profiles;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || err.message);
+      const status = err.response?.status;
+
+      🔐 Redirect to login if unauthorized
+      // if (status === 401 || status === 403) {
+      //   window.location.href = '/login';
+      //   return thunkAPI.rejectWithValue('Unauthorized');
+      // }
+
+      return thunkAPI.rejectWithValue(
+        typeof err.response?.data === 'string'
+          ? err.response.data
+          : err.response?.data?.message || err.message || 'Something went wrong'
+      );
     }
   }
 );
