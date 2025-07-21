@@ -71,7 +71,7 @@ export default function MatchesPage() {
               <div className="flex gap-4">
                 <a href={match.profileLink} target="_blank" rel="noopener noreferrer">
                   <img
-                    src={match.photo || placeholderImage}
+                    src={match.photo || match.photos[0]}
                     alt={`${match.name}'s profile`}
                     className="w-20 h-20 rounded-2xl object-cover"
                     loading="lazy"
