@@ -1,4 +1,3 @@
-// src/features/auth/components/LoginForm.jsx
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { InputField } from '../../../shared/common';
@@ -8,9 +7,18 @@ import { Button } from '../../../shared/Button';
 import Loader from '../../../components/Ui/Loading';
 
 import { loginUser } from '../authThunks';
-import { selectLoading, selectError, selectAuth,selectMessage } from '../authSelectors';
+import {
+  selectLoading,
+  selectError,
+  selectAuth,
+  selectMessage
+} from '../authSelectors';
+
+import { useTranslation } from 'react-i18next';
 
 export const LoginForm = () => {
+  const { t } = useTranslation('auth'); // Translation namespace
+
   const [emailPhone, setEmailPhone] = useState('');
   const [password, setPassword] = useState('');
 
@@ -19,7 +27,6 @@ export const LoginForm = () => {
 
   const isLoading = useSelector(selectLoading);
   const isError = useSelector(selectError);
-
   const errorMessage = useSelector(selectMessage);
   const auth = useSelector(selectAuth);
   const { isSuccess, profileCompleted } = auth;
@@ -35,12 +42,11 @@ export const LoginForm = () => {
       }
     }
   }, [isSuccess, profileCompleted, auth.userType, navigate]);
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!emailPhone || !password) {
-      return alert('Please enter email/phone and password');
+      return alert(t('enterCredentials'));
     }
     dispatch(loginUser({ emailPhone, password }));
   };
@@ -72,20 +78,20 @@ export const LoginForm = () => {
       </div>
 
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-        Welcome Back
+        {t('welcomeBack')}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <InputField
           value={emailPhone}
           onChange={(e) => setEmailPhone(e.target.value)}
-          placeholder="Email or phone number"
+          placeholder={t('emailOrPhone')}
           disabled={isLoading}
         />
         <PasswordInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
+          placeholder={t('password')}
           disabled={isLoading}
         />
 
@@ -94,34 +100,34 @@ export const LoginForm = () => {
             to="/forgot-password"
             className="text-text-pr font-semibold text-sm hover:underline"
           >
-            Forgot password?
+            {t('forgotPassword')}
           </Link>
         </div>
 
         {isError && errorMessage && (
-  <p className="text-red-500 text-sm">{errorMessage}</p>
-)}
+          <p className="text-red-500 text-sm">{errorMessage}</p>
+        )}
 
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? <Loader /> : 'Log In'}
+          {isLoading ? <Loader /> : t('login')}
         </Button>
       </form>
 
       <div className="mt-6 flex items-center justify-center space-x-2">
         <div className="flex-1 border-t border-border-clr"></div>
-        <span className="px-4 text-sm text-gray-500">Or continue with</span>
+        <span className="px-4 text-sm text-gray-500">{t('orContinueWith')}</span>
         <div className="flex-1 border-t border-border-clr"></div>
       </div>
 
       {/* <GoogleButton onClick={handleGoogleLogin} disabled={isLoading} /> */}
 
       <p className="mt-6 text-center text-sm text-gray-500">
-        Don't have an account?{' '}
+        {t('noAccount')}{' '}
         <Link
           to="/choose-category"
           className="text-text-pr font-semibold hover:underline"
         >
-          Register
+          {t('register')}
         </Link>
       </p>
     </>
