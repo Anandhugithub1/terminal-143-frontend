@@ -29,7 +29,13 @@
     "faq": "FAQ",
     "press": "Press"
   },
-  "copyright": "© 2024 Terminal143. All rights reserved."
+  "copyright": "© 2024 Terminal143. All rights reserved.",
+
+
+  "home": "Home",
+  "requests": "Requests",
+  "matches": "Matches",
+  "profile": "Profile"
 
   }
   

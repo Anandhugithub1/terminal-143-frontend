@@ -7,28 +7,30 @@ import {
   AiFillHeart,
 } from 'react-icons/ai';
 import { RiUserLine, RiUserFill, RiFileListLine, RiFileListFill } from 'react-icons/ri';
+import { useTranslation } from 'react-i18next';
 
 const BottomNav = () => {
   const userType = localStorage.getItem('userType');
+  const { t } = useTranslation('nav');
 
   let tabs = [];
 
   if (userType === 'mp') {
     tabs = [
       {
-        name: 'Requests',
+        name: t('home'),
         path: '/requests',
         icon: ({ isActive }) =>
           isActive ? <RiFileListFill size="1.4em" /> : <RiFileListLine size="1.4em" />,
       },
       {
-        name: 'Matches',
+        name: t('matches'),
         path: '/matches',
         icon: ({ isActive }) =>
           isActive ? <AiFillHeart size="1.4em" /> : <AiOutlineHeart size="1.4em" />,
       },
       {
-        name: 'Profile',
+        name: t('profile'),
         path: '/profile',
         icon: ({ isActive }) =>
           isActive ? <RiUserFill size="1.4em" /> : <RiUserLine size="1.4em" />,
@@ -37,13 +39,13 @@ const BottomNav = () => {
   } else {
     tabs = [
       {
-        name: 'Home',
+        name: t('home'),
         path: '/home',
         icon: ({ isActive }) =>
           isActive ? <AiFillHome size="1.4em" /> : <AiOutlineHome size="1.4em" />,
       },
       {
-        name: 'Profile',
+        name: t('profile'),
         path: '/profile',
         icon: ({ isActive }) =>
           isActive ? <RiUserFill size="1.4em" /> : <RiUserLine size="1.4em" />,
@@ -52,7 +54,7 @@ const BottomNav = () => {
 
     if (userType === 'fm') {
       tabs.splice(1, 0, {
-        name: 'Matches',
+        name: t('matches'),
         path: '/matches',
         icon: ({ isActive }) =>
           isActive ? <AiFillHeart size="1.4em" /> : <AiOutlineHeart size="1.4em" />,
