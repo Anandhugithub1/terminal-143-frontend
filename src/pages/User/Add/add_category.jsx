@@ -40,8 +40,8 @@ const ChooseCategory = () => {
         </button>
       </div>
 
-      {/* Scrollable content */}
-      <div className="flex-1 overflow-auto px-4">
+      {/* Scrollable content with reduced height */}
+      <div className="flex-1 overflow-auto px-4 pb-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
           Choose Category
         </h1>
@@ -59,7 +59,7 @@ const ChooseCategory = () => {
         </div>
       </div>
 
-      {/* Footer - now part of the flex layout */}
+      {/* Fixed footer with button always visible */}
       <div className="flex-shrink-0 px-4 py-3 bg-white shadow-inner">
         <button
           onClick={handleContinue}
