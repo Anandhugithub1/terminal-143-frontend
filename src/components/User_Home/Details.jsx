@@ -6,13 +6,16 @@ import { useTranslation } from "react-i18next";
 
 export function DetailSection({ profile }) {
   const { t } = useTranslation('common');
+  const { stdStatus = '', lastTestedDate = '' } = profile.healthStatus || {};
 
   const displayStatus =
-    profile.stdStatus === "n"
+    stdStatus === "n"
       ? t("stdStatusNegative")
-      : profile.stdStatus === "p"
+      : stdStatus === "p"
       ? t("stdStatusPositive")
       : t("stdStatusUnknown");
+  
+
 
   return (
     <div className="-mt-12 bg-white rounded-t-3xl p-6">
@@ -82,7 +85,8 @@ export function DetailSection({ profile }) {
             <p>
               {t("testedOn")}:{" "}
               <span className="font-medium">
-                {profile.lastTestedDate || t("locationUnknown")}
+                {lastTestedDate || t("locationUnknown")}
+
               </span>
             </p>
           </div>
