@@ -28,9 +28,9 @@ const ChooseCategory = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col pb-20"> {/* extra bottom padding */}
+    <div className="h-screen flex flex-col bg-white">
       {/* Language selector */}
-      <div className="flex justify-end p-4">
+      <div className="flex justify-end p-4 flex-shrink-0">
         <button
           className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-full shadow-sm transition-colors"
           onClick={() => navigate('/select-language')}
@@ -52,8 +52,8 @@ const ChooseCategory = () => {
         </button>
       </div>
 
-      {/* Main content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 pb-8">
+      {/* Main content scrollable */}
+      <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-left mb-6 sm:mb-8">
           Choose Category
         </h1>
@@ -71,11 +71,11 @@ const ChooseCategory = () => {
         </div>
       </div>
 
-      {/* Continue button fixed at bottom */}
-      <div className="fixed bottom-0 left-0 w-full px-4 py-4 bg-white shadow-inner flex justify-center z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      {/* Continue button in footer */}
+      <div className="px-4 pb-4 flex-shrink-0 bg-white">
         <button
           onClick={handleContinue}
-          className="w-full max-w-md bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 sm:py-4 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm sm:text-base"
+          className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 sm:py-4 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm sm:text-base"
           disabled={!selectedCategory}
         >
           Continue
