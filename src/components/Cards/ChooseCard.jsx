@@ -9,7 +9,8 @@ export const MatchProviderCard = ({ selectedCategory, setSelectedCategory, woman
       onClick={() => setSelectedCategory('provider')}
       className={`relative rounded-2xl shadow-lg p-5 sm:p-6 flex items-center justify-between gap-6 transition-all cursor-pointer border-2 overflow-hidden
         ${selectedCategory === 'provider'
-          ? 'bg-blue-50 border-blue-300'
+          ? 'bg-pink-50 border-pink-300'
+
           : 'bg-white border-gray-200 hover:bg-gray-50 hover:border-blue-300'}
       `}
     >
