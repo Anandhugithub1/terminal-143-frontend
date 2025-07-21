@@ -8,6 +8,17 @@
     "cta": {
       "createProfile": "创建免费资料",
       "viewPricing": "查看价格"
-    }
+    },
+
+    "aboutMe": "关于我",
+    "locationUnknown": "未知",
+    "languages": "语言",
+    "interests": "兴趣",
+    "healthStatus": "健康状况",
+    "stdStatusLabel": "性病状态",
+    "stdStatusNegative": "阴性",
+    "stdStatusPositive": "阳性",
+    "stdStatusUnknown": "不愿透露",
+    "testedOn": "检测日期"
   }
   

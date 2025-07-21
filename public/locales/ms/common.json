@@ -8,6 +8,17 @@
     "cta": {
       "createProfile": "Cipta Profil Percuma",
       "viewPricing": "Lihat Harga"
-    }
+    },
+
+    "aboutMe": "Tentang saya",
+    "locationUnknown": "Tidak diketahui",
+    "languages": "Bahasa",
+    "interests": "Minat",
+    "healthStatus": "Status Kesihatan",
+    "stdStatusLabel": "Status STD",
+    "stdStatusNegative": "Negatif",
+    "stdStatusPositive": "Positif",
+    "stdStatusUnknown": "Tidak mahu menyatakan",
+    "testedOn": "Tarikh diuji"
   }
   

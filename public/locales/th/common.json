@@ -8,5 +8,17 @@
   "cta": {
     "createProfile": "สร้างโปรไฟล์ฟรี",
     "viewPricing": "ดูราคา"
-  }
+  },
+
+
+  "aboutMe": "เกี่ยวกับฉัน",
+  "locationUnknown": "ไม่ทราบ",
+  "languages": "ภาษา",
+  "interests": "ความสนใจ",
+  "healthStatus": "สถานะสุขภาพ",
+  "stdStatusLabel": "สถานะโรคติดต่อทางเพศสัมพันธ์",
+  "stdStatusNegative": "ไม่ติดเชื้อ",
+  "stdStatusPositive": "ติดเชื้อ",
+  "stdStatusUnknown": "ไม่ต้องการระบุ",
+  "testedOn": "ตรวจเมื่อวันที่"
 }

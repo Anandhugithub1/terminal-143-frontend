@@ -2,21 +2,21 @@ import React from "react";
 import { RxCross1, RxHeart } from "react-icons/rx";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { AiOutlineReload } from "react-icons/ai";
+import { useTranslation } from "react-i18next";
 
 export function DetailSection({ profile }) {
+  const { t } = useTranslation('common');
+
   const displayStatus =
     profile.stdStatus === "n"
-      ? "Negative"
+      ? t("stdStatusNegative")
       : profile.stdStatus === "p"
-      ? "Positive"
-      : "Prefer not to say";
+      ? t("stdStatusPositive")
+      : t("stdStatusUnknown");
 
   return (
     <div className="-mt-12 bg-white rounded-t-3xl p-6">
       <div className="flex justify-between items-center">
-        {/* <h2 className="text-xl font-semibold">
-          {profile.name}, {profile.age}
-        </h2> */}
         <div className="flex space-x-3 text-gray-500">
           <button>
             <RxCross1 size={20} />
@@ -31,18 +31,19 @@ export function DetailSection({ profile }) {
       </div>
 
       <div className="mt-4 space-y-4">
+        {/* About me */}
         <section>
-          <h3 className="font-medium">About me</h3>
+          <h3 className="font-medium">{t("aboutMe")}</h3>
           <p className="mt-1 text-gray-500">{profile.about}</p>
           <div className="mt-2 flex items-center space-x-4 text-sm text-gray-600">
             <HiOutlineLocationMarker />
-            <span>{profile.location || "Unknown"}</span>
-         
+            <span>{profile.location || t("locationUnknown")}</span>
           </div>
         </section>
 
+        {/* Languages */}
         <section>
-          <h3 className="font-medium">Languages</h3>
+          <h3 className="font-medium">{t("languages")}</h3>
           <div className="mt-1 flex flex-wrap gap-2">
             {profile.languages?.map((lang) => (
               <span
@@ -55,8 +56,9 @@ export function DetailSection({ profile }) {
           </div>
         </section>
 
+        {/* Interests */}
         <section>
-          <h3 className="font-medium">Interests</h3>
+          <h3 className="font-medium">{t("interests")}</h3>
           <div className="mt-1 flex flex-wrap gap-2">
             {profile.interests?.map((it) => (
               <span
@@ -69,14 +71,19 @@ export function DetailSection({ profile }) {
           </div>
         </section>
 
+        {/* Health Status */}
         <section>
-          <h3 className="font-medium">Health Status</h3>
+          <h3 className="font-medium">{t("healthStatus")}</h3>
           <div className="mt-2 text-sm text-gray-600 space-y-1">
             <p>
-              STI/STD Status: <span className="font-medium">{displayStatus}</span>
+              {t("stdStatusLabel")}:{" "}
+              <span className="font-medium">{displayStatus}</span>
             </p>
             <p>
-              Tested on: <span className="font-medium">{profile.lastTestedDate || "Unknown"}</span>
+              {t("testedOn")}:{" "}
+              <span className="font-medium">
+                {profile.lastTestedDate || t("locationUnknown")}
+              </span>
             </p>
           </div>
         </section>

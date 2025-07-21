@@ -8,6 +8,18 @@
     "cta": {
       "createProfile": "무료 프로필 만들기",
       "viewPricing": "요금제 보기"
-    }
+    },
+
+
+    "aboutMe": "자기소개",
+    "locationUnknown": "알 수 없음",
+    "languages": "사용 언어",
+    "interests": "관심사",
+    "healthStatus": "건강 상태",
+    "stdStatusLabel": "성병 상태",
+    "stdStatusNegative": "음성",
+    "stdStatusPositive": "양성",
+    "stdStatusUnknown": "알리고 싶지 않음",
+    "testedOn": "검사일"
   }
   

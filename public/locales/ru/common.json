@@ -9,7 +9,18 @@
       "cta": {
         "createProfile": "Создать бесплатный профиль",
         "viewPricing": "Посмотреть цены"
-      }
+      },
+
+      "aboutMe": "Обо мне",
+      "locationUnknown": "Неизвестно",
+      "languages": "Языки",
+      "interests": "Интересы",
+      "healthStatus": "Состояние здоровья",
+      "stdStatusLabel": "Статус ИППП",
+      "stdStatusNegative": "Отрицательный",
+      "stdStatusPositive": "Положительный",
+      "stdStatusUnknown": "Предпочитаю не указывать",
+      "testedOn": "Дата тестирования"
     
   }
   

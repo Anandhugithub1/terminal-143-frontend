@@ -8,7 +8,16 @@
   "cta": {
     "createProfile": "Create Free Profile",
     "viewPricing": "View Pricing"
-  }
-
+  },
+  "aboutMe": "About me",
+  "locationUnknown": "Unknown",
+  "languages": "Languages",
+  "interests": "Interests",
+  "healthStatus": "Health Status",
+  "stdStatusLabel": "STI/STD Status",
+  "stdStatusNegative": "Negative",
+  "stdStatusPositive": "Positive",
+  "stdStatusUnknown": "Prefer not to say",
+  "testedOn": "Tested on"
   
 }
