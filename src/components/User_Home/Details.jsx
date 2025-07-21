@@ -6,7 +6,12 @@ import { useTranslation } from "react-i18next";
 
 export function DetailSection({ profile }) {
   const { t } = useTranslation('common');
-  const { stdStatus = '', lastTestedDate = '' } = profile.healthStatus || {};
+
+  // Safely destructure with fallback
+  const {
+    stdStatus = '',
+    lastTestedDate = '',
+  } = profile.healthStatus || {};
 
   const displayStatus =
     stdStatus === "n"
@@ -14,22 +19,14 @@ export function DetailSection({ profile }) {
       : stdStatus === "p"
       ? t("stdStatusPositive")
       : t("stdStatusUnknown");
-  
-
 
   return (
     <div className="-mt-12 bg-white rounded-t-3xl p-6">
       <div className="flex justify-between items-center">
         <div className="flex space-x-3 text-gray-500">
-          <button>
-            <RxCross1 size={20} />
-          </button>
-          <button>
-            <AiOutlineReload size={20} />
-          </button>
-          <button>
-            <RxHeart size={20} />
-          </button>
+          <button><RxCross1 size={20} /></button>
+          <button><AiOutlineReload size={20} /></button>
+          <button><RxHeart size={20} /></button>
         </div>
       </div>
 
@@ -86,7 +83,6 @@ export function DetailSection({ profile }) {
               {t("testedOn")}:{" "}
               <span className="font-medium">
                 {lastTestedDate || t("locationUnknown")}
-
               </span>
             </p>
           </div>

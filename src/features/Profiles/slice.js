@@ -1,4 +1,4 @@
-/* ================= features/profiles/slice.js ================= */
+// features/profiles/slice.js
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchProfiles } from './thunk';
 import { formatLastSeen } from './utlis';
@@ -15,43 +15,43 @@ const profilesSlice = createSlice({
   reducers: {
     resetStatus(state) {
       state.status = 'idle';
-      state.error  = null;
+      state.error = null;
     },
   },
   extraReducers: builder =>
     builder
       .addCase(fetchProfiles.pending, state => {
         state.status = 'loading';
-        state.error  = null;
+        state.error = null;
       })
       .addCase(fetchProfiles.fulfilled, (state, { payload }) => {
         state.status = 'succeeded';
-        // payload is [ { …raw profile–with suggestionIndex }, … ]
+
         state.list = payload.map(raw => {
           const birth = new Date(raw.dob);
-          const age   = Math.floor(
+          const age = Math.floor(
             (Date.now() - birth.getTime()) / (1000 * 60 * 60 * 24 * 365.25)
           );
 
-          const std      = raw.healthStatus?.stdStatus ?? 'Unknown';
-          const lastDate = raw.healthStatus?.lastTestedDate
+          const stdStatus = raw.healthStatus?.stdStatus ?? '';
+          const lastTestedDate = raw.healthStatus?.lastTestedDate
             ? new Date(raw.healthStatus.lastTestedDate).toLocaleDateString()
-            : 'Unknown';
+            : '';
 
           return {
             ...raw,
             age,
             lastSeen: formatLastSeen(raw.lastSeen),
-            lastTestedDate: lastDate,
-            stdStatus: std,
-            healthStatus: { status: std, lastTestedDate: lastDate },
-            // suggestionIndex comes straight through
+            healthStatus: {
+              stdStatus,
+              lastTestedDate,
+            },
           };
         });
       })
       .addCase(fetchProfiles.rejected, (state, action) => {
         state.status = 'failed';
-        state.error  = action.payload;
+        state.error = action.payload;
       }),
 });
 
