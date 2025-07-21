@@ -28,7 +28,7 @@ const ChooseCategory = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col pb-20"> {/* add bottom padding */}
+    <div className="min-h-screen bg-white flex flex-col pb-20"> {/* extra bottom padding */}
       {/* Language selector */}
       <div className="flex justify-end p-4">
         <button
@@ -72,7 +72,7 @@ const ChooseCategory = () => {
       </div>
 
       {/* Continue button fixed at bottom */}
-      <div className="fixed bottom-0 left-0 w-full px-4 py-4 bg-white shadow-inner flex justify-center">
+      <div className="fixed bottom-0 left-0 w-full px-4 py-4 bg-white shadow-inner flex justify-center z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
         <button
           onClick={handleContinue}
           className="w-full max-w-md bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 sm:py-4 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm sm:text-base"
