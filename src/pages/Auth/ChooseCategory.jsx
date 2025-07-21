@@ -8,7 +8,7 @@ import LanguageIcon from '../../assets/svgs/language.svg';
 import { useTranslation } from 'react-i18next';
 
 const ChooseCategory = () => {
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState('provider');
   const navigate = useNavigate();
   // pull everything we need from context
   const { t } = useTranslation('auth');

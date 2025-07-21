@@ -7,11 +7,11 @@ export const MatchProviderCard = ({ selectedCategory, setSelectedCategory, woman
   return (
     <div
       onClick={() => setSelectedCategory('provider')}
-      className={`relative rounded-2xl shadow-lg p-5 sm:p-6 flex items-center justify-between gap-6 transition-all cursor-pointer border-2 overflow-hidden ${
-        selectedCategory === 'provider'
+      className={`relative rounded-2xl shadow-lg p-5 sm:p-6 flex items-center justify-between gap-6 transition-all cursor-pointer border-2 overflow-hidden
+        ${selectedCategory === 'provider'
           ? 'bg-blue-50 border-blue-300'
-          : 'bg-white border-gray-200 opacity-70 hover:bg-gray-50'
-      }`}
+          : 'bg-white border-gray-200 hover:bg-gray-50 hover:border-blue-300'}
+      `}
     >
       {/* Gradient Background */}
       <div className="absolute w-56 h-56 rounded-full bg-gradient-to-br from-pink-100 to-purple-100 top-[-30%] right-[-30%] opacity-80 z-0" />
@@ -28,11 +28,11 @@ export const MatchProviderCard = ({ selectedCategory, setSelectedCategory, woman
           <li className="flex items-center"><span className="mr-2">•</span>{t('respondAndChat')}</li>
         </ul>
         <div
-          className={`text-xs font-semibold px-3 py-1.5 rounded-full border w-max shadow-sm mt-2 ${
-            selectedCategory === 'provider'
+          className={`text-xs font-semibold px-3 py-1.5 rounded-full border w-max shadow-sm mt-2
+            ${selectedCategory === 'provider'
               ? 'bg-white border-blue-200 text-blue-600'
-              : 'bg-gradient-to-r from-pink-50 to-purple-50 border-gray-200'
-          }`}
+              : 'bg-gradient-to-r from-pink-50 to-purple-50 border-gray-200'}
+          `}
         >
           {t('freeForever')}
         </div>
@@ -52,11 +52,11 @@ export const FindMatchCard = ({ selectedCategory, setSelectedCategory, manInWhit
   return (
     <div
       onClick={() => setSelectedCategory('match')}
-      className={`relative rounded-2xl shadow-lg p-5 sm:p-6 transition-all cursor-pointer border-2 overflow-hidden ${
-        selectedCategory === 'match'
+      className={`relative rounded-2xl shadow-lg p-5 sm:p-6 transition-all cursor-pointer border-2 overflow-hidden
+        ${selectedCategory === 'match'
           ? 'bg-blue-50 border-blue-300'
-          : 'bg-white border-gray-200 opacity-70 hover:bg-gray-50'
-      }`}
+          : 'bg-white border-gray-200 hover:bg-gray-50 hover:border-blue-300'}
+      `}
     >
       {/* Gradient Background */}
       <div className="absolute inset-0 overflow-hidden z-0">
@@ -75,11 +75,11 @@ export const FindMatchCard = ({ selectedCategory, setSelectedCategory, manInWhit
           </ul>
 
           {/* Beta Access Badge */}
-          <div className={`inline-block mt-3 px-3 py-1.5 rounded-full text-xs font-medium ${
-            selectedCategory === 'match'
+          <div className={`inline-block mt-3 px-3 py-1.5 rounded-full text-xs font-medium
+            ${selectedCategory === 'match'
               ? 'bg-white border border-blue-200 text-gray-700'
-              : 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-gray-200 text-gray-700'
-          }`}>
+              : 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-gray-200 text-gray-700'}
+          `}>
             <span className="text-blue-600 font-semibold">{t('betaAccess')}</span> • <span className="font-medium">{t('freeNoCard')}</span>
           </div>
         </div>
