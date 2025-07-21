@@ -1,4 +1,9 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+
 export const MatchProviderCard = ({ selectedCategory, setSelectedCategory, womanInRedShirt }) => {
+  const { t } = useTranslation('auth');
+
   return (
     <div
       onClick={() => setSelectedCategory('provider')}
@@ -15,12 +20,12 @@ export const MatchProviderCard = ({ selectedCategory, setSelectedCategory, woman
       {/* Text Content */}
       <div className="relative z-10 flex-1">
         <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3">
-          Match Provider
+          {t('matchProvider')}
         </h2>
         <ul className="text-gray-600 space-y-1 text-sm">
-          <li className="flex items-center"><span className="mr-2">•</span>Create profiles</li>
-          <li className="flex items-center"><span className="mr-2">•</span>Add bio &amp; photos</li>
-          <li className="flex items-center"><span className="mr-2">•</span>Respond to request and Chat</li>
+          <li className="flex items-center"><span className="mr-2">•</span>{t('createProfiles')}</li>
+          <li className="flex items-center"><span className="mr-2">•</span>{t('addBioPhotos')}</li>
+          <li className="flex items-center"><span className="mr-2">•</span>{t('respondAndChat')}</li>
         </ul>
         <div
           className={`text-xs font-semibold px-3 py-1.5 rounded-full border w-max shadow-sm mt-2 ${
@@ -29,19 +34,21 @@ export const MatchProviderCard = ({ selectedCategory, setSelectedCategory, woman
               : 'bg-gradient-to-r from-pink-50 to-purple-50 border-gray-200'
           }`}
         >
-          Free forever
+          {t('freeForever')}
         </div>
       </div>
 
       {/* Image */}
       <div className="relative z-10 w-32 h-32 sm:w-40 sm:h-40 flex-shrink-0">
-        <img src={womanInRedShirt} alt="Match Provider" className="w-full h-full object-cover" />
+        <img src={womanInRedShirt} alt={t('matchProvider')} className="w-full h-full object-cover" />
       </div>
     </div>
   );
 };
 
 export const FindMatchCard = ({ selectedCategory, setSelectedCategory, manInWhiteShirt }) => {
+  const { t } = useTranslation('auth');
+
   return (
     <div
       onClick={() => setSelectedCategory('match')}
@@ -60,25 +67,25 @@ export const FindMatchCard = ({ selectedCategory, setSelectedCategory, manInWhit
       {/* Content */}
       <div className="relative z-10 flex flex-row items-center justify-between gap-4">
         <div className="flex-1">
-          <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3">Find Match</h2>
+          <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3">{t('findMatch')}</h2>
           <ul className="text-gray-600 space-y-1 text-sm">
-            <li className="flex items-center"><span className="mr-2">•</span>Match by location</li>
-            <li className="flex items-center"><span className="mr-2">•</span>Match by languages</li>
-            <li className="flex items-center"><span className="mr-2">•</span>Match by interests</li>
+            <li className="flex items-center"><span className="mr-2">•</span>{t('matchByLocation')}</li>
+            <li className="flex items-center"><span className="mr-2">•</span>{t('matchByLanguages')}</li>
+            <li className="flex items-center"><span className="mr-2">•</span>{t('matchByInterests')}</li>
           </ul>
-          
+
           {/* Beta Access Badge */}
           <div className={`inline-block mt-3 px-3 py-1.5 rounded-full text-xs font-medium ${
             selectedCategory === 'match'
               ? 'bg-white border border-blue-200 text-gray-700'
               : 'bg-gradient-to-r from-blue-50 to-cyan-50 border border-gray-200 text-gray-700'
           }`}>
-            <span className="text-blue-600 font-semibold">Beta Access</span> • <span className="font-medium">100% Free</span> • No card needed
+            <span className="text-blue-600 font-semibold">{t('betaAccess')}</span> • <span className="font-medium">{t('freeNoCard')}</span>
           </div>
         </div>
 
         <div className="relative z-10 w-36 h-32 sm:w-40 sm:h-40 flex-shrink-0">
-          <img src={manInWhiteShirt} alt="Find Match" className="w-full h-full object-cover" />
+          <img src={manInWhiteShirt} alt={t('findMatch')} className="w-full h-full object-cover" />
         </div>
       </div>
     </div>

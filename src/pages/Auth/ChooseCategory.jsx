@@ -5,11 +5,13 @@ import manInWhiteShirt from '../../assets/man.png';
 import { MatchProviderCard, FindMatchCard } from '../../components/Cards/ChooseCard';
 import { LANGUAGE_LABELS } from '../../Utlis/utlis';
 import LanguageIcon from '../../assets/svgs/language.svg';
+import { useTranslation } from 'react-i18next';
 
 const ChooseCategory = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const navigate = useNavigate();
   // pull everything we need from context
+  const { t } = useTranslation('auth');
 
   const [selectedLang, setSelectedLang] = useState('en');
 
@@ -46,7 +48,8 @@ const ChooseCategory = () => {
         >
           <img src={LanguageIcon} alt="Language Icon" className="h-5 w-5" />
           <span className="text-sm font-medium">
-            {LANGUAGE_LABELS[selectedLang] || 'English'}
+            {LANGUAGE_LABELS[selectedLang] || t('english')}
+
           </span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +67,8 @@ const ChooseCategory = () => {
       {/* Main content */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 pb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 text-left mb-6 sm:mb-8">
-          Choose Category
+          {t('chooseCategory')}
+
         </h1>
         <div className="w-full max-w-md sm:max-w-lg space-y-4 sm:space-y-6">
           <MatchProviderCard
