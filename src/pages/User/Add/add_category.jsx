@@ -40,8 +40,8 @@ const ChooseCategory = () => {
         </button>
       </div>
 
-      {/* Scrollable content with reduced padding */}
-      <div className="flex-1 overflow-auto px-3 sm:px-4 pb-3">
+      {/* Scrollable content with Continue button placed just below cards */}
+      <div className="flex-1 overflow-auto px-3 sm:px-4 py-3">
         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-3 sm:mb-4">
           Choose Category
         </h1>
@@ -57,17 +57,17 @@ const ChooseCategory = () => {
             manInWhiteShirt={manInWhiteShirt}
           />
         </div>
-      </div>
 
-      {/* Footer with smaller padding */}
-      <div className="flex-shrink-0 px-3 sm:px-4 py-2 sm:py-3 bg-white shadow-inner">
-        <button
-          onClick={handleContinue}
-          className="w-full max-w-md mx-auto bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-2.5 sm:py-3 rounded-full hover:opacity-90 transition text-xs sm:text-sm md:text-base"
-          disabled={!selectedCategory}
-        >
-          Continue
-        </button>
+        {/* Continue button below cards */}
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={handleContinue}
+            className="w-full max-w-md bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-2.5 sm:py-3 rounded-full hover:opacity-90 transition text-xs sm:text-sm md:text-base"
+            disabled={!selectedCategory}
+          >
+            Continue
+          </button>
+        </div>
       </div>
     </div>
   );
