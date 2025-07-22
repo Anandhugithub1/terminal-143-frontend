@@ -21,7 +21,8 @@ const SettingsPage = () => {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  const logoutCurrentMutation = useMutation({
+  // Mutation for logging out current device
+  const logoutMutation = useMutation({
     mutationFn: () => signOut('signout'),
     onSuccess: () => {
       localStorage.clear();
@@ -30,18 +31,6 @@ const SettingsPage = () => {
     },
     onError: (err) => {
       alert(err.message || t('logoutError'));
-    },
-  });
-
-  const logoutAllMutation = useMutation({
-    mutationFn: () => signOut('signout_all'),
-    onSuccess: () => {
-      localStorage.clear();
-      sessionStorage.clear();
-      navigate('/login');
-    },
-    onError: (err) => {
-      alert(err.message || t('logoutAllError'));
     },
   });
 
@@ -96,22 +85,29 @@ const SettingsPage = () => {
             </h2>
             <div className="flex flex-col gap-3">
               <PrimaryButton
-                onClick={() => logoutCurrentMutation.mutate()}
+                onClick={() => logoutMutation.mutate()}
                 className="!py-3"
                 to="#"
-                disabled={logoutCurrentMutation.isPending}
+                disabled={logoutMutation.isPending}
               >
-                {logoutCurrentMutation.isPending ? t('loggingOut') : t('logoutThisDevice')}
+                {logoutMutation.isPending
+                  ? t('loggingOut')
+                  : t('logoutThisDevice')}
               </PrimaryButton>
 
+              {/*
+              Commenting out "Logout All Devices" option for now:
               <PrimaryButton
                 onClick={() => logoutAllMutation.mutate()}
                 className="!py-3 bg-red-600 hover:bg-red-700"
                 to="#"
                 disabled={logoutAllMutation.isPending}
               >
-                {logoutAllMutation.isPending ? t('loggingOut') : t('logoutAllDevices')}
+                {logoutAllMutation.isPending
+                  ? t('loggingOut')
+                  : t('logoutAllDevices')}
               </PrimaryButton>
+              */}
 
               <SecondaryButton
                 onClick={() => setShowLogoutModal(false)}
