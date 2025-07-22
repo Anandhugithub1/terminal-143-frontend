@@ -65,9 +65,12 @@ export const ProfileInfo = memo(({
 
 
     <div className="flex items-center text-sm mt-2">
-      <HiOutlineLocationMarker className="mr-1" />
-      <span>{distance}</span>
-    </div>
+  <div className={distance ? "flex items-center" : "flex items-center invisible"}>
+    <HiOutlineLocationMarker className="mr-1" />
+    <span>{distance || "00 km"}</span>
+  </div>
+</div>
+
   </div>
 ));
 
