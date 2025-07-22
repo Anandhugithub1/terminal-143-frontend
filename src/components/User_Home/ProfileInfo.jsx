@@ -33,7 +33,7 @@ export const ProfileInfo = memo(({
   // onMessageClick,
   // onConnectClick,
 }) => (
-  <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-transparent text-white">
+  <div className="absolute bottom-20 left-0 w-full p-4 bg-gradient-to-t from-black via-transparent text-white">
     <div className="flex items-center justify-between">
       <div>
         <h2 className="text-xl font-semibold">{name}, {age}</h2>
