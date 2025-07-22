@@ -154,12 +154,12 @@ export default function UserHomePage() {
           onConnectClick={() => {}}
           onMessageClick={() => console.log('Message clicked')}
         />
-        <ActionControls
-          className="fixed bottom-32 inset-x-0"
-          onReject={() => advance(-1)}
-          onRefresh={handleRefresh}
-          onLike={() => advance(1)}
-        />
+       <ActionControls
+  className="absolute bottom-6 inset-x-0 z-20"
+  onReject={() => advance(-1)}
+  onRefresh={handleRefresh}
+  onLike={() => advance(1)}
+/>
         <DetailSection profile={profile} />
       </SwipeDeck>
 
