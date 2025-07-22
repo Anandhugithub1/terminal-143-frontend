@@ -81,7 +81,7 @@ export const ForgotAndResetPassword = () => {
         {step === 'forgot' ? (
           <>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-              Forgot Password
+              Reset Password
             </h1>
             <form onSubmit={handleForgotSubmit} className="space-y-4">
               <InputField
