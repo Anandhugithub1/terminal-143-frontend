@@ -9,7 +9,7 @@
 
   // Main ProfileCard component
   const ProfileCard = ({ profile,onMessageClick,onConnectClick,placeholderImage }) => {
-    const { images = [], name, age, lastSeen = 'just now',  gender, top, compatibility, distance } = profile;
+    const { images = [], name, age, lastSeen = 'just now',  gender, top, compatibility } = profile;
     const [photoIdx, setPhotoIdx] = useState(0);
     const onNext = useCallback(() => {
       setPhotoIdx(idx => (idx + 1) % images.length);
@@ -44,7 +44,7 @@
           gender={gender}
           top={top}
           compatibility={compatibility}
-          distance={distance}
+          // distance={distance}
           
 
         />
@@ -61,7 +61,7 @@
       gender: PropTypes.string,
       top: PropTypes.string,
       compatibility: PropTypes.number,
-      distance: PropTypes.string,
+      // distance: PropTypes.string,
     }).isRequired,
     placeholderImage: PropTypes.string,
     onMessageClick:   PropTypes.func.isRequired,

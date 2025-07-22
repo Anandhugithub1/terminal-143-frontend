@@ -29,7 +29,7 @@ export const ProfileInfo = memo(({
   lastSeen,
   
   gender,
-  distance,
+  // distance,
   // onMessageClick,
   // onConnectClick,
 }) => (
@@ -59,15 +59,15 @@ export const ProfileInfo = memo(({
 
     {/* {about && <p className="mt-2 italic text-sm">“{about}”</p>} */}
 
-    <div className="flex items-center space-x-2 mt-2">
+    <div className="flex items-center space-x-2 mt-4">
       <Badge icon={<FaVenus size={12} />} label={gender} />
     
     </div>
 
-    <div className="flex items-center text-sm mt-2">
+    {/* <div className="flex items-center text-sm mt-2">
       <HiOutlineLocationMarker className="mr-1" />
       <span>{distance}</span>
-    </div>
+    </div> */}
   </div>
 ));
 
@@ -79,7 +79,7 @@ ProfileInfo.propTypes = {
   gender: PropTypes.string.isRequired,
   top: PropTypes.string,
   compatibility: PropTypes.number.isRequired,
-  distance: PropTypes.string.isRequired,
+  // distance: PropTypes.string.isRequired,
   onMessageClick: PropTypes.func.isRequired,
   onConnectClick: PropTypes.func.isRequired,
 };
