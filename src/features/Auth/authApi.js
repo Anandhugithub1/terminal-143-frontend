@@ -33,3 +33,24 @@ export const apiLogin = async ({ emailPhone, password }) => {
     headers: { 'Content-Type': 'application/json' },
   });
 };
+
+
+// services/auth.js
+export const signOut = async (action = 'signout') => {
+  const res = await fetch('https://authapi.terminal143.com/signout', {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ action }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.message || 'Failed to sign out');
+  }
+
+  return res.json();
+};
+

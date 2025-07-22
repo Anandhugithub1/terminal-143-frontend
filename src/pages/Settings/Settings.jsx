@@ -13,13 +13,37 @@ import {
 import '@fontsource-variable/inter';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
 import { useTranslation } from 'react-i18next';
+import { useMutation } from '@tanstack/react-query';
+import { signOut } from '../../features/Auth/authApi';
 
 const SettingsPage = () => {
-  // const { t } = useTranslation();
-    const { t } = useTranslation('settings'); // Translation namespace
-  
+  const { t } = useTranslation('settings');
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  const logoutCurrentMutation = useMutation({
+    mutationFn: () => signOut('signout'),
+    onSuccess: () => {
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate('/login');
+    },
+    onError: (err) => {
+      alert(err.message || t('logoutError'));
+    },
+  });
+
+  const logoutAllMutation = useMutation({
+    mutationFn: () => signOut('signout_all'),
+    onSuccess: () => {
+      localStorage.clear();
+      sessionStorage.clear();
+      navigate('/login');
+    },
+    onError: (err) => {
+      alert(err.message || t('logoutAllError'));
+    },
+  });
 
   const menuItems = [
     { label: t('language'), icon: <Globe size={20} />, to: '/language' },
@@ -29,22 +53,6 @@ const SettingsPage = () => {
     { label: t('helpCentre'), icon: <HelpCircle size={20} />, to: '/help' },
     { label: t('aboutApp'), icon: <Info size={20} />, to: '/info' },
   ];
-
-  const handleLogoutCurrentDevice = () => {
-    document.cookie.split(';').forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/, '')
-        .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
-    });
-
-    localStorage.clear();
-    sessionStorage.clear();
-    navigate('/login');
-  };
-
-  const handleLogoutAllDevices = () => {
-    alert(t('logoutAllAlert'));
-  };
 
   return (
     <div className="min-h-screen bg-white font-inter relative">
@@ -88,19 +96,23 @@ const SettingsPage = () => {
             </h2>
             <div className="flex flex-col gap-3">
               <PrimaryButton
-                onClick={handleLogoutCurrentDevice}
+                onClick={() => logoutCurrentMutation.mutate()}
                 className="!py-3"
                 to="#"
+                disabled={logoutCurrentMutation.isPending}
               >
-                {t('logoutThisDevice')}
+                {logoutCurrentMutation.isPending ? t('loggingOut') : t('logoutThisDevice')}
               </PrimaryButton>
+
               <PrimaryButton
-                onClick={handleLogoutAllDevices}
+                onClick={() => logoutAllMutation.mutate()}
                 className="!py-3 bg-red-600 hover:bg-red-700"
                 to="#"
+                disabled={logoutAllMutation.isPending}
               >
-                {t('logoutAllDevices')}
+                {logoutAllMutation.isPending ? t('loggingOut') : t('logoutAllDevices')}
               </PrimaryButton>
+
               <SecondaryButton
                 onClick={() => setShowLogoutModal(false)}
                 className="!py-3"
