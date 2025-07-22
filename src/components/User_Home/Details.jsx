@@ -22,13 +22,7 @@ export function DetailSection({ profile }) {
 
   return (
     <div className="-mt-12 bg-white rounded-t-3xl p-6">
-      <div className="flex justify-between items-center">
-        <div className="flex space-x-3 text-gray-500">
-          <button><RxCross1 size={20} /></button>
-          <button><AiOutlineReload size={20} /></button>
-          <button><RxHeart size={20} /></button>
-        </div>
-      </div>
+    
 
       <div className="mt-4 space-y-4">
         {/* About me */}
