@@ -157,7 +157,7 @@ export default function UserHomePage() {
 
     {/* Floating buttons, not too low */}
     <ActionControls
-      className="absolute top-[75%] inset-x-0 z-30 flex justify-center"
+      className="absolute bottom-4 inset-x-0 z-30 flex justify-center"
 
       onReject={() => advance(-1)}
       onRefresh={handleRefresh}
@@ -166,7 +166,7 @@ export default function UserHomePage() {
   </div>
 
   {/* Profile info */}
-  <div className="mt-6 px-4">
+  <div className="mt-20 px-4">
     <DetailSection profile={profile} />
   </div>
 </SwipeDeck>
