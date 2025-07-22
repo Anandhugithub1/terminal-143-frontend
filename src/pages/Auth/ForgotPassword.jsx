@@ -3,9 +3,11 @@ import { InputField } from '../../shared/common';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../shared/Button';
 import { PasswordInput } from '../../shared/Passinput';
+
 import axios from 'axios'; // ✅ Import Axios
 import { baseurl } from '../../Utlis/utlis';
 export const ForgotAndResetPassword = () => {
+
   const [step, setStep] = useState('forgot');
   const [email, setEmail] = useState('');
   const [ConfirmationCode, setConfirmationCode] = useState('');
@@ -133,9 +135,12 @@ export const ForgotAndResetPassword = () => {
         )}
 
         <div className="mt-6 text-center">
-          <Link to="/login" className="text-pink-600 font-semibold text-sm hover:underline">
-            Back to Login
-          </Link>
+        <button
+        onClick={() => navigate(-1)}
+        className="text-pink-600 font-semibold text-sm hover:underline"
+      >
+        Go Back
+      </button>
         </div>
       </div>
     </div>
