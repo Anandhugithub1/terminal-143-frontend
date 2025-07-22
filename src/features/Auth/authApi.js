@@ -1,6 +1,6 @@
 // src/features/auth/authAPI.js
 import client from '../../Utlis/client';
-
+import axios from 'axios';
 export const apiRegister = async ({ emailPhone, password, gender, userType }) => {
   const payload = {
     email: emailPhone.includes('@') ? emailPhone : '',
@@ -37,20 +37,22 @@ export const apiLogin = async ({ emailPhone, password }) => {
 
 // services/auth.js
 export const signOut = async (action = 'signout') => {
-  const res = await fetch('https://authapi.terminal143.com/signout', {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ action }),
-  });
-
-  if (!res.ok) {
-    const data = await res.json();
-    throw new Error(data.message || 'Failed to sign out');
+  try {
+    const response = await axios.post(
+      'https://authapi.terminal143.com/signout',
+      { action },
+      {
+        withCredentials: true,           // ← include cookies
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  } catch (err) {
+    // Axios wraps non-2xx responses in err.response
+    const message =
+      err.response?.data?.message || err.message || 'Failed to sign out';
+    throw new Error(message);
   }
-
-  return res.json();
 };
-
