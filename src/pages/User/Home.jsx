@@ -146,30 +146,30 @@ export default function UserHomePage() {
       )}
   
       <div className="relative">
-        <SwipeDeck idx={idx} direction={direction} profilesLength={profiles.length} onAdvance={advance}>
-          <div className="relative">
-            {/* Profile Image/Card */}
-            <ProfileCard
-              profile={profile}
-              placeholderImage={placeholderImage}
-              onConnectClick={() => {}}
-              onMessageClick={() => console.log('Message clicked')}
-            />
-  
-            {/* Buttons FLOATING over card */}
-            <ActionControls
-              className="absolute bottom-4 inset-x-0 z-30 flex justify-center"
-              onReject={() => advance(-1)}
-              onRefresh={handleRefresh}
-              onLike={() => advance(1)}
-            />
-          </div>
-  
-          {/* DetailSection appears directly below the image + buttons */}
-          <div className="mt-6 px-4">
-            <DetailSection profile={profile} />
-          </div>
-        </SwipeDeck>
+      <SwipeDeck idx={idx} direction={direction} profilesLength={profiles.length} onAdvance={advance}>
+  <div className="relative">
+    <ProfileCard
+      profile={profile}
+      placeholderImage={placeholderImage}
+      onConnectClick={() => {}}
+      onMessageClick={() => console.log('Message clicked')}
+    />
+
+    {/* Floating buttons, not too low */}
+    <ActionControls
+      className="absolute bottom-12 inset-x-0 z-30 flex justify-center"
+      onReject={() => advance(-1)}
+      onRefresh={handleRefresh}
+      onLike={() => advance(1)}
+    />
+  </div>
+
+  {/* Profile info */}
+  <div className="mt-6 px-4">
+    <DetailSection profile={profile} />
+  </div>
+</SwipeDeck>
+
       </div>
   
       <BottomNav />
