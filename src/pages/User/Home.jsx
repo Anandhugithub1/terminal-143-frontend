@@ -147,28 +147,34 @@ export default function UserHomePage() {
   
       <div className="relative">
         <SwipeDeck idx={idx} direction={direction} profilesLength={profiles.length} onAdvance={advance}>
-          <ProfileCard
-            profile={profile}
-            placeholderImage={placeholderImage}
-            onConnectClick={() => {}}
-            onMessageClick={() => console.log('Message clicked')}
-          />
+          <div className="relative">
+            {/* Profile Image/Card */}
+            <ProfileCard
+              profile={profile}
+              placeholderImage={placeholderImage}
+              onConnectClick={() => {}}
+              onMessageClick={() => console.log('Message clicked')}
+            />
   
-          {/* ActionControls locked over image */}
-          <ActionControls
-            className="absolute bottom-6 inset-x-0 z-30"
-            onReject={() => advance(-1)}
-            onRefresh={handleRefresh}
-            onLike={() => advance(1)}
-          />
+            {/* Buttons FLOATING over card */}
+            <ActionControls
+              className="absolute bottom-4 inset-x-0 z-30 flex justify-center"
+              onReject={() => advance(-1)}
+              onRefresh={handleRefresh}
+              onLike={() => advance(1)}
+            />
+          </div>
+  
+          {/* DetailSection appears directly below the image + buttons */}
+          <div className="mt-6 px-4">
+            <DetailSection profile={profile} />
+          </div>
         </SwipeDeck>
       </div>
   
-      {/* This appears below the image and buttons */}
-      <DetailSection profile={profile} />
-      
       <BottomNav />
     </div>
   );
+  
   
 }
