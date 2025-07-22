@@ -1,12 +1,13 @@
 // Step2Bio.jsx
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 
-const STD_STATUS = [
-  { label: 'Positive',       value: 'p'  },
-  { label: 'Negative',       value: 'n'  },
+const statusOptions = [
+  { label: 'Positive', value: 'p' },
+  { label: 'Negative', value: 'n' },
   { label: 'Prefer not to say', value: 'pns' },
 ];
 
@@ -40,122 +41,158 @@ export default function Step2Bio() {
   const navigate = useNavigate();
   const charLimit = 500;
 
-  const healthStatus      = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
-  const selectedLanguages = formData.languagesKnown || [];
+  const healthStatus = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
 
-  const handleNext = () => navigate('/complete/photo');
+  // Keep languages as array of objects
+  const [selectedLanguages, setSelectedLanguages] = useState(
+    LANGUAGES.filter(l => formData.languagesKnown?.includes(l.value))
+  );
+  const [open, setOpen] = useState(false);
+  const menuRef = useRef();
+
+  // Sync initial formData -> state
+  useEffect(() => {
+    setSelectedLanguages(
+      LANGUAGES.filter(l => formData.languagesKnown?.includes(l.value))
+    );
+  }, [formData.languagesKnown]);
+
+  // Close when clicking outside
+  useEffect(() => {
+    const handler = e => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const toggleLanguage = lang => {
+    setSelectedLanguages(prev =>
+      prev.find(l => l.value === lang.value)
+        ? prev.filter(l => l.value !== lang.value)
+        : [...prev, lang]
+    );
+  };
+
+  const handleNext = () => {
+    setFormData({
+      ...formData,
+      languagesKnown: selectedLanguages.map(l => l.value),
+    });
+    navigate('/complete/photo');
+  };
   const handleBack = () => navigate('/complete/basic');
 
   const handleBioChange = e => {
     const bio = e.target.value;
     if (bio.length <= charLimit) setFormData({ ...formData, bio });
   };
-
-  const handleLanguagesChange = e => {
-    const options = Array.from(e.target.selectedOptions);
-    const values  = options.map(o => o.value);
-    setFormData({ ...formData, languagesKnown: values });
-  };
-
-  const handleStatusChange = e => {
+  const handleStatusChange = e =>
     setFormData({
       ...formData,
       healthStatus: { ...healthStatus, stdStatus: e.target.value },
     });
-  };
-
-  const handleDateChange = e => {
+  const handleDateChange = e =>
     setFormData({
       ...formData,
       healthStatus: { ...healthStatus, lastTestedDate: e.target.value },
     });
-  };
 
   return (
-    <div className="animate-fade-in max-w-xl mx-auto p-4">
+    <div className="max-w-xl mx-auto p-4 space-y-8 animate-fade-in">
       <ProgressBar step={2} totalSteps={4} />
 
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Your Story 💬</h2>
-        <p className="text-gray-500">What makes you unique?</p>
-      </div>
-
-      {/* Bio Field */}
-      <div className="relative mb-8">
+      {/* Bio */}
+      <div className="space-y-1">
+        <h2 className="text-3xl font-bold text-gray-900">Your Story 💬</h2>
         <textarea
           value={formData.bio || ''}
           onChange={handleBioChange}
           placeholder="I'm passionate about..."
           className="w-full p-4 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500 resize-none min-h-[160px]"
         />
-        <div className="absolute bottom-3 right-3 text-sm text-gray-400">
+        <div className="text-right text-sm text-gray-400">
           {(formData.bio?.length || 0)}/{charLimit}
         </div>
       </div>
 
-      {/* Languages Known */}
-      <div className="mb-6">
-        <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
-        <select
-          multiple
-          value={selectedLanguages}
-          onChange={handleLanguagesChange}
-          className="w-full h-40 p-2 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+      {/* Languages */}
+      <div ref={menuRef} className="relative">
+        <h3 className="mb-2 font-semibold">Languages You Know 🌐</h3>
+        <button
+          onClick={() => setOpen(o => !o)}
+          className="inline-flex w-full justify-between items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none"
         >
-          {LANGUAGES.map(({ label, value }) => (
+          {selectedLanguages.length
+            ? selectedLanguages.map(l => l.label).join(', ')
+            : 'Select languages...'}
+          <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+        </button>
+
+        {open && (
+          <div className="absolute right-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg z-10 max-h-60 overflow-auto">
+            {LANGUAGES.map(lang => {
+              const isSelected = selectedLanguages.some(l => l.value === lang.value);
+              return (
+                <div
+                  key={lang.value}
+                  onClick={() => toggleLanguage(lang)}
+                  className={`flex justify-between items-center px-4 py-2 cursor-pointer ${
+                    isSelected ? 'bg-pink-100 text-pink-700' : 'hover:bg-gray-100'
+                  }`}
+                >
+                  <span>{lang.label}</span>
+                  {isSelected && <CheckIcon className="w-5 h-5 text-pink-500" />}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* STD Status */}
+      <div className="space-y-1">
+        <h3 className="font-semibold">STD Status 🧬</h3>
+        <select
+          value={healthStatus.stdStatus}
+          onChange={handleStatusChange}
+          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none"
+        >
+          <option value="" disabled>
+            Select your STD status
+          </option>
+          {statusOptions.map(({ label, value }) => (
             <option key={value} value={value}>
               {label}
             </option>
           ))}
         </select>
-        <p className="mt-2 text-sm text-gray-500">
-          Hold <kbd className="px-1 bg-gray-200 rounded">Ctrl</kbd> (or <kbd className="px-1 bg-gray-200 rounded">⌘</kbd> on Mac) to select multiple.
-        </p>
       </div>
 
-      {/* STD Status */}
-      <div className="mb-6">
-        <h3 className="text-md font-semibold mb-2">STD Status 🧬</h3>
-        <select
-          value={healthStatus.stdStatus}
-          onChange={handleStatusChange}
-          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
-        >
-          <option value="" disabled>
-            Select your STD status
-          </option>
-          {STD_STATUS && statusOptions.length
-            ? statusOptions.map(({ label, value }) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))
-            : null}
-        </select>
-      </div>
-
-      {/* Last Tested Date */}
-      <div className="mb-6">
-        <h3 className="text-md font-semibold mb-2">Last Tested Date 🗓️</h3>
+      {/* Date */}
+      <div className="space-y-1">
+        <h3 className="font-semibold">Last Tested Date 🗓️</h3>
         <input
           type="date"
           value={healthStatus.lastTestedDate}
           onChange={handleDateChange}
-          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-500"
+          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:outline-none"
         />
       </div>
 
-      {/* Navigation */}
-      <div className="mt-8 flex gap-4">
+      {/* Nav */}
+      <div className="flex gap-4">
         <button
           onClick={handleBack}
-          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50"
         >
           Back
         </button>
         <button
           onClick={handleNext}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all"
+          className="flex-1 py-3 px-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-xl hover:from-pink-600 hover:to-purple-700"
         >
           Next
         </button>
