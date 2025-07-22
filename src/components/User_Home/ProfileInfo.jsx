@@ -27,14 +27,13 @@ export const ProfileInfo = memo(({
   name,
   age,
   lastSeen,
-  
+  about,
   gender,
-  // distance,
+  distance,
   // onMessageClick,
   // onConnectClick,
 }) => (
-<div className="absolute bottom-28 left-0 w-full px-4 py-6 bg-gradient-to-t from-black/80 via-black/30 to-transparent text-white rounded-b-2xl z-10">
-
+  <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-transparent text-white">
     <div className="flex items-center justify-between">
       <div>
         <h2 className="text-xl font-semibold">{name}, {age}</h2>
@@ -58,17 +57,17 @@ export const ProfileInfo = memo(({
       </div>
     </div>
 
-    {/* {about && <p className="mt-2 italic text-sm">“{about}”</p>} */}
-
-    <div className="flex items-center space-x-2 mt-4">
+    <div className="flex items-center space-x-2 mt-2">
       <Badge icon={<FaVenus size={12} />} label={gender} />
     
     </div>
+    {about && <p className="mt-2 italic text-sm">“{about}”</p>}
 
-    {/* <div className="flex items-center text-sm mt-2">
+
+    <div className="flex items-center text-sm mt-2">
       <HiOutlineLocationMarker className="mr-1" />
       <span>{distance}</span>
-    </div> */}
+    </div>
   </div>
 ));
 
@@ -80,7 +79,7 @@ ProfileInfo.propTypes = {
   gender: PropTypes.string.isRequired,
   top: PropTypes.string,
   compatibility: PropTypes.number.isRequired,
-  // distance: PropTypes.string.isRequired,
+  distance: PropTypes.string.isRequired,
   onMessageClick: PropTypes.func.isRequired,
   onConnectClick: PropTypes.func.isRequired,
 };
