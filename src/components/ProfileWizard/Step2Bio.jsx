@@ -1,4 +1,3 @@
-// Step2Bio.jsx
 import React, { useMemo } from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
@@ -80,22 +79,20 @@ const Step2Bio = () => {
     });
   };
 
-  const languageOptionsWithFlags = useMemo(
-    () =>
-      extendedLanguageOptions.map(({ label, value }) => ({
-        label: (
-          <div className="flex items-center gap-2">
-            <ReactCountryFlag
-              countryCode={value.toUpperCase()}
-              svg
-              style={{ width: '1.2em', height: '1.2em' }}
-            />
-            {label}
-          </div>
-        ),
-        value,
-      })),
+  const languageOptions = useMemo(
+    () => extendedLanguageOptions.map(({ label, value }) => ({ label, value })),
     []
+  );
+
+  const formatOptionLabel = ({ label, value }) => (
+    <div className="flex items-center gap-2">
+      <ReactCountryFlag
+        countryCode={value.toUpperCase()}
+        svg
+        style={{ width: '1.2em', height: '1.2em' }}
+      />
+      {label}
+    </div>
   );
 
   return (
@@ -124,17 +121,15 @@ const Step2Bio = () => {
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
         <Select
-          options={languageOptionsWithFlags}
-          value={languageOptionsWithFlags.filter((opt) =>
-            selectedLanguages.includes(opt.value)
-          )}
-
+          options={languageOptions}
+          value={languageOptions.filter((opt) => selectedLanguages.includes(opt.value))}
           onChange={handleLanguagesChange}
           placeholder="Select languages"
           isSearchable
           isMulti
           className="mb-4"
           classNamePrefix="react-select"
+          formatOptionLabel={formatOptionLabel}
         />
 
         {/* Selected Languages Pills */}
@@ -148,10 +143,7 @@ const Step2Bio = () => {
                   handleLanguagesChange(
                     selectedLanguages
                       .filter((c) => c !== code)
-                      .map((val) => ({
-                        label: val,
-                        value: val,
-                      }))
+                      .map((val) => ({ label: val, value: val }))
                   )
                 }
                 className="flex items-center gap-2 px-4 py-2 rounded-full text-sm bg-pink-500 text-white"
