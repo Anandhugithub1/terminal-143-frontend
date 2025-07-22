@@ -61,11 +61,11 @@ export const ProfileInfo = memo(({
       <Badge icon={<FaVenus size={12} />} label={gender} />
     
     </div>
-    {about && <p className="mt-2 italic text-sm">“{about}”</p>}
+    {about && <p className="mt-2 italic text-sm">“”</p>}
 
 
     <div className="flex items-center text-sm mt-2">
-      <HiOutlineLocationMarker className="mr-1" />
+      {/* <HiOutlineLocationMarker className="mr-1" /> */}
       <span>{distance}</span>
     </div>
   </div>
