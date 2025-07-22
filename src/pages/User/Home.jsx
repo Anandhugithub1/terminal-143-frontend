@@ -157,7 +157,7 @@ export default function UserHomePage() {
 
     {/* Floating buttons, not too low */}
     <ActionControls
-      className="absolute bottom-[50%] inset-x-0 z-30 flex justify-center"
+      className="absolute top-[85%] inset-x-0 z-30 flex justify-center"
 
       onReject={() => advance(-1)}
       onRefresh={handleRefresh}
