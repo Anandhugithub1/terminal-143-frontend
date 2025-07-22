@@ -18,6 +18,17 @@
   "stdStatusNegative": "Negative",
   "stdStatusPositive": "Positive",
   "stdStatusUnknown": "Prefer not to say",
-  "testedOn": "Tested on"
+  "testedOn": "Tested on",
+
+
+  "aboutApp": "About Terminal143",
+  "intro": "Terminal143 is a modern dating platform designed for authentic connections across Thailand. We celebrate culture, love, and meaningful relationships in every corner of the country.",
+  "missionTitle": "Our Mission",
+  "missionDesc": "To connect people through meaningful, respectful, and safe dating experiences in Thailand.",
+  "communityTitle": "Community First",
+  "communityDesc": "We foster a friendly and respectful community where users feel safe and heard.",
+  "globalTitle": "Thai Heart, Global Reach",
+  "globalDesc": "Though rooted in Thai culture, our reach extends globally, welcoming matches across borders.",
+  "rightsReserved": "All rights reserved."
   
 }

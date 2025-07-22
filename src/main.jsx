@@ -39,7 +39,7 @@ import PreferencesPage from './pages/Settings/Preference.jsx';
 import PublicProfilePage from './pages/User/Profile/PublicProfile.jsx';
 import MatchesPage from './pages/User/Matches.jsx';
 import RequestsPage from './pages/User/Request.jsx';
-
+import Infopage from './pages/Settings/Info.jsx';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const route = createBrowserRouter(
@@ -64,6 +64,7 @@ const route = createBrowserRouter(
       <Route path="verify" element={<EmailOTPVerification />} />
       <Route path="reset-password" element={<ForgotAndResetPassword />} />
       <Route path="choose-category" element={<ChooseCategory />} />
+      <Route path ="info" element={<Infopage />} />
 
       <Route
   path="home"

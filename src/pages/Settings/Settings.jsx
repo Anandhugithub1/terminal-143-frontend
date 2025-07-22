@@ -27,7 +27,7 @@ const SettingsPage = () => {
     { label: t('preferences'), icon: <Sliders size={20} />, to: '/preferences' },
     { label: t('deleteAccount'), icon: <Trash2 size={20} />, to: '/delete-account' },
     { label: t('helpCentre'), icon: <HelpCircle size={20} />, to: '/help' },
-    { label: t('aboutApp'), icon: <Info size={20} />, to: '/about' },
+    { label: t('aboutApp'), icon: <Info size={20} />, to: '/info' },
   ];
 
   const handleLogoutCurrentDevice = () => {
