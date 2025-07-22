@@ -166,7 +166,7 @@ export default function UserHomePage() {
   </div>
 
   {/* Profile info */}
-  <div className="mt-20 px-4">
+  <div className="mt-6 px-4">
     <DetailSection profile={profile} />
   </div>
 </SwipeDeck>
