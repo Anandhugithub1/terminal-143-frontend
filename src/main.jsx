@@ -62,7 +62,7 @@ const route = createBrowserRouter(
       <Route path="/" element={<HomePage />} />
       <Route path="login" element={<Login />} />
       <Route path="verify" element={<EmailOTPVerification />} />
-      <Route path="forgot-password" element={<ForgotAndResetPassword />} />
+      <Route path="reset-password" element={<ForgotAndResetPassword />} />
       <Route path="choose-category" element={<ChooseCategory />} />
 
       <Route

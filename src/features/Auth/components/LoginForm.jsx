@@ -97,7 +97,7 @@ export const LoginForm = () => {
 
         <div className="text-right">
           <Link
-            to="/forgot-password"
+            to="/reset-password"
             className="text-text-pr font-semibold text-sm hover:underline"
           >
             {t('forgotPassword')}
