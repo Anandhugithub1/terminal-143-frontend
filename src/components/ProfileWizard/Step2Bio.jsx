@@ -1,21 +1,10 @@
-/* ========== Step2Bio.jsx ========== */
-import React from 'react';
+// Step2Bio.jsx
+import React, { useMemo } from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
-
-const LANGUAGES = {
-  ENGLISH: 'en',
-  THAI: 'th',
-  RUSSIAN: 'ru',
-  CHINESE: 'zh',
-  SPANISH: 'es',
-  MEXICAN: 'mx',
-  ITALIAN: 'it',
-  PORTUGUESE: 'pt',
-  FRENCH: 'fr',
-  GERMAN: 'de',
-};
+import ReactCountryFlag from 'react-country-flag';
+import Select from 'react-select';
 
 const STD_STATUS = {
   POSITIVE: 'p',
@@ -23,12 +12,29 @@ const STD_STATUS = {
   PREFER_NOT_TO_SAY: 'pns',
 };
 
-const languageOptions = [
-  { label: 'English', value: LANGUAGES.ENGLISH },
-  { label: 'Spanish', value: LANGUAGES.SPANISH },
-  { label: 'French', value: LANGUAGES.FRENCH },
-  { label: 'German', value: LANGUAGES.GERMAN },
-  { label: 'Mandarin', value: LANGUAGES.CHINESE },
+const extendedLanguageOptions = [
+  { label: 'English', value: 'gb' },
+  { label: 'Spanish', value: 'es' },
+  { label: 'French', value: 'fr' },
+  { label: 'German', value: 'de' },
+  { label: 'Mandarin', value: 'cn' },
+  { label: 'Thai', value: 'th' },
+  { label: 'Russian', value: 'ru' },
+  { label: 'Italian', value: 'it' },
+  { label: 'Portuguese', value: 'pt' },
+  { label: 'Japanese', value: 'jp' },
+  { label: 'Korean', value: 'kr' },
+  { label: 'Hindi', value: 'in' },
+  { label: 'Arabic', value: 'sa' },
+  { label: 'Bengali', value: 'bd' },
+  { label: 'Urdu', value: 'pk' },
+  { label: 'Turkish', value: 'tr' },
+  { label: 'Vietnamese', value: 'vn' },
+  { label: 'Polish', value: 'pl' },
+  { label: 'Dutch', value: 'nl' },
+  { label: 'Hebrew', value: 'il' },
+  { label: 'Swedish', value: 'se' },
+  { label: 'Greek', value: 'gr' },
 ];
 
 const statusOptions = [
@@ -42,39 +48,55 @@ const Step2Bio = () => {
   const navigate = useNavigate();
   const charLimit = 500;
 
-  // Extract or initialize healthStatus
   const healthStatus = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
+  const selectedLanguages = formData.languagesKnown || [];
 
   const handleNext = () => navigate('/complete/photo');
   const handleBack = () => navigate('/complete/basic');
 
-  const toggleLanguage = (code) => {
-    const known = formData.languagesKnown || [];
-    const updated = known.includes(code)
-      ? known.filter(c => c !== code)
-      : [...known, code];
-    setFormData({ ...formData, languagesKnown: updated });
+  const handleBioChange = (e) => {
+    const bio = e.target.value;
+    if (bio.length <= charLimit) {
+      setFormData({ ...formData, bio });
+    }
   };
 
-  const handleStatusChange = (e) => {
+  const handleLanguagesChange = (selected) => {
+    const values = selected?.map((opt) => opt.value) || [];
+    setFormData({ ...formData, languagesKnown: values });
+  };
+
+  const handleStatusChange = (selected) => {
     setFormData({
       ...formData,
-      healthStatus: {
-        ...healthStatus,
-        stdStatus: e.target.value,
-      },
+      healthStatus: { ...healthStatus, stdStatus: selected?.value || '' },
     });
   };
 
   const handleDateChange = (e) => {
     setFormData({
       ...formData,
-      healthStatus: {
-        ...healthStatus,
-        lastTestedDate: e.target.value,
-      },
+      healthStatus: { ...healthStatus, lastTestedDate: e.target.value },
     });
   };
+
+  const languageOptionsWithFlags = useMemo(
+    () =>
+      extendedLanguageOptions.map(({ label, value }) => ({
+        label: (
+          <div className="flex items-center gap-2">
+            <ReactCountryFlag
+              countryCode={value.toUpperCase()}
+              svg
+              style={{ width: '1.2em', height: '1.2em' }}
+            />
+            {label}
+          </div>
+        ),
+        value,
+      })),
+    []
+  );
 
   return (
     <div className="animate-fade-in">
@@ -89,12 +111,7 @@ const Step2Bio = () => {
       <div className="relative mb-8">
         <textarea
           value={formData.bio || ''}
-          onChange={e =>
-            setFormData({
-              ...formData,
-              bio: e.target.value.slice(0, charLimit),
-            })
-          }
+          onChange={handleBioChange}
           placeholder="I'm passionate about..."
           className="w-full p-4 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500 resize-none min-h-[160px]"
         />
@@ -106,40 +123,63 @@ const Step2Bio = () => {
       {/* Languages Known */}
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
+        <Select
+          options={languageOptionsWithFlags}
+          value={languageOptionsWithFlags.filter((opt) =>
+            selectedLanguages.includes(opt.value)
+          )}
+
+          onChange={handleLanguagesChange}
+          placeholder="Select languages"
+          isSearchable
+          isMulti
+          className="mb-4"
+          classNamePrefix="react-select"
+        />
+
+        {/* Selected Languages Pills */}
         <div className="flex flex-wrap gap-2">
-          {languageOptions.map(({ label, value }) => (
-            <button
-              key={value}
-              onClick={() => toggleLanguage(value)}
-              className={`px-4 py-2 rounded-full text-sm ${
-                formData.languagesKnown?.includes(value)
-                  ? 'bg-pink-500 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          {selectedLanguages.map((code) => {
+            const lang = extendedLanguageOptions.find((l) => l.value === code);
+            return (
+              <button
+                key={code}
+                onClick={() =>
+                  handleLanguagesChange(
+                    selectedLanguages
+                      .filter((c) => c !== code)
+                      .map((val) => ({
+                        label: val,
+                        value: val,
+                      }))
+                  )
+                }
+                className="flex items-center gap-2 px-4 py-2 rounded-full text-sm bg-pink-500 text-white"
+              >
+                <ReactCountryFlag
+                  countryCode={code.toUpperCase()}
+                  svg
+                  style={{ width: '1.2em', height: '1.2em' }}
+                />
+                {lang?.label || code}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* STD Status */}
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-2">STD Status 🧬</h3>
-        <select
-          value={healthStatus.stdStatus}
+        <Select
+          options={statusOptions}
+          value={statusOptions.find((opt) => opt.value === healthStatus.stdStatus) || null}
           onChange={handleStatusChange}
-          className="w-full p-3 bg-gray-50 rounded-xl border border-gray-300"
-        >
-          <option value="" disabled>
-            Select your STD status
-          </option>
-          {statusOptions.map(({ label, value }) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          placeholder="Select your STD status"
+          isClearable
+          className="react-select-container"
+          classNamePrefix="react-select"
+        />
       </div>
 
       {/* Last Tested Date */}
