@@ -133,9 +133,7 @@ export default function UserHomePage() {
   return (
     <div className="relative bg-white min-h-screen pb-20">
       <TopNav />
-
-     
-
+  
       {requestError && (
         <div className="px-4 mt-4">
           <AlertMessage
@@ -146,24 +144,31 @@ export default function UserHomePage() {
           />
         </div>
       )}
-
-      <SwipeDeck idx={idx} direction={direction} profilesLength={profiles.length} onAdvance={advance}>
-        <ProfileCard
-          profile={profile}
-          placeholderImage={placeholderImage}
-          onConnectClick={() => {}}
-          onMessageClick={() => console.log('Message clicked')}
-        />
-   
-        <DetailSection profile={profile} />
-      </SwipeDeck>
-      <ActionControls
-  className="absolute bottom-6 inset-x-0 z-20"
-  onReject={() => advance(-1)}
-  onRefresh={handleRefresh}
-  onLike={() => advance(1)}
-/>
+  
+      <div className="relative">
+        <SwipeDeck idx={idx} direction={direction} profilesLength={profiles.length} onAdvance={advance}>
+          <ProfileCard
+            profile={profile}
+            placeholderImage={placeholderImage}
+            onConnectClick={() => {}}
+            onMessageClick={() => console.log('Message clicked')}
+          />
+  
+          {/* ActionControls locked over image */}
+          <ActionControls
+            className="absolute bottom-6 inset-x-0 z-30"
+            onReject={() => advance(-1)}
+            onRefresh={handleRefresh}
+            onLike={() => advance(1)}
+          />
+        </SwipeDeck>
+      </div>
+  
+      {/* This appears below the image and buttons */}
+      <DetailSection profile={profile} />
+      
       <BottomNav />
     </div>
   );
+  
 }
