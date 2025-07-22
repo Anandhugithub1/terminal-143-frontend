@@ -27,7 +27,7 @@ export const ProfileInfo = memo(({
   name,
   age,
   lastSeen,
-  about,
+  
   gender,
   distance,
   // onMessageClick,
@@ -57,7 +57,7 @@ export const ProfileInfo = memo(({
       </div>
     </div>
 
-    {about && <p className="mt-2 italic text-sm">“{about}”</p>}
+    {/* {about && <p className="mt-2 italic text-sm">“{about}”</p>} */}
 
     <div className="flex items-center space-x-2 mt-2">
       <Badge icon={<FaVenus size={12} />} label={gender} />
