@@ -1,57 +1,54 @@
 // Step2Bio.jsx
-import React, { useMemo, Suspense, lazy } from 'react';
+import React, { useMemo } from 'react';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
-
-// 1) Move these out so they're only parsed once at module‑load
-const extendedLanguageOptions = [
-  { label: 'English',   value: 'gb' },
-  { label: 'Spanish',   value: 'es' },
-  { label: 'French',    value: 'fr' },
-  { label: 'German',    value: 'de' },
-  { label: 'Mandarin',  value: 'cn' },
-  { label: 'Thai',      value: 'th' },
-  { label: 'Russian',   value: 'ru' },
-  { label: 'Italian',   value: 'it' },
-  { label: 'Portuguese',value: 'pt' },
-  { label: 'Japanese',  value: 'jp' },
-  { label: 'Korean',    value: 'kr' },
-  { label: 'Hindi',     value: 'in' },
-  { label: 'Arabic',    value: 'sa' },
-  { label: 'Bengali',   value: 'bd' },
-  { label: 'Urdu',      value: 'pk' },
-  { label: 'Turkish',   value: 'tr' },
-  { label: 'Vietnamese',value: 'vn' },
-  { label: 'Polish',    value: 'pl' },
-  { label: 'Dutch',     value: 'nl' },
-  { label: 'Hebrew',    value: 'il' },
-  { label: 'Swedish',   value: 'se' },
-  { label: 'Greek',     value: 'gr' },
-];
+import ReactCountryFlag from 'react-country-flag';
+import Select from 'react-select';
 
 const STD_STATUS = {
-  POSITIVE:       'p',
-  NEGATIVE:       'n',
+  POSITIVE: 'p',
+  NEGATIVE: 'n',
   PREFER_NOT_TO_SAY: 'pns',
 };
 
-const statusOptions = [
-  { label: 'Positive',       value: STD_STATUS.POSITIVE },
-  { label: 'Negative',       value: STD_STATUS.NEGATIVE },
-  { label: 'Prefer not to say', value: STD_STATUS.PREFER_NOT_TO_SAY },
+const extendedLanguageOptions = [
+  { label: 'English', value: 'gb' },
+  { label: 'Spanish', value: 'es' },
+  { label: 'French', value: 'fr' },
+  { label: 'German', value: 'de' },
+  { label: 'Mandarin', value: 'cn' },
+  { label: 'Thai', value: 'th' },
+  { label: 'Russian', value: 'ru' },
+  { label: 'Italian', value: 'it' },
+  { label: 'Portuguese', value: 'pt' },
+  { label: 'Japanese', value: 'jp' },
+  { label: 'Korean', value: 'kr' },
+  { label: 'Hindi', value: 'in' },
+  { label: 'Arabic', value: 'sa' },
+  { label: 'Bengali', value: 'bd' },
+  { label: 'Urdu', value: 'pk' },
+  { label: 'Turkish', value: 'tr' },
+  { label: 'Vietnamese', value: 'vn' },
+  { label: 'Polish', value: 'pl' },
+  { label: 'Dutch', value: 'nl' },
+  { label: 'Hebrew', value: 'il' },
+  { label: 'Swedish', value: 'se' },
+  { label: 'Greek', value: 'gr' },
 ];
 
-// 2) Dynamically import heavy libs
-const Select            = lazy(() => import('react-select'));
-const ReactCountryFlag  = lazy(() => import('react-country-flag'));
+const statusOptions = [
+  { label: 'Positive', value: STD_STATUS.POSITIVE },
+  { label: 'Negative', value: STD_STATUS.NEGATIVE },
+  { label: 'Prefer not to say', value: STD_STATUS.PREFER_NOT_TO_SAY },
+];
 
 export default function Step2Bio() {
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();
   const charLimit = 500;
 
-  const healthStatus     = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
+  const healthStatus      = formData.healthStatus || { stdStatus: '', lastTestedDate: '' };
   const selectedLanguages = formData.languagesKnown || [];
 
   const handleNext = () => navigate('/complete/photo');
@@ -81,13 +78,10 @@ export default function Step2Bio() {
     });
   };
 
-  // 3) Memoize your simple label/value options
-  const languageOptions = useMemo(
-    () => extendedLanguageOptions,
-    []
-  );
+  // Memoize to avoid recreating the array each render
+  const languageOptions = useMemo(() => extendedLanguageOptions, []);
 
-  // 4) Custom render for each option (flags + text)
+  // Used by react-select to render flag + label
   const formatOptionLabel = ({ label, value }) => (
     <div className="flex items-center gap-2">
       <ReactCountryFlag
@@ -109,7 +103,7 @@ export default function Step2Bio() {
         <p className="text-gray-500">What makes you unique?</p>
       </div>
 
-      {/* Bio */}
+      {/* Bio Field */}
       <div className="relative mb-8">
         <textarea
           value={formData.bio || ''}
@@ -122,40 +116,36 @@ export default function Step2Bio() {
         </div>
       </div>
 
-      {/* Languages (lazy‑loaded) */}
+      {/* Languages Known */}
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-2">Languages You Know 🌐</h3>
-        <Suspense fallback={<div>Loading languages…</div>}>
-          <Select
-            options={languageOptions}
-            value={languageOptions.filter(opt => selectedLanguages.includes(opt.value))}
-            onChange={handleLanguagesChange}
-            placeholder="Select languages"
-            isSearchable
-            isMulti
-            closeMenuOnSelect={false}
-            hideSelectedOptions={false}
-            className="mb-4"
-            classNamePrefix="react-select"
-            formatOptionLabel={formatOptionLabel}
-          />
-        </Suspense>
+        <Select
+          options={languageOptions}
+          value={languageOptions.filter(opt => selectedLanguages.includes(opt.value))}
+          onChange={handleLanguagesChange}
+          placeholder="Select languages"
+          isSearchable
+          isMulti
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          className="mb-4"
+          classNamePrefix="react-select"
+          formatOptionLabel={formatOptionLabel}
+        />
       </div>
 
-      {/* STD Status (lazy‑loaded) */}
+      {/* STD Status */}
       <div className="mb-6">
         <h3 className="text-md font-semibold mb-2">STD Status 🧬</h3>
-        <Suspense fallback={<div>Loading status…</div>}>
-          <Select
-            options={statusOptions}
-            value={statusOptions.find(opt => opt.value === healthStatus.stdStatus) || null}
-            onChange={handleStatusChange}
-            placeholder="Select your STD status"
-            isClearable
-            className="react-select-container"
-            classNamePrefix="react-select"
-          />
-        </Suspense>
+        <Select
+          options={statusOptions}
+          value={statusOptions.find(opt => opt.value === healthStatus.stdStatus) || null}
+          onChange={handleStatusChange}
+          placeholder="Select your STD status"
+          isClearable
+          className="react-select-container"
+          classNamePrefix="react-select"
+        />
       </div>
 
       {/* Last Tested Date */}
