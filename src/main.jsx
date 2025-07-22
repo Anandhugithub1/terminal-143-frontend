@@ -34,7 +34,7 @@ import ShareQRCodePage from './pages/User/Profile/Qrcode.jsx';
 import NotFoundPage from './pages/404/404.jsx';
 import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
 import LanguagePage from './pages/Settings/Language.jsx';
-import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
+// import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
 import PreferencesPage from './pages/Settings/Preference.jsx';
 import PublicProfilePage from './pages/User/Profile/PublicProfile.jsx';
 import MatchesPage from './pages/User/Matches.jsx';
@@ -89,7 +89,7 @@ const route = createBrowserRouter(
    <Route path="/profile/:type/:gender/:level/:username" element={<PublicProfilePage />} />
 
 
-   <Route path="explore" element={<ExplorePage />} />
+   {/* <Route path="explore" element={<ExplorePage />} /> */}
    <Route Component={PreferencesPage} path="preferences" />
 
 
