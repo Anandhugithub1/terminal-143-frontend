@@ -54,7 +54,6 @@ const route = createBrowserRouter(
       <WizardProvider>
         <AddDetails />
       </WizardProvider>
-    // </RequireProfileIncomplete>
   }
 />
 
