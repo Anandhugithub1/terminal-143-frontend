@@ -15,6 +15,7 @@ import { EditableSection } from '../../../components/User_Home/EditableSection';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 const AVATAR_PLACEHOLDER = 'https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.svg';
+const SOCIAL_PLATFORMS = ['IG', 'FB', 'Telegram', 'Line', 'Wechat', 'Other'];
 
 export default function ProfileEditPage() {
   const [socialMediaLinks, setSocialMediaLinks] = useState({
@@ -60,8 +61,14 @@ export default function ProfileEditPage() {
     }
 
     if (profile?.socialMediaLinks) {
-      setSocialMediaLinks(profile.socialMediaLinks);
+      const linksObj = SOCIAL_PLATFORMS.reduce((acc, platform) => {
+        const found = profile.socialMediaLinks.find((link) => link.platform === platform);
+        acc[platform] = found?.usernameOrLink || '';
+        return acc;
+      }, {});
+      setSocialMediaLinks(linksObj);
     }
+    
   }, [profile?.bio, profile?.socialMediaLinks]);
 
   if (status === 'idle' || status === 'loading' || !profile || isUploading || isFetching) {
