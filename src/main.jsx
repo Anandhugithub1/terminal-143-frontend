@@ -99,9 +99,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <Suspense fallback={<LoadingSpinner />}>
           <RouterProvider router={route} />
-        </Suspense>
       </Provider>
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
