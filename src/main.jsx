@@ -1,114 +1,106 @@
-// src/main.jsx 
-import { StrictMode } from 'react';
+import { StrictMode, Suspense, lazy } from 'react';
 import { createRoot } from 'react-dom/client';
-import { WizardProvider } from './contexts/ProfileWizard.jsx';
 import './App.css';
-import './i18n/i18n.js'
-import {store} from './Redux/store.js'; 
+import './i18n/i18n.js';
 import { Provider } from 'react-redux';
+import { store } from './Redux/store.js';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from './shared/lib/client.js';
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import App from './App.jsx';
 
 import ProtectedRouteFM from './routes/ProtectedRouteFM.jsx';
+import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
+import { LoadingSpinner } from './components/Ui/Spinner.jsx';
 
-import { queryClient } from './shared/lib/client.js';
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Route,
-  RouterProvider,
-} from "react-router-dom";
-import App from './App.jsx';
 import { Login } from './pages/Auth/Login.jsx';
 import { Register } from './pages/Auth/Register.jsx';
 import EmailOTPVerification from './pages/Auth/OtpVerification.jsx';
 import { ForgotAndResetPassword } from './pages/Auth/ForgotPassword.jsx';
-import UserHomePage from './pages/User/Home.jsx'
-import AddDetails from './pages/User/Add/Add_Details.jsx';
 import ChooseCategory from './pages/Auth/ChooseCategory.jsx';
-import HomePage from './pages/Global/HomePage.jsx'
+
+import { WizardProvider } from './contexts/ProfileWizard.jsx';
+
+import HomePage from './pages/Global/HomePage.jsx';
 import PricingPage from './pages/Global/Pricing.jsx';
-import SettingsPage from './pages/Settings/Settings.jsx';
-import ProfilePage  from './pages/User/Profile/Profile.jsx';
-import ProfileEditPage  from './pages/User/Profile/ProfileEdit.jsx';
-import ShareQRCodePage from './pages/User/Profile/Qrcode.jsx';
 import NotFoundPage from './pages/404/404.jsx';
-import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
-import LanguagePage from './pages/Settings/Language.jsx';
-// import  ExplorePage from './pages/User/Explore.jsx'; // Import the ExplorePage component
-import PreferencesPage from './pages/Settings/Preference.jsx';
-import PublicProfilePage from './pages/User/Profile/PublicProfile.jsx';
-import MatchesPage from './pages/User/Matches.jsx';
-import RequestsPage from './pages/User/Request.jsx';
-import Infopage from './pages/Settings/Info.jsx';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
+// ✅ LAZY ROUTES
+const MatchesPage = lazy(() => import('./pages/User/Matches.jsx'));
+const RequestsPage = lazy(() => import('./pages/User/Request.jsx'));
+const UserHomePage = lazy(() => import('./pages/User/Home.jsx'));
+const AddDetails = lazy(() => import('./pages/User/Add/Add_Details.jsx'));
+const SettingsPage = lazy(() => import('./pages/Settings/Settings.jsx'));
+const LanguagePage = lazy(() => import('./pages/Settings/Language.jsx'));
+const PreferencesPage = lazy(() => import('./pages/Settings/Preference.jsx'));
+const ProfilePage = lazy(() => import('./pages/User/Profile/Profile.jsx'));
+const ProfileEditPage = lazy(() => import('./pages/User/Profile/ProfileEdit.jsx'));
+const ShareQRCodePage = lazy(() => import('./pages/User/Profile/Qrcode.jsx'));
+const PublicProfilePage = lazy(() => import('./pages/User/Profile/PublicProfile.jsx'));
+const Infopage = lazy(() => import('./pages/Settings/Info.jsx'));
 
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
       <Route path="register" element={<Register />} />
-      {/* Wrap the /complete route with the WizardProvider */}
-      <Route
-  path="complete/*"
-  element={
-    <RequireProfileIncomplete>
-      <WizardProvider>
-        <AddDetails />
-      </WizardProvider>
-    </RequireProfileIncomplete>
-  }
-/>
-
-        
-      <Route path="/" element={<HomePage />} />
       <Route path="login" element={<Login />} />
       <Route path="verify" element={<EmailOTPVerification />} />
       <Route path="reset-password" element={<ForgotAndResetPassword />} />
       <Route path="choose-category" element={<ChooseCategory />} />
-      <Route path ="info" element={<Infopage />} />
 
       <Route
-  path="home"
-  element={
-    <ProtectedRouteFM>
-      <UserHomePage />
-    </ProtectedRouteFM>
-  }
-/>
+        path="complete/*"
+        element={
+          <RequireProfileIncomplete>
+            <WizardProvider>
+              <Suspense fallback={<LoadingSpinner />}>
+                <AddDetails />
+              </Suspense>
+            </WizardProvider>
+          </RequireProfileIncomplete>
+        }
+      />
 
-
+      <Route path="/" element={<HomePage />} />
       <Route path="pricing" element={<PricingPage />} />
-   <Route path="settings" element={<SettingsPage />}/>
-   <Route path="profile" element={<ProfilePage />} />
-   <Route path='edit-profile' element={<ProfileEditPage />} />
-   <Route path='share-qr' element={<ShareQRCodePage />} />
-   <Route path="*" element={<NotFoundPage />} />
-   <Route path="language" element={<LanguagePage />} />
-   <Route path="matches" element={<MatchesPage />} />
-   <Route path="requests" element={<RequestsPage />} />
+      <Route path="*" element={<NotFoundPage />} />
 
-   <Route path="/profile/:type/:gender/:level/:username" element={<PublicProfilePage />} />
+      <Route path="info" element={<Suspense fallback={<LoadingSpinner />}><Infopage /></Suspense>} />
+      <Route path="language" element={<Suspense fallback={<LoadingSpinner />}><LanguagePage /></Suspense>} />
+      <Route path="settings" element={<Suspense fallback={<LoadingSpinner />}><SettingsPage /></Suspense>} />
+      <Route path="preferences" element={<Suspense fallback={<LoadingSpinner />}><PreferencesPage /></Suspense>} />
 
+      <Route
+        path="home"
+        element={
+          <ProtectedRouteFM>
+            <Suspense fallback={<LoadingSpinner />}>
+              <UserHomePage />
+            </Suspense>
+          </ProtectedRouteFM>
+        }
+      />
 
-   {/* <Route path="explore" element={<ExplorePage />} /> */}
-   <Route Component={PreferencesPage} path="preferences" />
-
-
+      <Route path="matches" element={<Suspense fallback={<LoadingSpinner />}><MatchesPage /></Suspense>} />
+      <Route path="requests" element={<Suspense fallback={<LoadingSpinner />}><RequestsPage /></Suspense>} />
+      <Route path="profile" element={<Suspense fallback={<LoadingSpinner />}><ProfilePage /></Suspense>} />
+      <Route path="edit-profile" element={<Suspense fallback={<LoadingSpinner />}><ProfileEditPage /></Suspense>} />
+      <Route path="share-qr" element={<Suspense fallback={<LoadingSpinner />}><ShareQRCodePage /></Suspense>} />
+      <Route path="/profile/:type/:gender/:level/:username" element={<Suspense fallback={<LoadingSpinner />}><PublicProfilePage /></Suspense>} />
     </Route>
   )
 );
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-       <QueryClientProvider client={queryClient}> 
-
-    <Provider store={store}>
-      
-      <RouterProvider router={route} />
-    </Provider>
-
-    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <Suspense fallback={<LoadingSpinner />}>
+          <RouterProvider router={route} />
+        </Suspense>
+      </Provider>
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
-
-  </StrictMode>,
+  </StrictMode>
 );
