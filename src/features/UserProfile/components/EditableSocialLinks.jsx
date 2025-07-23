@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const SOCIAL_PLATFORMS = ['IG', 'FB', 'Telegram', 'Line', 'Wechat', 'Other'];
 
 const EditableSocialLinks = ({ socialLinks, onChange }) => {
+  const [expanded, setExpanded] = useState(false);
+
+  // Show filled platforms first, then default to first two if none
+  const filled = SOCIAL_PLATFORMS.filter((p) => socialLinks[p]);
+  const defaultVisible = filled.length > 0 ? filled : SOCIAL_PLATFORMS.slice(0, 2);
+
+  const visiblePlatforms = expanded ? SOCIAL_PLATFORMS : defaultVisible;
+
   return (
     <div className="space-y-4 px-4">
-      {SOCIAL_PLATFORMS.map((platform) => (
+      {visiblePlatforms.map((platform) => (
         <div key={platform} className="flex flex-col">
           <label className="mb-1 text-sm font-semibold text-gray-600">
             {platform}
@@ -20,6 +28,16 @@ const EditableSocialLinks = ({ socialLinks, onChange }) => {
           />
         </div>
       ))}
+
+      {/* Toggle Button */}
+      {!expanded && (
+        <button
+          onClick={() => setExpanded(true)}
+          className="text-pink-600 text-sm mt-2 hover:underline"
+        >
+          Show more
+        </button>
+      )}
     </div>
   );
 };
