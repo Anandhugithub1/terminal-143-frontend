@@ -28,10 +28,6 @@ export default function ProfileEditPage() {
   const [isEditingBio, setIsEditingBio] = useState(false);
 const [bioInput, setBioInput] = useState('');
 
-useEffect(() => {
-  if (profile?.bio) setBioInput(profile.bio);
-}, [profile?.bio]);
-
   const navigate = useNavigate();
   const userType = localStorage.getItem('userType');
 
@@ -58,10 +54,15 @@ useEffect(() => {
   } = useAvatarUpload({ uploadImage, userType });
 
   useEffect(() => {
+    if (profile?.bio) {
+      setBioInput(profile.bio);
+    }
+  
     if (profile?.socialLinks) {
       setSocialLinks(profile.socialLinks);
     }
-  }, [profile?.socialLinks]);
+  }, [profile?.bio, profile?.socialLinks]);
+  
 
   if (status === 'idle' || status === 'loading' || !profile || isUploading || isFetching) {
     return <LoadingSpinner />;
