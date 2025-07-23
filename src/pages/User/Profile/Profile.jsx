@@ -108,7 +108,7 @@ export default function ProfilePage() {
         {/* Social Media Links */}
         {Array.isArray(profile.socialMediaLinks) && profile.socialMediaLinks.length > 0 && (
   <div className="mt-6 px-6">
-    <p className="text-sm font-semibold text-gray-700 mb-3">Connect with me @</p>
+    <p className="text-sm font-semibold text-gray-700 mb-3"></p>
     <div className="space-y-3">
       {profile.socialMediaLinks
         .filter((link) => link.usernameOrLink?.trim())
@@ -137,6 +137,7 @@ export default function ProfilePage() {
     </div>
   </div>
 )}
+
 
 
 
