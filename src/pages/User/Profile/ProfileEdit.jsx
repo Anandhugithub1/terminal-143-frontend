@@ -24,6 +24,14 @@ export default function ProfileEditPage() {
     linkedin: '',
   });
 
+
+  const [isEditingBio, setIsEditingBio] = useState(false);
+const [bioInput, setBioInput] = useState('');
+
+useEffect(() => {
+  if (profile?.bio) setBioInput(profile.bio);
+}, [profile?.bio]);
+
   const navigate = useNavigate();
   const userType = localStorage.getItem('userType');
 
@@ -127,9 +135,14 @@ export default function ProfileEditPage() {
         <div className="p-5 space-y-6">
           {/* Bio */}
           <EditableBio
-            bio={profile.bio}
-            onSave={(value) => updateProfileData('bio', value)}
-          />
+  bioInput={bioInput}
+  setBioInput={setBioInput}
+  profile={profile}
+  updateProfileData={updateProfileData}
+  isEditingBio={isEditingBio}
+  setIsEditingBio={setIsEditingBio}
+/>
+
 
           {/* About Me Fields */}
           <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
