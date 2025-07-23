@@ -89,24 +89,67 @@ export function EditableField({ icon: Icon, label, value, onSave }) {
 }
 
 
+export const ConfirmModal = ({ open, onCancel, onConfirm, title, description }) => {
+  if (!open) return null;
 
-
-export function UploadOptions({ onCamera, onGallery, onCancel, onRemove }) {
   return (
-    <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-2xl shadow-lg z-10 w-52">
-      <h3 className="text-center font-semibold mb-2">Upload Photo</h3>
-      <button onClick={onCamera} className="w-full py-2 mb-2 bg-gray-100 rounded-lg hover:bg-gray-200">
-        Use Camera
-      </button>
-      <button onClick={onGallery} className="w-full py-2 mb-2 bg-gray-100 rounded-lg hover:bg-gray-200">
-        Choose from Gallery
-      </button>
-      <button onClick={onRemove} className="w-full py-2 mb-2 bg-red-100 rounded-lg hover:bg-red-200">
-        Remove Photo
-      </button>
-      <button onClick={onCancel} className="w-full py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
-        Cancel
-      </button>
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+      <div className="bg-white rounded-2xl p-6 w-80 shadow-xl">
+        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+        <p className="text-sm text-gray-600 mt-2">{description}</p>
+        <div className="mt-6 flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600"
+          >
+            Remove
+          </button>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+
+
+export const UploadOptions = ({ onRemove, onCamera, onGallery }) => {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleRemove = () => {
+    setShowModal(false);
+    onRemove();
+  };
+
+  return (
+    <>
+      <div className="bg-white rounded-2xl p-4 shadow-lg w-64">
+        <button onClick={onCamera} className="w-full py-2 mb-2 bg-blue-100 rounded-lg hover:bg-blue-200">
+          Take Photo
+        </button>
+        <button onClick={onGallery} className="w-full py-2 mb-2 bg-green-100 rounded-lg hover:bg-green-200">
+          Choose from Gallery
+        </button>
+        <button
+          onClick={() => setShowModal(true)}
+          className="w-full py-2 mb-2 bg-red-100 rounded-lg hover:bg-red-200"
+        >
+          Remove Photo
+        </button>
+      </div>
+
+      <ConfirmModal
+        open={showModal}
+        onCancel={() => setShowModal(false)}
+        onConfirm={handleRemove}
+        title="Remove Profile Photo?"
+        description="Are you sure you want to remove your profile picture? This cannot be undone."
+      />
+    </>
+  );
+};
