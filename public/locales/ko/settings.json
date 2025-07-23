@@ -21,6 +21,16 @@
     "toFemale": "여성에게 관심 있음",
     "toMale": "남성에게 관심 있음",
     "others": "기타",
-    "save": "환경 설정 저장"
+    "save": "환경 설정 저장",
+    "select_language": "언어 선택",
+    "back": "뒤로",
+    "languages": {
+      "english": "영어",
+      "thai": "태국어",
+      "russian": "러시아어",
+      "chinese": "중국어",
+      "korean": "한국어",
+      "malay": "말레이어"
+    }
   }
   

@@ -1,44 +1,44 @@
-// src/pages/LanguagePage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Check } from 'lucide-react';
 import '@fontsource-variable/inter';
-import i18n from '../../i18n/i18n'; // Assuming you have i18n setup
+import i18n from '../../i18n/i18n';
 import clsx from 'clsx';
 import ReactCountryFlag from 'react-country-flag';
+import { useTranslation } from 'react-i18next';
 
-// Supported languages
 const LANGUAGES = [
-  { code: 'en', countryCode: 'US', label: 'English' },
-  { code: 'th', countryCode: 'TH', label: 'Thai' },
-  { code: 'ru', countryCode: 'RU', label: 'Russian' },
-  { code: 'zh', countryCode: 'CN', label: 'Chinese' },
-  { code: 'ko', countryCode: 'KR', label: 'Korean' },
-  { code: 'ms', countryCode: 'MY', label: 'Malay' }
+  { code: 'en', countryCode: 'US', labelKey: 'languages.english' },
+  { code: 'th', countryCode: 'TH', labelKey: 'languages.thai' },
+  { code: 'ru', countryCode: 'RU', labelKey: 'languages.russian' },
+  { code: 'zh', countryCode: 'CN', labelKey: 'languages.chinese' },
+  { code: 'ko', countryCode: 'KR', labelKey: 'languages.korean' },
+  { code: 'ms', countryCode: 'MY', labelKey: 'languages.malay' }
 ];
 
 const LanguagePage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation('settings');
   const [selectedLang, setSelectedLang] = useState(localStorage.getItem('lang') || 'en');
 
   const handleLanguageChange = (code) => {
     setSelectedLang(code);
     localStorage.setItem('lang', code);
-    i18n.changeLanguage(code); // Uncomment if using i18n
+    i18n.changeLanguage(code);
   };
 
   return (
     <div className="min-h-screen bg-white font-inter">
       <header className="flex items-center px-4 py-3 border-b border-gray-200">
-        <button onClick={() => navigate(-1)} aria-label="Back">
+        <button onClick={() => navigate(-1)} aria-label={t('back')}>
           <ArrowLeft size={24} />
         </button>
-        <h1 className="ml-4 text-lg font-semibold">Select Language</h1>
+        <h1 className="ml-4 text-lg font-semibold">{t('select_language')}</h1>
       </header>
 
       <div className="p-4">
         <nav className="mt-6 space-y-3">
-          {LANGUAGES.map(({ code, countryCode, label }) => (
+          {LANGUAGES.map(({ code, countryCode, labelKey }) => (
             <button
               key={code}
               onClick={() => handleLanguageChange(code)}
@@ -59,7 +59,7 @@ const LanguagePage = () => {
                   }}
                   aria-label={countryCode}
                 />
-                <span className="text-gray-800 font-medium">{label}</span>
+                <span className="text-gray-800 font-medium">{t(labelKey)}</span>
               </div>
               {selectedLang === code && (
                 <Check className="text-blue-600" size={20} />

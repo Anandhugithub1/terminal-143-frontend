@@ -21,6 +21,17 @@
     "toFemale": "Kepada Perempuan",
     "toMale": "Kepada Lelaki",
     "others": "Lain-lain",
-    "save": "Simpan Keutamaan"
+    "save": "Simpan Keutamaan",
+
+    "select_language": "Pilih Bahasa",
+    "back": "Kembali",
+    "languages": {
+      "english": "Inggeris",
+      "thai": "Thai",
+      "russian": "Rusia",
+      "chinese": "Cina",
+      "korean": "Korea",
+      "malay": "Melayu"
+    }
   }
   

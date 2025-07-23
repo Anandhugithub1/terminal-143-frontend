@@ -21,7 +21,21 @@
     "toFemale": "To Female",
     "toMale": "To Male",
     "others": "Others",
-    "save": "Save Preferences"
+    "save": "Save Preferences",
+
+    
+        "select_language": "Select Language",
+        "back": "Back",
+        "languages": {
+          "english": "English",
+          "thai": "Thai",
+          "russian": "Russian",
+          "chinese": "Chinese",
+          "korean": "Korean",
+          "malay": "Malay"
+        }
+      
+      
   
   }
   

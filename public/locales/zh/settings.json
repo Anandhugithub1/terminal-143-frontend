@@ -21,6 +21,16 @@
     "toFemale": "寻找女性",
     "toMale": "寻找男性",
     "others": "其他",
-    "save": "保存偏好"
+    "save": "保存偏好",
+    "select_language": "选择语言",
+    "back": "返回",
+    "languages": {
+      "english": "英语",
+      "thai": "泰语",
+      "russian": "俄语",
+      "chinese": "中文",
+      "korean": "韩语",
+      "malay": "马来语"
+    }
   }
   
