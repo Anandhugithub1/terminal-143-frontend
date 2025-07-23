@@ -91,7 +91,7 @@ export function EditableField({ icon: Icon, label, value, onSave }) {
 
 
 
-export  function UploadOptions({ onCamera, onGallery, onCancel }) {
+export function UploadOptions({ onCamera, onGallery, onCancel, onRemove }) {
   return (
     <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-2xl shadow-lg z-10 w-52">
       <h3 className="text-center font-semibold mb-2">Upload Photo</h3>
@@ -101,7 +101,10 @@ export  function UploadOptions({ onCamera, onGallery, onCancel }) {
       <button onClick={onGallery} className="w-full py-2 mb-2 bg-gray-100 rounded-lg hover:bg-gray-200">
         Choose from Gallery
       </button>
-      <button onClick={onCancel} className="w-full py-2 bg-red-100 rounded-lg hover:bg-red-200">
+      <button onClick={onRemove} className="w-full py-2 mb-2 bg-red-100 rounded-lg hover:bg-red-200">
+        Remove Photo
+      </button>
+      <button onClick={onCancel} className="w-full py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
         Cancel
       </button>
     </div>

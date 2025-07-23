@@ -1,7 +1,8 @@
+// Hooks/EditProfile.js
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchProfile,
+  fetchProfile,      // you already have this
   updateProfile,
   uploadProfileImage,
 } from '../features/UserProfile';
@@ -15,14 +16,12 @@ export function useEditableProfile() {
   const [isUploading, setIsUploading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  // Fetch profile initially
   useEffect(() => {
     if (reduxStatus === 'idle') {
       fetchProfileData();
     }
   }, [reduxStatus]);
 
-  // Update local avatar when profile changes
   useEffect(() => {
     if (reduxStatus === 'succeeded' && profile) {
       setLocalAvatar(profile.photo || '');
@@ -40,28 +39,37 @@ export function useEditableProfile() {
     }
   };
 
-  const updateProfileData = (key, value) => {
-    const payload = { [key]: value };
-    dispatch(updateProfile(payload));
+  // ← Updated:
+  const updateProfileData = async (key, value) => {
+    try {
+      // 1️⃣ Update on server
+      await dispatch(updateProfile({ [key]: value })).unwrap();
+
+      // 2️⃣ If removing photo, clear local state immediately
+      if (key === 'photo' && !value) {
+        setLocalAvatar('');
+      }
+
+      // 3️⃣ Re-fetch to sync Redux store
+      await fetchProfileData();
+    } catch (err) {
+      console.error('Profile update failed:', err);
+    }
   };
 
   const uploadImage = async (file, photoIndex = 0) => {
     const localURL = URL.createObjectURL(file);
-    setLocalAvatar(localURL); // temporary preview
+    setLocalAvatar(localURL);
     setIsUploading(true);
 
     try {
       const result = await dispatch(uploadProfileImage({ file, photoIndex })).unwrap();
-
-      // Bust CDN cache with timestamp
       const timestampedUrl = `${result.publicUrl}?t=${Date.now()}`;
 
-      await dispatch(updateProfile({ photo: timestampedUrl }));
+      await dispatch(updateProfile({ photo: timestampedUrl })).unwrap();
       setLocalAvatar(timestampedUrl);
 
       await fetchProfileData();
-
-      // Force reload to ensure CloudFront invalidation is respected
       window.location.reload();
     } catch (error) {
       console.error('Image upload failed:', error);

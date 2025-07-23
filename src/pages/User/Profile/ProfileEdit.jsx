@@ -1,11 +1,12 @@
+// components/User_Home/ProfileEditPage.jsx
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, ChevronLeft, Edit2, X, Check } from 'lucide-react';
+import { ChevronLeft, Edit2, X, Check } from 'lucide-react';
 import '@fontsource-variable/inter';
 
 import { interestMap, getProfileFields } from '../../../Utlis/utlis';
 import { useEditableProfile } from '../../../Hooks/EditProfile';
-import { EditableField, UploadOptions } from '../../../components/User_Home/ProfileEdit';
+import { EditableField,UploadOptions } from '../../../components/User_Home/ProfileEdit';
 import { EditableSection } from '../../../components/User_Home/EditableSection';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
@@ -37,7 +38,6 @@ export default function ProfileEditPage() {
   if (status === 'idle' || status === 'loading' || !profile) {
     return <LoadingSpinner />;
   }
-
   if (isUploading || isFetching) {
     return <LoadingSpinner />;
   }
@@ -47,21 +47,14 @@ export default function ProfileEditPage() {
   const handlePhotoClick = () => setShowUpload((v) => !v);
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
-  
     if (!file) {
       console.warn('No file selected');
       return;
     }
-  
     console.log('New file selected:', file.name, file.size);
-  
-    // 🔥 Check: Is this file different from `profile.photo`?
     uploadImage(file, userType === 'fm' ? 0 : undefined);
-  
-    // ✅ Clear the input so that selecting the same file again works
     e.target.value = '';
   };
-  
 
   const openGallery = () => {
     galleryRef.current?.click();
@@ -70,6 +63,11 @@ export default function ProfileEditPage() {
 
   const openCamera = () => {
     cameraRef.current?.click();
+    setShowUpload(false);
+  };
+
+  const handleRemovePhoto = () => {
+    updateProfileData('photo', '');
     setShowUpload(false);
   };
 
@@ -88,7 +86,10 @@ export default function ProfileEditPage() {
       <main className="flex-1 overflow-y-auto pb-20">
         <section className="relative bg-white px-5 pt-6 pb-8 border-b border-gray-200">
           <div className="flex items-center space-x-2">
-            <button onClick={() => navigate(-1)} className="p-1 rounded-full hover:bg-gray-100">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-1 rounded-full hover:bg-gray-100"
+            >
               <ChevronLeft size={24} className="text-gray-700" />
             </button>
             <h1 className="text-lg font-semibold text-gray-800">Edit Profile</h1>
@@ -96,13 +97,11 @@ export default function ProfileEditPage() {
 
           <div className="flex flex-col items-center mt-6">
             <div className="relative">
-            <img
-  src={localAvatar || '/path/to/avatar.jpg'}
-
-  alt="Profile avatar"
-  className="w-24 h-24 rounded-full border-4 border-pink-400 object-cover"
-/>
-
+              <img
+                src={localAvatar || '/path/to/avatar.jpg'}
+                alt="Profile avatar"
+                className="w-24 h-24 rounded-full border-4 border-pink-400 object-cover"
+              />
               <button
                 onClick={handlePhotoClick}
                 className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow"
@@ -114,6 +113,7 @@ export default function ProfileEditPage() {
                 <UploadOptions
                   onCamera={openCamera}
                   onGallery={openGallery}
+                  onRemove={handleRemovePhoto}
                   onCancel={cancelUpload}
                 />
               )}
@@ -179,7 +179,7 @@ export default function ProfileEditPage() {
                 <textarea
                   value={bioInput}
                   onChange={(e) => setBioInput(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
+                  className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 resize-none"
                   rows={4}
                   placeholder="Tell something about yourself..."
                 />
@@ -221,16 +221,16 @@ export default function ProfileEditPage() {
               <h2 className="text-sm font-semibold text-gray-800">About Me</h2>
             </div>
             {fields
-  .filter((f) => f.key !== 'gender' && f.key !== 'location')
-  .map((f) => (
-    <EditableField
-      key={f.key}
-      icon={f.icon}
-      label={f.label}
-      value={f.value}
-      onSave={(newValue) => updateProfileData(f.key, newValue)}
-    />
-))}
+              .filter((f) => f.key !== 'gender' && f.key !== 'location')
+              .map((f) => (
+                <EditableField
+                  key={f.key}
+                  icon={f.icon}
+                  label={f.label}
+                  value={f.value}
+                  onSave={(newValue) => updateProfileData(f.key, newValue)}
+                />
+              ))}
           </section>
 
           {/* Interests */}
@@ -246,3 +246,4 @@ export default function ProfileEditPage() {
     </div>
   );
 }
+
