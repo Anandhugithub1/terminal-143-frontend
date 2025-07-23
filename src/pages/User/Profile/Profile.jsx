@@ -9,6 +9,19 @@ import '@fontsource-variable/inter';
 import { fetchProfile } from '../../../features/UserProfile';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import { FaInstagram, FaFacebookF, FaTelegramPlane, FaLine, FaWeixin, FaGlobe } from 'react-icons/fa';
+
+const socialIconMap = {
+  IG: <FaInstagram className="text-pink-500" />,
+  FB: <FaFacebookF className="text-blue-600" />,
+  Telegram: <FaTelegramPlane className="text-blue-400" />,
+  Line: <FaLine className="text-green-500" />,
+  Wechat: <FaWeixin className="text-green-600" />,
+  Other: <FaGlobe className="text-gray-600" />,
+};
+
+
+
 
 export default function ProfilePage() {
   const dispatch = useDispatch();
@@ -91,6 +104,35 @@ export default function ProfilePage() {
             {profile.bio || 'Let your personality shine through your bio!'}
           </p>
         </div>
+
+        {/* Social Media Links */}
+{Array.isArray(profile.socialMediaLinks) && profile.socialMediaLinks.length > 0 && (
+  <div className="mt-6 px-6">
+    <h2 className="text-sm font-semibold text-gray-800 mb-3">Social Media</h2>
+    <div className="space-y-3">
+      {profile.socialMediaLinks
+        .filter((link) => link.usernameOrLink?.trim())
+        .map((link, index) => (
+          <div key={index} className="flex items-center gap-3">
+            {socialIconMap[link.platform] || <FaGlobe className="text-gray-500" />}
+            <a
+              href={
+                link.usernameOrLink.startsWith('http')
+                  ? link.usernameOrLink
+                  : `https://${link.platform.toLowerCase()}.com/${link.usernameOrLink}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-600 hover:underline break-all"
+            >
+              {link.usernameOrLink}
+            </a>
+          </div>
+        ))}
+    </div>
+  </div>
+)}
+
 
         {/* Actions */}
         <div className="mt-8 flex flex-col gap-4 px-6">
