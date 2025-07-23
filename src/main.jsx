@@ -29,7 +29,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 // ✅ LAZY ROUTES (keep heavy ones only)
 const MatchesPage = lazy(() => import('./pages/User/Matches.jsx'));
 const RequestsPage = lazy(() => import('./pages/User/Request.jsx'));
-const UserHomePage = lazy(() => import('./pages/User/Home.jsx'));
+// const UserHomePage = lazy(() => import('./pages/User/Home.jsx'));
 const AddDetails = lazy(() => import('./pages/User/Add/Add_Details.jsx'));
 const ProfilePage = lazy(() => import('./pages/User/Profile/Profile.jsx'));
 const ProfileEditPage = lazy(() => import('./pages/User/Profile/ProfileEdit.jsx'));
@@ -41,7 +41,7 @@ import SettingsPage from './pages/Settings/Settings.jsx';
 import LanguagePage from './pages/Settings/Language.jsx';
 import PreferencesPage from './pages/Settings/Preference.jsx';
 import Infopage from './pages/Settings/Info.jsx';
-
+import UserHomePage from './pages/User/Home.jsx';
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -78,9 +78,9 @@ const route = createBrowserRouter(
         path="home"
         element={
           <ProtectedRouteFM>
-            <Suspense fallback={<LoadingSpinner />}>
+            {/* <Suspense fallback={<LoadingSpinner />}> */}
               <UserHomePage />
-            </Suspense>
+            {/* </Suspense> */}
           </ProtectedRouteFM>
         }
       />
