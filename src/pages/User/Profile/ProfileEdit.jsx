@@ -96,11 +96,11 @@ const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.s
           </div>
 
           <div className="flex flex-col items-center mt-6">
-            <div className="relative">
+            <div className="relative w-32 h-32">
               <img
                 src={localAvatar || avatarimage}
                 alt="Profile avatar"
-                className="w-24 h-24 rounded-full border-4 border-pink-400 object-cover"
+                className="w-full h-full rounded-full border-4 border-pink-400 object-cover"
               />
               <button
                 onClick={handlePhotoClick}
@@ -110,12 +110,16 @@ const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.s
               </button>
 
               {showUpload && (
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 z-10">
+
                 <UploadOptions
                   onCamera={openCamera}
                   onGallery={openGallery}
                   onRemove={handleRemovePhoto}
                   onCancel={cancelUpload}
                 />
+                      </div>
+
               )}
 
               <input
