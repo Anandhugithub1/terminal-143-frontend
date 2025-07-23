@@ -26,19 +26,21 @@ import PricingPage from './pages/Global/Pricing.jsx';
 import NotFoundPage from './pages/404/404.jsx';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-// ✅ LAZY ROUTES
+// ✅ LAZY ROUTES (keep heavy ones only)
 const MatchesPage = lazy(() => import('./pages/User/Matches.jsx'));
 const RequestsPage = lazy(() => import('./pages/User/Request.jsx'));
 const UserHomePage = lazy(() => import('./pages/User/Home.jsx'));
 const AddDetails = lazy(() => import('./pages/User/Add/Add_Details.jsx'));
-const SettingsPage = lazy(() => import('./pages/Settings/Settings.jsx'));
-const LanguagePage = lazy(() => import('./pages/Settings/Language.jsx'));
-const PreferencesPage = lazy(() => import('./pages/Settings/Preference.jsx'));
 const ProfilePage = lazy(() => import('./pages/User/Profile/Profile.jsx'));
 const ProfileEditPage = lazy(() => import('./pages/User/Profile/ProfileEdit.jsx'));
 const ShareQRCodePage = lazy(() => import('./pages/User/Profile/Qrcode.jsx'));
 const PublicProfilePage = lazy(() => import('./pages/User/Profile/PublicProfile.jsx'));
-const Infopage = lazy(() => import('./pages/Settings/Info.jsx'));
+
+// ✅ EAGER IMPORTS (lightweight)
+import SettingsPage from './pages/Settings/Settings.jsx';
+import LanguagePage from './pages/Settings/Language.jsx';
+import PreferencesPage from './pages/Settings/Preference.jsx';
+import Infopage from './pages/Settings/Info.jsx';
 
 const route = createBrowserRouter(
   createRoutesFromElements(
@@ -66,10 +68,11 @@ const route = createBrowserRouter(
       <Route path="pricing" element={<PricingPage />} />
       <Route path="*" element={<NotFoundPage />} />
 
-      <Route path="info" element={<Suspense fallback={<LoadingSpinner />}><Infopage /></Suspense>} />
-      <Route path="language" element={<Suspense fallback={<LoadingSpinner />}><LanguagePage /></Suspense>} />
-      <Route path="settings" element={<Suspense fallback={<LoadingSpinner />}><SettingsPage /></Suspense>} />
-      <Route path="preferences" element={<Suspense fallback={<LoadingSpinner />}><PreferencesPage /></Suspense>} />
+      {/* ❌ No Suspense for these */}
+      <Route path="info" element={<Infopage />} />
+      <Route path="language" element={<LanguagePage />} />
+      <Route path="settings" element={<SettingsPage />} />
+      <Route path="preferences" element={<PreferencesPage />} />
 
       <Route
         path="home"
