@@ -13,8 +13,17 @@ import ProfileSkeleton from '../../components/User_Home/ProfileSkeleton';
 // Lazy‑load the heavy pieces
 const ProfileCard    = lazy(() => import('../../components/Cards/ProfileCard'));
 const SwipeDeck      = lazy(() => import('../../components/User_Home/SwipeDeck'));
-const DetailSection  = lazy(() => import('../../components/User_Home/Details'));
-const ActionControls = lazy(() => import('../../components/User_Home/LocationBar'));
+
+
+const ActionControls = lazy(() =>
+  import('../../components/User_Home/LocationBar')
+    .then((mod) => ({ default: mod.ActionControls }))
+);
+
+const DetailSection = lazy(() =>
+  import('../../components/User_Home/Details')
+    .then((mod) => ({ default: mod.DetailSection }))
+);
 
 import { useSendMatchRequest } from '../../Hooks/sendMatchRequest';
 import placeholderImage from '../../assets/woman.png';
