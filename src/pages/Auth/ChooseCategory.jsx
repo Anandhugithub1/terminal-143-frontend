@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import womanInRedShirt from '../../assets/woman.png';
-import manInWhiteShirt from '../../assets/man.png';
 import { MatchProviderCard, FindMatchCard } from '../../components/Cards/ChooseCard';
 import { LANGUAGE_LABELS } from '../../Utlis/utlis';
 import LanguageIcon from '../../assets/svgs/language.svg';
@@ -74,12 +72,12 @@ const ChooseCategory = () => {
           <MatchProviderCard
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
-            womanInRedShirt={womanInRedShirt}
+            womanInRedShirt='https://d36zx1g74mcorc.cloudfront.net/websitephotos/woman.png'
           />
           <FindMatchCard
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
-            manInWhiteShirt={manInWhiteShirt}
+            manInWhiteShirt='https://d36zx1g74mcorc.cloudfront.net/websitephotos/man.png'
           />
         </div>
       </div>
