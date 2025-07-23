@@ -16,7 +16,7 @@ export default function ProfileEditPage() {
 
   const galleryRef = useRef(null);
   const cameraRef = useRef(null);
-
+const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.png';
   const {
     profile,
     status,
@@ -98,7 +98,7 @@ export default function ProfileEditPage() {
           <div className="flex flex-col items-center mt-6">
             <div className="relative">
               <img
-                src={localAvatar || '/path/to/avatar.jpg'}
+                src={localAvatar || avatarimage}
                 alt="Profile avatar"
                 className="w-24 h-24 rounded-full border-4 border-pink-400 object-cover"
               />
