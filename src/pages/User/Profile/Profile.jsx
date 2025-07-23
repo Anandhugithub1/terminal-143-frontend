@@ -13,7 +13,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 export default function ProfilePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.png';
+  const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.svg';
 
   // pull profile & status from our userProfile slice
   const profile = useSelector((state) => state.userProfile.currentUser);

@@ -16,7 +16,7 @@ export default function ProfileEditPage() {
 
   const galleryRef = useRef(null);
   const cameraRef = useRef(null);
-const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.png';
+const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.svg';
   const {
     profile,
     status,
