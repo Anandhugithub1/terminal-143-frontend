@@ -157,21 +157,39 @@ export default function ProfileEditPage() {
             isBio={false}
           />
 
-<button
-  onClick={() => {
-    const formattedLinks = Object.entries(socialMediaLinks)
-      .filter(([, value]) => value?.trim() !== '') // remove empty fields
-      .map(([platform, usernameOrLink]) => ({
-        platform,
-        usernameOrLink,
-      }));
 
-    updateProfileData('socialMediaLinks', formattedLinks);
-  }}
-  className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 text-sm font-medium"
->
-  Save Social Links
-</button>
+
+<section className="bg-white border border-gray-200 rounded-2xl p-4">
+  <h2 className="text-sm font-semibold text-gray-800 mb-3">Social Links</h2>
+
+  <EditableSocialLinks
+    socialLinks={socialMediaLinks}
+    onChange={(platform, value) =>
+      setSocialMediaLinks((prev) => ({
+        ...prev,
+        [platform]: value,
+      }))
+    }
+  />
+
+  <button
+    onClick={() => {
+      const formattedLinks = Object.entries(socialMediaLinks)
+        .filter(([, value]) => value?.trim() !== '') // remove empty fields
+        .map(([platform, usernameOrLink]) => ({
+          platform,
+          usernameOrLink,
+        }));
+
+      updateProfileData('socialMediaLinks', formattedLinks);
+    }}
+    className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 text-sm font-medium"
+  >
+    Save Social Links
+  </button>
+</section>
+
+
 
 
 
