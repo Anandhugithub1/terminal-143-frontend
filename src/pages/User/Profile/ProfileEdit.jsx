@@ -17,16 +17,17 @@ import { LoadingSpinner } from '../../../components/Ui/Spinner';
 const AVATAR_PLACEHOLDER = 'https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.svg';
 
 export default function ProfileEditPage() {
-  const [socialLinks, setSocialLinks] = useState({
-    instagram: '',
-    twitter: '',
-    snapchat: '',
-    linkedin: '',
+  const [socialMediaLinks, setSocialMediaLinks] = useState({
+    IG: '',
+    FB: '',
+    Telegram: '',
+    Line: '',
+    Wechat: '',
+    Other: '',
   });
-
-
+  
   const [isEditingBio, setIsEditingBio] = useState(false);
-const [bioInput, setBioInput] = useState('');
+  const [bioInput, setBioInput] = useState('');
 
   const navigate = useNavigate();
   const userType = localStorage.getItem('userType');
@@ -57,12 +58,11 @@ const [bioInput, setBioInput] = useState('');
     if (profile?.bio) {
       setBioInput(profile.bio);
     }
-  
-    if (profile?.socialLinks) {
-      setSocialLinks(profile.socialLinks);
+
+    if (profile?.socialMediaLinks) {
+      setSocialMediaLinks(profile.socialMediaLinks);
     }
-  }, [profile?.bio, profile?.socialLinks]);
-  
+  }, [profile?.bio, profile?.socialMediaLinks]);
 
   if (status === 'idle' || status === 'loading' || !profile || isUploading || isFetching) {
     return <LoadingSpinner />;
@@ -113,37 +113,22 @@ const [bioInput, setBioInput] = useState('');
                 </div>
               )}
 
-              <input
-                type="file"
-                accept="image/*"
-                ref={galleryRef}
-                onChange={handleFileChange}
-                className="hidden"
-              />
-              <input
-                type="file"
-                accept="image/*"
-                capture="environment"
-                ref={cameraRef}
-                onChange={handleFileChange}
-                className="hidden"
-              />
+              <input type="file" accept="image/*" ref={galleryRef} onChange={handleFileChange} className="hidden" />
+              <input type="file" accept="image/*" capture="environment" ref={cameraRef} onChange={handleFileChange} className="hidden" />
             </div>
           </div>
         </section>
 
         {/* Editable Sections */}
         <div className="p-5 space-y-6">
-          {/* Bio */}
           <EditableBio
-  bioInput={bioInput}
-  setBioInput={setBioInput}
-  profile={profile}
-  updateProfileData={updateProfileData}
-  isEditingBio={isEditingBio}
-  setIsEditingBio={setIsEditingBio}
-/>
-
+            bioInput={bioInput}
+            setBioInput={setBioInput}
+            profile={profile}
+            updateProfileData={updateProfileData}
+            isEditingBio={isEditingBio}
+            setIsEditingBio={setIsEditingBio}
+          />
 
           {/* About Me Fields */}
           <section className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
@@ -174,9 +159,23 @@ const [bioInput, setBioInput] = useState('');
 
           {/* Social Links */}
           <EditableSocialLinks
-            socialLinks={socialLinks}
-            onChange={setSocialLinks}
-          />
+  socialLinks={socialMediaLinks}
+  onChange={(platform, value) =>
+    setSocialMediaLinks((prev) => ({
+      ...prev,
+      [platform]: value,
+    }))
+  }
+/>
+<button
+  onClick={() => updateProfileData('socialMediaLinks', socialMediaLinks)}
+  className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 text-sm font-medium"
+>
+  Save Social Links
+</button>
+
+
+        
         </div>
       </main>
     </div>

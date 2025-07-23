@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  fetchProfile,      // you already have this
+  fetchProfile,
   updateProfile,
   uploadProfileImage,
 } from '../features/UserProfile';
@@ -11,7 +11,6 @@ export function useEditableProfile() {
   const dispatch = useDispatch();
   const profile = useSelector((state) => state.userProfile.currentUser);
   const reduxStatus = useSelector((state) => state.userProfile.status);
-
   const [localAvatar, setLocalAvatar] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -39,18 +38,14 @@ export function useEditableProfile() {
     }
   };
 
-  // ← Updated:
   const updateProfileData = async (key, value) => {
     try {
-      // 1️⃣ Update on server
       await dispatch(updateProfile({ [key]: value })).unwrap();
 
-      // 2️⃣ If removing photo, clear local state immediately
       if (key === 'photo' && !value) {
         setLocalAvatar('');
       }
 
-      // 3️⃣ Re-fetch to sync Redux store
       await fetchProfileData();
     } catch (err) {
       console.error('Profile update failed:', err);
