@@ -53,7 +53,9 @@ export default function ProfileEditPage() {
     openCamera,
     handleRemovePhoto,
     cancelUpload,
-  } = useAvatarUpload({ uploadImage, userType });
+  } =
+
+  useAvatarUpload(uploadImage, updateProfileData);
 
   useEffect(() => {
     if (profile?.bio) {
