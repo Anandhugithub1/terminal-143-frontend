@@ -14,6 +14,7 @@ import placeholderImage from '../../assets/woman.png';
 import ProfileSkeleton from '../../components/User_Home/ProfileSkeleton';
 import SwipeDeck from '../../components/User_Home/SwipeDeck';
 
+
 export default function UserHomePage() {
   const dispatch = useDispatch();
   const { list: profiles, status, error } = useSelector(

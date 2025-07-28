@@ -2,6 +2,7 @@ import React, { useCallback,memo } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { AnimatePresence } from 'framer-motion';
 // import AnimatedCard from './AnimateCard';
+import { motion } from 'framer-motion';
 
 const SWIPE_THRESHOLD = 100;
 
