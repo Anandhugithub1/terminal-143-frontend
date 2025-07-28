@@ -8,16 +8,16 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './shared/lib/client.js';
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import App from './App.jsx';
-
 import ProtectedRouteFM from './routes/ProtectedRouteFM.jsx';
 import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
 import { LoadingSpinner } from './components/Ui/Spinner.jsx';
 
-import { Login } from './pages/Auth/Login.jsx';
-import { Register } from './pages/Auth/Register.jsx';
-import EmailOTPVerification from './pages/Auth/OtpVerification.jsx';
-import { ForgotAndResetPassword } from './pages/Auth/ForgotPassword.jsx';
-import ChooseCategory from './pages/Auth/ChooseCategory.jsx';
+import { Login } from './features/Auth/pages/Login.jsx';
+import { Register } from './features/Auth/pages/Register.jsx';
+
+import EmailOTPVerification from './features/Auth/pages/OtpVerification.jsx';
+import { ForgotAndResetPassword } from './features/Auth/pages/ForgotPassword.jsx';
+import ChooseCategory from './features/Auth/pages/ChooseCategory.jsx';
 
 import { WizardProvider } from './contexts/ProfileWizard.jsx';
 

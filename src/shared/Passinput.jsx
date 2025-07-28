@@ -1,6 +1,6 @@
 import  { useState } from 'react';
 
-export const PasswordInput = ({
+ const PasswordInput = ({
   value,
   onChange,
   placeholder,
@@ -77,3 +77,6 @@ export const PasswordInput = ({
     </div>
   );
 };
+
+
+export default PasswordInput;

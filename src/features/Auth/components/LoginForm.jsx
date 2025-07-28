@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { InputField } from '../../../shared/common';
-import { PasswordInput } from '../../../shared/Passinput';
+import PasswordInput  from '../../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../../shared/Button';
 import Loader from '../../../components/Ui/Loading';
@@ -16,7 +16,7 @@ import {
 
 import { useTranslation } from 'react-i18next';
 
-export const LoginForm = () => {
+ const LoginForm = () => {
   const { t } = useTranslation('auth'); // Translation namespace
 
   const [emailPhone, setEmailPhone] = useState('');
@@ -133,3 +133,5 @@ export const LoginForm = () => {
     </>
   );
 };
+
+export default LoginForm;

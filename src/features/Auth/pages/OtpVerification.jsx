@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { InputField } from '../../shared/common'
+import { InputField } from '../../../shared/common'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Button } from '../../shared/Button'
-import { verifyOtp, resendOtp } from '../../features/Auth/authThunks'
-import { resetAuthState } from '../../features/Auth/authSlice'
+import { Button } from '../../../shared/Button'
+import { verifyOtp, resendOtp } from '../authThunks'
+import { resetAuthState } from '../authSlice'
 import {
   selectLoading as selectOtpLoading,
   selectError  as selectOtpError,
   selectSuccess as selectOtpSuccess,
   selectMessage as selectOtpMessage,
-} from '../../features/Auth/authSelectors'
+} from '../authSelectors'
 
 const EmailOTPVerification = () => {
   const [code, setCode] = useState('')

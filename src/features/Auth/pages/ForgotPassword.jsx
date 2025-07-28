@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { InputField } from '../../shared/common';
+import { InputField } from '../../../shared/common';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../../shared/Button';
-import { PasswordInput } from '../../shared/Passinput';
-
+import { Button } from '../../../shared/Button';
+import PasswordInput from '../../../shared/Passinput';
 import axios from 'axios'; // ✅ Import Axios
-import { baseurl } from '../../Utlis/utlis';
+import { baseurl } from '../../../Utlis/utlis';
 export const ForgotAndResetPassword = () => {
 
   const [step, setStep] = useState('forgot');

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MatchProviderCard, FindMatchCard } from '../../components/Cards/ChooseCard';
-import { LANGUAGE_LABELS } from '../../Utlis/utlis';
-import LanguageIcon from '../../assets/svgs/language.svg';
+import { MatchProviderCard, FindMatchCard } from '../../../components/Cards/ChooseCard';
+import { LANGUAGE_LABELS } from '../../../Utlis/utlis';
+import LanguageIcon from '../../../assets/svgs/language.svg';
 import { useTranslation } from 'react-i18next';
 
 const ChooseCategory = () => {

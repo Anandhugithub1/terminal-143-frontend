@@ -1,25 +1,9 @@
-import React, { useCallback,memo } from 'react';
+import React, { useCallback } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { AnimatePresence } from 'framer-motion';
-// import AnimatedCard from './AnimateCard';
+import AnimatedCard from './AnimateCard';
 
 const SWIPE_THRESHOLD = 100;
-
-
-const AnimatedCard = memo(({ idx, direction, children }) => (
-  <motion.div
-    key={idx}
-    initial={{ x: direction === 1 ? 300 : -300, opacity: 0 }}
-    animate={{ x: 0, opacity: 1 }}
-    exit={{ x: direction === 1 ? -300 : 300, opacity: 0 }}
-    transition={{ duration: 0.35 }}
-    style={{ willChange: 'transform, opacity' }}
-    className="relative"
-  >
-    {children}
-  </motion.div>
-));
-
 
 export default function SwipeDeck({
   idx,

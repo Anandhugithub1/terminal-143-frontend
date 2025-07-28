@@ -3,7 +3,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { InputField } from '../../../shared/common';
-import { PasswordInput } from '../../../shared/Passinput';
+import  PasswordInput  from '../../../shared/Passinput';
 import { Button } from '../../../shared/Button';
 import { ChevronDown } from 'lucide-react';
 import { registerUser } from '../authThunks';
@@ -15,7 +15,7 @@ import {
   selectMessage,
 } from '../authSelectors';
 
-export const RegisterForm = () => {
+ const RegisterForm = () => {
   const { t, ready } = useTranslation('auth');
   const location = useLocation();
   const userType = location.state?.userType;
@@ -121,3 +121,6 @@ export const RegisterForm = () => {
     </form>
   );
 };
+
+
+export default RegisterForm;

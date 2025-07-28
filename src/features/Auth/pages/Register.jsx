@@ -1,22 +1,35 @@
-// src/pages/Register.jsx
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { RegisterForm } from '../../features/Auth/components/RegisterForm';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+
+const RegisterForm = lazy(() => import('../components/RegisterForm'));
+
+const RegisterSkeleton = () => (
+  <div className="space-y-4">
+    <Skeleton height={40} />
+    <Skeleton height={45} />
+    <Skeleton height={45} />
+    <Skeleton height={20} width={120} />
+    <Skeleton height={45} />
+    <Skeleton height={45} />
+    <Skeleton height={20} width={200} />
+    <Skeleton height={45} />
+  </div>
+);
 
 export const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   const userType = location.state?.userType;
 
   useEffect(() => {
-    // If no userType is passed, redirect back to Choose Category
     if (!userType) {
       navigate('/choose-category', { replace: true });
     }
   }, [userType, navigate]);
 
-  if (!userType) return null; // Prevent render before redirect
+  if (!userType) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
@@ -31,7 +44,9 @@ export const Register = () => {
           Find Your Match
         </h1>
 
-        <RegisterForm  />
+        <Suspense fallback={<RegisterSkeleton />}>
+          <RegisterForm />
+        </Suspense>
 
         <div className="mt-6 flex items-center justify-center space-x-2">
           <div className="flex-1 border-t border-border-clr"></div>
