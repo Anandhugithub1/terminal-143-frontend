@@ -11,6 +11,7 @@ import App from './App.jsx';
 import ProtectedRouteFM from './routes/ProtectedRouteFM.jsx';
 import RequireProfileIncomplete from './components/RequireProfileIncomplete.jsx';
 import { LoadingSpinner } from './components/Ui/Spinner.jsx';
+import SkeletonLoader from './components/Ui/Skeleton.jsx';
 
 import { Login } from './features/Auth/pages/Login.jsx';
 import { Register } from './features/Auth/pages/Register.jsx';
@@ -29,19 +30,20 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 // ✅ LAZY ROUTES (keep heavy ones only)
 const MatchesPage = lazy(() => import('./pages/User/Matches.jsx'));
 const RequestsPage = lazy(() => import('./pages/User/Request.jsx'));
-// const UserHomePage = lazy(() => import('./pages/User/Home.jsx'));
 const AddDetails = lazy(() => import('./pages/User/Add/Add_Details.jsx'));
 const ProfilePage = lazy(() => import('./features/UserProfile/pages/Profile.jsx'));
 const ProfileEditPage = lazy(() => import('./pages/User/Profile/ProfileEdit.jsx'));
 const ShareQRCodePage = lazy(() => import('./features/UserProfile/pages/QrCode.jsx'));
 const PublicProfilePage = lazy(() => import('./pages/User/Profile/PublicProfile.jsx'));
 
-// ✅ EAGER IMPORTS (lightweight)
-import SettingsPage from './pages/Settings/Settings.jsx';
-import LanguagePage from './pages/Settings/Language.jsx';
-import PreferencesPage from './pages/Settings/Preference.jsx';
-import Infopage from './pages/Settings/Info.jsx';
+// ✅ SETTINGS PAGES (also lazy)
+const SettingsPage = lazy(() => import('./pages/Settings/Settings'));
+const LanguagePage = lazy(() => import('./pages/Settings/Language'));
+const PreferencesPage = lazy(() => import('./pages/Settings/Preference'));
+const InfoPage = lazy(() => import('./pages/Settings/Info'));
+
 import UserHomePage from './pages/User/Home.jsx';
+
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -68,19 +70,16 @@ const route = createBrowserRouter(
       <Route path="pricing" element={<PricingPage />} />
       <Route path="*" element={<NotFoundPage />} />
 
-      {/* ❌ No Suspense for these */}
-      <Route path="info" element={<Infopage />} />
-      <Route path="language" element={<LanguagePage />} />
-      <Route path="settings" element={<SettingsPage />} />
-      <Route path="preferences" element={<PreferencesPage />} />
+      <Route path="info" element={<Suspense fallback={<SkeletonLoader height={20} className="my-4" />}><InfoPage /></Suspense>} />
+      <Route path="language" element={<Suspense fallback={<SkeletonLoader height={20} className="my-4" />}><LanguagePage /></Suspense>} />
+      <Route path="settings" element={<Suspense fallback={<SkeletonLoader height={20} className="my-4" />}><SettingsPage /></Suspense>} />
+      <Route path="preferences" element={<Suspense fallback={<SkeletonLoader height={20} className="my-4" />}><PreferencesPage /></Suspense>} />
 
       <Route
         path="home"
         element={
           <ProtectedRouteFM>
-            {/* <Suspense fallback={<LoadingSpinner />}> */}
-              <UserHomePage />
-            {/* </Suspense> */}
+            <UserHomePage />
           </ProtectedRouteFM>
         }
       />
@@ -99,7 +98,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-          <RouterProvider router={route} />
+        <RouterProvider router={route} />
       </Provider>
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </QueryClientProvider>
