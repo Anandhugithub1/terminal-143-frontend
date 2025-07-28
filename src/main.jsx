@@ -33,7 +33,7 @@ const RequestsPage = lazy(() => import('./pages/User/Request.jsx'));
 const AddDetails = lazy(() => import('./pages/User/Add/Add_Details.jsx'));
 const ProfilePage = lazy(() => import('./features/UserProfile/pages/Profile.jsx'));
 const ProfileEditPage = lazy(() => import('./pages/User/Profile/ProfileEdit.jsx'));
-const ShareQRCodePage = lazy(() => import('./pages/User/Profile/Qrcode.jsx'));
+const ShareQRCodePage = lazy(() => import('./features/UserProfile/pages/QrCode.jsx'));
 const PublicProfilePage = lazy(() => import('./pages/User/Profile/PublicProfile.jsx'));
 
 // ✅ EAGER IMPORTS (lightweight)
