@@ -1,19 +1,20 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { fetchProfiles, postSeen } from '../../../features/Profiles';
-import ProfileCard from '../components/Cards/ProfileCard';
-import BottomNav from '../../../components/Layout/BottomNavigation';
 import TopNav from '../../../components/Layout/TopNavigation';
-import DetailSection from '../components/Details/Details';
-import ActionControls from '../components/Actions/ActionControls';
-import AlertMessage from '../../../components/Ui/Alerts';
+import BottomNav from '../../../components/Layout/BottomNavigation';
+import ProfileSkeleton from '../components/ProfileSkeleton';
 import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
 import placeholderImage from '../../../assets/woman.png';
-import ProfileSkeleton from '../components/ProfileSkeleton';
-import SwipeDeck from '../components/Actions/SwipeDeck';
 
+// Lazy-loaded components
+const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'));
+const DetailSection = lazy(() => import('../components/Details/Details'));
+const ActionControls = lazy(() => import('../components/Actions/ActionControls'));
+const AlertMessage = lazy(() => import('../../../components/Ui/Alerts'));
+const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'));
 
 export default function UserHomePage() {
   const dispatch = useDispatch();
@@ -36,7 +37,6 @@ export default function UserHomePage() {
     },
   });
 
-  // Initial load
   useEffect(() => {
     if (status === 'idle') dispatch(fetchProfiles({ limit: 10 }));
   }, [status, dispatch]);
@@ -48,31 +48,23 @@ export default function UserHomePage() {
     dispatch(fetchProfiles({ limit: 10 }));
   }, [dispatch]);
 
-  // Advance (swipe or manual), record seen & optionally match
   const advance = useCallback(
     (dir) => {
-      console.log('🛠 advance() called dir:', dir, 'idx:', idx);
       setDirection(dir);
       setIdx((prev) => {
         const current = profiles[prev];
-        console.log('  ↪️ current profile:', current);
-  
         if (current) {
           seenMutation.mutate({
             suggestionIndex: current.suggestionIndex,
             direction: dir,
           });
-  
-          // ALWAYS send match if we have an ID
+
           const recipientId = current.username || current.pk || current.id;
           if (dir === 1 && recipientId) {
-            console.log('➡️ Sending match request for:', recipientId);
             sendMatchRequest(recipientId);
-          } else {
-            console.log('  ↪️ No recipientId found, skipping match');
           }
         }
-  
+
         const next = prev + 1;
         if (next >= profiles.length) {
           dispatch(fetchProfiles({ limit: 10 }));
@@ -82,8 +74,6 @@ export default function UserHomePage() {
     },
     [idx, profiles, dispatch, seenMutation, sendMatchRequest]
   );
-  
-  
 
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
@@ -134,49 +124,52 @@ export default function UserHomePage() {
   return (
     <div className="relative bg-white min-h-screen pb-20">
       <TopNav />
-  
+
       {requestError && (
         <div className="px-4 mt-4">
-          <AlertMessage
-            message={requestError}
-            type="error"
-            isVisible
-            onClose={() => setRequestError('')}
-          />
+          <Suspense fallback={<ProfileSkeleton />}>
+            <AlertMessage
+              message={requestError}
+              type="error"
+              isVisible
+              onClose={() => setRequestError('')}
+            />
+          </Suspense>
         </div>
       )}
-  
+
       <div className="relative">
-      <SwipeDeck idx={idx} direction={direction} profilesLength={profiles.length} onAdvance={advance}>
-  <div className="relative">
-    <ProfileCard
-      profile={profile}
-      placeholderImage={placeholderImage}
-      onConnectClick={() => {}}
-      onMessageClick={() => console.log('Message clicked')}
-    />
+        <Suspense fallback={<ProfileSkeleton />}>
+          <SwipeDeck
+            idx={idx}
+            direction={direction}
+            profilesLength={profiles.length}
+            onAdvance={advance}
+          >
+            <div className="relative">
+              <ProfileCard
+                profile={profile}
+                placeholderImage={placeholderImage}
+                onConnectClick={() => {}}
+                onMessageClick={() => console.log('Message clicked')}
+              />
 
-    {/* Floating buttons, not too low */}
-    <ActionControls
-      className="absolute top-[85%] inset-x-0 z-30 flex justify-center"
+              <ActionControls
+                className="absolute top-[85%] inset-x-0 z-30 flex justify-center"
+                onReject={() => advance(-1)}
+                onRefresh={handleRefresh}
+                onLike={() => advance(1)}
+              />
+            </div>
 
-      onReject={() => advance(-1)}
-      onRefresh={handleRefresh}
-      onLike={() => advance(1)}
-    />
-  </div>
-
-  {/* Profile info */}
-  <div className="mt-6 px-4">
-    <DetailSection profile={profile} />
-  </div>
-</SwipeDeck>
-
+            <div className="mt-6 px-4">
+              <DetailSection profile={profile} />
+            </div>
+          </SwipeDeck>
+        </Suspense>
       </div>
-  
+
       <BottomNav />
     </div>
   );
-  
-  
 }
