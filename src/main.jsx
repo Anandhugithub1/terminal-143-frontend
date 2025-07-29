@@ -74,11 +74,18 @@ const route = createBrowserRouter(
       <Route path="pricing" element={<PricingPage />} />
       {/* <Route path="*" element={<NotFoundPage />} /> */}
 
+
+      <Route path="settings" element={<Suspense fallback={<LazyFallback />}><SettingsPage /></Suspense>} />
+<Route path="language" element={<Suspense fallback={<LazyFallback />}><LanguagePage /></Suspense>} />
+<Route path="preferences" element={<Suspense fallback={<LazyFallback />}><PreferencesPage /></Suspense>} />
+<Route path="info" element={<Suspense fallback={<LazyFallback />}><InfoPage /></Suspense>} />
+
+
       {/* ❌ No Suspense for these */}
-      <Route path="info" element={<InfoPage />} />
-      <Route path="language" element={<LanguagePage />} />
-      <Route path="settings" element={<SettingsPage />} />
-      <Route path="preferences" element={<PreferencesPage />} />
+
+
+
+      
 
       <Route
         path="home"
