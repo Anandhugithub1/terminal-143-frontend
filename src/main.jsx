@@ -27,8 +27,8 @@ import PricingPage from './pages/Global/Pricing.jsx';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 // ✅ LAZY ROUTES (keep heavy ones only)
-const MatchesPage = lazy(() => import('./pages/User/Matches.jsx'));
-const RequestsPage = lazy(() => import('./pages/User/Request.jsx'));
+const MatchesPage = lazy(() => import('./features/UserHome/pages/Matches.jsx'));
+const RequestsPage = lazy(() => import('./features/UserHome/pages/Request.jsx'));
 // const UserHomePage = lazy(() => import('./pages/User/Home.jsx'));
 const AddDetails = lazy(() => import('./pages/User/Add/Add_Details.jsx'));
 const NotFoundPage = lazy(() => import('./pages/404/404.jsx'));

@@ -1,15 +1,15 @@
 // src/pages/RequestsPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useMatchRequests } from '../../features/UserActions/api';
-import { useMatchRequestResponse } from '../../features/UserActions/api';
+import { useMatchRequests } from '../../UserActions/api';
+import { useMatchRequestResponse } from '../../UserActions/api';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProfile } from '../../features/UserProfile';
+import { fetchProfile } from '../../UserProfile';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import TopNav from '../../components/Layout/TopNavigation';
-import BottomNav from '../../components/Layout/BottomNavigation';
-import { ConfirmationModal } from '../../components/Ui/Confirmation';
-import RequestItem from '../../features/UserActions/components/RequestItem';
+import TopNav from '../../../components/Layout/TopNavigation';
+import BottomNav from '../../../components/Layout/BottomNavigation';
+import { ConfirmationModal } from '../../../components/Ui/Confirmation';
+import RequestItem from '../../UserActions/components/RequestItem';
 
 export default function RequestsPage() {
   const dispatch = useDispatch();

@@ -3,10 +3,10 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 // import { useMatches } from '';
 
-import { useMatches } from '../../features/Match/api';
+import { useMatches } from '../../Match/api';
 
-import TopNav from '../../components/Layout/TopNavigation';
-import BottomNav from '../../components/Layout/BottomNavigation';
+import TopNav from '../../../components/Layout/TopNavigation';
+import BottomNav from '../../../components/Layout/BottomNavigation';
 import placeholderImage from '../../assets/woman.png';
 
 const platformIcons = { IG: '📸', Telegram: '✈️', FB: '👍', Line: '💬' };
