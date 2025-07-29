@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
-import { LoadingSpinner } from './components/Ui/Spinner.jsx';
+import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 // Lazy load components
 const Step1BasicInfo = lazy(() => import('../../../components/ProfileWizard/Step1BasicInfo'));
