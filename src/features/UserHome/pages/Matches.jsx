@@ -5,9 +5,10 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 import { useMatches } from '../../Match/api';
 
+
 import TopNav from '../../../components/Layout/TopNavigation';
 import BottomNav from '../../../components/Layout/BottomNavigation';
-import placeholderImage from '../../assets/woman.png';
+// import placeholderImage from '../../../assets/woman.png';
 
 const platformIcons = { IG: '📸', Telegram: '✈️', FB: '👍', Line: '💬' };
 const genderIcon   = { M: '♂️', F: '♀️' };
