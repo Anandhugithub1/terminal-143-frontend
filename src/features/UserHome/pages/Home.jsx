@@ -27,8 +27,7 @@ export default function UserHomePage() {
   const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState('');
 
-  const { send: sendMatchRequest, isSending, error: sendError, profileLoading } =
-    useSendMatchRequest();
+  const { send: sendMatchRequest } = useSendMatchRequest();
 
   const seenMutation = useMutation({
     mutationFn: postSeen,
@@ -72,13 +71,13 @@ export default function UserHomePage() {
         return next;
       });
     },
-    [idx, profiles, dispatch, seenMutation, sendMatchRequest]
+    [profiles, dispatch, seenMutation, sendMatchRequest]
   );
 
   if (status === 'loading') return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
-  if (isEnd) {
+  if (profiles.length === 0 || isEnd) {
     return (
       <div className="bg-white min-h-screen flex flex-col items-center justify-center">
         <p className="text-gray-500 text-lg">Reached the end of profiles</p>
@@ -93,7 +92,7 @@ export default function UserHomePage() {
   }
 
   const rawProfile = profiles[idx] || {};
-  const images = rawProfile.photos?.length ? rawProfile.photos : [placeholderImage];
+  const images = rawProfile.photos?.length ? rawProfile.photos : [];
 
   const profile = {
     name: rawProfile.name || 'Unknown',
