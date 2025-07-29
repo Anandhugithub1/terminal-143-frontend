@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { AnimatePresence } from 'framer-motion';
-import AnimatedCard from './AnimateCard';
+import AnimatedCard from '../Cards/AnimateCard';
 
 const SWIPE_THRESHOLD = 100;
 

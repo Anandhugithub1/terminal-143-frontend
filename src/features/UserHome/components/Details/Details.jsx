@@ -4,7 +4,7 @@ import { HiOutlineLocationMarker } from "react-icons/hi";
 import { AiOutlineReload } from "react-icons/ai";
 import { useTranslation } from "react-i18next";
 
-export function DetailSection({ profile }) {
+ function DetailSection({ profile }) {
   const { t } = useTranslation('common');
 
   // Safely destructure with fallback
@@ -85,3 +85,6 @@ export function DetailSection({ profile }) {
     </div>
   );
 }
+
+
+export default DetailSection;

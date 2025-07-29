@@ -2,17 +2,17 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
-import { fetchProfiles, postSeen } from '../../features/Profiles';
-import ProfileCard from '../../components/Cards/ProfileCard';
-import BottomNav from '../../components/Layout/BottomNavigation';
-import TopNav from '../../components/Layout/TopNavigation';
-import { DetailSection } from '../../components/User_Home/Details';
-import { ActionControls } from '../../components/User_Home/LocationBar';
-import AlertMessage from '../../components/Ui/Alerts';
-import { useSendMatchRequest } from '../../Hooks/sendMatchRequest';
-import placeholderImage from '../../assets/woman.png';
-import ProfileSkeleton from '../../components/User_Home/ProfileSkeleton';
-import SwipeDeck from '../../components/User_Home/SwipeDeck';
+import { fetchProfiles, postSeen } from '../../../features/Profiles';
+import ProfileCard from '../components/Cards/ProfileCard';
+import BottomNav from '../../../components/Layout/BottomNavigation';
+import TopNav from '../../../components/Layout/TopNavigation';
+import DetailSection from '../components/Details/Details';
+import ActionControls from '../components/Actions/ActionControls';
+import AlertMessage from '../../../components/Ui/Alerts';
+import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
+import placeholderImage from '../../../assets/woman.png';
+import ProfileSkeleton from '../components/ProfileSkeleton';
+import SwipeDeck from '../components/Actions/SwipeDeck';
 
 
 export default function UserHomePage() {

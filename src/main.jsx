@@ -24,7 +24,6 @@ import { WizardProvider } from './contexts/ProfileWizard.jsx';
 
 import HomePage from './pages/Global/HomePage.jsx';
 import PricingPage from './pages/Global/Pricing.jsx';
-import NotFoundPage from './pages/404/404.jsx';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 // ✅ LAZY ROUTES (keep heavy ones only)
@@ -32,17 +31,23 @@ const MatchesPage = lazy(() => import('./pages/User/Matches.jsx'));
 const RequestsPage = lazy(() => import('./pages/User/Request.jsx'));
 // const UserHomePage = lazy(() => import('./pages/User/Home.jsx'));
 const AddDetails = lazy(() => import('./pages/User/Add/Add_Details.jsx'));
+const NotFoundPage = lazy(() => import('./pages/404/404.jsx'));
 const ProfilePage = lazy(() => import('./features/UserProfile/pages/Profile.jsx'));
 const ProfileEditPage = lazy(() => import('./pages/User/Profile/ProfileEdit.jsx'));
 const ShareQRCodePage = lazy(() => import('./features/UserProfile/pages/QrCode.jsx'));
 const PublicProfilePage = lazy(() => import('./features/UserProfile/pages/PublicProfile.jsx'));
 
-// ✅ EAGER IMPORTS (lightweight)
 const SettingsPage = lazy(() => import('./pages/Settings/Settings'));
 const LanguagePage = lazy(() => import('./pages/Settings/Language'));
 const PreferencesPage = lazy(() => import('./pages/Settings/Preference'));
 const InfoPage = lazy(() => import('./pages/Settings/Info'));
-import UserHomePage from './pages/User/Home.jsx';
+
+//  EAGER IMPORTS
+
+import UserHomePage from './features/UserHome/pages/Home.jsx';
+
+
+
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="" element={<App />}>
@@ -67,7 +72,7 @@ const route = createBrowserRouter(
 
       <Route path="/" element={<HomePage />} />
       <Route path="pricing" element={<PricingPage />} />
-      <Route path="*" element={<NotFoundPage />} />
+      {/* <Route path="*" element={<NotFoundPage />} /> */}
 
       {/* ❌ No Suspense for these */}
       <Route path="info" element={<InfoPage />} />
@@ -85,6 +90,7 @@ const route = createBrowserRouter(
           </ProtectedRouteFM>
         }
       />
+      <Route path="*" element={<Suspense fallback={<LoadingSpinner/>  }  ><NotFoundPage /></Suspense>} /> 
 
       <Route path="matches" element={<Suspense fallback={<LoadingSpinner />}><MatchesPage /></Suspense>} />
       <Route path="requests" element={<Suspense fallback={<LoadingSpinner />}><RequestsPage /></Suspense>} />

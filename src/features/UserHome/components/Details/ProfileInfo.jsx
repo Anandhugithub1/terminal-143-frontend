@@ -23,7 +23,7 @@ Badge.propTypes = {
 
 
 
-export const ProfileInfo = memo(({
+ const ProfileInfo = memo(({
   name,
   age,
   lastSeen,
@@ -73,6 +73,8 @@ export const ProfileInfo = memo(({
 
   </div>
 ));
+
+export default ProfileInfo; 
 
 ProfileInfo.propTypes = {
   name: PropTypes.string.isRequired,

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export const PhotoCarousel = memo(({
+ const PhotoCarousel = memo(({
   images,
   activeIdx,
   onNext,
@@ -128,3 +128,6 @@ PhotoCarousel.defaultProps = {
   onError: null,
   className: '',
 };
+
+
+export default PhotoCarousel;
