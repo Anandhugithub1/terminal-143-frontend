@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: "ubuntu-latest"
+    runs-on: self-hosted  
 
     steps:
       - name: "Checkout code"
@@ -34,7 +34,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no \
               -i ~/.ssh/id_ed25519 \
               ec2-user@"${{ secrets.EC2_HOST }}" \
-              "echo ' SSH connection successful'" || true
+              "echo '✅ SSH connection successful'" || true
 
       - name: "SSH & Deploy"
         uses: "appleboy/ssh-action@v0.1.7"
@@ -47,4 +47,3 @@ jobs:
             git pull origin main
             npm install
             npm run build
-            # e.g. sudo systemctl restart your-service
