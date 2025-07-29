@@ -24,7 +24,7 @@ const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx")
 const AddDetails = lazy(() => import("../pages/User/Add/Add_Details.jsx"));
 const NotFoundPage = lazy(() => import("../pages/404/404.jsx"));
 const ProfilePage = lazy(() => import("../features/UserProfile/pages/Profile.jsx"));
-const ProfileEditPage = lazy(() => import("../pages/User/Profile/ProfileEdit.jsx"));
+const ProfileEditPage = lazy(() => import("../features/UserProfile/pages/ProfileEdit.jsx"));
 const ShareQRCodePage = lazy(() => import("../features/UserProfile/pages/QrCode.jsx"));
 const PublicProfilePage = lazy(() => import("../features/UserProfile/pages/PublicProfile.jsx"));
 const SettingsPage = lazy(() => import("../pages/Settings/Settings"));
