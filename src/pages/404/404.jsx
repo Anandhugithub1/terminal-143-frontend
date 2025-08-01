@@ -93,13 +93,16 @@ const NotFoundPage = () => {
         </motion.p>
 
         <motion.div className="flex justify-center" variants={itemVariants}>
-          <Button onClick={handleGoBack} className="mr-4" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} aria-label="Go Back">
-            Go Back
-          </Button>
-          <Button onClick={handleHome} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} aria-label="Return Home">
-            Return Home
-          </Button>
-        </motion.div>
+  <Button
+    onClick={handleGoBack}
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    aria-label="Go Back"
+  >
+    Go Back
+  </Button>
+</motion.div>
+
 
         <motion.div className="mt-8 text-center text-sm text-gray-500" variants={itemVariants}>
           Still lost? Contact our{' '}
