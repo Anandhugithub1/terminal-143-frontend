@@ -28,22 +28,20 @@ export default function RequestsPage() {
 
   // Ensure current user profile is loaded
   useEffect(() => {
+    // 1. Fetch user profile if not present
     if (!currentUser) {
       dispatch(fetchProfile());
     }
-  }, [currentUser, dispatch]);
 
-
-  useEffect(() => {
+    // 2. Handle axios auth error
     if (axios.isAxiosError(error)) {
       const status = error?.response?.status;
-
       if (status === 401 || status === 403) {
         console.warn('🔐 Unauthorized. Redirecting to /login...');
         navigate('/login');
       }
     }
-  }, [error, navigate]);
+  }, [currentUser, error, dispatch, navigate]);
 
   // Open confirmation modal
   const openModal = (request, profile, action) => {
