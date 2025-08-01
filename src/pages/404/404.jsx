@@ -104,12 +104,6 @@ const NotFoundPage = () => {
 </motion.div>
 
 
-        <motion.div className="mt-8 text-center text-sm text-gray-500" variants={itemVariants}>
-          Still lost? Contact our{' '}
-          <Link to="/support" className="text-text-pr font-semibold hover:underline" aria-label="Contact Support">
-            support team
-          </Link>
-        </motion.div>
       </motion.div>
     </div>
   );
