@@ -10,8 +10,11 @@ import TopNav from '../../../components/Layout/TopNavigation';
 import BottomNav from '../../../components/Layout/BottomNavigation';
 import { ConfirmationModal } from '../../../components/Ui/Confirmation';
 import RequestItem from '../../UserActions/components/RequestItem';
+import { useNavigate } from 'react-router-dom';
 
 export default function RequestsPage() {
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.userProfile.currentUser);
 
@@ -30,6 +33,13 @@ export default function RequestsPage() {
     }
   }, [currentUser, dispatch]);
 
+
+  useEffect(() => {
+    if (error) {
+      console.error('🔴 useMatchRequests error:', error);
+    }
+  }, [error]);
+  
   // Open confirmation modal
   const openModal = (request, profile, action) => {
     setSelectedRequest({

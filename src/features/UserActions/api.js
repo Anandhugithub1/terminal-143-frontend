@@ -3,28 +3,18 @@
 import axios from 'axios';
 import { useMutation, useQueryClient ,   useQuery  } from '@tanstack/react-query';
 const PROFILE_BASE = 'https://userapi.terminal143.com/match/requests';
-import { useNavigate } from 'react-router-dom'; 
-
 
 export function useMatchRequests() {
-  const navigate = useNavigate();
-
-  return useQuery({
-    queryKey: ['matchRequests'],
-    queryFn: async () => {
-      try {
+    return useQuery({
+      queryKey: ['matchRequests'],
+      queryFn: async () => {
         const res = await axios.get(PROFILE_BASE, { withCredentials: true });
         return res.data.requests || [];
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          navigate('/login');
-        }
-        throw error;
-      }
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-}
+      },
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+  }
+
 
 
 

@@ -19,6 +19,10 @@ export const fetchProfile = createAsyncThunk(
         // Profile doesn’t exist yet
         return rejectWithValue('Profile not found.');
       }
+
+
+
+      
       return rejectWithValue(err.message);
     }
   }
