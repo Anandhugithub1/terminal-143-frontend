@@ -11,7 +11,7 @@ import BottomNav from '../../../components/Layout/BottomNavigation';
 import { ConfirmationModal } from '../../../components/Ui/Confirmation';
 import RequestItem from '../../UserActions/components/RequestItem';
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
 export default function RequestsPage() {
   const navigate = useNavigate();
 
@@ -35,11 +35,16 @@ export default function RequestsPage() {
 
 
   useEffect(() => {
-    if (error) {
-      console.error('🔴 useMatchRequests error:', error);
+    if (axios.isAxiosError(error)) {
+      const status = error?.response?.status;
+
+      if (status === 401 || status === 403) {
+        console.warn('🔐 Unauthorized. Redirecting to /login...');
+        navigate('/login');
+      }
     }
-  }, [error]);
-  
+  }, [error, navigate]);
+
   // Open confirmation modal
   const openModal = (request, profile, action) => {
     setSelectedRequest({
