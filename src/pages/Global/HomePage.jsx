@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { itemVariants, containerVariants } from '../../Utlis/animation_variants';
-import Skeleton from 'react-loading-skeleton';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { Link } from 'react-router-dom';
 
 // Lazy-loaded components
 const Navbar   = React.lazy(() => import('../../components/Layout/Navbar'));
@@ -11,41 +12,51 @@ const Hero     = React.lazy(() => import('../../components/Global/Hero'));
 const Features = React.lazy(() => import('../../components/Global/Features'));
 
 export default function HomePage() {
-  const { t, i18n, ready } = useTranslation(['common', 'home']);
+  const { t } = useTranslation('home');
+  const { t: tCommon, i18n, ready } = useTranslation('common');
 
   // Scroll to top on mount
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Recompute stats labels on language change
+  // Recompute stats on language change
   const stats = useMemo(() => [
-    { value: '50K+', label: t('home:stats.matches') },
-    { value: '98%',  label: t('home:stats.verified') },
-    { value: '4.9',  label: t('home:stats.rating') },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    { value: '50K+', label: t('stats.matches') },
+    { value: '98%',  label: t('stats.verified') },
+    { value: '4.9',  label: t('stats.rating') },
   ], [t, i18n.language]);
 
   if (!ready) {
-    // Prevent flicker during translation load
-    return <div className="h-screen flex items-center justify-center"><Skeleton width={200} height={40} /></div>;
+    return (
+      <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
+        <div className="h-screen flex items-center justify-center">
+          <Skeleton width={200} height={40} />
+        </div>
+      </SkeletonTheme>
+    );
   }
 
   return (
-    <>
+    <SkeletonTheme baseColor="#e5e7eb" highlightColor="#f3f4f6">
       <div className="min-h-screen font-sans text-gray-700 antialiased overflow-x-hidden">
-        <Suspense fallback={<div className="h-screen flex items-center justify-center"><Skeleton count={5} /></div>}>
+
+        {/* Navbar */}
+        <Suspense fallback={<Skeleton height={60} />}>
           <Navbar />
+        </Suspense>
+
+        {/* Hero & Features */}
+        <Suspense fallback={<Skeleton count={3} />}>
           <Hero />
           <Features />
         </Suspense>
 
         {/* Stats Section */}
         <section className="bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white py-20" aria-labelledby="stats-heading">
-          <h2 id="stats-heading" className="sr-only">{t('home:stats.heading')}</h2>
+          <h2 id="stats-heading" className="sr-only">{t('stats.heading')}</h2>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <motion.div
-              key={i18n.language}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -80,10 +91,10 @@ export default function HomePage() {
               aria-labelledby="cta-heading"
             >
               <h2 id="cta-heading" className="text-3xl font-bold text-gray-900 mb-4">
-                {t('home:ctaHeading')}
+                {t('ctaHeading')}
               </h2>
               <p className="text-gray-600 mb-8 max-w-xl mx-auto">
-                {t('home:ctaText')}
+                {t('ctaText')}
               </p>
               <motion.div
                 className="flex justify-center gap-4"
@@ -91,27 +102,29 @@ export default function HomePage() {
                 whileInView={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                <a
-                  href="/register"
-                  className=" bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white font-semibold py-2 px-6 rounded-xl transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                <Link
+                  to="/register"
+                  className="bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white font-semibold py-2 px-6 rounded-xl transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  {t('common:cta.createProfile')}
-                </a>
-                <a
-                  href="/pricing"
-                  className="border from-gradient-primary to-gradient-secondary font-semibold py-2 px-6 rounded-xl transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  {tCommon('cta.createProfile')}
+                </Link>
+                <Link
+                  to="/pricing"
+                  className="border border-indigo-500 text-indigo-600 font-semibold py-2 px-6 rounded-xl transition-transform duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  {t('common:cta.viewPricing')}
-                </a>
+                  {tCommon('cta.viewPricing')}
+                </Link>
               </motion.div>
             </motion.div>
           </div>
         </section>
 
+        {/* Footer */}
         <Suspense fallback={null}>
           <Footer />
         </Suspense>
+
       </div>
-    </>
+    </SkeletonTheme>
   );
 }
