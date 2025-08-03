@@ -1,42 +1,30 @@
 /* eslint-disable no-unused-vars */
-import React from 'react'
-import { itemVariants, containerVariants } from "../../Utlis/animation_variants";
-import { plans, } from "../../Utlis/Global/pricing";
+import React from 'react';
+import { plans } from "../../Utlis/Global/pricing";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { PrimaryButton } from '../../shared/Button';
-import { motion } from 'framer-motion';
 
 const PricingCard = () => {
   return (
-
-<>
-  {/* Pricing Cards with enhanced visual hierarchy */}
-  <section className="py-16 bg-white">
+    <>
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={containerVariants}
-            className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch"
-          >
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
             {plans.map((plan) => (
-              <motion.div
+              <div
                 key={plan.name}
-                variants={itemVariants}
                 className={`relative group ${
                   plan.featured
                     ? "ring-2 ring-offset-2 ring-gradient-secondary shadow-2xl"
                     : "ring-1 ring-gray-200 hover:ring-gray-300"
-                } rounded-xl bg-white p-6 transition-all duration-200 ease-out`}
-                whileHover={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                } rounded-xl bg-white p-6 transition-all duration-200 ease-out hover:scale-[1.02]`}
               >
                 {plan.featured && (
                   <div className="absolute -top-4 inset-x-0 mx-auto w-fit bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-lg">
                     Most Popular
                   </div>
                 )}
+
                 <div className="mb-6">
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">
                     {plan.name}
@@ -44,7 +32,7 @@ const PricingCard = () => {
                   <p className="text-gray-600 text-base">{plan.description}</p>
                 </div>
 
-                <div className="mb-8">
+                <div className="mb-8 text-center">
                   <div className="text-4xl font-bold text-gray-900 flex items-end justify-center">
                     {plan.price === "Custom" ? (
                       <span>{plan.price}</span>
@@ -83,20 +71,17 @@ const PricingCard = () => {
                 >
                   {plan.cta}
                 </PrimaryButton>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
+          </div>
 
-          {/* Added helper text */}
           <p className="text-center text-gray-500 mt-8 text-sm">
             All plans include a 7-day free trial. No credit card required.
           </p>
         </div>
       </section>
+    </>
+  );
+};
 
-</>
-
-  )
-}
-
-export default PricingCard
+export default PricingCard;
