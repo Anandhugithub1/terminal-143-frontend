@@ -1,6 +1,6 @@
 /* ================= features/profiles/api.js ================= */
 import axios from 'axios';
-const BASE_URL = 'https://userapi.terminal143.com';
+const BASE_URL = 'https://userapi.terminal143.com/match';
 
 /**
  * Fetches the next batch of suggested profiles.
@@ -8,7 +8,7 @@ const BASE_URL = 'https://userapi.terminal143.com';
  */
 export const getMatchProviders = async ({ limit = 10 }) => {
   const response = await axios.get(
-    `${BASE_URL}match/user/recommendations`,
+    `${BASE_URL}/user/recommendations`,
     {
       params: { limit },
       withCredentials: true,
@@ -24,7 +24,7 @@ export const getMatchProviders = async ({ limit = 10 }) => {
 
 export async function postSeen({ suggestionIndex, direction }) {
   const response = await axios.post(
-    `${BASE_URL}/match/user/swipe`,
+    `${BASE_URL}/user/swipe`,
     {
       suggestionIndex,
       
