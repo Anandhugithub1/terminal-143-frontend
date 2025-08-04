@@ -8,7 +8,7 @@ const BASE_URL = 'https://userapi.terminal143.com';
  */
 export const getMatchProviders = async ({ limit = 10 }) => {
   const response = await axios.get(
-    `${BASE_URL}/user/recommendations`,
+    `${BASE_URL}match/user/recommendations`,
     {
       params: { limit },
       withCredentials: true,
