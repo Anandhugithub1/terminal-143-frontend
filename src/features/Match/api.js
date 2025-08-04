@@ -2,7 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-const MATCHES_API = 'https://userapi.terminal143.com/match/list';
+const MATCHES_API = 'https://userapi.terminal143.com/match/match/list';
 
 async function fetchMatches() {
   const res = await axios.get(MATCHES_API, { withCredentials: true });

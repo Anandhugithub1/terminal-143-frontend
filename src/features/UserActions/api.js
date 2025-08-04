@@ -2,7 +2,7 @@
 // src/hooks/useMatchRequests.js
 import axios from 'axios';
 import { useMutation, useQueryClient ,   useQuery  } from '@tanstack/react-query';
-const PROFILE_BASE = 'https://userapi.terminal143.com/match/requests';
+const PROFILE_BASE = 'https://userapi.terminal143.com/match/match/requests';
 
 export function useMatchRequests() {
     return useQuery({
@@ -18,7 +18,7 @@ export function useMatchRequests() {
 
 
 
-const REQUEST_ACTION_URL = 'https://userapi.terminal143.com/match/request/respond';
+const REQUEST_ACTION_URL = 'https://userapi.terminal143.com/match/match/request/respond';
 
 export function useMatchRequestResponse() {
     const queryClient = useQueryClient();
