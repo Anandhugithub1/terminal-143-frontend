@@ -24,7 +24,7 @@ export const getMatchProviders = async ({ limit = 10 }) => {
 
 export async function postSeen({ suggestionIndex, direction }) {
   const response = await axios.post(
-    `${BASE_URL}/user/swipe`,
+    `${BASE_URL}/match/user/swipe`,
     {
       suggestionIndex,
       
