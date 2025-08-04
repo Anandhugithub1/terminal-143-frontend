@@ -20,5 +20,18 @@
   "stdStatusNegative": "ไม่ติดเชื้อ",
   "stdStatusPositive": "ติดเชื้อ",
   "stdStatusUnknown": "ไม่ต้องการระบุ",
-  "testedOn": "ตรวจเมื่อวันที่"
+  "testedOn": "ตรวจเมื่อวันที่",
+
+
+  "title": "ยินดีต้อนรับ! 👋",
+  "subtitle": "มาเริ่มจากข้อมูลพื้นฐานกันก่อน",
+  "fullName": "ชื่อเต็ม *",
+  "dob": "วันเกิด *",
+  "dobError": "คุณต้องมีอายุอย่างน้อย 18 ปี",
+  "nameError": "กรุณากรอกชื่อเต็ม",
+  "preferencesTitle": "คุณสนใจใคร?",
+  "socialLabel": "เพิ่มลิงก์โซเชียลมีเดีย",
+  "socialOptional": "(ไม่จำเป็น)",
+  "continue": "ดำเนินการต่อ",
+  "invalidLink": "ลิงก์ไม่ถูกต้อง ต้องเป็น https:// หรือชื่อผู้ใช้ธรรมดา"
 }

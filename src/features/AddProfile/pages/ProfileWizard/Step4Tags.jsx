@@ -1,20 +1,15 @@
 /* ========== Step4Tags.jsx ========== */
 import React from 'react';
-import { useWizard } from '../../contexts/ProfileWizard';
+import { useWizard } from '../../../../contexts/ProfileWizard';
+
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   uploadProfileImage,
   completeProfile,
-} from '../../features/UserProfile';
-
-const categories = {
-  '🎮 Entertainment': ['Travel', 'Movies', 'Gaming', 'Sports', 'Art', 'Reading'],
-  '🎵 Music Genres': ['Pop', 'Rock', 'Jazz', 'Hip Hop', 'EDM', 'Classical'],
-  '🍔 Food & Drink': ['Coffee', 'Cocktails', 'BBQ', 'Sushi', 'Wine', 'Dessert'],
-};
-
+} from '../../../UserProfile';
+import { categories } from '../../utlis';
 export default function Step4Tags() {
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();

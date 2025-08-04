@@ -19,6 +19,17 @@
     "stdStatusNegative": "阴性",
     "stdStatusPositive": "阳性",
     "stdStatusUnknown": "不愿透露",
-    "testedOn": "检测日期"
+    "testedOn": "检测日期",
+    "title": "欢迎！👋",
+    "subtitle": "让我们从基础开始",
+    "fullName": "全名 *",
+    "dob": "出生日期 *",
+    "dobError": "您必须年满18岁才能继续。",
+    "nameError": "全名是必填项。",
+    "preferencesTitle": "您对谁感兴趣？",
+    "socialLabel": "添加社交媒体链接",
+    "socialOptional": "（可选）",
+    "continue": "继续",
+    "invalidLink": "无效的链接。必须以 https:// 开头或为用户名。"
   }
   

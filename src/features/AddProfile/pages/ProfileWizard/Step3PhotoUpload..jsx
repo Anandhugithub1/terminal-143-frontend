@@ -1,0 +1,93 @@
+import React, { useRef, useState } from 'react';
+import { useWizard } from '../../../../contexts/ProfileWizard';
+import { useNavigate } from 'react-router-dom';
+import { ProgressBar } from './Progess';
+import PhotoGrid from '../../components/PhotoGrid';
+
+const Step3PhotoUpload = () => {
+  const { formData, setFormData } = useWizard();
+  const userType = localStorage.getItem('userType');
+  const navigate = useNavigate();
+  const inputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
+
+  const maxSlots = userType === 'mp' ? 3 : 1;
+  const uploadedPhotos = userType === 'mp' ? formData.profilePhotos || [] : [formData.profilePhoto];
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate upload delay
+
+    if (userType === 'mp') {
+      const existingPhotos = formData.profilePhotos || [];
+      if (existingPhotos.length < maxSlots) {
+        setFormData({
+          ...formData,
+          profilePhotos: [...existingPhotos, file],
+        });
+      }
+    } else {
+      setFormData({
+        ...formData,
+        profilePhoto: file,
+      });
+    }
+
+    setUploading(false);
+  };
+
+  const handleSlotClick = () => {
+    if (userType === 'mp' && uploadedPhotos.length >= maxSlots) return;
+    inputRef.current?.click();
+  };
+
+  return (
+    <div className="animate-fade-in">
+      <ProgressBar step={3} totalSteps={4} />
+
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          {userType === 'mp' ? 'Show Your Sparkle ✨' : 'Upload Your Photo'}
+        </h2>
+        <p className="text-gray-500">
+          {userType === 'mp' ? 'Upload at least 3 photos to get started' : 'Upload photo to get started'}
+        </p>
+      </div>
+
+      <PhotoGrid
+        photos={uploadedPhotos}
+        maxSlots={maxSlots}
+        onSlotClick={handleSlotClick}
+        uploading={uploading}
+      />
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handlePhotoUpload}
+      />
+
+      <div className="mt-8 flex gap-4">
+        <button
+          onClick={() => navigate('/complete/bio')}
+          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+        >
+          Back
+        </button>
+        <button
+          onClick={() => navigate('/complete/tags')}
+          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Step3PhotoUpload;

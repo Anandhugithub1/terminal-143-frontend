@@ -3,10 +3,10 @@ import { Suspense, lazy } from 'react';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 // Lazy load components
-const Step1BasicInfo = lazy(() => import('../../../components/ProfileWizard/Step1BasicInfo'));
-const Step2Bio = lazy(() => import('../../../components/ProfileWizard/Step2Bio'));
-const Step3PhotoUpload = lazy(() => import('../../../components/ProfileWizard/Step3PhotoUpload.'));
-const Step4Tags = lazy(() => import('../../../components/ProfileWizard/Step4Tags'));
+const Step1BasicInfo = lazy(() => import('./ProfileWizard/Step1BasicInfo'));
+const Step2Bio = lazy(() => import('./ProfileWizard/Step2Bio'));
+const Step3PhotoUpload = lazy(() => import('./ProfileWizard/Step3PhotoUpload.'));
+const Step4Tags = lazy(() => import('./ProfileWizard/Step4Tags'));
 
 const AddDetails = () => {
   return (

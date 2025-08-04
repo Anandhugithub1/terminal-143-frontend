@@ -21,7 +21,7 @@ import UserHomePage from "../features/UserHome/pages/Home.jsx";
 // Lazy
 const MatchesPage = lazy(() => import("../features/UserHome/pages/Matches.jsx"));
 const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx"));
-const AddDetails = lazy(() => import("../pages/User/Add/Add_Details.jsx"));
+const AddDetails = lazy(() => import("../features/AddProfile/pages/Add_Details.jsx"));
 const NotFoundPage = lazy(() => import("../pages/404/404.jsx"));
 const ProfilePage = lazy(() => import("../features/UserProfile/pages/Profile.jsx"));
 const ProfileEditPage = lazy(() => import("../features/UserProfile/pages/ProfileEdit.jsx"));

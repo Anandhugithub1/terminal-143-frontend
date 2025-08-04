@@ -29,6 +29,19 @@
   "communityDesc": "We foster a friendly and respectful community where users feel safe and heard.",
   "globalTitle": "Thai Heart, Global Reach",
   "globalDesc": "Though rooted in Thai culture, our reach extends globally, welcoming matches across borders.",
-  "rightsReserved": "All rights reserved."
+  "rightsReserved": "All rights reserved.",
+
+
+  "title": "Welcome! 👋",
+  "subtitle": "Let's start with the basics",
+  "fullName": "Full Name *",
+  "dob": "Date of Birth *",
+  "dobError": "You must be at least 18 years old to continue.",
+  "nameError": "Full name is required.",
+  "preferencesTitle": "Who are you interested in?",
+  "socialLabel": "Add Social Media Links",
+  "socialOptional": "(optional)",
+  "continue": "Continue",
+  "invalidLink": "Invalid link. Must be https:// or plain username."
   
 }

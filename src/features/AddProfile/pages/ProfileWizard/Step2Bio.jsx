@@ -1,40 +1,13 @@
 // Step2Bio.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import { useWizard } from '../../contexts/ProfileWizard';
+// import { useWizard } from '../../contexts/ProfileWizard';
+import { useWizard } from '../../../../contexts/ProfileWizard';
+
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
+import { statusOptions,LANGUAGES } from '../../utlis';
 
-const statusOptions = [
-  { label: 'Positive', value: 'p' },
-  { label: 'Negative', value: 'n' },
-  { label: 'Prefer not to say', value: 'pns' },
-];
-
-const LANGUAGES = [
-  { label: 'English',   value: 'en' },
-  { label: 'Spanish',   value: 'es' },
-  { label: 'French',    value: 'fr' },
-  { label: 'German',    value: 'de' },
-  { label: 'Mandarin',  value: 'zh' },
-  { label: 'Thai',      value: 'th' },
-  { label: 'Russian',   value: 'ru' },
-  { label: 'Italian',   value: 'it' },
-  { label: 'Portuguese',value: 'pt' },
-  { label: 'Japanese',  value: 'jp' },
-  { label: 'Korean',    value: 'kr' },
-  { label: 'Hindi',     value: 'hi' },
-  { label: 'Arabic',    value: 'ar' },
-  { label: 'Bengali',   value: 'bn' },
-  { label: 'Urdu',      value: 'ur' },
-  { label: 'Turkish',   value: 'tr' },
-  { label: 'Vietnamese',value: 'vi' },
-  { label: 'Polish',    value: 'pl' },
-  { label: 'Dutch',     value: 'nl' },
-  { label: 'Hebrew',    value: 'he' },
-  { label: 'Swedish',   value: 'sv' },
-  { label: 'Greek',     value: 'el' },
-];
 
 export default function Step2Bio() {
   const { formData, setFormData } = useWizard();

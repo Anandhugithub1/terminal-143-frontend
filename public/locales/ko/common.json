@@ -20,6 +20,20 @@
     "stdStatusNegative": "음성",
     "stdStatusPositive": "양성",
     "stdStatusUnknown": "알리고 싶지 않음",
-    "testedOn": "검사일"
+    "testedOn": "검사일",
+
+
+    "title": "환영합니다! 👋",
+    "subtitle": "기본 정보부터 시작해요",
+    "fullName": "성명 *",
+    "dob": "생년월일 *",
+    "dobError": "계속하려면 만 18세 이상이어야 합니다.",
+    "nameError": "성명은 필수 항목입니다.",
+    "preferencesTitle": "어떤 사람에게 관심이 있나요?",
+    "socialLabel": "소셜 미디어 링크 추가",
+    "socialOptional": "(선택사항)",
+    "continue": "계속",
+    "invalidLink": "잘못된 링크입니다. https:// 또는 사용자 이름이어야 합니다."
   }
+  
   

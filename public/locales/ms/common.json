@@ -19,6 +19,19 @@
     "stdStatusNegative": "Negatif",
     "stdStatusPositive": "Positif",
     "stdStatusUnknown": "Tidak mahu menyatakan",
-    "testedOn": "Tarikh diuji"
+    "testedOn": "Tarikh diuji",
+
+
+    "title": "Selamat datang! 👋",
+  "subtitle": "Mari mulakan dengan asasnya",
+  "fullName": "Nama Penuh *",
+  "dob": "Tarikh Lahir *",
+  "dobError": "Anda mesti berumur sekurang-kurangnya 18 tahun untuk meneruskan.",
+  "nameError": "Nama penuh diperlukan.",
+  "preferencesTitle": "Siapakah yang anda minati?",
+  "socialLabel": "Tambah Pautan Media Sosial",
+  "socialOptional": "(pilihan)",
+  "continue": "Teruskan",
+  "invalidLink": "Pautan tidak sah. Mesti bermula dengan https:// atau hanya nama pengguna."
   }
   
