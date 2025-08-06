@@ -7,7 +7,7 @@ import RequireProfileIncomplete from "../components/RequireProfileIncomplete.jsx
 import { LoadingSpinner } from "../components/Ui/Spinner.jsx";
 import LazyFallback from "../components/Ui/LazyFallback.jsx";
 import { WizardProvider } from "../contexts/ProfileWizard.jsx";
-
+import LoadingScreen from "../pages/SplashScreen/Splash.jsx";
 // Eager
 import { Login } from "../features/Auth/pages/Login.jsx";
 import { Register } from "../features/Auth/pages/Register.jsx";
@@ -17,7 +17,7 @@ import ChooseCategory from "../features/Auth/pages/ChooseCategory.jsx";
 import HomePage from "../pages/Global/HomePage.jsx";
 import PricingPage from "../pages/Global/Pricing.jsx";
 import UserHomePage from "../features/UserHome/pages/Home.jsx";
-
+import AppHome from "../pages/Global/Route.jsx";
 // Lazy
 const MatchesPage = lazy(() => import("../features/UserHome/pages/Matches.jsx"));
 const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx"));
@@ -53,7 +53,7 @@ export const appRoutes = (
       }
     />
 
-    <Route path="/" element={<HomePage />} />
+    <Route path="/" element={<AppHome />} />
     <Route path="pricing" element={<PricingPage />} />
 
     <Route
@@ -130,6 +130,8 @@ export const appRoutes = (
         </Suspense>
       }
     />
+
+
     <Route
       path="share-qr"
       element={
