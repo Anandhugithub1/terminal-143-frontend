@@ -18,7 +18,7 @@ const RegisterSkeleton = () => (
   </div>
 );
 
-export const Register = () => {
+ const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const userType = location.state?.userType;
@@ -57,3 +57,6 @@ export const Register = () => {
     </div>
   );
 };
+
+
+export default Register

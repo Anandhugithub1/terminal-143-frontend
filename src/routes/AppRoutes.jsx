@@ -7,19 +7,18 @@ import RequireProfileIncomplete from "../components/RequireProfileIncomplete.jsx
 import { LoadingSpinner } from "../components/Ui/Spinner.jsx";
 import LazyFallback from "../components/Ui/LazyFallback.jsx";
 import { WizardProvider } from "../contexts/ProfileWizard.jsx";
-import LoadingScreen from "../pages/SplashScreen/Splash.jsx";
 // Eager
 import { Login } from "../features/Auth/pages/Login.jsx";
-import { Register } from "../features/Auth/pages/Register.jsx";
+import  Register  from "../features/Auth/pages/Register.jsx";
 import EmailOTPVerification from "../features/Auth/pages/OtpVerification.jsx";
 import { ForgotAndResetPassword } from "../features/Auth/pages/ForgotPassword.jsx";
-import ChooseCategory from "../features/Auth/pages/ChooseCategory.jsx";
-import HomePage from "../pages/Global/HomePage.jsx";
+
 import PricingPage from "../pages/Global/Pricing.jsx";
 import UserHomePage from "../features/UserHome/pages/Home.jsx";
 import AppHome from "../pages/Global/Route.jsx";
 // Lazy
 const MatchesPage = lazy(() => import("../features/UserHome/pages/Matches.jsx"));
+const ChooseCategory =lazy(()=> import ("../features/Auth/pages/ChooseCategory.jsx") )
 const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx"));
 const AddDetails = lazy(() => import("../features/AddProfile/pages/Add_Details.jsx"));
 const NotFoundPage = lazy(() => import("../pages/404/404.jsx"));
@@ -38,7 +37,7 @@ export const appRoutes = (
     <Route path="login" element={<Login />} />
     <Route path="verify" element={<EmailOTPVerification />} />
     <Route path="reset-password" element={<ForgotAndResetPassword />} />
-    <Route path="choose-category" element={<ChooseCategory />} />
+    {/* <Route path="choose-category" element={<ChooseCategory />} /> */}
 
     <Route
       path="complete/*"
@@ -106,6 +105,15 @@ export const appRoutes = (
         </Suspense>
       }
     />
+
+
+    <Route path ="choose-category" element ={
+
+<Suspense fallback={<LoadingSpinner />}> 
+<ChooseCategory/>
+
+</Suspense>
+    } />
     <Route
       path="requests"
       element={
