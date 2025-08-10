@@ -5,12 +5,12 @@ import authReducer from '../features/Auth/authSlice';
 import { profilesReducer } from '../features/Profiles';
 
 import {userProfileReducer} from '../features/UserProfile';
-import updateProfileReducer from './User/updateSlice';
+// import updateProfileReducer from './User/updateSlice';
 export const store = configureStore({
   reducer: {
     profiles: profilesReducer,
     userProfile: userProfileReducer,
-    profileUpdate: updateProfileReducer,
+    // profileUpdate: updateProfileReducer,
     auth:authReducer,
   }
 });
