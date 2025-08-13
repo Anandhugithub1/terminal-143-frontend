@@ -130,6 +130,8 @@ export function computeAge(dob) {
 }
 
 export function getProfileFields(profile) {
+  if (!profile) return []; // Prevent crash when profile is null
+
   return [
     {
       key: 'gender',
@@ -157,6 +159,7 @@ export function getProfileFields(profile) {
     },
   ];
 }
+
 
 
 
