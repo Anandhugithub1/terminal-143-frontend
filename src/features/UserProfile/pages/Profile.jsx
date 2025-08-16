@@ -151,13 +151,16 @@ export default function ProfilePage() {
             <Edit2 size={16} className="inline-block mr-2 text-text-sec" />
             Edit Profile
           </button>
-          <button
-            onClick={() => navigate('/share-qr')}
-            className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white rounded-full text-sm font-medium hover:bg-gradient-to-r hover:from-gradient-primary hover:to-gradient-secondary transition"
-          >
-            <Share2 size={16} className="inline-block mr-2" />
-            Share Profile
-          </button>
+          {/* Show Share Profile only if usertype is not 'fm' */}
+  {profile.userType !== 'fm' && (
+    <button
+      onClick={() => navigate('/share-qr')}
+      className="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white rounded-full text-sm font-medium hover:bg-gradient-to-r hover:from-gradient-primary hover:to-gradient-secondary transition"
+    >
+      <Share2 size={16} className="inline-block mr-2" />
+      Share Profile
+    </button>
+  )}
         </div>
       </main>
 
