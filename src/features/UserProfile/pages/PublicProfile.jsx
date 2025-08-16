@@ -22,8 +22,14 @@ export default function PublicProfilePage() {
   const { currentUser, status: userStatus, error: userError } = useSelector((state) => state.userProfile);
 
   useEffect(() => {
+    if (type !== 'mp') {
+      navigate('/home', { replace: true });
+      return; // stop execution here if not mp
+    }
+  
     dispatch(fetchProfile());
-  }, [dispatch]);
+  }, [type, navigate, dispatch]);
+  
 
   // Allow full view only if fetchProfile succeeded
   const hasAccess = userStatus === 'succeeded';
