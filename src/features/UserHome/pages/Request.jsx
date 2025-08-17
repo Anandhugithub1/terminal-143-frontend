@@ -12,9 +12,9 @@ import { ConfirmationModal } from '../../../components/Ui/Confirmation';
 import RequestItem from '../../UserActions/components/RequestItem';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 export default function RequestsPage() {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.userProfile.currentUser);
 
@@ -22,18 +22,15 @@ export default function RequestsPage() {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [processingRequests, setProcessingRequests] = useState(new Set());
 
-  // Destructure refetch to reload requests
   const { data: requests = [], isLoading, error, refetch } = useMatchRequests();
   const mutation = useMatchRequestResponse();
 
-  // Ensure current user profile is loaded  
+  // Ensure current user profile is loaded
   useEffect(() => {
-    // 1. Fetch user profile if not present
     if (!currentUser) {
       dispatch(fetchProfile());
     }
 
-    // 2. Handle axios auth error
     if (axios.isAxiosError(error)) {
       const status = error?.response?.status;
       if (status === 401 || status === 403) {
@@ -44,12 +41,9 @@ export default function RequestsPage() {
   }, [currentUser, error, dispatch, navigate]);
 
   // Open confirmation modal
-  const openModal = (request, profile, action) => {
+  const openModal = (request, action) => {
     setSelectedRequest({
-      senderUsername: request.senderUsername,
-      senderPK: request.senderPK,
-      senderSK: profile?.SK,
-      name: profile?.name || request.senderUsername,
+      senderName: request.senderName,
       action,
     });
     setModalOpen(true);
@@ -59,32 +53,27 @@ export default function RequestsPage() {
   const confirmAction = () => {
     if (!selectedRequest || !currentUser) return;
 
-    const { senderUsername, action, senderPK, senderSK } = selectedRequest;
+    const { senderName, action } = selectedRequest;
     const recipientPK = currentUser.PK;
     const recipientSK = currentUser.SK;
 
-    // Log payload
     console.log('Sending match response payload:', {
-      senderUsername,
+      senderName,
       action,
-      senderPK,
-      senderSK,
       recipientPK,
       recipientSK,
     });
 
-    // Track processing state
-    setProcessingRequests((prev) => new Set(prev).add(senderUsername));
+    setProcessingRequests((prev) => new Set(prev).add(senderName));
 
     mutation.mutate(
-      { senderUsername, action, senderPK, senderSK, recipientPK, recipientSK },
+      { senderName, action, recipientPK, recipientSK },
       {
         onSettled: () => {
-          // Refresh the requests list from server
           refetch();
           setProcessingRequests((prev) => {
             const updated = new Set(prev);
-            updated.delete(senderUsername);
+            updated.delete(senderName);
             return updated;
           });
         },
@@ -94,14 +83,16 @@ export default function RequestsPage() {
     setModalOpen(false);
   };
 
-  // Render content based on state
   const renderContent = () => {
     if (isLoading) {
       return (
         <div className="p-4 pt-6 space-y-4">
           <h1 className="text-2xl font-bold">Loading Requests...</h1>
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="rounded-xl shadow p-4 bg-gray-50 flex gap-4 items-center">
+            <div
+              key={i}
+              className="rounded-xl shadow p-4 bg-gray-50 flex gap-4 items-center"
+            >
               <Skeleton circle height={64} width={64} />
               <div className="flex-1 space-y-2">
                 <Skeleton height={20} width="40%" />
@@ -117,7 +108,9 @@ export default function RequestsPage() {
     if (error) {
       return (
         <div className="flex-1 flex items-center justify-center p-4">
-          <p className="text-red-500 text-center">Could not load requests. Please try again later.</p>
+          <p className="text-red-500 text-center">
+            Could not load requests. Please try again later.
+          </p>
         </div>
       );
     }
@@ -136,15 +129,16 @@ export default function RequestsPage() {
 
     return (
       <div className="px-4 pt-4 flex-1">
-        <h1 className="text-2xl font-bold mb-4 text-gray-800">Your Match Requests</h1>
+        <h1 className="text-2xl font-bold mb-4 text-gray-800">
+          Your Match Requests
+        </h1>
         <div className="space-y-4">
-          {requests.map(({ request, profile }) => (
+          {requests.map(({ request }) => (
             <RequestItem
-              key={`${request.senderUsername}-${request.sentAt}`}
+              key={`${request.senderName}-${request.sentAt}`}
               request={request}
-              profile={profile}
               openModal={openModal}
-              isProcessing={processingRequests.has(request.senderUsername)}
+              isProcessing={processingRequests.has(request.senderName)}
             />
           ))}
         </div>
@@ -163,7 +157,7 @@ export default function RequestsPage() {
         onClose={() => setModalOpen(false)}
         onConfirm={confirmAction}
         action={selectedRequest?.action}
-        name={selectedRequest?.name}
+        name={selectedRequest?.senderName}
       />
     </div>
   );
