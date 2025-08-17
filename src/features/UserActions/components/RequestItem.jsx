@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatDate } from '../../../Utlis/utlis';
+// import { formatDate } from '../../../Utlis/utlis';
 
 const RequestItem = ({ request, openModal, isProcessing }) => (
   <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 flex items-start gap-4">
@@ -25,9 +25,7 @@ const RequestItem = ({ request, openModal, isProcessing }) => (
       <p className="text-sm text-gray-600 mt-1 line-clamp-3">
         {request.bio || 'No bio available.'}
       </p>
-      <p className="text-xs text-gray-400 mt-1">
-        Expires: {formatDate(request.expiresAt)}
-      </p>
+
     </div>
 
     <div className="flex flex-col items-center gap-2 min-w-[100px]">
