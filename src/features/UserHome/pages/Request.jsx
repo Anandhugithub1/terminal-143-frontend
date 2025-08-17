@@ -26,7 +26,7 @@ export default function RequestsPage() {
   const { data: requests = [], isLoading, error, refetch } = useMatchRequests();
   const mutation = useMatchRequestResponse();
 
-  // Ensure current user profile is loaded
+  // Ensure current user profile is loaded  
   useEffect(() => {
     // 1. Fetch user profile if not present
     if (!currentUser) {
