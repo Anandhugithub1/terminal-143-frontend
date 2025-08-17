@@ -1,12 +1,12 @@
 import React from 'react';
-// import { formatDate } from '../../../Utlis/utlis';
+import { calculateAge, formatDate } from '../../../Utlis/utlis';
 
-const RequestItem = ({ request }) => (
+const RequestItem = ({ request, profile, openModal, isProcessing }) => (
   <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 flex items-start gap-4">
-    {request.senderPhoto ? (
+    {profile?.photo ? (
       <img
-        src={request.senderPhoto}
-        alt={request.senderName}
+        src={profile.photo}
+        alt={profile.name}
         className="w-16 h-16 rounded-full object-cover"
       />
     ) : (
@@ -15,15 +15,18 @@ const RequestItem = ({ request }) => (
 
     <div className="flex-1">
       <h2 className="text-lg font-semibold text-gray-800">
-        {request.senderName || request.senderUserName}
-        {request.age && (
+        {profile?.name || request.senderUsername}
+        {profile?.dob && (
           <span className="text-gray-500 text-sm ml-1">
-            ({request.age})
+            ({calculateAge(profile.dob)})
           </span>
         )}
       </h2>
       <p className="text-sm text-gray-600 mt-1 line-clamp-3">
-        {request.bio || 'No bio available.'}
+        {profile?.bio || 'No bio available.'}
+      </p>
+      <p className="text-xs text-gray-400 mt-1">
+        Sent on: {formatDate(request.sentAt)}
       </p>
     </div>
 
@@ -31,6 +34,23 @@ const RequestItem = ({ request }) => (
       <span className="text-xs text-blue-500 font-medium capitalize">
         {request.status}
       </span>
+      {/* 🔥 Removed the "request.status === 'pending'" check — buttons always show */}
+      <div className="flex flex-col gap-2 mt-2 w-full">
+        <button
+          onClick={() => openModal(request, profile, 'accept')}
+          disabled={isProcessing}
+          className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-gradient-primary to-gradient-secondary shadow-md hover:opacity-90 transition-all disabled:opacity-50"
+        >
+          {isProcessing ? 'Processing...' : 'Accept'}
+        </button>
+        <button
+          onClick={() => openModal(request, profile, 'reject')}
+          disabled={isProcessing}
+          className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-pink-400 to-pink-500 shadow-md hover:opacity-90 transition-all disabled:opacity-50"
+        >
+          {isProcessing ? 'Processing...' : 'Reject'}
+        </button>
+      </div>
     </div>
   </div>
 );
