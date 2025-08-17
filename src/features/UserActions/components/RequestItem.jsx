@@ -1,12 +1,12 @@
 import React from 'react';
-import { calculateAge, formatDate } from '../../../Utlis/utlis';
+import { formatDate } from '../../../Utlis/utlis';
 
-const RequestItem = ({ request, profile, openModal, isProcessing }) => (
+const RequestItem = ({ request, openModal, isProcessing }) => (
   <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-100 flex items-start gap-4">
-    {profile?.photo ? (
+    {request.senderPhoto ? (
       <img
-        src={profile.photo}
-        alt={profile.name}
+        src={request.senderPhoto}
+        alt={request.senderName}
         className="w-16 h-16 rounded-full object-cover"
       />
     ) : (
@@ -15,18 +15,18 @@ const RequestItem = ({ request, profile, openModal, isProcessing }) => (
 
     <div className="flex-1">
       <h2 className="text-lg font-semibold text-gray-800">
-        {profile?.name || request.senderUsername}
-        {profile?.dob && (
+        {request.senderName || request.senderUserName}
+        {request.age && (
           <span className="text-gray-500 text-sm ml-1">
-            ({calculateAge(profile.dob)})
+            ({request.age})
           </span>
         )}
       </h2>
       <p className="text-sm text-gray-600 mt-1 line-clamp-3">
-        {profile?.bio || 'No bio available.'}
+        {request.bio || 'No bio available.'}
       </p>
       <p className="text-xs text-gray-400 mt-1">
-        Sent on: {formatDate(request.sentAt)}
+        Expires: {formatDate(request.expiresAt)}
       </p>
     </div>
 
@@ -37,14 +37,14 @@ const RequestItem = ({ request, profile, openModal, isProcessing }) => (
       {request.status === 'pending' && (
         <div className="flex flex-col gap-2 mt-2 w-full">
           <button
-            onClick={() => openModal(request, profile, 'accept')}
+            onClick={() => openModal(request, 'accept')}
             disabled={isProcessing}
             className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-gradient-primary to-gradient-secondary shadow-md hover:opacity-90 transition-all disabled:opacity-50"
           >
             {isProcessing ? 'Processing...' : 'Accept'}
           </button>
           <button
-            onClick={() => openModal(request, profile, 'reject')}
+            onClick={() => openModal(request, 'reject')}
             disabled={isProcessing}
             className="w-full px-4 py-2 text-sm rounded-xl text-white bg-gradient-to-r from-pink-400 to-pink-500 shadow-md hover:opacity-90 transition-all disabled:opacity-50"
           >
