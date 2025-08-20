@@ -2,8 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMatchRequests } from '../../UserActions/api';
 import { useMatchRequestResponse } from '../../UserActions/api';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchProfile } from '../../UserProfile';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../../components/Layout/TopNavigation';
@@ -15,8 +13,6 @@ import axios from 'axios';
 
 export default function RequestsPage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state) => state.userProfile.currentUser);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -27,9 +23,7 @@ export default function RequestsPage() {
 
   // Ensure current user profile is loaded
   useEffect(() => {
-    if (!currentUser) {
-      dispatch(fetchProfile());
-    }
+ 
 
     if (axios.isAxiosError(error)) {
       const status = error?.response?.status;
@@ -38,12 +32,12 @@ export default function RequestsPage() {
         navigate('/login');
       }
     }
-  }, [currentUser, error, dispatch, navigate]);
+  }, [ error,  navigate]);
 
   // Open confirmation modal
   const openModal = (request, action) => {
     setSelectedRequest({
-      senderUserName: request.senderUserName, // ✅ correct field
+      senderUsername: request.senderUsername, // ✅ correct field
       action,
     });
     setModalOpen(true);
@@ -51,27 +45,25 @@ export default function RequestsPage() {
 
   // Handle confirmation action
   const confirmAction = () => {
-    if (!selectedRequest || !currentUser) return;
+    if (!selectedRequest) return;
 
-    const { senderUserName, action } = selectedRequest;
-    const recipient = currentUser.username; // ✅ only username, not PK/SK
+    const { senderUsername, action } = selectedRequest;
 
     console.log('Sending match response payload:', {
-      senderUserName,
+      senderUsername,
       action,
-      recipient,
     });
 
-    setProcessingRequests((prev) => new Set(prev).add(senderUserName));
+    setProcessingRequests((prev) => new Set(prev).add(senderUsername));
 
     mutation.mutate(
-      { senderUserName, recipient, action },
+      { senderUsername, action }, // ✅ removed recipient
       {
         onSettled: () => {
           refetch();
           setProcessingRequests((prev) => {
             const updated = new Set(prev);
-            updated.delete(senderUserName);
+            updated.delete(senderUsername);
             return updated;
           });
         },
@@ -133,10 +125,10 @@ export default function RequestsPage() {
         <div className="space-y-4">
           {requests.map(({ request }) => (
             <RequestItem
-              key={`${request.senderUserName}-${request.sentAt}`} // ✅ updated key
+              key={`${request.senderUsername}-${request.sentAt}`} // ✅ updated key
               request={request}
               openModal={openModal}
-              isProcessing={processingRequests.has(request.senderUserName)}
+              isProcessing={processingRequests.has(request.senderUsername)}
             />
           ))}
         </div>
@@ -155,7 +147,7 @@ export default function RequestsPage() {
         onClose={() => setModalOpen(false)}
         onConfirm={confirmAction}
         action={selectedRequest?.action}
-        name={selectedRequest?.senderUserName} // ✅ use correct field
+        name={selectedRequest?.senderUsername} // ✅ use correct field
       />
     </div>
   );
