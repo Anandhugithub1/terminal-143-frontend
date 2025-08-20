@@ -18,27 +18,28 @@ export function useMatchRequests() {
   const REQUEST_ACTION_URL =
   'https://userapi.terminal143.com/match/match/request/respond';
 
-export function useMatchRequestResponse() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ senderUsername, recipient, action }) => {
-      return axios.post(
-        REQUEST_ACTION_URL,
-        { senderUsername, recipient, action }, // ✅ fixed payload
-        { withCredentials: true }
-      );
-    },
-    onSuccess: (_data, variables) => {
-      queryClient.setQueryData(['matchRequests'], (old = []) =>
-        old.filter(
-          (r) => r.request.senderUsername !== variables.senderUsername // ✅ filter by correct field
-        )
-      );
-    },
-    onError: (error) => {
-      console.error('Action failed', error);
-      alert(`Could not perform action. Please try again.`);
-    },
-  });
-}
+  export function useMatchRequestResponse() {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: async ({ senderUsername, action }) => {
+        return axios.post(
+          REQUEST_ACTION_URL,
+          { senderUsername, action }, // ✅ removed recipient
+          { withCredentials: true }
+        );
+      },
+      onSuccess: (_data, variables) => {
+        queryClient.setQueryData(['matchRequests'], (old = []) =>
+          old.filter(
+            (r) => r.request.senderUsername !== variables.senderUsername // ✅ filter by senderUsername
+          )
+        );
+      },
+      onError: (error) => {
+        console.error('Action failed', error);
+        alert(`Could not perform action. Please try again.`);
+      },
+    });
+  }
+  
