@@ -43,7 +43,7 @@ export default function RequestsPage() {
   // Open confirmation modal
   const openModal = (request, action) => {
     setSelectedRequest({
-      senderName: request.senderName,
+      senderUserName: request.senderUserName, // ✅ correct field
       action,
     });
     setModalOpen(true);
@@ -53,27 +53,25 @@ export default function RequestsPage() {
   const confirmAction = () => {
     if (!selectedRequest || !currentUser) return;
 
-    const { senderName, action } = selectedRequest;
-    const recipientPK = currentUser.PK;
-    const recipientSK = currentUser.SK;
+    const { senderUserName, action } = selectedRequest;
+    const recipient = currentUser.username; // ✅ only username, not PK/SK
 
     console.log('Sending match response payload:', {
-      senderName,
+      senderUserName,
       action,
-      recipientPK,
-      recipientSK,
+      recipient,
     });
 
-    setProcessingRequests((prev) => new Set(prev).add(senderName));
+    setProcessingRequests((prev) => new Set(prev).add(senderUserName));
 
     mutation.mutate(
-      { senderName, action, recipientPK, recipientSK },
+      { senderUserName, recipient, action },
       {
         onSettled: () => {
           refetch();
           setProcessingRequests((prev) => {
             const updated = new Set(prev);
-            updated.delete(senderName);
+            updated.delete(senderUserName);
             return updated;
           });
         },
@@ -135,10 +133,10 @@ export default function RequestsPage() {
         <div className="space-y-4">
           {requests.map(({ request }) => (
             <RequestItem
-              key={`${request.senderName}-${request.sentAt}`}
+              key={`${request.senderUserName}-${request.sentAt}`} // ✅ updated key
               request={request}
               openModal={openModal}
-              isProcessing={processingRequests.has(request.senderName)}
+              isProcessing={processingRequests.has(request.senderUserName)}
             />
           ))}
         </div>
@@ -157,7 +155,7 @@ export default function RequestsPage() {
         onClose={() => setModalOpen(false)}
         onConfirm={confirmAction}
         action={selectedRequest?.action}
-        name={selectedRequest?.senderName}
+        name={selectedRequest?.senderUserName} // ✅ use correct field
       />
     </div>
   );

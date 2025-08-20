@@ -15,30 +15,30 @@ export function useMatchRequests() {
     });
   }
 
-
-
-
-const REQUEST_ACTION_URL = 'https://userapi.terminal143.com/match/match/request/respond';
+  const REQUEST_ACTION_URL =
+  'https://userapi.terminal143.com/match/match/request/respond';
 
 export function useMatchRequestResponse() {
-    const queryClient = useQueryClient();
-  
-    return useMutation({
-      mutationFn: async ({ senderUsername, action, senderPK, senderSK, recipientPK, recipientSK }) => {
-        return axios.post(
-          REQUEST_ACTION_URL,
-          { senderUsername, action, senderPK, senderSK, recipientPK, recipientSK },
-          { withCredentials: true }
-        );
-      },
-      onSuccess: (_data, variables) => {
-        queryClient.setQueryData(['matchRequests'], (old = []) =>
-          old.filter((r) => r.request.senderUsername !== variables.senderUsername)
-        );
-      },
-      onError: (error, _variables, _context) => {
-        console.error('Action failed', error);
-        alert(`Could not perform action. Please try again.`);
-      },
-    });
-  }
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ senderUsername, recipient, action }) => {
+      return axios.post(
+        REQUEST_ACTION_URL,
+        { senderUsername, recipient, action }, // ✅ fixed payload
+        { withCredentials: true }
+      );
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.setQueryData(['matchRequests'], (old = []) =>
+        old.filter(
+          (r) => r.request.senderUsername !== variables.senderUsername // ✅ filter by correct field
+        )
+      );
+    },
+    onError: (error) => {
+      console.error('Action failed', error);
+      alert(`Could not perform action. Please try again.`);
+    },
+  });
+}
