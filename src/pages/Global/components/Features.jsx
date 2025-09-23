@@ -3,8 +3,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
-import { itemVariants, containerVariants } from '../../Utlis/animation_variants';
-import FeatureCard from '../../components/Cards/GlobalFeatureCard';
+import { itemVariants, containerVariants } from '../../../Utlis/animation_variants';
+import FeatureCard from './Cards/GlobalFeatureCard';
 
 // Icons
 import {

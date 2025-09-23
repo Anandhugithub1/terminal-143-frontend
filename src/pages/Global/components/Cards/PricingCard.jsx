@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
-import { itemVariants, containerVariants } from "../../Utlis/animation_variants";
-import { plans, } from "../../Utlis/Global/pricing";
+import { itemVariants, containerVariants } from "../../../../Utlis/animation_variants";
+import { plans, } from "../../../../Utlis/Global/pricing";
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { PrimaryButton } from '../../shared/Button';
+import { PrimaryButton } from '../../../../shared/Button';
 import { motion } from 'framer-motion';
 
 const PricingCard = () => {

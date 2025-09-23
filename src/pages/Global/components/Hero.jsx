@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { itemVariants, containerVariants } from '../../Utlis/animation_variants';
-import { PrimaryButton, SecondaryButton } from '../../shared/Button';
+import { itemVariants, containerVariants } from '../../../Utlis/animation_variants';
+import { PrimaryButton, SecondaryButton } from '../../../shared/Button';
 
 export default function Hero() {
   const { t } = useTranslation('home');

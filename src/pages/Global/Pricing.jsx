@@ -6,7 +6,7 @@ import { PrimaryButton, SecondaryButton } from "../../shared/Button";
 import { itemVariants, containerVariants } from "../../Utlis/animation_variants";
 import { CheckIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { plans, faqs } from "../../Utlis/Global/pricing";
-import PricingCard from "../../components/Cards/PricingCard";
+import PricingCard from "./components/Cards/PricingCard";
 
 // Lazy-loaded components
 const Navbar   = React.lazy(() => import('../../components/Layout/Navbar'));

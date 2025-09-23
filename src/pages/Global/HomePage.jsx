@@ -7,8 +7,8 @@ import Skeleton from 'react-loading-skeleton';
 // Lazy-loaded components
 const Navbar   = React.lazy(() => import('../../components/Layout/Navbar'));
 const Footer   = React.lazy(() => import('../../components/Layout/Footer'));
-const Hero     = React.lazy(() => import('../../components/Global/Hero'));
-const Features = React.lazy(() => import('../../components/Global/Features'));
+const Hero     = React.lazy(() => import('../Global/components/Hero'));
+const Features = React.lazy(() => import('../Global/components/Features'));
 
 export default function HomePage() {
   const { t, i18n, ready } = useTranslation(['common', 'home']);

@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useSelector, shallowEqual, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { fetchProfile } from '../features/UserProfile';
+import { calculateAge } from '../Utlis/utlis';
 
 export const useSendMatchRequest = () => {
   const dispatch = useDispatch();
@@ -25,13 +26,14 @@ export const useSendMatchRequest = () => {
         console.error('❌ [hook] currentUser missing:', currentUser);
         throw new Error('User profile not loaded');
       }
+      const age =calculateAge(currentUser.dob) ;
       const payload = {
         recipient,
         senderPK: currentUser.PK,
         senderUsername: currentUser.username,
         senderName: currentUser.name,                 
         senderPhoto: currentUser.photo || '',
-        age:currentUser.age 
+        age: age
       };
 
       const PROFILE_BASE = 'https://userapi.terminal143.com/match/request';
