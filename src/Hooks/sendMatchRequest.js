@@ -30,7 +30,8 @@ export const useSendMatchRequest = () => {
         senderPK: currentUser.PK,
         senderUsername: currentUser.username,
         senderName: currentUser.name,                 
-        senderPhoto: currentUser.photo || '',       
+        senderPhoto: currentUser.photo || '',
+        age:currentUser.age 
       };
 
       const PROFILE_BASE = 'https://userapi.terminal143.com/match/request';
