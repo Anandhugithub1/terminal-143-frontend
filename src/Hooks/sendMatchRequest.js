@@ -29,6 +29,8 @@ export const useSendMatchRequest = () => {
         recipient,
         senderPK: currentUser.PK,
         senderUsername: currentUser.username,
+        senderName: currentUser.name,                 
+        senderPhoto: currentUser.photo || '',       
       };
 
       const PROFILE_BASE = 'https://userapi.terminal143.com/match/request';
