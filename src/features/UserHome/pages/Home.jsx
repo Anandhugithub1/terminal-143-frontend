@@ -1,174 +1,191 @@
-  /* eslint-disable no-unused-vars */
-  import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
-  import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-  import { useMutation } from '@tanstack/react-query';
-  import { fetchProfiles, postSeen } from '../../../features/Profiles';
-  import TopNav from '../../../components/Layout/TopNavigation';
-  import BottomNav from '../../../components/Layout/BottomNavigation';
-  import ProfileSkeleton from '../components/ProfileSkeleton';
-  import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
-  import placeholderImage from '../../../assets/woman.png';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useMutation } from '@tanstack/react-query';
+import { fetchProfiles, postSeen } from '../../../features/Profiles';
+import TopNav from '../../../components/Layout/TopNavigation';
+import BottomNav from '../../../components/Layout/BottomNavigation';
+import ProfileSkeleton from '../components/ProfileSkeleton';
+import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
+import placeholderImage from '../../../assets/woman.png';
+import { getMatchProviders } from '../../../features/Profiles/profilesapi'; // for local caching
 
-  // Lazy-loaded components
-  const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'));
-  const DetailSection = lazy(() => import('../components/Details/Details'));
-  const ActionControls = lazy(() => import('../components/Actions/ActionControls'));
-  const AlertMessage = lazy(() => import('../../../components/Ui/Alerts'));
-  const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'));
+// Lazy-loaded components
+const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'));
+const DetailSection = lazy(() => import('../components/Details/Details'));
+const ActionControls = lazy(() => import('../components/Actions/ActionControls'));
+const AlertMessage = lazy(() => import('../../../components/Ui/Alerts'));
+const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'));
 
-  export default function UserHomePage() {
-    const dispatch = useDispatch();
-    const { list: profiles, status, error } = useSelector(
-      (state) => state.profiles,
-      shallowEqual
-    );
+export default function UserHomePage() {
+  const dispatch = useDispatch();
+  const { list: profiles, status, error } = useSelector(
+    (state) => state.profiles,
+    shallowEqual
+  );
 
-    const [idx, setIdx] = useState(0);
-    const [direction, setDirection] = useState(0);
-    const [requestError, setRequestError] = useState('');
+  const [idx, setIdx] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [requestError, setRequestError] = useState('');
+  const [nextBatch, setNextBatch] = useState([]);
 
-    const { send: sendMatchRequest } = useSendMatchRequest();
+  const { send: sendMatchRequest } = useSendMatchRequest();
 
-    const seenMutation = useMutation({
-      mutationFn: postSeen,
-      onError: (err) => {
-        setRequestError(err.response?.data?.error || err.message);
-      },
-    });
+  const seenMutation = useMutation({
+    mutationFn: postSeen,
+    onError: (err) => {
+      setRequestError(err.response?.data?.error || err.message);
+    },
+  });
 
-    useEffect(() => { 
-      if (status === 'idle') dispatch(fetchProfiles({ limit: 10 }));
-    }, [status, dispatch]);
+  // --- Initial load ---
+  useEffect(() => {
+    if (status === 'idle') dispatch(fetchProfiles({ limit: 10 }));
+  }, [status, dispatch]);
 
-    const isEnd = profiles.length > 0 && idx >= profiles.length;
-
-    const handleRefresh = useCallback(() => {
-      setIdx(0);
-      dispatch(fetchProfiles({ limit: 10 }));
-    }, [dispatch]);
-
-    const advance = useCallback(
-      (dir) => {
-        setDirection(dir);
-        setIdx((prev) => {
-          const current = profiles[prev];
-          if (current) {
-            seenMutation.mutate({
-              suggestionIndex: current.suggestionIndex,
-              direction: dir,
-            });
-
-            const recipientId = current.username || current.pk || current.id;
-            if (dir === 1 && recipientId) {
-              sendMatchRequest(recipientId);
-            }
-          }
-
-          const next = prev + 1;
-          if (next >= profiles.length) {
-            dispatch(fetchProfiles({ limit: 10 }));
-          }
-          return next;
-        });
-      },
-      [profiles, dispatch, seenMutation, sendMatchRequest]
-    );
-
-    if (status === 'loading') return <ProfileSkeleton />;
-    if (error) return <div className="p-4 text-red-500">{error}</div>;
-
-    if (profiles.length === 0 || isEnd) {
-      return (
-        <div className="bg-white min-h-screen flex flex-col items-center justify-center">
-          <p className="text-gray-500 text-lg">Reached the end of profiles</p>
-          <button
-            onClick={handleRefresh}
-            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
-          >
-            Refresh Profiles
-          </button>
-        </div>
-      );
+  // --- Preload next batch locally when near end ---
+  useEffect(() => {
+    if (profiles.length - idx <= 2 && nextBatch.length === 0) {
+      getMatchProviders({ limit: 10 }).then(setNextBatch).catch(() => {});
     }
+  }, [idx, profiles, nextBatch]);
 
-    const rawProfile = profiles[idx] || {};
-    const images = rawProfile.photos?.length ? rawProfile.photos : [];
+  const handleRefresh = useCallback(() => {
+    setIdx(0);
+    dispatch(fetchProfiles({ limit: 10 }));
+    setNextBatch([]);
+  }, [dispatch]);
 
-    const profile = {
-      name: rawProfile.name || 'Unknown',
-      age: rawProfile.age || 'N/A',
-      about: rawProfile.bio || '',
-      gender:
-        rawProfile.gender === 'F'
-          ? 'Female'
-          : rawProfile.gender === 'M'
-          ? 'Male'
-          : rawProfile.gender,
-      images,
-      location: rawProfile.location || 'Unknown',
-      popularity: rawProfile.popularity || 0,
-      healthStatus: rawProfile.healthStatus || { status: 'Unknown', lastTestedDate: 'Unknown' },
-      lastSeen: rawProfile.lastSeen || 'Unknown',
-      job: rawProfile.jobTitle || '',
-      languages: rawProfile.languagesKnown?.length
-        ? rawProfile.languagesKnown
-        : rawProfile.language
-        ? [rawProfile.language]
-        : [],
-      interests: rawProfile.interest || [],
-      userId: rawProfile.username,
-      suggestionIndex: rawProfile.suggestionIndex,
-    };
+  const advance = useCallback(
+    (dir) => {
+      setDirection(dir);
+      setIdx((prev) => {
+        const current = profiles[prev];
+        if (current) {
+          seenMutation.mutate({
+            suggestionIndex: current.suggestionIndex,
+            direction: dir,
+          });
 
+          const recipientId = current.username || current.pk || current.id;
+          if (dir === 1 && recipientId) sendMatchRequest(recipientId);
+        }
+
+        const next = prev + 1;
+
+        // ✅ When near end, trigger fetch with append=true
+        if (next >= profiles.length - 1) {
+          if (nextBatch.length > 0) {
+            dispatch(fetchProfiles({ limit: 10, append: true, preloaded: nextBatch }));
+            setNextBatch([]);
+          } else {
+            dispatch(fetchProfiles({ limit: 10, append: true }));
+          }
+        }
+
+        return next;
+      });
+    },
+    [profiles, dispatch, seenMutation, sendMatchRequest, nextBatch]
+  );
+
+  if (status === 'loading' && profiles.length === 0) return <ProfileSkeleton />;
+  if (error) return <div className="p-4 text-red-500">{error}</div>;
+
+  const isEnd = profiles.length > 0 && idx >= profiles.length;
+
+  if (isEnd) {
     return (
-      <div className="relative bg-white min-h-screen pb-20">
-        <TopNav />
-
-        {requestError && (
-          <div className="px-4 mt-4">
-            <Suspense fallback={<ProfileSkeleton />}>
-              <AlertMessage
-                message={requestError}
-                type="error"
-                isVisible
-                onClose={() => setRequestError('')}
-              />
-            </Suspense>
-          </div>
-        )}
-
-        <div className="relative">
-          <Suspense fallback={<ProfileSkeleton />}>
-            <SwipeDeck
-              idx={idx}
-              direction={direction}
-              profilesLength={profiles.length}
-              onAdvance={advance}
-            >
-              <div className="relative">
-                <ProfileCard
-                  profile={profile}
-                  placeholderImage={placeholderImage}
-                  onConnectClick={() => {}}
-                  onMessageClick={() => console.log('Message clicked')}
-                />
-
-                <ActionControls
-                  className="absolute top-[85%] inset-x-0 z-30 flex justify-center"
-                  onReject={() => advance(-1)}
-                  onRefresh={handleRefresh}
-                  onLike={() => advance(1)}
-                />
-              </div>
-
-              <div className="mt-6 px-4">
-                <DetailSection profile={profile} />
-              </div>
-            </SwipeDeck>
-          </Suspense>
-        </div>
-
-        <BottomNav />
+      <div className="bg-white min-h-screen flex flex-col items-center justify-center">
+        <p className="text-gray-500 text-lg">Reached the end of profiles</p>
+        <button
+          onClick={handleRefresh}
+          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
+        >
+          Refresh Profiles
+        </button>
       </div>
     );
   }
+
+  const rawProfile = profiles[idx] || {};
+  const images = rawProfile.photos?.length ? rawProfile.photos : [];
+
+  const profile = {
+    name: rawProfile.name || 'Unknown',
+    age: rawProfile.age || 'N/A',
+    about: rawProfile.bio || '',
+    gender:
+      rawProfile.gender === 'F'
+        ? 'Female'
+        : rawProfile.gender === 'M'
+        ? 'Male'
+        : rawProfile.gender,
+    images,
+    location: rawProfile.location || 'Unknown',
+    popularity: rawProfile.popularity || 0,
+    healthStatus: rawProfile.healthStatus || { status: 'Unknown', lastTestedDate: 'Unknown' },
+    lastSeen: rawProfile.lastSeen || 'Unknown',
+    job: rawProfile.jobTitle || '',
+    languages: rawProfile.languagesKnown?.length
+      ? rawProfile.languagesKnown
+      : rawProfile.language
+      ? [rawProfile.language]
+      : [],
+    interests: rawProfile.interest || [],
+    userId: rawProfile.username,
+    suggestionIndex: rawProfile.suggestionIndex,
+  };
+
+  return (
+    <div className="relative bg-white min-h-screen pb-20">
+      <TopNav />
+
+      {requestError && (
+        <div className="px-4 mt-4">
+          <Suspense fallback={<ProfileSkeleton />}>
+            <AlertMessage
+              message={requestError}
+              type="error"
+              isVisible
+              onClose={() => setRequestError('')}
+            />
+          </Suspense>
+        </div>
+      )}
+
+      <div className="relative">
+        <Suspense fallback={<ProfileSkeleton />}>
+          <SwipeDeck
+            idx={idx}
+            direction={direction}
+            profilesLength={profiles.length}
+            onAdvance={advance}
+          >
+            <div className="relative">
+              <ProfileCard
+                profile={profile}
+                placeholderImage={placeholderImage}
+                onConnectClick={() => {}}
+                onMessageClick={() => console.log('Message clicked')}
+              />
+
+              <ActionControls
+                className="absolute top-[85%] inset-x-0 z-30 flex justify-center"
+                onReject={() => advance(-1)}
+                onRefresh={handleRefresh}
+                onLike={() => advance(1)}
+              />
+            </div>
+
+            <div className="mt-6 px-4">
+              <DetailSection profile={profile} />
+            </div>
+          </SwipeDeck>
+        </Suspense>
+      </div>
+
+      <BottomNav />
+    </div>
+  );
+}

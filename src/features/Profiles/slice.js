@@ -17,8 +17,11 @@ const profilesSlice = createSlice({
       state.status = 'idle';
       state.error = null;
     },
+    clearProfiles(state) {
+      state.list = [];
+    },
   },
-  extraReducers: builder =>
+  extraReducers: builder => {
     builder
       .addCase(fetchProfiles.pending, state => {
         state.status = 'loading';
@@ -26,34 +29,36 @@ const profilesSlice = createSlice({
       })
       .addCase(fetchProfiles.fulfilled, (state, { payload }) => {
         state.status = 'succeeded';
+        const { profiles, append } = payload;
 
-        state.list = payload.map(raw => {
-          const birth = new Date(raw.dob);
-          const age = Math.floor(
-            (Date.now() - birth.getTime()) / (1000 * 60 * 60 * 24 * 365.25)
-          );
+        const formatted = profiles.map(raw => {
+          const birth = raw.dob ? new Date(raw.dob) : null;
+          const age = birth
+            ? Math.floor((Date.now() - birth.getTime()) / 31557600000)
+            : '';
 
-          const stdStatus = raw.healthStatus?.stdStatus ?? '';
+          const stdStatus = raw.healthStatus?.stdStatus ?? 'Unknown';
           const lastTestedDate = raw.healthStatus?.lastTestedDate
             ? new Date(raw.healthStatus.lastTestedDate).toLocaleDateString()
-            : '';
+            : '—';
 
           return {
             ...raw,
             age,
             lastSeen: formatLastSeen(raw.lastSeen),
-            healthStatus: {
-              stdStatus,
-              lastTestedDate,
-            },
+            healthStatus: { stdStatus, lastTestedDate },
           };
         });
+
+        // ✅ Append or replace cleanly
+        state.list = append ? [...state.list, ...formatted] : formatted;
       })
       .addCase(fetchProfiles.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload;
-      }),
+      });
+  },
 });
 
-export const { resetStatus } = profilesSlice.actions;
+export const { resetStatus, clearProfiles } = profilesSlice.actions;
 export default profilesSlice.reducer;
