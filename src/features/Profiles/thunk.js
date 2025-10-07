@@ -4,10 +4,13 @@ import { getMatchProviders } from './profilesapi';
 
 export const fetchProfiles = createAsyncThunk(
   'profiles/fetchProfiles',
-  async ({ limit = 10 }, thunkAPI) => {
+  async ({ limit = 10, append = false } = {}, thunkAPI) => {
     try {
+      // ✅ Call your existing API helper
       const profiles = await getMatchProviders({ limit });
-      return profiles;
+
+      // Return both profiles + append flag
+      return { profiles, append };
     } catch (err) {
       const status = err.response?.status;
 
@@ -16,11 +19,12 @@ export const fetchProfiles = createAsyncThunk(
         return thunkAPI.rejectWithValue('Unauthorized');
       }
 
-      return thunkAPI.rejectWithValue(
+      const message =
         typeof err.response?.data === 'string'
           ? err.response.data
-          : err.response?.data?.message || err.message || 'Something went wrong'
-      );
+          : err.response?.data?.message || err.message || 'Something went wrong';
+
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
