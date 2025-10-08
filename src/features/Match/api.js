@@ -1,11 +1,8 @@
-// src/hooks/useMatches.js
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-
-const MATCHES_API = 'https://userapi.terminal143.com/match/match/list';
+import { matchesApi } from '../../api/clients';
 
 async function fetchMatches() {
-  const res = await axios.get(MATCHES_API, { withCredentials: true });
+  const res = await matchesApi.get('/match/list', { withCredentials: true });
   return res.data.matches || [];
 }
 
