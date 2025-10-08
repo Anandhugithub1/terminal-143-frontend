@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useWizard } from '../../../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
+import { del } from 'idb-keyval';
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
   uploadProfileImage,
@@ -87,6 +89,8 @@ export default function Step4Tags() {
 
       // 4️⃣ Clear persisted form data & navigate
       clearFormData();
+      await del('profilePhoto');      // For single photo users
+await del('profilePhotos');     // For multi-photo users
       navigate('/home');
     } catch (err) {
       console.error('Profile completion error:', err);
