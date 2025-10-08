@@ -1,7 +1,6 @@
 /* ========== Step4Tags.jsx ========== */
-import React from 'react';
+import React, { useState } from 'react';
 import { useWizard } from '../../../../contexts/ProfileWizard';
-
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,8 +9,9 @@ import {
   completeProfile,
 } from '../../../UserProfile';
 import { categories } from '../../utlis';
+
 export default function Step4Tags() {
-  const { formData, setFormData } = useWizard();
+  const { formData, setFormData, clearFormData } = useWizard();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userType = localStorage.getItem('userType');
@@ -19,6 +19,8 @@ export default function Step4Tags() {
   const { completeStatus, error: apiError } = useSelector(
     (s) => s.userProfile
   );
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Toggle tag selection
   const toggle = (category, value) => {
@@ -38,46 +40,63 @@ export default function Step4Tags() {
   const handleBack = () => navigate('/complete/photo');
 
   const handleSubmit = async () => {
+    if (isSubmitting) return; // prevent double-clicks
+    setIsSubmitting(true);
+
     try {
-      // 1) Upload photos and collect URLs in correct order
+      // 1️⃣ Upload photos and collect URLs in correct order
       const photoUrls = [];
       if (userType === 'mp' && formData.profilePhotos?.length) {
         for (let i = 0; i < formData.profilePhotos.length; i++) {
-          const { publicUrl } = await dispatch(
-            uploadProfileImage({
-              file: formData.profilePhotos[i],
-              photoIndex: i,
-            })
-          ).unwrap();
-          photoUrls.push(publicUrl);
+          try {
+            const { publicUrl } = await dispatch(
+              uploadProfileImage({
+                file: formData.profilePhotos[i],
+                photoIndex: i,
+              })
+            ).unwrap();
+            photoUrls.push(publicUrl);
+          } catch (uploadErr) {
+            console.error(`Photo ${i + 1} upload failed:`, uploadErr);
+          }
         }
       } else if (formData.profilePhoto) {
-        const { publicUrl } = await dispatch(
-          uploadProfileImage({ file: formData.profilePhoto, photoIndex: 0 })
-        ).unwrap();
-        photoUrls.push(publicUrl);
+        try {
+          const { publicUrl } = await dispatch(
+            uploadProfileImage({ file: formData.profilePhoto, photoIndex: 0 })
+          ).unwrap();
+          photoUrls.push(publicUrl);
+        } catch (uploadErr) {
+          console.error('Profile photo upload failed:', uploadErr);
+        }
       }
 
-      // 2) Build payload to match backend schema
+      // 2️⃣ Build payload to match backend schema
       const payload = {
         ...formData,
-        interest: selectedInterests,
+        interests: selectedInterests, // ✅ ensure correct field name
       };
       if (userType === 'mp') {
-        payload.photos = photoUrls;            // array of strings
+        payload.photos = photoUrls; // array of strings
       } else {
-        payload.photo = photoUrls[0] || '';    // single string
+        payload.photo = photoUrls[0] || ''; // single string
       }
 
-      // 3) Dispatch completion
+      // 3️⃣ Dispatch completion
       await dispatch(completeProfile(payload)).unwrap();
+
+      // 4️⃣ Clear persisted form data & navigate
+      clearFormData();
       navigate('/home');
     } catch (err) {
       console.error('Profile completion error:', err);
+    } finally {
+      setIsSubmitting(false); // ✅ Always re-enable in case of error
     }
   };
 
-  const isLoading = completeStatus === 'loading';
+  // Combine both local + redux loading states
+  const isLoading = isSubmitting || completeStatus === 'loading';
 
   return (
     <div className="animate-fade-in">
@@ -108,6 +127,8 @@ export default function Step4Tags() {
                       ? 'bg-pink-500 text-white shadow-md shadow-pink-500/20'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
+                  type="button"
+                  disabled={isLoading}
                 >
                   {item}
                 </button>
@@ -129,13 +150,14 @@ export default function Step4Tags() {
         >
           Back
         </button>
+
         <button
           onClick={handleSubmit}
           disabled={isLoading}
           className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
                      text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
         >
-          {isLoading ? 'Saving...' : 'Finish'}
+          {isLoading ? 'Saving...' : 'Finish Setup'}
         </button>
       </div>
     </div>
