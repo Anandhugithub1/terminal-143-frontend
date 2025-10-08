@@ -18,37 +18,32 @@ export const WizardProvider = ({ children }) => {
     languages: [],
   };
 
-  const [formData, setFormData] = useState(defaultFormData);
+  // --- Initialize state from sessionStorage synchronously ---
+  const saved = sessionStorage.getItem(STORAGE_KEY);
+  const initialData = saved ? JSON.parse(saved) : defaultFormData;
 
-  // --- Load saved data safely on mount ---
+  const [formData, setFormData] = useState(initialData);
+
+  // --- Load photos from IndexedDB asynchronously and merge into formData ---
   useEffect(() => {
-    const loadData = async () => {
+    const loadFiles = async () => {
       try {
-        // Load non-file fields from sessionStorage
-        const saved = sessionStorage.getItem(STORAGE_KEY);
-        const parsed = saved ? JSON.parse(saved) : {};
-
-        // Load file fields from IndexedDB
         const profilePhoto = await get('profilePhoto');
         const profilePhotos = await get('profilePhotos');
 
-        setFormData({
-          ...defaultFormData,    // ensure all default keys exist
-          ...parsed,             // restore typed/array data
-          profilePhoto: profilePhoto || null,
-          profilePhotos: profilePhotos || [],
-        });
+        setFormData((prev) => ({
+          ...prev,                      // keep typed/sessionStorage data
+          profilePhoto: profilePhoto || prev.profilePhoto,
+          profilePhotos: profilePhotos || prev.profilePhotos,
+        }));
       } catch (err) {
-        console.error('Failed to load wizard data:', err);
-        setFormData(defaultFormData);
+        console.error('Failed to load photos from IndexedDB:', err);
       }
     };
-
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    loadFiles();
   }, []);
 
-  // --- Persist non-file fields to sessionStorage ---
+  // --- Persist non-file fields to sessionStorage whenever formData changes ---
   useEffect(() => {
     try {
       const { profilePhoto, profilePhotos, ...rest } = formData;
