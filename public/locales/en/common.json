@@ -42,6 +42,10 @@
   "socialLabel": "Add Social Media Links",
   "socialOptional": "(optional)",
   "continue": "Continue",
-  "invalidLink": "Invalid link. Must be https:// or plain username."
-  
+  "invalidLink": "Invalid link. Must be https:// or plain username.",
+
+
+
+  "preferencesRequired": "Please select at least one preference."
+
 }

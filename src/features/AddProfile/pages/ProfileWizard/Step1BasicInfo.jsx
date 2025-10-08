@@ -26,7 +26,14 @@ const Step1BasicInfo = () => {
 
   const handleNext = () => {
     if (!formData.name.trim()) return setError(t('nameError'));
-    if (calculateAge(formData.dob) < 18) return setError(t('dobError'));
+    if (!formData.dob) return setError(t('dobRequired'));
+
+    const age = calculateAge(formData.dob);
+    if (age < 18) return setError(t('dobError'));
+
+    if (!formData.preferences || formData.preferences.length === 0)
+      return setError(t('preferencesRequired'));
+
     setError('');
     navigate('/complete/bio');
   };
@@ -36,7 +43,7 @@ const Step1BasicInfo = () => {
     setFormData({
       ...formData,
       preferences: prefs.includes(value)
-        ? prefs.filter(p => p !== value)
+        ? prefs.filter((p) => p !== value)
         : [...prefs, value],
     });
   };
@@ -46,7 +53,10 @@ const Step1BasicInfo = () => {
     if (!socialPlatform || !trimmed) return;
     if (!validateLink(trimmed)) return setError(t('invalidLink'));
 
-    const updated = [...(formData.socialMediaLinks || []), { platform: socialPlatform, usernameOrLink: trimmed }];
+    const updated = [
+      ...(formData.socialMediaLinks || []),
+      { platform: socialPlatform, usernameOrLink: trimmed },
+    ];
     setFormData({ ...formData, socialMediaLinks: updated });
     setSocialInput('');
     setSocialPlatform('');
@@ -113,7 +123,8 @@ const Step1BasicInfo = () => {
         {/* Social Media Links */}
         <div className="mt-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('socialLabel')} <span className="text-xs text-gray-400">{t('socialOptional')}</span>
+            {t('socialLabel')}{' '}
+            <span className="text-xs text-gray-400">{t('socialOptional')}</span>
           </label>
 
           <SocialLinkInput
