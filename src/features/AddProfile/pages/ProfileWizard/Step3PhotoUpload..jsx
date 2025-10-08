@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useWizard } from '../../../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import PhotoGrid from '../../components/PhotoGrid';
+import { set, get, del } from 'idb-keyval';
 
 const Step3PhotoUpload = () => {
   const { formData, setFormData } = useWizard();
@@ -14,26 +15,42 @@ const Step3PhotoUpload = () => {
   const maxSlots = userType === 'mp' ? 3 : 1;
   const uploadedPhotos = userType === 'mp' ? formData.profilePhotos || [] : [formData.profilePhoto];
 
+  // Load persisted photos from IndexedDB on mount
+  useEffect(() => {
+    const loadPhotos = async () => {
+      if (userType === 'mp') {
+        const photos = await get('profilePhotos');
+        if (photos?.length) {
+          setFormData({ ...formData, profilePhotos: photos });
+        }
+      } else {
+        const photo = await get('profilePhoto');
+        if (photo) {
+          setFormData({ ...formData, profilePhoto: photo });
+        }
+      }
+    };
+    loadPhotos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate upload delay
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate upload delay
 
     if (userType === 'mp') {
       const existingPhotos = formData.profilePhotos || [];
       if (existingPhotos.length < maxSlots) {
-        setFormData({
-          ...formData,
-          profilePhotos: [...existingPhotos, file],
-        });
+        const newPhotos = [...existingPhotos, file];
+        setFormData({ ...formData, profilePhotos: newPhotos });
+        await set('profilePhotos', newPhotos); // Persist in IndexedDB
       }
     } else {
-      setFormData({
-        ...formData,
-        profilePhoto: file,
-      });
+      setFormData({ ...formData, profilePhoto: file });
+      await set('profilePhoto', file); // Persist single photo
     }
 
     setUploading(false);
@@ -44,6 +61,9 @@ const Step3PhotoUpload = () => {
     inputRef.current?.click();
   };
 
+  const handleNext = () => navigate('/complete/tags');
+  const handleBack = () => navigate('/complete/bio');
+
   return (
     <div className="animate-fade-in">
       <ProgressBar step={3} totalSteps={4} />
@@ -53,7 +73,9 @@ const Step3PhotoUpload = () => {
           {userType === 'mp' ? 'Show Your Sparkle ✨' : 'Upload Your Photo'}
         </h2>
         <p className="text-gray-500">
-          {userType === 'mp' ? 'Upload at least 3 photos to get started' : 'Upload photo to get started'}
+          {userType === 'mp'
+            ? `Upload at least ${maxSlots} photos to get started`
+            : 'Upload photo to get started'}
         </p>
       </div>
 
@@ -74,14 +96,15 @@ const Step3PhotoUpload = () => {
 
       <div className="mt-8 flex gap-4">
         <button
-          onClick={() => navigate('/complete/bio')}
+          onClick={handleBack}
           className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
         >
           Back
         </button>
         <button
-          onClick={() => navigate('/complete/tags')}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all"
+          onClick={handleNext}
+          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
+                     text-white font-semibold py-3 px-6 rounded-xl transition-all"
         >
           Next
         </button>
