@@ -21,12 +21,12 @@ const Step3PhotoUpload = () => {
       if (userType === 'mp') {
         const photos = await get('profilePhotos');
         if (photos?.length) {
-          setFormData({ ...formData, profilePhotos: photos });
+          setFormData((prev) => ({ ...prev, profilePhotos: photos }));
         }
       } else {
         const photo = await get('profilePhoto');
         if (photo) {
-          setFormData({ ...formData, profilePhoto: photo });
+          setFormData((prev) => ({ ...prev, profilePhoto: photo }));
         }
       }
     };
@@ -39,18 +39,18 @@ const Step3PhotoUpload = () => {
     if (!file) return;
 
     setUploading(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate upload delay
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate upload
 
     if (userType === 'mp') {
       const existingPhotos = formData.profilePhotos || [];
       if (existingPhotos.length < maxSlots) {
         const newPhotos = [...existingPhotos, file];
-        setFormData({ ...formData, profilePhotos: newPhotos });
+        setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
         await set('profilePhotos', newPhotos); // Persist in IndexedDB
       }
     } else {
-      setFormData({ ...formData, profilePhoto: file });
-      await set('profilePhoto', file); // Persist single photo
+      setFormData((prev) => ({ ...prev, profilePhoto: file }));
+      await set('profilePhoto', file);
     }
 
     setUploading(false);
