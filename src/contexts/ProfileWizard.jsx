@@ -1,61 +1,74 @@
+/* ========== WizardContext.jsx ========== */
 import { createContext, useContext, useState, useEffect } from 'react';
-import { get } from 'idb-keyval';
+import { get, del } from 'idb-keyval';
 
 const WizardContext = createContext();
 
 export const WizardProvider = ({ children }) => {
   const STORAGE_KEY = 'profileWizardData';
-  const [formData, setFormData] = useState({
+
+  const defaultFormData = {
     name: '',
     bio: '',
     age: '',
     socialMediaLinks: [],
-    profilePhoto: null,    // single file
-    profilePhotos: [],     // multiple files
+    profilePhoto: null,   // single file
+    profilePhotos: [],    // multiple files
     interests: [],
     languages: [],
-  });
+  };
 
-  // Load saved data (both non-file and file data)
+  const [formData, setFormData] = useState(defaultFormData);
+
+  // --- Load saved data safely on mount ---
   useEffect(() => {
     const loadData = async () => {
-      // Load non-file fields from sessionStorage
-      const saved = sessionStorage.getItem(STORAGE_KEY);
-      const parsed = saved ? JSON.parse(saved) : {};
+      try {
+        // Load non-file fields from sessionStorage
+        const saved = sessionStorage.getItem(STORAGE_KEY);
+        const parsed = saved ? JSON.parse(saved) : {};
 
-      // Load file fields from IndexedDB
-      const profilePhoto = await get('profilePhoto');
-      const profilePhotos = await get('profilePhotos');
+        // Load file fields from IndexedDB
+        const profilePhoto = await get('profilePhoto');
+        const profilePhotos = await get('profilePhotos');
 
-      setFormData({
-        ...formData,          // ensure default structure
-        ...parsed,            // restore non-file fields
-        profilePhoto: profilePhoto || null,
-        profilePhotos: profilePhotos || [],
-      });
+        setFormData({
+          ...defaultFormData,    // ensure all default keys exist
+          ...parsed,             // restore typed/array data
+          profilePhoto: profilePhoto || null,
+          profilePhotos: profilePhotos || [],
+        });
+      } catch (err) {
+        console.error('Failed to load wizard data:', err);
+        setFormData(defaultFormData);
+      }
     };
+
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Persist non-file fields to sessionStorage whenever formData changes
+  // --- Persist non-file fields to sessionStorage ---
   useEffect(() => {
-    const { profilePhoto, profilePhotos, ...rest } = formData;
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(rest));
+    try {
+      const { profilePhoto, profilePhotos, ...rest } = formData;
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(rest));
+    } catch (err) {
+      console.error('Failed to persist wizard data:', err);
+    }
   }, [formData]);
 
-  const clearFormData = () => {
+  // --- Clear all form data (sessionStorage + IndexedDB) ---
+  const clearFormData = async () => {
     sessionStorage.removeItem(STORAGE_KEY);
-    setFormData({
-      name: '',
-      bio: '',
-      age: '',
-      socialMediaLinks: [],
-      profilePhoto: null,
-      profilePhotos: [],
-      interests: [],
-      languages: [],
-    });
+    setFormData(defaultFormData);
+
+    try {
+      await del('profilePhoto');
+      await del('profilePhotos');
+    } catch (err) {
+      console.error('Failed to clear photo data from IndexedDB:', err);
+    }
   };
 
   return (
