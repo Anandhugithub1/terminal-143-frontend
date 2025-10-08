@@ -10,31 +10,35 @@ export const WizardProvider = ({ children }) => {
     bio: '',
     age: '',
     socialMediaLinks: [],
-    profilePhoto: null,    // File
-    profilePhotos: [],     // For multi-photo users
+    profilePhoto: null,    // single file
+    profilePhotos: [],     // multiple files
     interests: [],
     languages: [],
   });
 
-  // Load non-file data from sessionStorage and File objects from IndexedDB
+  // Load saved data (both non-file and file data)
   useEffect(() => {
     const loadData = async () => {
+      // Load non-file fields from sessionStorage
       const saved = sessionStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        const profilePhoto = await get('profilePhoto');
-        const profilePhotos = await get('profilePhotos');
-        setFormData({
-          ...parsed,
-          profilePhoto: profilePhoto || null,
-          profilePhotos: profilePhotos || [],
-        });
-      }
+      const parsed = saved ? JSON.parse(saved) : {};
+
+      // Load file fields from IndexedDB
+      const profilePhoto = await get('profilePhoto');
+      const profilePhotos = await get('profilePhotos');
+
+      setFormData({
+        ...formData,          // ensure default structure
+        ...parsed,            // restore non-file fields
+        profilePhoto: profilePhoto || null,
+        profilePhotos: profilePhotos || [],
+      });
     };
     loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Persist non-file fields to sessionStorage
+  // Persist non-file fields to sessionStorage whenever formData changes
   useEffect(() => {
     const { profilePhoto, profilePhotos, ...rest } = formData;
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(rest));

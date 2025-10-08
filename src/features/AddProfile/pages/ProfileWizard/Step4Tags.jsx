@@ -1,26 +1,21 @@
 /* ========== Step4Tags.jsx ========== */
-import React, { useState } from 'react';
-import { useWizard } from '../../../../contexts/ProfileWizard';
-import { useNavigate } from 'react-router-dom';
-import { ProgressBar } from './Progess';
-import { del } from 'idb-keyval';
+import React, { useState } from "react";
+import { useWizard } from "../../../../contexts/ProfileWizard";
+import { useNavigate } from "react-router-dom";
+import { ProgressBar } from "./Progess";
+import { del } from "idb-keyval";
 
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  uploadProfileImage,
-  completeProfile,
-} from '../../../UserProfile';
-import { categories } from '../../utlis';
+import { useDispatch, useSelector } from "react-redux";
+import { uploadProfileImage, completeProfile } from "../../../UserProfile";
+import { categories } from "../../utlis";
 
 export default function Step4Tags() {
   const { formData, setFormData, clearFormData } = useWizard();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userType = localStorage.getItem('userType');
+  const userType = localStorage.getItem("userType");
 
-  const { completeStatus, error: apiError } = useSelector(
-    (s) => s.userProfile
-  );
+  const { completeStatus, error: apiError } = useSelector((s) => s.userProfile);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -39,7 +34,7 @@ export default function Step4Tags() {
     ([cat]) => formData[cat] || []
   );
 
-  const handleBack = () => navigate('/complete/photo');
+  const handleBack = () => navigate("/complete/photo");
 
   const handleSubmit = async () => {
     if (isSubmitting) return; // prevent double-clicks
@@ -48,7 +43,7 @@ export default function Step4Tags() {
     try {
       // 1️⃣ Upload photos and collect URLs in correct order
       const photoUrls = [];
-      if (userType === 'mp' && formData.profilePhotos?.length) {
+      if (userType === "mp" && formData.profilePhotos?.length) {
         for (let i = 0; i < formData.profilePhotos.length; i++) {
           try {
             const { publicUrl } = await dispatch(
@@ -69,7 +64,7 @@ export default function Step4Tags() {
           ).unwrap();
           photoUrls.push(publicUrl);
         } catch (uploadErr) {
-          console.error('Profile photo upload failed:', uploadErr);
+          console.error("Profile photo upload failed:", uploadErr);
         }
       }
 
@@ -78,10 +73,10 @@ export default function Step4Tags() {
         ...formData,
         interests: selectedInterests, // ✅ ensure correct field name
       };
-      if (userType === 'mp') {
+      if (userType === "mp") {
         payload.photos = photoUrls; // array of strings
       } else {
-        payload.photo = photoUrls[0] || ''; // single string
+        payload.photo = photoUrls[0] || ""; // single string
       }
 
       // 3️⃣ Dispatch completion
@@ -89,18 +84,18 @@ export default function Step4Tags() {
 
       // 4️⃣ Clear persisted form data & navigate
       clearFormData();
-      await del('profilePhoto');      // For single photo users
-await del('profilePhotos');     // For multi-photo users
-      navigate('/home');
+      await del("profilePhoto"); // For single photo users
+      await del("profilePhotos"); // For multi-photo users
+      navigate("/home");
     } catch (err) {
-      console.error('Profile completion error:', err);
+      console.error("Profile completion error:", err);
     } finally {
       setIsSubmitting(false); // ✅ Always re-enable in case of error
     }
   };
 
   // Combine both local + redux loading states
-  const isLoading = isSubmitting || completeStatus === 'loading';
+  const isLoading = isSubmitting || completeStatus === "loading";
 
   return (
     <div className="animate-fade-in">
@@ -128,8 +123,8 @@ await del('profilePhotos');     // For multi-photo users
                   onClick={() => toggle(title, item)}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
                     formData[title]?.includes(item)
-                      ? 'bg-pink-500 text-white shadow-md shadow-pink-500/20'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? "bg-pink-500 text-white shadow-md shadow-pink-500/20"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                   type="button"
                   disabled={isLoading}
@@ -142,9 +137,7 @@ await del('profilePhotos');     // For multi-photo users
         ))}
       </div>
 
-      {apiError && (
-        <p className="mt-4 text-center text-red-500">{apiError}</p>
-      )}
+      {apiError && <p className="mt-4 text-center text-red-500">{apiError}</p>}
 
       <div className="mt-8 flex gap-4">
         <button
@@ -161,7 +154,7 @@ await del('profilePhotos');     // For multi-photo users
           className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
                      text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
         >
-          {isLoading ? 'Saving...' : 'Finish Setup'}
+          {isLoading ? "Saving..." : "Finish Setup"}
         </button>
       </div>
     </div>
