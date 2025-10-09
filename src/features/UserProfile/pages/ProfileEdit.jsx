@@ -97,21 +97,19 @@ export default function ProfileEditPage() {
         {/* Main Sections */}
         <div className="p-5 space-y-6">
           {/* Bio */}
-          <LazyWrapper>
-            <Section title={t("profileEdit.myBio")} className="bg-gray-100">
-              <EditableBio
-                bioInput={bioInput}
-                setBioInput={setBioInput}
-                profile={profile}
-                updateProfileData={updateProfileData}
-                isEditingBio={isEditingBio}
-                setIsEditingBio={setIsEditingBio}
-                editLabel={t("profileEdit.edit")}
-                placeholderText={t("profileEdit.bioPlaceholder")}
-                emptyText={t("profileEdit.bioEmptyText")}
-              />
-            </Section>
-          </LazyWrapper>
+       <LazyWrapper>
+    <EditableBio
+      bioInput={bioInput}
+      setBioInput={setBioInput}
+      profile={profile}
+      updateProfileData={updateProfileData}
+      isEditingBio={isEditingBio}
+      setIsEditingBio={setIsEditingBio}
+      editLabel={t("profileEdit.edit")}
+      placeholderText={t("profileEdit.bioPlaceholder")}
+      emptyText={t("profileEdit.bioEmptyText")}
+    />
+  </LazyWrapper>
 
           {/* About Me Fields */}
           <Section title={t("profileEdit.aboutMe")}>
