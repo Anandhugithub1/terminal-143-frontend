@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { InputField } from '../../../shared/common';
-import PasswordInput  from '../../../shared/Passinput';
+import PasswordInput from '../../../shared/Passinput';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../../shared/Button';
 import Loader from '../../../components/Ui/Loading';
-
 import { loginUser } from '../authThunks';
 import {
   selectLoading,
@@ -13,12 +12,10 @@ import {
   selectAuth,
   selectMessage
 } from '../authSelectors';
-
 import { useTranslation } from 'react-i18next';
 
- const LoginForm = () => {
-  const { t } = useTranslation('auth'); // Translation namespace
-
+const LoginForm = () => {
+  const { t } = useTranslation('auth');
   const [emailPhone, setEmailPhone] = useState('');
   const [password, setPassword] = useState('');
 
@@ -43,12 +40,22 @@ import { useTranslation } from 'react-i18next';
     }
   }, [isSuccess, profileCompleted, auth.userType, navigate]);
 
-  const handleSubmit = (e) => {
+  // 🟢 NEW: handle login submission + unverified redirect
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!emailPhone || !password) {
       return alert(t('enterCredentials'));
     }
-    dispatch(loginUser({ emailPhone, password }));
+
+    const resultAction = await dispatch(loginUser({ emailPhone, password }));
+
+    // Check if rejected and has unverified flag
+    if (loginUser.rejected.match(resultAction)) {
+      const error = resultAction.payload;
+      if (error?.notVerified) {
+        navigate('/verify', { state: { emailPhone } });
+      }
+    }
   };
 
   return (
@@ -118,8 +125,6 @@ import { useTranslation } from 'react-i18next';
         <span className="px-4 text-sm text-gray-500">{t('orContinueWith')}</span>
         <div className="flex-1 border-t border-border-clr"></div>
       </div>
-
-      {/* <GoogleButton onClick={handleGoogleLogin} disabled={isLoading} /> */}
 
       <p className="mt-6 text-center text-sm text-gray-500">
         {t('noAccount')}{' '}
