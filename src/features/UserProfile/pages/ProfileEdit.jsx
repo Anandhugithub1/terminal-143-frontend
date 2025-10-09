@@ -22,7 +22,8 @@ const SOCIAL_PLATFORMS = [
 
 // ======== Main Component ========
 export default function ProfileEditPage() {
-  const { t } = useTranslation(["settings.json"]);
+    const { t } = useTranslation('settings');
+
   const navigate = useNavigate();
 
   const { profile, status, localAvatar, isUploading, isFetching, updateProfileData, uploadImage } = useEditableProfile();
