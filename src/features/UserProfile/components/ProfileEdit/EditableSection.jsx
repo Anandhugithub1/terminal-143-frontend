@@ -1,12 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Edit, Check, X } from 'lucide-react';
 
- function EditableSection({
+function EditableSection({
   title,
   value,
   onSave,
   isBio = false,
   iconMap = [],
+  editLabel = 'Edit',
+  saveLabel = 'Save',
+  cancelLabel = 'Cancel',
+  bioPlaceholder = 'Tell something about yourself...',
+  emptyText = null, // fallback for bio/interest empty state
+  emptyInterestText = null,
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -77,21 +83,21 @@ import { Edit, Check, X } from 'lucide-react';
             className="text-pink-600 hover:text-pink-700 flex items-center"
           >
             <Edit size={16} className="mr-1" />
-            <span className="text-sm font-medium">Edit</span>
+            <span className="text-sm font-medium">{editLabel}</span>
           </button>
         ) : (
           <div className="flex space-x-2">
             <button
               onClick={handleCancel}
               className="text-gray-500 hover:text-gray-700"
-              aria-label="Cancel"
+              aria-label={cancelLabel}
             >
               <X size={18} />
             </button>
             <button
               onClick={handleSave}
               className="text-pink-600 hover:text-pink-700"
-              aria-label="Save"
+              aria-label={saveLabel}
             >
               <Check size={18} />
             </button>
@@ -103,32 +109,27 @@ import { Edit, Check, X } from 'lucide-react';
         <div className="mt-2">
           {isBio ? (
             <>
-          <div className="relative z-30">
-  <textarea
-    ref={inputRef}
-    value={inputValue}
-    onChange={(e) => {
-        console.log('Bio change:', e.target.value);
-        setInputValue(e.target.value);
-      }}
-    className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none z-50 relative"
-    rows={4}
-    placeholder="Tell something about yourself..."
-  />
-</div>
+              <textarea
+                ref={inputRef}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                className="w-full bg-white border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
+                rows={4}
+                placeholder={bioPlaceholder}
+              />
 
               <div className="flex justify-end mt-3 space-x-2">
                 <button
                   onClick={handleCancel}
                   className="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg text-sm font-medium"
                 >
-                  Cancel
+                  {cancelLabel}
                 </button>
                 <button
                   onClick={handleSave}
                   className="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-lg text-sm font-medium"
                 >
-                  Save
+                  {saveLabel}
                 </button>
               </div>
             </>
@@ -157,7 +158,7 @@ import { Edit, Check, X } from 'lucide-react';
             value
           ) : (
             <span className="text-gray-400 italic">
-              Click "Edit" to add your {title.toLowerCase()}
+              {emptyText || `Click "${editLabel}" to add your ${title.toLowerCase()}`}
             </span>
           )}
         </p>
@@ -177,7 +178,7 @@ import { Edit, Check, X } from 'lucide-react';
               ))
           ) : (
             <span className="text-sm text-gray-400 italic">
-              Click "Edit" to select your {title.toLowerCase()}
+              {emptyInterestText || `Click "${editLabel}" to select your ${title.toLowerCase()}`}
             </span>
           )}
         </div>
@@ -186,4 +187,4 @@ import { Edit, Check, X } from 'lucide-react';
   );
 }
 
-export default EditableSection
+export default EditableSection;

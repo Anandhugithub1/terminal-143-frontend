@@ -1,6 +1,6 @@
 /* ========== Step4Tags.jsx ========== */
 import React, { useState } from "react";
-import { useWizard } from "../../../../contexts/ProfileWizard";
+import { useWizard } from "../../contexts/ProfileWizard";
 import { useNavigate } from "react-router-dom";
 import { ProgressBar } from "./Progess";
 import { del } from "idb-keyval";

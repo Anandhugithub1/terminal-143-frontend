@@ -6,7 +6,7 @@ import ProtectedRouteFM from "./ProtectedRouteFM.jsx";
 import RequireProfileIncomplete from "../components/RequireProfileIncomplete.jsx";
 import { LoadingSpinner } from "../components/Ui/Spinner.jsx";
 import LazyFallback from "../components/Ui/LazyFallback.jsx";
-import { WizardProvider } from "../contexts/ProfileWizard.jsx";
+import { WizardProvider } from "../features/AddProfile/contexts/ProfileWizard.jsx";
 // Eager
 import { Login } from "../features/Auth/pages/Login.jsx";
 import  Register  from "../features/Auth/pages/Register.jsx";

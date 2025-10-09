@@ -118,7 +118,17 @@ export const ConfirmModal = ({ open, onCancel, onConfirm, title, description }) 
 
 
 
-export const UploadOptions = ({ onRemove, onCamera, onGallery }) => {
+export const UploadOptions = ({
+  onRemove,
+  onCamera,
+  onGallery,
+  onCancel, // <-- added back
+  cameraLabel = 'Take Photo',
+  galleryLabel = 'Choose from Gallery',
+  removeLabel = 'Remove Photo',
+  modalTitle = 'Remove Profile Photo?',
+  modalDescription = 'Are you sure you want to remove your profile picture? This cannot be undone.',
+}) => {
   const [showModal, setShowModal] = useState(false);
 
   const handleRemove = () => {
@@ -126,29 +136,40 @@ export const UploadOptions = ({ onRemove, onCamera, onGallery }) => {
     onRemove();
   };
 
+  const handleCancel = () => {
+    setShowModal(false);
+    if (onCancel) onCancel(); // call parent callback if provided
+  };
+
   return (
     <>
       <div className="bg-white rounded-2xl p-4 shadow-lg w-64">
-        <button onClick={onCamera} className="w-full py-2 mb-2 bg-blue-100 rounded-lg hover:bg-blue-200">
-          Take Photo
+        <button
+          onClick={onCamera}
+          className="w-full py-2 mb-2 bg-blue-100 rounded-lg hover:bg-blue-200"
+        >
+          {cameraLabel}
         </button>
-        <button onClick={onGallery} className="w-full py-2 mb-2 bg-green-100 rounded-lg hover:bg-green-200">
-          Choose from Gallery
+        <button
+          onClick={onGallery}
+          className="w-full py-2 mb-2 bg-green-100 rounded-lg hover:bg-green-200"
+        >
+          {galleryLabel}
         </button>
         <button
           onClick={() => setShowModal(true)}
           className="w-full py-2 mb-2 bg-red-100 rounded-lg hover:bg-red-200"
         >
-          Remove Photo
+          {removeLabel}
         </button>
       </div>
 
       <ConfirmModal
         open={showModal}
-        onCancel={() => setShowModal(false)}
+        onCancel={handleCancel} 
         onConfirm={handleRemove}
-        title="Remove Profile Photo?"
-        description="Are you sure you want to remove your profile picture? This cannot be undone."
+        title={modalTitle}
+        description={modalDescription}
       />
     </>
   );

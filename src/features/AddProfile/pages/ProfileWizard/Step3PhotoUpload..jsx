@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { useWizard } from '../../../../contexts/ProfileWizard';
+import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import PhotoGrid from '../../components/PhotoGrid';

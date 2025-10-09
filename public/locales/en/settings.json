@@ -1,41 +1,75 @@
 {
-    "settings": "Settings",
-    "language": "Language",
-    "changePassword": "Change Password",
-    "preferences": "Preferences",
-    "deleteAccount": "Delete Account",
-    "helpCentre": "Help Centre",
-    "aboutApp": "About App",
-    "logout": "Logout",
-    "logoutOptions": "Log out options",
-    "logoutThisDevice": "Logout from This Device",
-    "logoutAllDevices": "Logout from All Devices",
+  "settings": "Settings",
+  "language": "Language",
+  "changePassword": "Change Password",
+  "preferences": "Preferences",
+  "deleteAccount": "Delete Account",
+  "helpCentre": "Help Centre",
+  "aboutApp": "About App",
+  "logout": "Logout",
+  "logoutOptions": "Log out options",
+  "logoutThisDevice": "Logout from This Device",
+  "logoutAllDevices": "Logout from All Devices",
+  "cancel": "Cancel",
+  "logoutAllAlert": "Logout from all devices is not yet available.",
+
+  "title": "Preferences",
+  "selectPrompt": "Select your preferences:",
+  "male": "Male",
+  "female": "Female",
+  "toFemale": "To Female",
+  "toMale": "To Male",
+  "others": "Others",
+  "save": "Save Preferences",
+
+  "select_language": "Select Language",
+  "back": "Back",
+  "languages": {
+    "english": "English",
+    "thai": "Thai",
+    "russian": "Russian",
+    "chinese": "Chinese",
+    "korean": "Korean",
+    "malay": "Malay"
+  },
+
+  "profileEdit": {
+    "title": "Edit Profile",
+    "myBio": "My Bio",
+    "aboutMe": "About Me",
+    "interests": "Interests",
+    "socialLinks": "Social Links",
+    "saveSocialLinks": "Save Social Links",
+    "edit": "Edit",
+    "save": "Save",
     "cancel": "Cancel",
-    "logoutAllAlert": "Logout from all devices is not yet available.",
+    "bioPlaceholder": "Tell something about yourself...",
+    "bioEmptyText": "Click 'Edit' to add your bio",
+    "interestsEmptyText": "Click 'Edit' to select your interests",
+    "socialPlaceholders": {
+      "IG": "Your Instagram handle",
+      "FB": "Your Facebook link",
+      "Telegram": "Your Telegram username",
+      "Line": "Your Line ID",
+      "Wechat": "Your WeChat ID",
+      "Other": "Other link or handle"
+    },
+    "socialLabels": {
+      "IG": "Instagram",
+      "FB": "Facebook",
+      "Telegram": "Telegram",
+      "Line": "Line",
+      "Wechat": "WeChat",
+      "Other": "Other"
+    },
+    "showMorePlatforms": "Show all platforms"
+  },
 
-
-"title": "Preferences",
-    "selectPrompt": "Select your preferences:",
-    "male": "Male",
-    "female": "Female",
-    "toFemale": "To Female",
-    "toMale": "To Male",
-    "others": "Others",
-    "save": "Save Preferences",
-
-    
-        "select_language": "Select Language",
-        "back": "Back",
-        "languages": {
-          "english": "English",
-          "thai": "Thai",
-          "russian": "Russian",
-          "chinese": "Chinese",
-          "korean": "Korean",
-          "malay": "Malay"
-        }
-      
-      
-  
+  "avatarUpload": {
+    "takePhoto": "Take Photo",
+    "chooseGallery": "Choose from Gallery",
+    "removePhoto": "Remove Photo",
+    "removePhotoTitle": "Remove Profile Photo?",
+    "removePhotoDescription": "Are you sure you want to remove your profile picture? This cannot be undone."
   }
-  
+}
