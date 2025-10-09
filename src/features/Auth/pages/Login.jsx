@@ -16,7 +16,6 @@ export const Login = () => {
   );
 };
 
-// Optional: Skeleton fallback component
 const LoginSkeleton = () => {
     return (
       <div className="space-y-4">

@@ -31,6 +31,43 @@
       "chinese": "중국어",
       "korean": "한국어",
       "malay": "말레이어"
-    }
+    }, "profileEdit": {
+    "title": "프로필 편집",
+    "myBio": "내 소개",
+    "aboutMe": "내 소개",
+    "interests": "관심사",
+    "socialLinks": "소셜 링크",
+    "saveSocialLinks": "소셜 링크 저장",
+    "edit": "편집",
+    "save": "저장",
+    "cancel": "취소",
+    "bioPlaceholder": "자신에 대해 알려주세요...",
+    "bioEmptyText": "'편집'을 클릭하여 소개를 추가하세요",
+    "interestsEmptyText": "'편집'을 클릭하여 관심사를 선택하세요",
+    "socialPlaceholders": {
+      "IG": "Instagram 계정",
+      "FB": "Facebook 링크",
+      "Telegram": "Telegram 사용자 이름",
+      "Line": "Line ID",
+      "Wechat": "WeChat ID",
+      "Other": "기타 링크 또는 계정"
+    },
+    "socialLabels": {
+      "IG": "인스타그램",
+      "FB": "페이스북",
+      "Telegram": "텔레그램",
+      "Line": "라인",
+      "Wechat": "위챗",
+      "Other": "기타"
+    },
+    "showMorePlatforms": "모든 플랫폼 보기"
+  },
+  "avatarUpload": {
+    "takePhoto": "사진 촬영",
+    "chooseGallery": "갤러리에서 선택",
+    "removePhoto": "사진 삭제",
+    "removePhotoTitle": "프로필 사진을 삭제하시겠습니까?",
+    "removePhotoDescription": "프로필 사진을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+  }
   }
   

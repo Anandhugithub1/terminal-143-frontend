@@ -32,6 +32,49 @@
       "chinese": "จีน",
       "korean": "เกาหลี",
       "malay": "มาเลย์"
-    }
+    },
+
+
+     "profileEdit": {
+    "title": "แก้ไขโปรไฟล์",
+    "myBio": "ประวัติของฉัน",
+    "aboutMe": "เกี่ยวกับฉัน",
+    "interests": "ความสนใจ",
+    "socialLinks": "ลิงก์โซเชียล",
+    "saveSocialLinks": "บันทึกลิงก์โซเชียล",
+    "edit": "แก้ไข",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "bioPlaceholder": "เล่าอะไรเกี่ยวกับตัวคุณ...",
+    "bioEmptyText": "คลิก 'แก้ไข' เพื่อเพิ่มประวัติของคุณ",
+    "interestsEmptyText": "คลิก 'แก้ไข' เพื่อเลือกความสนใจของคุณ",
+    "socialPlaceholders": {
+      "IG": "ชื่อ Instagram ของคุณ",
+      "FB": "ลิงก์ Facebook ของคุณ",
+      "Telegram": "ชื่อผู้ใช้ Telegram ของคุณ",
+      "Line": "Line ID ของคุณ",
+      "Wechat": "WeChat ID ของคุณ",
+      "Other": "ลิงก์หรือชื่ออื่น ๆ"
+    },
+    "socialLabels": {
+      "IG": "Instagram",
+      "FB": "Facebook",
+      "Telegram": "Telegram",
+      "Line": "Line",
+      "Wechat": "WeChat",
+      "Other": "อื่น ๆ"
+    },
+    "showMorePlatforms": "แสดงแพลตฟอร์มทั้งหมด"
+  },
+  "avatarUpload": {
+    "takePhoto": "ถ่ายรูป",
+    "chooseGallery": "เลือกจากแกลเลอรี",
+    "removePhoto": "ลบรูป",
+    "removePhotoTitle": "ต้องการลบรูปโปรไฟล์หรือไม่?",
+    "removePhotoDescription": "คุณแน่ใจหรือว่าต้องการลบรูปโปรไฟล์ของคุณ? การกระทำนี้ไม่สามารถย้อนกลับได้"
+  }
+
+
+  
   }
   

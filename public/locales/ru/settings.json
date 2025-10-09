@@ -33,6 +33,47 @@
       "chinese": "Китайский",
       "korean": "Корейский",
       "malay": "Малайский"
-    }
+    },
+
+
+
+      "profileEdit": {
+    "title": "Редактировать профиль",
+    "myBio": "Моя биография",
+    "aboutMe": "О себе",
+    "interests": "Интересы",
+    "socialLinks": "Социальные ссылки",
+    "saveSocialLinks": "Сохранить ссылки",
+    "edit": "Редактировать",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "bioPlaceholder": "Расскажите что-нибудь о себе...",
+    "bioEmptyText": "Нажмите 'Редактировать', чтобы добавить биографию",
+    "interestsEmptyText": "Нажмите 'Редактировать', чтобы выбрать интересы",
+    "socialPlaceholders": {
+      "IG": "Ваш Instagram",
+      "FB": "Ссылка на Facebook",
+      "Telegram": "Ваш Telegram",
+      "Line": "Ваш Line ID",
+      "Wechat": "Ваш WeChat ID",
+      "Other": "Другая ссылка или аккаунт"
+    },
+    "socialLabels": {
+      "IG": "Instagram",
+      "FB": "Facebook",
+      "Telegram": "Telegram",
+      "Line": "Line",
+      "Wechat": "WeChat",
+      "Other": "Другое"
+    },
+    "showMorePlatforms": "Показать все платформы"
+  },
+  "avatarUpload": {
+    "takePhoto": "Сделать фото",
+    "chooseGallery": "Выбрать из галереи",
+    "removePhoto": "Удалить фото",
+    "removePhotoTitle": "Удалить фотографию профиля?",
+    "removePhotoDescription": "Вы уверены, что хотите удалить фото профиля? Это действие нельзя отменить."
+  }
   }
   

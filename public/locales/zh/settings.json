@@ -31,6 +31,46 @@
       "chinese": "中文",
       "korean": "韩语",
       "malay": "马来语"
-    }
+    },
+
+
+    "profileEdit": {
+    "title": "编辑个人资料",
+    "myBio": "我的简介",
+    "aboutMe": "关于我",
+    "interests": "兴趣",
+    "socialLinks": "社交链接",
+    "saveSocialLinks": "保存社交链接",
+    "edit": "编辑",
+    "save": "保存",
+    "cancel": "取消",
+    "bioPlaceholder": "写点关于自己的事...",
+    "bioEmptyText": "点击“编辑”添加个人简介",
+    "interestsEmptyText": "点击“编辑”选择兴趣",
+    "socialPlaceholders": {
+      "IG": "你的 Instagram 账号",
+      "FB": "你的 Facebook 链接",
+      "Telegram": "你的 Telegram 用户名",
+      "Line": "你的 Line ID",
+      "Wechat": "你的微信ID",
+      "Other": "其他链接或账号"
+    },
+    "socialLabels": {
+      "IG": "Instagram",
+      "FB": "Facebook",
+      "Telegram": "Telegram",
+      "Line": "Line",
+      "Wechat": "微信",
+      "Other": "其他"
+    },
+    "showMorePlatforms": "显示所有平台"
+  },
+  "avatarUpload": {
+    "takePhoto": "拍照",
+    "chooseGallery": "从相册选择",
+    "removePhoto": "移除照片",
+    "removePhotoTitle": "移除个人照片？",
+    "removePhotoDescription": "您确定要删除您的个人照片吗？此操作无法撤销。"
+  }
   }
   
