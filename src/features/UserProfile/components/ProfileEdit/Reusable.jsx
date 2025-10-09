@@ -1,5 +1,7 @@
 import Skeleton from "react-loading-skeleton";
 import { Suspense } from "react";
+import { ChevronLeft, Edit2 } from "lucide-react";
+
 // ======== Reusable Components ========
 export const LoadingSkeleton = ({ count = 3, height = 30 }) => (
   <Skeleton count={count} height={height} className="my-2" />
