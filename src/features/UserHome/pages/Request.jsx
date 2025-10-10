@@ -1,13 +1,12 @@
 // src/pages/RequestsPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useMatchRequests } from '../../UserActions/api';
-import { useMatchRequestResponse } from '../../UserActions/api';
+import { useMatchRequestResponse,useMatchRequests } from '../api';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../../components/Layout/TopNavigation';
 import BottomNav from '../../../components/Layout/BottomNavigation';
 import { ConfirmationModal } from '../../../components/Ui/Confirmation';
-import RequestItem from '../../UserActions/components/RequestItem';
+import RequestItem from '../components/Actions/RequestItem';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
