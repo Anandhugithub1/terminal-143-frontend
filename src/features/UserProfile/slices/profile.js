@@ -20,7 +20,9 @@ const initialState = {
 const userProfileSlice = createSlice({
   name: 'userProfile',
   initialState,
-  reducers: {},
+  reducers: {  setCurrentUser: (state, action) => {
+      state.currentUser = action.payload;
+    },},
   extraReducers: (builder) => {
     builder
       // fetchProfile
@@ -85,5 +87,6 @@ const userProfileSlice = createSlice({
       });
   },
 });
+export const { setCurrentUser } = userProfileSlice.actions; 
 
 export default userProfileSlice.reducer;

@@ -7,6 +7,7 @@ import { del } from "idb-keyval";
 
 import { useDispatch, useSelector } from "react-redux";
 import { uploadProfileImage, completeProfile } from "../../../UserProfile";
+import { setCurrentUser } from "../../../UserProfile";
 import { categories } from "../../utlis";
 
 export default function Step4Tags() {
@@ -41,7 +42,7 @@ export default function Step4Tags() {
     setIsSubmitting(true);
 
     try {
-      // 1️⃣ Upload photos and collect URLs in correct order
+      // 1️ Upload photos and collect URLs in correct order
       const photoUrls = [];
       if (userType === "mp" && formData.profilePhotos?.length) {
         for (let i = 0; i < formData.profilePhotos.length; i++) {
@@ -68,10 +69,10 @@ export default function Step4Tags() {
         }
       }
 
-      // 2️⃣ Build payload to match backend schema
+      // 2️ Build payload to match backend schema
       const payload = {
         ...formData,
-        interests: selectedInterests, // ✅ ensure correct field name
+        interests: selectedInterests, //  ensure correct field name
       };
       if (userType === "mp") {
         payload.photos = photoUrls; // array of strings
@@ -79,10 +80,13 @@ export default function Step4Tags() {
         payload.photo = photoUrls[0] || ""; // single string
       }
 
-      // 3️⃣ Dispatch completion
-      await dispatch(completeProfile(payload)).unwrap();
+      // 3️ Dispatch completion
+      // await dispatch(completeProfile(payload)).unwrap();
+      const response = await dispatch(completeProfile(payload)).unwrap();
+dispatch(setCurrentUser(response)); //  correct
 
-      // 4️⃣ Clear persisted form data & navigate
+
+      // 4️ Clear persisted form data & navigate
       clearFormData();
       await del("profilePhoto"); // For single photo users
       await del("profilePhotos"); // For multi-photo users
@@ -90,7 +94,7 @@ export default function Step4Tags() {
     } catch (err) {
       console.error("Profile completion error:", err);
     } finally {
-      setIsSubmitting(false); // ✅ Always re-enable in case of error
+      setIsSubmitting(false); //  Always re-enable in case of error
     }
   };
 
@@ -103,7 +107,7 @@ export default function Step4Tags() {
 
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          Final Touch! 🌟
+          Final Touch! 
         </h2>
         <p className="text-gray-500">
           Select your interests to find better matches
