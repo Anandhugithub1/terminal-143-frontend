@@ -22,7 +22,18 @@ const userProfileSlice = createSlice({
   initialState,
   reducers: {  setCurrentUser: (state, action) => {
       state.currentUser = action.payload;
-    },},
+    },
+   resetProfileState: (state) => {
+      state.currentUser = null;
+      state.status = 'idle';
+      state.error = null;
+      state.updateStatus = 'idle';
+      state.uploadStatus = 'idle';
+      state.completeStatus = 'idle';
+      state.uploadError = null;
+    },
+  
+  },
   extraReducers: (builder) => {
     builder
       // fetchProfile
@@ -87,6 +98,6 @@ const userProfileSlice = createSlice({
       });
   },
 });
-export const { setCurrentUser } = userProfileSlice.actions; 
+export const { setCurrentUser,resetProfileState } = userProfileSlice.actions; 
 
 export default userProfileSlice.reducer;

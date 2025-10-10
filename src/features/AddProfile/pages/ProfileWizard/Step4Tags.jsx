@@ -7,7 +7,7 @@ import { del } from "idb-keyval";
 
 import { useDispatch, useSelector } from "react-redux";
 import { uploadProfileImage, completeProfile } from "../../../UserProfile";
-import { setCurrentUser } from "../../../UserProfile";
+import { setCurrentUser,resetProfileState } from "../../../UserProfile";
 import { categories } from "../../utlis";
 
 export default function Step4Tags() {
@@ -70,7 +70,9 @@ export default function Step4Tags() {
       else payload.photo = photoUrls[0] || "";
 
       // 3️ Complete profile
-     await dispatch(completeProfile(payload)).unwrap();
+      const completedProfile = await dispatch(completeProfile(payload)).unwrap();
+      dispatch(setCurrentUser(completedProfile));
+dispatch(resetProfileState());
 
       // 4️ Clear local form data
       clearFormData();
