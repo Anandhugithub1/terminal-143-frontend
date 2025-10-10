@@ -40,7 +40,7 @@ export default function Step4Tags() {
     setIsSubmitting(true);
 
     try {
-      // 1️⃣ Upload photos
+      // 1️ Upload photos
       const photoUrls = [];
       if (userType === "mp" && formData.profilePhotos?.length) {
         for (let i = 0; i < formData.profilePhotos.length; i++) {
@@ -64,21 +64,20 @@ export default function Step4Tags() {
         }
       }
 
-      // 2️⃣ Build payload
+      // 2️ Build payload
       const payload = { ...formData, interests: selectedInterests };
       if (userType === "mp") payload.photos = photoUrls;
       else payload.photo = photoUrls[0] || "";
 
-      // 3️⃣ Complete profile
-      const completedProfile = await dispatch(completeProfile(payload)).unwrap();
-      dispatch(setCurrentUser(completedProfile));
+      // 3️ Complete profile
+     await dispatch(completeProfile(payload)).unwrap();
 
-      // 4️⃣ Clear local form data
+      // 4️ Clear local form data
       clearFormData();
       await del("profilePhoto");
       await del("profilePhotos");
 
-      // 5️⃣ Navigate to home with a retry flag
+      // 5️ Navigate to home with a retry flag
       navigate("/home", { state: { profileJustCompleted: true } });
     } catch (err) {
       console.error("Profile completion error:", err);
