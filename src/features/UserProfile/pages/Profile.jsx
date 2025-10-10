@@ -29,16 +29,16 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.svg';
 
-  // pull profile & status from our userProfile slice
-  const profile = useSelector((state) => state.userProfile.currentUser);
-  const status  = useSelector((state) => state.userProfile.status);
+// pull profile & status from our userProfile slice
+const profile = useSelector((state) => state.userProfile.currentUser);
+const status  = useSelector((state) => state.userProfile.status);
 
-  useEffect(() => {
-    if (status === 'idle') {
-      dispatch(fetchProfile());
-    }
-  }, [dispatch, status]);
-
+useEffect(() => {
+  // Only fetch if we have NO profile and haven't already tried
+  if (status === 'idle' && !profile) {
+    dispatch(fetchProfile());
+  }
+}, [status, profile, dispatch]);
   // Skeleton loading state
   if (status !== 'succeeded') {
     return (
