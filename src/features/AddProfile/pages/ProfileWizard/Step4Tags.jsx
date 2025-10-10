@@ -7,7 +7,7 @@ import { del } from "idb-keyval";
 
 import { useDispatch, useSelector } from "react-redux";
 import { uploadProfileImage, completeProfile } from "../../../UserProfile";
-import { setCurrentUser,resetProfileState } from "../../../UserProfile";
+import {  resetProfileState } from "../../../UserProfile";
 import { categories } from "../../utlis";
 
 export default function Step4Tags() {
@@ -46,7 +46,10 @@ export default function Step4Tags() {
         for (let i = 0; i < formData.profilePhotos.length; i++) {
           try {
             const { publicUrl } = await dispatch(
-              uploadProfileImage({ file: formData.profilePhotos[i], photoIndex: i })
+              uploadProfileImage({
+                file: formData.profilePhotos[i],
+                photoIndex: i,
+              })
             ).unwrap();
             photoUrls.push(publicUrl);
           } catch (err) {
@@ -70,9 +73,8 @@ export default function Step4Tags() {
       else payload.photo = photoUrls[0] || "";
 
       // 3️ Complete profile
-      const completedProfile = await dispatch(completeProfile(payload)).unwrap();
-      dispatch(setCurrentUser(completedProfile));
-dispatch(resetProfileState());
+      await dispatch(completeProfile(payload)).unwrap();
+      dispatch(resetProfileState());
 
       // 4️ Clear local form data
       clearFormData();
@@ -96,13 +98,17 @@ dispatch(resetProfileState());
 
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Final Touch!</h2>
-        <p className="text-gray-500">Select your interests to find better matches</p>
+        <p className="text-gray-500">
+          Select your interests to find better matches
+        </p>
       </div>
 
       <div className="space-y-8">
         {Object.entries(categories).map(([title, items]) => (
           <div key={title}>
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">{title}</h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">
+              {title}
+            </h3>
             <div className="flex flex-wrap gap-3">
               {items.map((item) => (
                 <button

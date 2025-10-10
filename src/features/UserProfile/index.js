@@ -3,4 +3,4 @@
 export * from './api/profile';
 export * from './thunks/profile';
 export { default as userProfileReducer } from './slices/profile';
-export { setCurrentUser,resetProfileState } from './slices/profile'; 
+export { resetProfileState } from './slices/profile'; 

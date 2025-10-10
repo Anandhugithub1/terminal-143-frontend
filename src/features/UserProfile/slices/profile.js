@@ -20,9 +20,7 @@ const initialState = {
 const userProfileSlice = createSlice({
   name: 'userProfile',
   initialState,
-  reducers: {  setCurrentUser: (state, action) => {
-      state.currentUser = action.payload;
-    },
+  reducers: { 
    resetProfileState: (state) => {
       state.currentUser = null;
       state.status = 'idle';
@@ -98,6 +96,6 @@ const userProfileSlice = createSlice({
       });
   },
 });
-export const { setCurrentUser,resetProfileState } = userProfileSlice.actions; 
+export const { resetProfileState } = userProfileSlice.actions; 
 
 export default userProfileSlice.reducer;

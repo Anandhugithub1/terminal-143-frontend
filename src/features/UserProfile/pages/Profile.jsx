@@ -41,14 +41,7 @@ export default function ProfilePage() {
       dispatch(fetchProfile());
     }
 
-    // // Retry logic only if profileJustCompleted === true
-    // if (profileJustCompleted && !profile && retryCount < 3) {
-    //   const timer = setTimeout(() => {
-    //     dispatch(fetchProfile());
-    //     setRetryCount((c) => c + 1);
-    //   }, 1000); // retry after 1s
-    //   return () => clearTimeout(timer);
-    // }
+
   }, [status, profile, dispatch, retryCount, profileJustCompleted]);
   // Skeleton loading state
   if (status !== 'succeeded') {
