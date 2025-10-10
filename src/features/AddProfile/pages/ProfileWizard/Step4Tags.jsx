@@ -17,10 +17,8 @@ export default function Step4Tags() {
   const userType = localStorage.getItem("userType");
 
   const { completeStatus, error: apiError } = useSelector((s) => s.userProfile);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Toggle tag selection
   const toggle = (category, value) => {
     const current = formData[category] || [];
     setFormData({
@@ -38,24 +36,21 @@ export default function Step4Tags() {
   const handleBack = () => navigate("/complete/photo");
 
   const handleSubmit = async () => {
-    if (isSubmitting) return; // prevent double-clicks
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
     try {
-      // 1️ Upload photos and collect URLs in correct order
+      // 1️⃣ Upload photos
       const photoUrls = [];
       if (userType === "mp" && formData.profilePhotos?.length) {
         for (let i = 0; i < formData.profilePhotos.length; i++) {
           try {
             const { publicUrl } = await dispatch(
-              uploadProfileImage({
-                file: formData.profilePhotos[i],
-                photoIndex: i,
-              })
+              uploadProfileImage({ file: formData.profilePhotos[i], photoIndex: i })
             ).unwrap();
             photoUrls.push(publicUrl);
-          } catch (uploadErr) {
-            console.error(`Photo ${i + 1} upload failed:`, uploadErr);
+          } catch (err) {
+            console.error(`Photo ${i + 1} upload failed:`, err);
           }
         }
       } else if (formData.profilePhoto) {
@@ -64,41 +59,34 @@ export default function Step4Tags() {
             uploadProfileImage({ file: formData.profilePhoto, photoIndex: 0 })
           ).unwrap();
           photoUrls.push(publicUrl);
-        } catch (uploadErr) {
-          console.error("Profile photo upload failed:", uploadErr);
+        } catch (err) {
+          console.error("Profile photo upload failed:", err);
         }
       }
 
-      // 2️ Build payload to match backend schema
-      const payload = {
-        ...formData,
-        interests: selectedInterests, //  ensure correct field name
-      };
-      if (userType === "mp") {
-        payload.photos = photoUrls; // array of strings
-      } else {
-        payload.photo = photoUrls[0] || ""; // single string
-      }
+      // 2️⃣ Build payload
+      const payload = { ...formData, interests: selectedInterests };
+      if (userType === "mp") payload.photos = photoUrls;
+      else payload.photo = photoUrls[0] || "";
 
-      // 3️ Dispatch completion
-      // await dispatch(completeProfile(payload)).unwrap();
-      const response = await dispatch(completeProfile(payload)).unwrap();
-dispatch(setCurrentUser(response)); //  correct
+      // 3️⃣ Complete profile
+      const completedProfile = await dispatch(completeProfile(payload)).unwrap();
+      dispatch(setCurrentUser(completedProfile));
 
-
-      // 4️ Clear persisted form data & navigate
+      // 4️⃣ Clear local form data
       clearFormData();
-      await del("profilePhoto"); // For single photo users
-      await del("profilePhotos"); // For multi-photo users
-      navigate("/home");
+      await del("profilePhoto");
+      await del("profilePhotos");
+
+      // 5️⃣ Navigate to home with a retry flag
+      navigate("/home", { state: { profileJustCompleted: true } });
     } catch (err) {
       console.error("Profile completion error:", err);
     } finally {
-      setIsSubmitting(false); //  Always re-enable in case of error
+      setIsSubmitting(false);
     }
   };
 
-  // Combine both local + redux loading states
   const isLoading = isSubmitting || completeStatus === "loading";
 
   return (
@@ -106,32 +94,26 @@ dispatch(setCurrentUser(response)); //  correct
       <ProgressBar step={4} totalSteps={4} />
 
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          Final Touch! 
-        </h2>
-        <p className="text-gray-500">
-          Select your interests to find better matches
-        </p>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Final Touch!</h2>
+        <p className="text-gray-500">Select your interests to find better matches</p>
       </div>
 
       <div className="space-y-8">
         {Object.entries(categories).map(([title, items]) => (
           <div key={title}>
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">
-              {title}
-            </h3>
+            <h3 className="text-lg font-semibold mb-4 text-gray-900">{title}</h3>
             <div className="flex flex-wrap gap-3">
               {items.map((item) => (
                 <button
                   key={item}
+                  type="button"
+                  disabled={isLoading}
                   onClick={() => toggle(title, item)}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
                     formData[title]?.includes(item)
                       ? "bg-pink-500 text-white shadow-md shadow-pink-500/20"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
-                  type="button"
-                  disabled={isLoading}
                 >
                   {item}
                 </button>
@@ -155,8 +137,7 @@ dispatch(setCurrentUser(response)); //  correct
         <button
           onClick={handleSubmit}
           disabled={isLoading}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
-                     text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
+          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all disabled:opacity-50"
         >
           {isLoading ? "Saving..." : "Finish Setup"}
         </button>

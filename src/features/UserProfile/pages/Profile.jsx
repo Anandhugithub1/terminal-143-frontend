@@ -1,7 +1,7 @@
 /* ProfilePage.jsx */
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 
 import TopNav from '../../../components/Layout/TopNavigation';
 import BottomNav from '../../../components/Layout/BottomNavigation';
@@ -22,23 +22,34 @@ const socialIconMap = {
 };
 
 
+  const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.svg';
 
 
 export default function ProfilePage() {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
   const navigate = useNavigate();
-  const avatarimage ='https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.svg';
+  const location = useLocation(); // to read state passed from navigate()
+  const profile = useSelector((state) => state.userProfile.currentUser);
+  const status = useSelector((state) => state.userProfile.status);
 
-// pull profile & status from our userProfile slice
-const profile = useSelector((state) => state.userProfile.currentUser);
-const status  = useSelector((state) => state.userProfile.status);
+  const [retryCount, setRetryCount] = useState(0);
 
-useEffect(() => {
-  // Only fetch if we have NO profile and haven't already tried
-  if (status === 'idle' && !profile) {
-    dispatch(fetchProfile());
-  }
-}, [status, profile, dispatch]);
+  const profileJustCompleted = location.state?.profileJustCompleted;
+
+  useEffect(() => {
+    if (status === 'idle' && !profile) {
+      dispatch(fetchProfile());
+    }
+
+    // Retry logic only if profileJustCompleted === true
+    if (profileJustCompleted && !profile && retryCount < 3) {
+      const timer = setTimeout(() => {
+        dispatch(fetchProfile());
+        setRetryCount((c) => c + 1);
+      }, 1000); 
+      return () => clearTimeout(timer);
+    }
+  }, [status, profile, dispatch, retryCount, profileJustCompleted]);
   // Skeleton loading state
   if (status !== 'succeeded') {
     return (
@@ -138,9 +149,6 @@ useEffect(() => {
     </div>
   </div>
 )}
-
-
-
 
         {/* Actions */}
         <div className="mt-8 flex flex-col gap-4 px-6">
