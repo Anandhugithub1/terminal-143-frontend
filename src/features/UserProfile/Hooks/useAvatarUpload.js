@@ -1,4 +1,6 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 export function useAvatarUpload(uploadImage, updateProfileData) {
   const [showUpload, setShowUpload] = useState(false);
@@ -19,10 +21,17 @@ export function useAvatarUpload(uploadImage, updateProfileData) {
 
   const handleFileChange = (e, userType) => {
     const file = e.target.files?.[0];
-    if (file) {
-      uploadImage(file, userType === 'fm' ? 0 : undefined);
+    if (!file) return;
+
+    // ✅ Validate file type
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      alert('Invalid file format. Only JPG, JPEG, PNG, or WEBP images are allowed.');
       e.target.value = '';
+      return;
     }
+
+    uploadImage(file, userType === 'fm' ? 0 : undefined);
+    e.target.value = '';
   };
 
   const handleRemovePhoto = () => {

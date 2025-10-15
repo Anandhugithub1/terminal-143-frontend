@@ -1,4 +1,3 @@
-// Hooks/EditProfile.js
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -6,6 +5,8 @@ import {
   updateProfile,
   uploadProfileImage,
 } from '../features/UserProfile';
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 export function useEditableProfile() {
   const dispatch = useDispatch();
@@ -16,15 +17,11 @@ export function useEditableProfile() {
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    if (reduxStatus === 'idle') {
-      fetchProfileData();
-    }
+    if (reduxStatus === 'idle') fetchProfileData();
   }, [reduxStatus]);
 
   useEffect(() => {
-    if (reduxStatus === 'succeeded' && profile) {
-      setLocalAvatar(profile.photo || '');
-    }
+    if (reduxStatus === 'succeeded' && profile) setLocalAvatar(profile.photo || '');
   }, [reduxStatus, profile]);
 
   const fetchProfileData = async () => {
@@ -42,9 +39,7 @@ export function useEditableProfile() {
     try {
       await dispatch(updateProfile({ [key]: value })).unwrap();
 
-      if (key === 'photo' && !value) {
-        setLocalAvatar('');
-      }
+      if (key === 'photo' && !value) setLocalAvatar('');
 
       await fetchProfileData();
     } catch (err) {
@@ -53,6 +48,12 @@ export function useEditableProfile() {
   };
 
   const uploadImage = async (file, photoIndex = 0) => {
+    // ✅ Validate file type
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      alert('Invalid file format. Only JPG, JPEG, PNG, or WEBP images are allowed.');
+      return;
+    }
+
     const localURL = URL.createObjectURL(file);
     setLocalAvatar(localURL);
     setIsUploading(true);

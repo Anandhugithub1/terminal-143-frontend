@@ -33,8 +33,23 @@ export const ProfileAvatar = ({
         />
       </div>
     )}
-    <input type="file" accept="image/*" ref={galleryRef} onChange={handleFileChange} className="hidden" />
-    <input type="file" accept="image/*" capture="environment" ref={cameraRef} onChange={handleFileChange} className="hidden" />
+    
+    {/*  Restrict to only standard image formats */}
+    <input
+      type="file"
+      accept="image/jpeg,image/jpg,image/png,image/webp"
+      ref={galleryRef}
+      onChange={handleFileChange}
+      className="hidden"
+    />
+    <input
+      type="file"
+      accept="image/jpeg,image/jpg,image/png,image/webp"
+      capture="environment"
+      ref={cameraRef}
+      onChange={handleFileChange}
+      className="hidden"
+    />
   </div>
 );
 
