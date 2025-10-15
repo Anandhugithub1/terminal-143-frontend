@@ -5,7 +5,7 @@ import { ChevronLeft, Edit2 } from "lucide-react";
 import "@fontsource-variable/inter";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useTranslation } from "react-i18next";
-
+import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import { useAvatarUpload } from "../Hooks/useAvatarUpload";
 import { interestMap, getProfileFields } from "../../../Utlis/utlis";
 import { useEditableProfile } from "../../../Hooks/EditProfile";
@@ -77,7 +77,8 @@ export default function ProfileEditPage() {
             </button>
             <h1 className="text-lg font-semibold text-gray-800">{t("profileEdit.title")}</h1>
           </div>
-          <div className="flex flex-col items-center mt-6">
+            <div className="flex flex-col items-center mt-6 relative">
+
             <ProfileAvatar
               src={localAvatar || AVATAR_PLACEHOLDER}
               toggleUpload={toggleUpload}
@@ -91,6 +92,12 @@ export default function ProfileEditPage() {
               handleRemovePhoto={handleRemovePhoto}
               cancelUpload={cancelUpload}
             />
+
+              {isUploading && (
+    <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded-full">
+      <LoadingSpinner />
+    </div>
+  )}
           </div>
         </section>
 

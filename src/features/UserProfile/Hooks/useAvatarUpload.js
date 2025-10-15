@@ -32,8 +32,7 @@ export function useAvatarUpload(uploadImage, updateProfileData) {
 
   return {
     showUpload,
-    toggleUpload, // ✅ return this
-    setShowUpload,
+    toggleUpload, 
     openGallery,
     openCamera,
     galleryRef,
