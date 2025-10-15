@@ -61,9 +61,9 @@ export default function ProfileEditPage() {
     updateProfileData("socialMediaLinks", formattedLinks);
   }, [socialLinks, updateProfileData]);
 
- if ((status === "idle" || status === "loading") && !profile) {
-  return <LoadingSpinner/> ;
-}
+  if (status === "idle" || status === "loading" || !profile || isUploading || isFetching) {
+    return <LoadingSpinner  />;
+  }
 
   // ======== Render ========
   return (
@@ -77,8 +77,7 @@ export default function ProfileEditPage() {
             </button>
             <h1 className="text-lg font-semibold text-gray-800">{t("profileEdit.title")}</h1>
           </div>
-            <div className="flex flex-col items-center mt-6 relative">
-
+          <div className="flex flex-col items-center mt-6">
             <ProfileAvatar
               src={localAvatar || AVATAR_PLACEHOLDER}
               toggleUpload={toggleUpload}
@@ -92,12 +91,6 @@ export default function ProfileEditPage() {
               handleRemovePhoto={handleRemovePhoto}
               cancelUpload={cancelUpload}
             />
-
-              {isUploading && (
-    <div className="absolute inset-0 flex items-center justify-center bg-white/70 rounded-full">
-      <LoadingSpinner />
-    </div>
-  )}
           </div>
         </section>
 
