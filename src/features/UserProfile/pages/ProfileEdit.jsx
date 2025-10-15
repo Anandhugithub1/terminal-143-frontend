@@ -62,7 +62,7 @@ export default function ProfileEditPage() {
   }, [socialLinks, updateProfileData]);
 
  if ((status === "idle" || status === "loading") && !profile) {
-  return <LoadingSkeleton height={500} count={1} />;
+  return <LoadingSpinner/> ;
 }
 
   // ======== Render ========
