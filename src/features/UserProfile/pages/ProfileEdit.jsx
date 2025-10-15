@@ -61,9 +61,9 @@ export default function ProfileEditPage() {
     updateProfileData("socialMediaLinks", formattedLinks);
   }, [socialLinks, updateProfileData]);
 
-  if (status === "idle" || status === "loading" || !profile || isUploading || isFetching) {
-    return <LoadingSkeleton height={500} count={1} />;
-  }
+ if ((status === "idle" || status === "loading") && !profile) {
+  return <LoadingSkeleton height={500} count={1} />;
+}
 
   // ======== Render ========
   return (
