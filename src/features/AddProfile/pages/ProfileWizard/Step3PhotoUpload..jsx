@@ -3,10 +3,10 @@ import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import PhotoGrid from '../../components/PhotoGrid';
-import { set, get } from 'idb-keyval';
+import { set } from 'idb-keyval';
 
 const Step3PhotoUpload = () => {
-  const { formData, setFormData } = useWizard();
+  const { formData, setFormData, removePhoto, removeProfilePhoto } = useWizard();
   const userType = localStorage.getItem('userType');
   const navigate = useNavigate();
   const inputRef = useRef(null);
@@ -15,20 +15,6 @@ const Step3PhotoUpload = () => {
 
   const maxSlots = userType === 'mp' ? 3 : 1;
   const uploadedPhotos = userType === 'mp' ? formData.profilePhotos || [] : [formData.profilePhoto];
-
-  // Load persisted photos from IndexedDB
-  useEffect(() => {
-    const loadPhotos = async () => {
-      if (userType === 'mp') {
-        const photos = await get('profilePhotos');
-        if (photos?.length) setFormData((prev) => ({ ...prev, profilePhotos: photos }));
-      } else {
-        const photo = await get('profilePhoto');
-        if (photo) setFormData((prev) => ({ ...prev, profilePhoto: photo }));
-      }
-    };
-    loadPhotos();
-  }, [setFormData, userType]);
 
   const handleSlotClick = (index) => {
     setSelectedSlot(index);
@@ -40,22 +26,20 @@ const Step3PhotoUpload = () => {
     if (!file) return;
 
     setUploading(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate upload
+    await new Promise((r) => setTimeout(r, 500)); // simulate upload
 
     if (userType === 'mp') {
       const existingPhotos = formData.profilePhotos || [];
       let newPhotos;
-
       if (selectedSlot !== null && existingPhotos[selectedSlot]) {
-        // Replace photo
+        // Replace
         newPhotos = existingPhotos.map((p, idx) => (idx === selectedSlot ? file : p));
       } else if (existingPhotos.length < maxSlots) {
-        // Add new photo
+        // Add new
         newPhotos = [...existingPhotos, file];
       } else {
         newPhotos = existingPhotos;
       }
-
       setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
       await set('profilePhotos', newPhotos);
     } else {
@@ -67,22 +51,9 @@ const Step3PhotoUpload = () => {
     setSelectedSlot(null);
   };
 
-  const handleRemove = async (index) => {
-    if (userType === 'mp') {
-      const newPhotos = [...(formData.profilePhotos || [])];
-      newPhotos.splice(index, 1);
-      setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
-      await set('profilePhotos', newPhotos);
-    } else {
-      setFormData((prev) => ({ ...prev, profilePhoto: null }));
-      await set('profilePhoto', null);
-    }
-  };
-
   const handleNext = () => navigate('/complete/tags');
   const handleBack = () => navigate('/complete/bio');
 
-  // Validation for mp users
   const mpPhotosValid = userType !== 'mp' || (uploadedPhotos.length >= maxSlots);
 
   return (
@@ -110,7 +81,7 @@ const Step3PhotoUpload = () => {
         photos={uploadedPhotos}
         maxSlots={maxSlots}
         onSlotClick={handleSlotClick}
-        onRemove={handleRemove}
+        onRemove={userType === 'mp' ? removePhoto : removeProfilePhoto}
         uploading={uploading}
       />
 

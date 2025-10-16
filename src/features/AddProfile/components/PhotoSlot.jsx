@@ -13,15 +13,17 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
     let url;
     try {
       if (file instanceof File) {
-        url = URL.createObjectURL(file);
-        setPreview(url);
+        // Show thumbnail immediately
+        const reader = new FileReader();
+        reader.onload = (e) => setPreview(e.target.result);
+        reader.readAsDataURL(file);
       } else if (typeof file === 'string') {
         setPreview(file);
       } else {
         setPreview(null);
       }
     } catch (err) {
-      console.error('Failed to create preview URL:', err);
+      console.error(err);
       setPreview(null);
     }
 
@@ -32,7 +34,6 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
 
   return (
     <div className="relative aspect-square bg-gray-50 rounded-2xl overflow-hidden group">
-      {/* Clickable overlay for adding/replacing photo */}
       <div
         className="absolute inset-0 cursor-pointer"
         onClick={onClick}
@@ -50,12 +51,11 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
         />
       )}
 
-      {/* Remove button */}
       {file && (
         <button
           onClick={(e) => {
-            e.stopPropagation(); // Prevent triggering parent click
-            onRemove();
+            e.stopPropagation();
+            onRemove(index);
           }}
           className="absolute top-1 right-1 w-10 h-10 flex items-center justify-center 
                      bg-white rounded-full shadow-md text-red-600 hover:bg-red-100 z-10 
@@ -75,17 +75,9 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
         </button>
       )}
 
-      {/* Upload spinner */}
-      {!file && uploading && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-6 h-6 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
-
-      {/* Add photo icon for empty slot with animation */}
       {!file && !uploading && (
         <div
-          className={`absolute inset-0 flex items-center justify-center text-pink-500 z-0 
+          className={`absolute inset-0 flex items-center justify-center text-pink-500 z-0
                       transition-transform duration-150 ${isPressed ? 'scale-90' : 'scale-100'}`}
         >
           <svg
@@ -95,12 +87,14 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
             viewBox="0 0 24 24"
             strokeWidth={2}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4v16m8-8H4"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
+        </div>
+      )}
+
+      {uploading && !file && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-6 h-6 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
     </div>

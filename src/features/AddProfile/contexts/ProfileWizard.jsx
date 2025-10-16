@@ -1,6 +1,5 @@
-/* ========== WizardContext.jsx ========== */
 import { createContext, useContext, useState, useEffect } from 'react';
-import { get, del } from 'idb-keyval';
+import { get, set, del } from 'idb-keyval';
 
 const WizardContext = createContext();
 
@@ -18,13 +17,12 @@ export const WizardProvider = ({ children }) => {
     languages: [],
   };
 
-  // --- Initialize state from sessionStorage synchronously ---
   const saved = sessionStorage.getItem(STORAGE_KEY);
   const initialData = saved ? JSON.parse(saved) : defaultFormData;
 
   const [formData, setFormData] = useState(initialData);
 
-  // --- Load photos from IndexedDB asynchronously and merge into formData ---
+  // --- Load photos from IndexedDB asynchronously and create thumbnails ---
   useEffect(() => {
     const loadFiles = async () => {
       try {
@@ -32,7 +30,7 @@ export const WizardProvider = ({ children }) => {
         const profilePhotos = await get('profilePhotos');
 
         setFormData((prev) => ({
-          ...prev,                      // keep typed/sessionStorage data
+          ...prev,
           profilePhoto: profilePhoto || prev.profilePhoto,
           profilePhotos: profilePhotos || prev.profilePhotos,
         }));
@@ -43,7 +41,7 @@ export const WizardProvider = ({ children }) => {
     loadFiles();
   }, []);
 
-  // --- Persist non-file fields to sessionStorage whenever formData changes ---
+  // --- Persist non-file fields to sessionStorage ---
   useEffect(() => {
     try {
       const { profilePhoto, profilePhotos, ...rest } = formData;
@@ -53,21 +51,44 @@ export const WizardProvider = ({ children }) => {
     }
   }, [formData]);
 
-  // --- Clear all form data (sessionStorage + IndexedDB) ---
+  // --- Clear all form data ---
   const clearFormData = async () => {
     sessionStorage.removeItem(STORAGE_KEY);
     setFormData(defaultFormData);
-
     try {
       await del('profilePhoto');
       await del('profilePhotos');
     } catch (err) {
-      console.error('Failed to clear photo data from IndexedDB:', err);
+      console.error('Failed to clear photos from IndexedDB:', err);
     }
   };
 
+  // --- Remove a single photo ---
+  const removePhoto = async (index) => {
+    if (!formData.profilePhotos || !formData.profilePhotos[index]) return;
+
+    const newPhotos = [...formData.profilePhotos];
+    newPhotos.splice(index, 1);
+    setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
+    await set('profilePhotos', newPhotos);
+  };
+
+  // --- Remove single profilePhoto ---
+  const removeProfilePhoto = async () => {
+    setFormData((prev) => ({ ...prev, profilePhoto: null }));
+    await del('profilePhoto');
+  };
+
   return (
-    <WizardContext.Provider value={{ formData, setFormData, clearFormData }}>
+    <WizardContext.Provider
+      value={{
+        formData,
+        setFormData,
+        clearFormData,
+        removePhoto,
+        removeProfilePhoto,
+      }}
+    >
       {children}
     </WizardContext.Provider>
   );
