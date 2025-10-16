@@ -1,20 +1,16 @@
 import React from 'react';
 import PhotoSlot from './PhotoSlot';
 
-const PhotoGrid = ({ photos, maxSlots, onSlotClick, onRemove, uploading }) => {
-  // Tailwind does not support dynamic class names like sm:grid-cols-${...}
-  const gridCols = maxSlots === 1 ? 'grid-cols-1' : maxSlots === 2 ? 'grid-cols-2' : 'grid-cols-3';
-
+const PhotoGrid = ({ photos, maxSlots, onSlotClick, uploading }) => {
   return (
-    <div className={`grid gap-4 ${gridCols} sm:${gridCols}`}>
+    <div className={`grid grid-cols-2 gap-4 sm:grid-cols-${maxSlots > 2 ? maxSlots : 2}`}>
       {Array.from({ length: maxSlots }, (_, index) => (
         <PhotoSlot
           key={index}
           file={photos[index]}
-          index={index}
-          onClick={() => onSlotClick(index)}
-          onRemove={onRemove}
+          onClick={onSlotClick}
           uploading={uploading}
+          index={index}
         />
       ))}
     </div>

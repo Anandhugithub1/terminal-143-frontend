@@ -1,94 +1,116 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { useWizard } from '../../contexts/ProfileWizard';
+import { useNavigate } from 'react-router-dom';
+import { ProgressBar } from './Progess';
+import PhotoGrid from '../../components/PhotoGrid';
+import { set, get, del } from 'idb-keyval';
 
-const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
-  const [preview, setPreview] = useState(null);
-  const [isPressed, setIsPressed] = useState(false);
+const Step3PhotoUpload = () => {
+  const { formData, setFormData } = useWizard();
+  const userType = localStorage.getItem('userType');
+  const navigate = useNavigate();
+  const inputRef = useRef(null);
+  const [uploading, setUploading] = useState(false);
 
+  const maxSlots = userType === 'mp' ? 3 : 1;
+  const uploadedPhotos = userType === 'mp' ? formData.profilePhotos || [] : [formData.profilePhoto];
+
+  // Load persisted photos from IndexedDB on mount
   useEffect(() => {
-    if (!file) {
-      setPreview(null);
-      return;
+    const loadPhotos = async () => {
+      if (userType === 'mp') {
+        const photos = await get('profilePhotos');
+        if (photos?.length) {
+          setFormData((prev) => ({ ...prev, profilePhotos: photos }));
+        }
+      } else {
+        const photo = await get('profilePhoto');
+        if (photo) {
+          setFormData((prev) => ({ ...prev, profilePhoto: photo }));
+        }
+      }
+    };
+    loadPhotos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate upload
+
+    if (userType === 'mp') {
+      const existingPhotos = formData.profilePhotos || [];
+      if (existingPhotos.length < maxSlots) {
+        const newPhotos = [...existingPhotos, file];
+        setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
+        await set('profilePhotos', newPhotos); // Persist in IndexedDB
+      }
+    } else {
+      setFormData((prev) => ({ ...prev, profilePhoto: file }));
+      await set('profilePhoto', file);
     }
 
-    try {
-      if (file instanceof File) {
-        const reader = new FileReader();
-        reader.onload = (e) => setPreview(e.target.result);
-        reader.readAsDataURL(file);
-      } else if (typeof file === 'string') {
-        setPreview(file);
-      }
-    } catch (err) {
-      console.error(err);
-      setPreview(null);
-    }
-  }, [file]);
+    setUploading(false);
+  };
+
+  const handleSlotClick = () => {
+    if (userType === 'mp' && uploadedPhotos.length >= maxSlots) return;
+    inputRef.current?.click();
+  };
+
+  const handleNext = () => navigate('/complete/tags');
+  const handleBack = () => navigate('/complete/bio');
 
   return (
-    <div
-      className="relative aspect-square bg-gray-50 rounded-2xl overflow-hidden group cursor-pointer"
-      onClick={onClick}
-      onMouseDown={() => setIsPressed(true)}
-      onMouseUp={() => setIsPressed(false)}
-      onTouchStart={() => setIsPressed(true)}
-      onTouchEnd={() => setIsPressed(false)}
-    >
-      {preview && (
-        <img
-          src={preview}
-          alt={`Preview ${index + 1}`}
-          className="w-full h-full object-cover"
-        />
-      )}
+    <div className="animate-fade-in">
+      <ProgressBar step={3} totalSteps={4} />
 
-      {file && (
+      <div className="text-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          {userType === 'mp' ? 'Show Your Sparkle ✨' : 'Upload Your Photo'}
+        </h2>
+        <p className="text-gray-500">
+          {userType === 'mp'
+            ? `Upload at least ${maxSlots} photos to get started`
+            : 'Upload photo to get started'}
+        </p>
+      </div>
+
+      <PhotoGrid
+        photos={uploadedPhotos}
+        maxSlots={maxSlots}
+        onSlotClick={handleSlotClick}
+        uploading={uploading}
+      />
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handlePhotoUpload}
+      />
+
+      <div className="mt-8 flex gap-4">
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove(index);
-          }}
-          className="absolute top-1 right-1 w-12 h-12 flex items-center justify-center 
-                     bg-white rounded-full shadow-md text-red-600 hover:bg-red-100 z-20 
-                     transition-all"
-          aria-label="Remove photo"
+          onClick={handleBack}
+          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          Back
         </button>
-      )}
-
-      {!file && !uploading && (
-        <div
-          className={`absolute inset-0 flex items-center justify-center text-pink-500 z-10
-                      transition-transform duration-150 ${isPressed ? 'scale-90' : 'scale-100'}`}
+        <button
+          onClick={handleNext}
+          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
+                     text-white font-semibold py-3 px-6 rounded-xl transition-all"
         >
-          <svg
-            className="w-8 h-8"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-        </div>
-      )}
-
-      {uploading && !file && (
-        <div className="absolute inset-0 flex items-center justify-center z-10">
-          <div className="w-6 h-6 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
+          Next
+        </button>
+      </div>
     </div>
   );
 };
 
-export default PhotoSlot;
+export default Step3PhotoUpload;
