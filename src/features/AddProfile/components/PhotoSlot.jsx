@@ -10,39 +10,30 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
       return;
     }
 
-    let url;
     try {
       if (file instanceof File) {
-        // Show thumbnail immediately
         const reader = new FileReader();
         reader.onload = (e) => setPreview(e.target.result);
         reader.readAsDataURL(file);
       } else if (typeof file === 'string') {
         setPreview(file);
-      } else {
-        setPreview(null);
       }
     } catch (err) {
       console.error(err);
       setPreview(null);
     }
-
-    return () => {
-      if (url) URL.revokeObjectURL(url);
-    };
   }, [file]);
 
   return (
-    <div className="relative aspect-square bg-gray-50 rounded-2xl overflow-hidden group">
-      <div
-        className="absolute inset-0 cursor-pointer"
-        onClick={onClick}
-        onMouseDown={() => setIsPressed(true)}
-        onMouseUp={() => setIsPressed(false)}
-        onTouchStart={() => setIsPressed(true)}
-        onTouchEnd={() => setIsPressed(false)}
-      />
-
+    <div
+      className="relative aspect-square bg-gray-50 rounded-2xl overflow-hidden cursor-pointer group"
+      onClick={onClick}
+      onMouseDown={() => setIsPressed(true)}
+      onMouseUp={() => setIsPressed(false)}
+      onTouchStart={() => setIsPressed(true)}
+      onTouchEnd={() => setIsPressed(false)}
+    >
+      {/* Image preview */}
       {preview && (
         <img
           src={preview}
@@ -51,14 +42,15 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
         />
       )}
 
+      {/* Remove button */}
       {file && (
         <button
           onClick={(e) => {
             e.stopPropagation();
             onRemove(index);
           }}
-          className="absolute top-1 right-1 w-10 h-10 flex items-center justify-center 
-                     bg-white rounded-full shadow-md text-red-600 hover:bg-red-100 z-10 
+          className="absolute top-2 right-2 w-12 h-12 flex items-center justify-center 
+                     bg-white rounded-full shadow-md text-red-600 hover:bg-red-100 z-20 
                      transition-all"
           aria-label="Remove photo"
         >
@@ -75,9 +67,10 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
         </button>
       )}
 
+      {/* Empty slot "+" */}
       {!file && !uploading && (
         <div
-          className={`absolute inset-0 flex items-center justify-center text-pink-500 z-0
+          className={`absolute inset-0 flex items-center justify-center text-pink-500 z-10
                       transition-transform duration-150 ${isPressed ? 'scale-90' : 'scale-100'}`}
         >
           <svg
@@ -92,8 +85,9 @@ const PhotoSlot = ({ file, onClick, onRemove, uploading, index }) => {
         </div>
       )}
 
+      {/* Uploading spinner */}
       {uploading && !file && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center z-10">
           <div className="w-6 h-6 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
