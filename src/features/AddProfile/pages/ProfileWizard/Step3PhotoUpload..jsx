@@ -3,7 +3,7 @@ import { useWizard } from '../../contexts/ProfileWizard';
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
 import PhotoGrid from '../../components/PhotoGrid';
-import { set, get, del } from 'idb-keyval';
+import { set, get } from 'idb-keyval';
 
 const Step3PhotoUpload = () => {
   const { formData, setFormData } = useWizard();
@@ -11,28 +11,29 @@ const Step3PhotoUpload = () => {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
 
   const maxSlots = userType === 'mp' ? 3 : 1;
   const uploadedPhotos = userType === 'mp' ? formData.profilePhotos || [] : [formData.profilePhoto];
 
-  // Load persisted photos from IndexedDB on mount
+  // Load persisted photos from IndexedDB
   useEffect(() => {
     const loadPhotos = async () => {
       if (userType === 'mp') {
         const photos = await get('profilePhotos');
-        if (photos?.length) {
-          setFormData((prev) => ({ ...prev, profilePhotos: photos }));
-        }
+        if (photos?.length) setFormData((prev) => ({ ...prev, profilePhotos: photos }));
       } else {
         const photo = await get('profilePhoto');
-        if (photo) {
-          setFormData((prev) => ({ ...prev, profilePhoto: photo }));
-        }
+        if (photo) setFormData((prev) => ({ ...prev, profilePhoto: photo }));
       }
     };
     loadPhotos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setFormData, userType]);
+
+  const handleSlotClick = (index) => {
+    setSelectedSlot(index);
+    inputRef.current?.click();
+  };
 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -43,32 +44,52 @@ const Step3PhotoUpload = () => {
 
     if (userType === 'mp') {
       const existingPhotos = formData.profilePhotos || [];
-      if (existingPhotos.length < maxSlots) {
-        const newPhotos = [...existingPhotos, file];
-        setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
-        await set('profilePhotos', newPhotos); // Persist in IndexedDB
+      let newPhotos;
+
+      if (selectedSlot !== null && existingPhotos[selectedSlot]) {
+        // Replace photo
+        newPhotos = existingPhotos.map((p, idx) => (idx === selectedSlot ? file : p));
+      } else if (existingPhotos.length < maxSlots) {
+        // Add new photo
+        newPhotos = [...existingPhotos, file];
+      } else {
+        newPhotos = existingPhotos;
       }
+
+      setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
+      await set('profilePhotos', newPhotos);
     } else {
       setFormData((prev) => ({ ...prev, profilePhoto: file }));
       await set('profilePhoto', file);
     }
 
     setUploading(false);
+    setSelectedSlot(null);
   };
 
-  const handleSlotClick = () => {
-    if (userType === 'mp' && uploadedPhotos.length >= maxSlots) return;
-    inputRef.current?.click();
+  const handleRemove = async (index) => {
+    if (userType === 'mp') {
+      const newPhotos = [...(formData.profilePhotos || [])];
+      newPhotos.splice(index, 1);
+      setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
+      await set('profilePhotos', newPhotos);
+    } else {
+      setFormData((prev) => ({ ...prev, profilePhoto: null }));
+      await set('profilePhoto', null);
+    }
   };
 
   const handleNext = () => navigate('/complete/tags');
   const handleBack = () => navigate('/complete/bio');
 
+  // Validation for mp users
+  const mpPhotosValid = userType !== 'mp' || (uploadedPhotos.length >= maxSlots);
+
   return (
     <div className="animate-fade-in">
       <ProgressBar step={3} totalSteps={4} />
 
-      <div className="text-center mb-8">
+      <div className="text-center mb-4">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
           {userType === 'mp' ? 'Show Your Sparkle ✨' : 'Upload Your Photo'}
         </h2>
@@ -79,10 +100,17 @@ const Step3PhotoUpload = () => {
         </p>
       </div>
 
+      {userType === 'mp' && !mpPhotosValid && (
+        <p className="text-red-500 text-sm mb-4">
+          Please upload at least {maxSlots} photos to proceed.
+        </p>
+      )}
+
       <PhotoGrid
         photos={uploadedPhotos}
         maxSlots={maxSlots}
         onSlotClick={handleSlotClick}
+        onRemove={handleRemove}
         uploading={uploading}
       />
 
@@ -103,8 +131,12 @@ const Step3PhotoUpload = () => {
         </button>
         <button
           onClick={handleNext}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
-                     text-white font-semibold py-3 px-6 rounded-xl transition-all"
+          disabled={!mpPhotosValid}
+          className={`flex-1 text-white font-semibold py-3 px-6 rounded-xl transition-all
+            ${mpPhotosValid
+              ? 'bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700'
+              : 'bg-gray-300 cursor-not-allowed'
+            }`}
         >
           Next
         </button>
