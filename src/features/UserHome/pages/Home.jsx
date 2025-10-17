@@ -122,7 +122,7 @@ export default function UserHomePage() {
         ? 'Male'
         : rawProfile.gender,
     images,
-    location: rawProfile.location || 'Unknown',
+    location: rawProfile.location || '',
     popularity: rawProfile.popularity || 0,
     healthStatus: rawProfile.healthStatus || { status: 'Unknown', lastTestedDate: 'Unknown' },
     lastSeen: rawProfile.lastSeen || '',
