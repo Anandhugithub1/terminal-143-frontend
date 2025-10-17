@@ -125,7 +125,7 @@ export default function UserHomePage() {
     location: rawProfile.location || '',
     popularity: rawProfile.popularity || 0,
     healthStatus: rawProfile.healthStatus || { status: 'Unknown', lastTestedDate: 'Unknown' },
-    lastSeen: rawProfile.lastSeen || '',
+    lastSeen: rawProfile.lastSeen || 'Last seen within a month ',
     job: rawProfile.jobTitle || '',
     languages: rawProfile.languagesKnown?.length
       ? rawProfile.languagesKnown
