@@ -8,7 +8,7 @@ import BottomNav from '../../../components/Layout/BottomNavigation';
 import ProfileSkeleton from '../components/ProfileSkeleton';
 import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
 import placeholderImage from '../../../assets/woman.png';
-import { getMatchProviders } from '../../../features/Profiles/profilesapi'; 
+import { getMatchProviders } from '../../../features/Profiles/profilesapi';
 
 // Lazy-loaded components
 const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'));
@@ -64,7 +64,7 @@ export default function UserHomePage() {
         if (current) {
           seenMutation.mutate({
             suggestionIndex: current.suggestionIndex,
-             direction: dir === 1 ? 'r' : 'l',
+            direction: dir === 1 ? 'r' : 'l',
           });
 
           const recipientId = current.username || current.pk || current.id;
@@ -92,12 +92,15 @@ export default function UserHomePage() {
   if (status === 'loading' && profiles.length === 0) return <ProfileSkeleton />;
   if (error) return <div className="p-4 text-red-500">{error}</div>;
 
-  const isEnd = profiles.length > 0 && idx >= profiles.length;
+  // Updated logic to treat empty profiles as "End"
+  const isEnd = profiles.length === 0 || idx >= profiles.length;
 
   if (isEnd) {
     return (
       <div className="bg-white min-h-screen flex flex-col items-center justify-center">
-        <p className="text-gray-500 text-lg">Reached the end of profiles</p>
+        <p className="text-gray-500 text-lg">
+          {profiles.length === 0 ? 'No profiles available' : 'Reached the end of profiles'}
+        </p>
         <button
           onClick={handleRefresh}
           className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
@@ -172,7 +175,7 @@ export default function UserHomePage() {
 
               <ActionControls
                 className="absolute top-[85%] inset-x-0 z-30 flex justify-center"
-                onReject={() => advance(-1)} 
+                onReject={() => advance(-1)}
                 onRefresh={handleRefresh}
                 onLike={() => advance(1)}
               />
