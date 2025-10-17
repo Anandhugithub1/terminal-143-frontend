@@ -16,7 +16,7 @@ export default function SwipeDeck({
   const onSwiped = useCallback(
     ({ deltaX }) => {
       if (deltaX > SWIPE_THRESHOLD) {
-        console.log('Detected right swipe'); // ✅ log here
+        console.log('Detected right swipe'); // log here
         onAdvance(1);
         onRightSwipe?.();
       } else if (deltaX < -SWIPE_THRESHOLD) {
@@ -36,7 +36,7 @@ export default function SwipeDeck({
   return (
     <div
       {...handlers}
-      className="relative w-full h-full touch-pan-y" // ✅ Ensure full touch coverage
+      className="relative w-full h-full touch-pan-y" // Ensure full touch coverage
       style={{ minHeight: '100vh' }} // Important for touch to register!
     >
       <AnimatePresence initial={false} mode="wait">

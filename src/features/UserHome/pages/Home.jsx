@@ -8,7 +8,7 @@ import BottomNav from '../../../components/Layout/BottomNavigation';
 import ProfileSkeleton from '../components/ProfileSkeleton';
 import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
 import placeholderImage from '../../../assets/woman.png';
-import { getMatchProviders } from '../../../features/Profiles/profilesapi'; // for local caching
+import { getMatchProviders } from '../../../features/Profiles/profilesapi'; 
 
 // Lazy-loaded components
 const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'));
@@ -64,7 +64,7 @@ export default function UserHomePage() {
         if (current) {
           seenMutation.mutate({
             suggestionIndex: current.suggestionIndex,
-            direction: dir,
+             direction: dir === 1 ? 'r' : 'l',
           });
 
           const recipientId = current.username || current.pk || current.id;
@@ -73,7 +73,7 @@ export default function UserHomePage() {
 
         const next = prev + 1;
 
-        // ✅ When near end, trigger fetch with append=true
+        // When near end, trigger fetch with append=true
         if (next >= profiles.length - 1) {
           if (nextBatch.length > 0) {
             dispatch(fetchProfiles({ limit: 10, append: true, preloaded: nextBatch }));
@@ -172,7 +172,7 @@ export default function UserHomePage() {
 
               <ActionControls
                 className="absolute top-[85%] inset-x-0 z-30 flex justify-center"
-                onReject={() => advance(-1)}
+                onReject={() => advance(-1)} 
                 onRefresh={handleRefresh}
                 onLike={() => advance(1)}
               />
