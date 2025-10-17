@@ -103,7 +103,6 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
             </svg>
           </div>
           <span className="text-gray-400 text-sm font-medium">Tap to Upload</span>
-          <span className="text-gray-300 text-xs mt-1">or drag & drop</span>
         </div>
       )}
 
