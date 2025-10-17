@@ -79,10 +79,7 @@ const handlePhotoUpload = async (e) => {
 };
 
 
-  const handleSlotClick = () => {
-    if (userType === 'mp' && uploadedPhotos.length >= maxSlots) return;
-    inputRef.current?.click();
-  };
+ 
 
   const handleNext = () => navigate('/complete/tags');
   const handleBack = () => navigate('/complete/bio');
