@@ -29,10 +29,10 @@ import { useTranslation } from "react-i18next";
         <section>
           <h3 className="font-medium">{t("aboutMe")}</h3>
           <p className="mt-1 text-gray-500">{profile.about}</p>
-          <div className="mt-2 flex items-center space-x-4 text-sm text-gray-600">
+          {/* <div className="mt-2 flex items-center space-x-4 text-sm text-gray-600">
             <HiOutlineLocationMarker />
             <span>{profile.location || t("locationUnknown")}</span>
-          </div>
+          </div> */}
         </section>
 
         {/* Languages */}

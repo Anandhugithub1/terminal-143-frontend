@@ -65,10 +65,10 @@ Badge.propTypes = {
 
 
     <div className="flex items-center text-sm mt-2">
-  <div className={distance ? "flex items-center" : "flex items-center invisible"}>
+  {/* <div className={distance ? "flex items-center" : "flex items-center invisible"}>
     <HiOutlineLocationMarker className="mr-1" />
     <span>{distance || "00 km"}</span>
-  </div>
+  </div> */}
 </div>
 
   </div>
