@@ -35,60 +35,70 @@ export default function Step4Tags() {
 
   const handleBack = () => navigate("/complete/photo");
 
-  const handleSubmit = async () => {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
+const handleSubmit = async () => {
+  if (isSubmitting) return;
+  setIsSubmitting(true);
 
-    try {
-      // 1️ Upload photos
-      const photoUrls = [];
-      if (userType === "mp" && formData.profilePhotos?.length) {
-        for (let i = 0; i < formData.profilePhotos.length; i++) {
-          try {
-            const { publicUrl } = await dispatch(
-              uploadProfileImage({
-                file: formData.profilePhotos[i],
-                photoIndex: i,
-              })
-            ).unwrap();
-            photoUrls.push(publicUrl);
-          } catch (err) {
-            console.error(`Photo ${i + 1} upload failed:`, err);
-          }
-        }
-      } else if (formData.profilePhoto) {
-        try {
-          const { publicUrl } = await dispatch(
-            uploadProfileImage({ file: formData.profilePhoto, photoIndex: 0 })
-          ).unwrap();
-          photoUrls.push(publicUrl);
-        } catch (err) {
-          console.error("Profile photo upload failed:", err);
-        }
+  try {
+    const photoUrls = [];
+
+    // 1️⃣ Get MP photos in slot order
+    const photos = userType === "mp" ? [...(formData.profilePhotos || [])] : [];
+
+    // 2️⃣ Upload photos in slot order
+    for (let i = 0; i < photos.length; i++) {
+      const file = photos[i];
+      if (!file) continue; // skip empty slots
+      try {
+        const { publicUrl } = await dispatch(
+          uploadProfileImage({
+            file,
+            photoIndex: i, // matches slot index
+          })
+        ).unwrap();
+        photoUrls.push(publicUrl);
+      } catch (err) {
+        console.error(`Photo in slot ${i + 1} upload failed:`, err);
       }
-
-      // 2️ Build payload
-      const payload = { ...formData, interests: selectedInterests };
-      if (userType === "mp") payload.photos = photoUrls;
-      else payload.photo = photoUrls[0] || "";
-
-      // 3️ Complete profile
-      await dispatch(completeProfile(payload)).unwrap();
-      dispatch(resetProfileState());
-
-      // 4️ Clear local form data
-      clearFormData();
-      await del("profilePhoto");
-      await del("profilePhotos");
-
-      // 5️ Navigate to home with a retry flag
-      navigate("/home", { state: { profileJustCompleted: true } });
-    } catch (err) {
-      console.error("Profile completion error:", err);
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+
+    // 3️⃣ For single photo users
+    if (userType !== "mp" && formData.profilePhoto) {
+      try {
+        const { publicUrl } = await dispatch(
+          uploadProfileImage({ file: formData.profilePhoto, photoIndex: 0 })
+        ).unwrap();
+        photoUrls.push(publicUrl);
+      } catch (err) {
+        console.error("Profile photo upload failed:", err);
+      }
+    }
+
+    // 4️⃣ Build payload
+    const payload = { ...formData, interests: selectedInterests };
+    if (userType === "mp") payload.photos = photoUrls;
+    else payload.photo = photoUrls[0] || "";
+
+    // 5️⃣ Complete profile
+    await dispatch(completeProfile(payload)).unwrap();
+    dispatch(resetProfileState());
+
+    // 6️⃣ Clear local form data
+    clearFormData();
+    await del("profilePhoto");
+    await del("profilePhotos");
+
+    // 7️⃣ Navigate to home
+    navigate("/home", { state: { profileJustCompleted: true } });
+  } catch (err) {
+    console.error("Profile completion error:", err);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
+
 
   const isLoading = isSubmitting || completeStatus === "loading";
 

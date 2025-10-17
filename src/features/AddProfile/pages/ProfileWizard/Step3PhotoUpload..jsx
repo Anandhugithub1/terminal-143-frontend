@@ -52,33 +52,36 @@ const handleSlotRemove = async (index) => {
     await del('profilePhoto');
   }
 };
-
 const handlePhotoUpload = async (e) => {
   const file = e.target.files?.[0];
   if (!file) return;
 
   setUploading(true);
-  await new Promise(res => setTimeout(res, 300));
+  await new Promise((res) => setTimeout(res, 300));
 
-  const replaceIndex = e.target.dataset.replaceIndex;
-  if (userType === 'mp') {
-    const existing = formData.profilePhotos || [];
-    if (replaceIndex !== undefined) {
-      existing[replaceIndex] = file;
-    } else if (existing.length < maxSlots) {
-      existing.push(file);
-    }
-    setFormData(prev => ({ ...prev, profilePhotos: existing }));
-    await set('profilePhotos', existing);
+  let slotIndex = Number(e.target.dataset.replaceIndex);
+  if (isNaN(slotIndex)) slotIndex = 0; // default to first slot
+
+  if (userType === "mp") {
+    const existing = [...(formData.profilePhotos || [])];
+    while (existing.length < maxSlots) existing.push(null); // ensure array length
+
+    // Assign photo to chosen slot (slot order defines index)
+    existing[slotIndex] = file;
+
+    setFormData((prev) => ({ ...prev, profilePhotos: existing }));
+    await set("profilePhotos", existing);
   } else {
-    setFormData(prev => ({ ...prev, profilePhoto: file }));
-    await set('profilePhoto', file);
+    setFormData((prev) => ({ ...prev, profilePhoto: file }));
+    await set("profilePhoto", file);
   }
 
   e.target.value = null;
   delete e.target.dataset.replaceIndex;
   setUploading(false);
 };
+
+
 
 
  
