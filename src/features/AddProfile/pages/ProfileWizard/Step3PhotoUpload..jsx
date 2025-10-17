@@ -35,6 +35,8 @@ const Step3PhotoUpload = () => {
   }, []);
 
 const handleSlotChange = (index) => {
+  if (!inputRef.current) return; 
+
   inputRef.current.dataset.replaceIndex = index;
   inputRef.current.click();
 };
