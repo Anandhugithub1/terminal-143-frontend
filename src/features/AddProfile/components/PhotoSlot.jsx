@@ -40,45 +40,13 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
     >
       {/* Preview Image */}
       {preview ? (
-        <div className="relative w-full h-full">
-          <img
-            src={preview}
-            alt={`Preview ${index + 1}`}
-            className={`w-full h-full object-cover transition-transform duration-300 ${
-              isHovered && !uploading ? "scale-105" : "scale-100"
-            }`}
-          />
-          
-          {/* Replace Overlay - Only show on hover */}
-          {isHovered && !uploading && (
-            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-              <div className="text-white text-center">
-                <div className="bg-white bg-opacity-20 rounded-full p-3 mb-2 mx-auto w-12 h-12 flex items-center justify-center">
-                  <svg
-                    className="w-6 h-6 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
-                <span className="text-sm font-medium block">Click to Replace</span>
-              </div>
-            </div>
-          )}
-        </div>
+        <img
+          src={preview}
+          alt={`Preview ${index + 1}`}
+          className={`w-full h-full object-cover transition-transform duration-300 ${
+            isHovered && !uploading ? "scale-105" : "scale-100"
+          }`}
+        />
       ) : (
         /* Empty State */
         <div className="flex flex-col items-center justify-center p-4 text-center">
