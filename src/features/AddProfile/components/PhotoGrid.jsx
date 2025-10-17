@@ -1,3 +1,6 @@
+import React from 'react';
+import PhotoSlot from './PhotoSlot';
+
 const PhotoGrid = ({ photos, maxSlots, onSlotChange, onSlotRemove, uploading }) => {
   const cols = maxSlots > 2 ? maxSlots : 2; // max 3 columns for MP
 
@@ -16,3 +19,6 @@ const PhotoGrid = ({ photos, maxSlots, onSlotChange, onSlotRemove, uploading }) 
     </div>
   );
 };
+
+
+export default PhotoGrid;
