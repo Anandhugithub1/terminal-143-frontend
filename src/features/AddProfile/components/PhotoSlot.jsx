@@ -28,13 +28,6 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
     }
   };
 
-  const handleAddReplace = (e) => {
-    e.stopPropagation();
-    if (!uploading) {
-      onChange(index);
-    }
-  };
-
   return (
     <div
       className={`relative aspect-square rounded-2xl overflow-hidden flex items-center justify-center transition-all duration-300 
@@ -56,29 +49,32 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
             }`}
           />
           
-          {/* Overlay on hover */}
+          {/* Replace Overlay - Only show on hover */}
           {isHovered && !uploading && (
-            <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-              <div className="bg-white bg-opacity-90 rounded-full p-3 shadow-lg">
-                <svg
-                  className="w-6 h-6 text-pink-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+              <div className="text-white text-center">
+                <div className="bg-white bg-opacity-20 rounded-full p-3 mb-2 mx-auto w-12 h-12 flex items-center justify-center">
+                  <svg
+                    className="w-6 h-6 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium block">Click to Replace</span>
               </div>
             </div>
           )}
@@ -86,7 +82,7 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
       ) : (
         /* Empty State */
         <div className="flex flex-col items-center justify-center p-4 text-center">
-          <div className="w-12 h-12 mb-3 text-gray-300">
+          <div className="w-12 h-12 mb-3 text-gray-400">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -102,11 +98,12 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
               />
             </svg>
           </div>
-          <span className="text-gray-400 text-sm font-medium">Tap to Upload</span>
+          <span className="text-gray-500 text-sm font-medium">Click to Upload</span>
+          <span className="text-gray-400 text-xs mt-1">or drag & drop</span>
         </div>
       )}
 
-      {/* Remove Button - Only show when file exists and not uploading */}
+      {/* Remove Button - Only show when file exists */}
       {file && !uploading && (
         <button
           onClick={handleRemove}
@@ -130,40 +127,6 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
             <span className="text-xs font-medium">Uploading...</span>
           </div>
         </div>
-      )}
-
-      {/* Add/Replace Button - Always visible but disabled during upload */}
-      {!uploading && (
-        <button
-          onClick={handleAddReplace}
-          className={`absolute bottom-3 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-full flex items-center gap-2 shadow-lg transition-all duration-200 
-            hover:shadow-xl hover:bg-gray-50 active:scale-95
-            ${file ? "text-gray-700" : "text-pink-500"}`}
-          aria-label={file ? "Replace photo" : "Add photo"}
-        >
-          <svg
-            className={`w-5 h-5 ${file ? "text-gray-500" : "text-pink-500"}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-            />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
-          <span className="text-sm font-medium whitespace-nowrap">
-            {file ? "Replace" : "Add Photo"}
-          </span>
-        </button>
       )}
     </div>
   );
