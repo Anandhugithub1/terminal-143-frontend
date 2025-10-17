@@ -34,27 +34,50 @@ const Step3PhotoUpload = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handlePhotoUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+const handleSlotChange = (index) => {
+  inputRef.current.dataset.replaceIndex = index;
+  inputRef.current.click();
+};
 
-    setUploading(true);
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate upload
+const handleSlotRemove = async (index) => {
+  if (userType === 'mp') {
+    const newPhotos = [...(formData.profilePhotos || [])];
+    newPhotos.splice(index, 1);
+    setFormData(prev => ({ ...prev, profilePhotos: newPhotos }));
+    await set('profilePhotos', newPhotos);
+  } else {
+    setFormData(prev => ({ ...prev, profilePhoto: null }));
+    await del('profilePhoto');
+  }
+};
 
-    if (userType === 'mp') {
-      const existingPhotos = formData.profilePhotos || [];
-      if (existingPhotos.length < maxSlots) {
-        const newPhotos = [...existingPhotos, file];
-        setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
-        await set('profilePhotos', newPhotos); // Persist in IndexedDB
-      }
-    } else {
-      setFormData((prev) => ({ ...prev, profilePhoto: file }));
-      await set('profilePhoto', file);
+const handlePhotoUpload = async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  setUploading(true);
+  await new Promise(res => setTimeout(res, 300));
+
+  const replaceIndex = e.target.dataset.replaceIndex;
+  if (userType === 'mp') {
+    const existing = formData.profilePhotos || [];
+    if (replaceIndex !== undefined) {
+      existing[replaceIndex] = file;
+    } else if (existing.length < maxSlots) {
+      existing.push(file);
     }
+    setFormData(prev => ({ ...prev, profilePhotos: existing }));
+    await set('profilePhotos', existing);
+  } else {
+    setFormData(prev => ({ ...prev, profilePhoto: file }));
+    await set('profilePhoto', file);
+  }
 
-    setUploading(false);
-  };
+  e.target.value = null;
+  delete e.target.dataset.replaceIndex;
+  setUploading(false);
+};
+
 
   const handleSlotClick = () => {
     if (userType === 'mp' && uploadedPhotos.length >= maxSlots) return;
@@ -79,12 +102,15 @@ const Step3PhotoUpload = () => {
         </p>
       </div>
 
+   
+
       <PhotoGrid
-        photos={uploadedPhotos}
-        maxSlots={maxSlots}
-        onSlotClick={handleSlotClick}
-        uploading={uploading}
-      />
+  photos={uploadedPhotos}
+  maxSlots={maxSlots}
+  onSlotChange={handleSlotChange}
+  onSlotRemove={handleSlotRemove}
+  uploading={uploading}
+/>
 
       <input
         ref={inputRef}
