@@ -8,13 +8,21 @@ export default defineConfig({
     tailwindcss()
   ],
 
-  build: {
-    // bump the warning threshold if you like:
+  // Add this section for local host + optional HTTPS
+  server: {
+    host: 'local.terminal143.com', // your custom host
+    strictPort: true,               // fail if port is busy
+    // Uncomment for HTTPS (required for SameSite=None cookies)
+    // https: {
+    //   key: './local.terminal143.com-key.pem',
+    //   cert: './local.terminal143.com.pem'
+    // }
+  },
 
+  build: {
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // anything from node_modules → vendor.js
           if (id.includes('node_modules')) {
             return 'vendor'
           }
