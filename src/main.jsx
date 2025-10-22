@@ -15,12 +15,16 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { appRoutes } from "./routes/AppRoutes.jsx"; // route file
 
+import { Toaster } from 'sonner';
+
 const router = createBrowserRouter(createRoutesFromElements(appRoutes));
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
+        <Toaster richColors position="top-center" />
+        
         <RouterProvider router={router} />
       </Provider>
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />

@@ -6,6 +6,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../../shared/Button';
 import Loader from '../../../components/Ui/Loading';
 import { loginUser } from '../authThunks';
+import { toast } from 'sonner';
+
 import {
   selectLoading,
   selectError,
@@ -28,6 +30,7 @@ const LoginForm = () => {
   const auth = useSelector(selectAuth);
   const { isSuccess, profileCompleted } = auth;
 
+  // Navigate on successful login
   useEffect(() => {
     if (isSuccess) {
       if (!profileCompleted) {
@@ -40,23 +43,31 @@ const LoginForm = () => {
     }
   }, [isSuccess, profileCompleted, auth.userType, navigate]);
 
-  // 🟢 NEW: handle login submission + unverified redirect
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!emailPhone || !password) {
-      return alert(t('enterCredentials'));
+  // Handle login submission
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (!emailPhone || !password) {
+    return toast.error(t('enterCredentials'));
+  }
+
+  const resultAction = await dispatch(loginUser({ emailPhone, password }));
+
+  if (loginUser.rejected.match(resultAction)) {
+    const error = resultAction.payload;
+
+    if (error?.notVerified === true) {
+      navigate('/verify', { state: { emailPhone } });
+    } else {
+      toast.error(error?.error || error?.message || t('loginFailed'));
     }
 
-    const resultAction = await dispatch(loginUser({ emailPhone, password }));
+    return; // stop further execution
+  }
 
-    // Check if rejected and has unverified flag
-    if (loginUser.rejected.match(resultAction)) {
-      const error = resultAction.payload;
-      if (error?.notVerified) {
-        navigate('/verify', { state: { emailPhone } });
-      }
-    }
-  };
+  // No need to navigate here; useEffect handles successful login navigation
+};
+
 
   return (
     <>
