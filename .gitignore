@@ -42,3 +42,7 @@ yarn.lock
 *.njsproj
 *.sln
 *.sw?
+
+
+*.pem
+certs/
