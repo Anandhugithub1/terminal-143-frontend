@@ -15,7 +15,8 @@ import { ForgotAndResetPassword } from "../features/Auth/pages/ForgotPassword.js
 
 import PricingPage from "../pages/Global/Pricing.jsx";
 import UserHomePage from "../features/UserHome/pages/Home.jsx";
-import AppHome from "../pages/Global/Route.jsx";
+// import AppHome from "../pages/Global/Route.jsx";
+import DefaultHomeRoute from "./DefaultHomeRoute.jsx";
 // Lazy
 const MatchesPage = lazy(() => import("../features/UserHome/pages/Matches.jsx"));
 const ChooseCategory =lazy(()=> import ("../features/Auth/pages/ChooseCategory.jsx") )
@@ -52,7 +53,8 @@ export const appRoutes = (
       }
     />
 
-    <Route path="/" element={<AppHome />} />
+    <Route path="/" element={<DefaultHomeRoute />} />
+
     <Route path="pricing" element={<PricingPage />} />
 
     <Route
