@@ -4,7 +4,6 @@ import { useWizard } from '../../contexts/ProfileWizard';
 import { InputField } from '../../../../shared/common';
 import { ProgressBar } from './Progess';
 
-import PreferenceCheckbox from '../../components/PreferenceCheckbox';
 import SocialLinkInput from '../../components/SocialLinkInput';
 import SocialLinkChip from '../../components/SocialLinkChip';
 
@@ -38,7 +37,7 @@ const Step1BasicInfo = () => {
     navigate('/complete/bio');
   };
 
-  const handlePreferenceChange = (value) => {
+  const togglePreference = (value) => {
     const prefs = formData.preferences || [];
     setFormData({
       ...formData,
@@ -78,6 +77,7 @@ const Step1BasicInfo = () => {
       </div>
 
       <div className="space-y-6">
+        {/* Full Name */}
         <InputField
           id="fullName"
           value={formData.name}
@@ -86,6 +86,7 @@ const Step1BasicInfo = () => {
           className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
         />
 
+        {/* Date of Birth */}
         <div>
           <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
             {t('dob')}
@@ -103,19 +104,25 @@ const Step1BasicInfo = () => {
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
+        {/* Preferences as Chips */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
             {t('preferencesTitle')}
           </label>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-wrap gap-3">
             {Object.entries(PREFERENCES).map(([label, value]) => (
-              <PreferenceCheckbox
+              <button
                 key={value}
-                label={label}
-                value={value}
-                checked={(formData.preferences || []).includes(value)}
-                onChange={() => handlePreferenceChange(value)}
-              />
+                type="button"
+                onClick={() => togglePreference(value)}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                  (formData.preferences || []).includes(value)
+                    ? 'bg-pink-500 text-white shadow-md shadow-pink-500/20'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {label}
+              </button>
             ))}
           </div>
         </div>
@@ -138,7 +145,7 @@ const Step1BasicInfo = () => {
           />
 
           {formData.socialMediaLinks?.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2 mt-3">
               {formData.socialMediaLinks.map((link, idx) => (
                 <SocialLinkChip
                   key={idx}
