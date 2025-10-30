@@ -23,7 +23,7 @@ export function useAvatarUpload(uploadImage, updateProfileData) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // ✅ Validate file type
+    //  Validate file type
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       alert('Invalid file format. Only JPG, JPEG, PNG, or WEBP images are allowed.');
       e.target.value = '';
