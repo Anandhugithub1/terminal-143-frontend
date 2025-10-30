@@ -15,6 +15,7 @@ import BottomNav from "../../../components/Layout/BottomNavigation";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import "@fontsource-variable/inter";
+import {calculateProfileCompletion} from '../utlis/profileUtils'
 import { useEditableProfile } from "../../../Hooks/EditProfile";
 
 export default function ProfilePage() {
@@ -63,7 +64,9 @@ export default function ProfilePage() {
   }
 
   //  Safe defaults
-  const completion = profile?.profileCompletion ?? 40;
+  // const completion = profile?.profileCompletion ?? 40;
+  const completion = calculateProfileCompletion(profile);
+
   const userName = profile?.name || "User";
   const userEmail = profile?.email || "";
   const userPhoto = profile?.photo || profile?.photos?.[0] || avatarimage;
