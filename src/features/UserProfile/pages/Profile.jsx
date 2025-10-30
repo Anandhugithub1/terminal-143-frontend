@@ -63,7 +63,7 @@ export default function ProfilePage() {
   }
 
   //  Safe defaults
-  const completion = profile?.profileCompletion ?? 0;
+  const completion = profile?.profileCompletion ?? 40;
   const userName = profile?.name || "User";
   const userEmail = profile?.email || "";
   const userPhoto = profile?.photo || profile?.photos?.[0] || avatarimage;
