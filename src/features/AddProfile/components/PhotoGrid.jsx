@@ -1,11 +1,17 @@
-import React from 'react';
-import PhotoSlot from './PhotoSlot';
+import React from "react";
+import PhotoSlot from "./PhotoSlot";
 
 const PhotoGrid = ({ photos, maxSlots, onSlotChange, onSlotRemove, uploading }) => {
-  const cols = maxSlots > 2 ? maxSlots : 2; // max 3 columns for MP
+  const userType = localStorage.getItem("userType");
 
   return (
-    <div className={`grid gap-4 grid-cols-2 sm:grid-cols-${cols}`}>
+    <div
+      className={`${
+        userType === "fm"
+          ? "flex justify-center items-center" // FM — single centered slot
+          : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 place-items-center" // MP — responsive grid
+      }`}
+    >
       {Array.from({ length: maxSlots }, (_, index) => (
         <PhotoSlot
           key={index}
@@ -19,6 +25,5 @@ const PhotoGrid = ({ photos, maxSlots, onSlotChange, onSlotRemove, uploading }) 
     </div>
   );
 };
-
 
 export default PhotoGrid;

@@ -48,11 +48,11 @@ const RegisterSkeleton = () => (
           <RegisterForm />
         </Suspense>
 
-        <div className="mt-6 flex items-center justify-center space-x-2">
+        {/* <div className="mt-6 flex items-center justify-center space-x-2">
           <div className="flex-1 border-t border-border-clr"></div>
           <span className="px-4 text-sm text-gray-500">Or continue with</span>
           <div className="flex-1 border-t border-border-clr"></div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

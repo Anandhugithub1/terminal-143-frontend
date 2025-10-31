@@ -6,6 +6,7 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
 
   useEffect(() => {
     if (!file) return setPreview(null);
+
     if (file instanceof File) {
       const reader = new FileReader();
       reader.onload = () => setPreview(reader.result);
@@ -15,42 +16,35 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
     }
   }, [file]);
 
-  const handleSlotClick = () => {
-    if (!uploading) {
-      onChange(index);
-    }
-  };
-
+  const handleSlotClick = () => !uploading && onChange(index);
   const handleRemove = (e) => {
     e.stopPropagation();
-    if (!uploading) {
-      onRemove(index);
-    }
+    if (!uploading) onRemove(index);
   };
 
   return (
     <div
-      className={`relative aspect-square rounded-2xl overflow-hidden flex items-center justify-center transition-all duration-300 
+      className={`relative flex items-center justify-center overflow-hidden transition-all duration-300
+        w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 rounded-full
         ${preview ? "bg-gray-100" : "bg-gray-50 border-2 border-dashed border-gray-200"}
         ${uploading ? "opacity-70 cursor-not-allowed" : "cursor-pointer hover:shadow-md hover:border-gray-300"}
-        ${isHovered && preview && !uploading ? "ring-2 ring-pink-500 ring-opacity-50" : ""}`}
+        ${isHovered && preview && !uploading ? "ring-2 ring-pink-500 ring-opacity-50" : ""}
+      `}
       onClick={handleSlotClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Preview Image */}
       {preview ? (
         <img
           src={preview}
           alt={`Preview ${index + 1}`}
-          className={`w-full h-full object-cover transition-transform duration-300 ${
-            isHovered && !uploading ? "scale-105" : "scale-100"
-          }`}
+          className={`object-cover w-full h-full rounded-full transition-transform duration-300
+            ${isHovered && !uploading ? "scale-105" : "scale-100"}
+          `}
         />
       ) : (
-        /* Empty State */
-        <div className="flex flex-col items-center justify-center p-4 text-center">
-          <div className="w-12 h-12 mb-3 text-gray-400">
+        <div className="flex flex-col items-center justify-center text-center p-2">
+          <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 mb-1 sm:mb-2 md:mb-3 text-gray-400">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
@@ -66,31 +60,26 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
               />
             </svg>
           </div>
-          <span className="text-gray-500 text-sm font-medium">Click to Upload</span>
+          <span className="text-gray-500 text-xs sm:text-sm font-medium">Click to Upload</span>
         </div>
       )}
 
-      {/* Remove Button - Only show when file exists */}
       {file && !uploading && (
         <button
           onClick={handleRemove}
-          className={`absolute top-3 right-3 bg-white p-2 rounded-full shadow-lg transition-all duration-200 
-            hover:bg-red-500 hover:text-white hover:scale-110 active:scale-95
-            ${isHovered ? "opacity-100" : "opacity-90"}`}
+          className="absolute top-1 right-1 sm:top-2 sm:right-2 bg-white p-1 sm:p-2 rounded-full shadow-md hover:bg-red-500 hover:text-white transition-all duration-200"
           title="Remove photo"
-          aria-label="Remove photo"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       )}
 
-      {/* Uploading Indicator */}
       {uploading && (
-        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center rounded-full">
           <div className="text-white text-center">
-            <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+            <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-1 sm:mb-2" />
             <span className="text-xs font-medium">Uploading...</span>
           </div>
         </div>

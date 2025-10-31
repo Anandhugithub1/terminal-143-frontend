@@ -93,7 +93,7 @@ export default function Step2Bio() {
 
       {/* Languages */}
       <div ref={menuRef} className="relative">
-        <h3 className="mb-2 font-semibold">Languages You Know 🌐</h3>
+        <h3 className="mb-2 font-semibold">🌐Languages You Know </h3>
         <button
           onClick={() => setOpen(o => !o)}
           className="inline-flex w-full justify-between items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none"
@@ -127,7 +127,7 @@ export default function Step2Bio() {
 
       {/* STD Status */}
       <div className="space-y-1">
-        <h3 className="font-semibold">STD Status 🧬</h3>
+        <h3 className="font-semibold">🧬STD Status </h3>
         <select
           value={healthStatus.stdStatus}
           onChange={handleStatusChange}
@@ -146,7 +146,7 @@ export default function Step2Bio() {
 
       {/* Date */}
       <div className="space-y-1">
-        <h3 className="font-semibold">Last Tested Date 🗓️</h3>
+        <h3 className="font-semibold"> 🗓️Last Tested Date </h3>
         <input
           type="date"
           value={healthStatus.lastTestedDate}

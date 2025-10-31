@@ -141,17 +141,19 @@ export default function ProfileEditPage() {
 
           {/* About Me Fields */}
           <Section title={t("profileEdit.aboutMe")}>
-            {fields
-              .filter((f) => f.key !== "gender" && f.key !== "location")
-              .map((f) => (
-                <EditableField
-                  key={f.key}
-                  icon={f.icon}
-                  label={f.label}
-                  value={f.value}
-                  onSave={(newValue) => updateProfileData(f.key, newValue)}
-                />
-              ))}
+       {fields
+  .filter((f) => f.key !== "gender" && f.key !== "location")
+  .map((f) => (
+    <EditableField
+      key={f.key}
+      fieldKey={f.key} 
+      icon={f.icon}
+      label={f.label}
+      value={f.value}
+      onSave={(newValue) => updateProfileData(f.key, newValue)}
+    />
+  ))}
+
           </Section>
 
           {/* Interests */}

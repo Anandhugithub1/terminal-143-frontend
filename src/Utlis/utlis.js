@@ -139,12 +139,13 @@ export function getProfileFields(profile) {
       value: profile.gender === 'M' ? 'Male' : 'Female',
       icon: User,
     },
-    {
-      key: 'age',
-      label: 'Age',
-      value: computeAge(profile.dob),
-      icon: Calendar,
-    },
+ {
+  key: "age",
+  label: "Age",
+  value: computeAge(profile.dob), // display computed age
+  rawValue: profile.dob || "", // store actual DOB for editing
+  icon: Calendar,
+},
     {
       key: 'location',
       label: 'Location',

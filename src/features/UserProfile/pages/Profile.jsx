@@ -8,7 +8,7 @@ import {
   User,
 } from "lucide-react";
 import { useAvatarUpload } from "../Hooks/useAvatarUpload";
-import { UploadOptions } from "../components/ProfileEdit/EditableField";
+import { UploadOptions } from "../components/ProfileEdit/UploadOptions";
 import { fetchProfile } from "../../../features/UserProfile";
 import TopNav from "../../../components/Layout/TopNavigation";
 import BottomNav from "../../../components/Layout/BottomNavigation";
