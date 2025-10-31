@@ -48,7 +48,7 @@ export function useEditableProfile() {
   };
 
   const uploadImage = async (file, photoIndex = 0) => {
-    // ✅ Validate file type
+    //  Validate file type
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       alert('Invalid file format. Only JPG, JPEG, PNG, or WEBP images are allowed.');
       return;

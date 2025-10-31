@@ -30,11 +30,11 @@ export const fetchProfile = createAsyncThunk(
 
 export const updateProfile = createAsyncThunk(
   'userProfile/updateProfile',
-  async (payload, { rejectWithValue, dispatch }) => { // ✅ Added dispatch here
+  async (payload, { rejectWithValue, dispatch }) => { //  Added dispatch here
     try {
       const { data } = await apiUpdate(payload);
 
-      // ✅ Trigger fetchProfile after successful update
+      //  Trigger fetchProfile after successful update
       dispatch(fetchProfile());
 
       return data;

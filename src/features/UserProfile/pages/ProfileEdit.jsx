@@ -10,22 +10,19 @@ import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import { interestMap, getProfileFields } from "../../../Utlis/utlis";
 import { useEditableProfile } from "../../../Hooks/EditProfile";
 import {
-  LoadingSkeleton,
   Section,
-  ProfileAvatar,
   LazyWrapper,
-  AVATAR_PLACEHOLDER,
 } from "../components/ProfileEdit/Reusable";
+import FieldEditPage from "./FieldEditPage";
+import { LANGUAGES } from "../utlis/profileUtils";
 
 const EditableSocialLinks = lazy(() =>
   import("../components/ProfileEdit/EditableSocialLinks")
 );
-import { EditableField } from "../components/ProfileEdit/EditableField";
-
 const EditableBio = lazy(() => import("../components/ProfileEdit/EditableBio"));
-const EditableSection = lazy(() =>
-  import("../components/ProfileEdit/EditableSection")
-);
+// const EditableSection = lazy(() =>
+//   import("../components/ProfileEdit/EditableSection")
+// );
 
 const SOCIAL_PLATFORMS = [
   { key: "IG" },
@@ -55,6 +52,8 @@ export default function ProfileEditPage() {
   const [socialLinks, setSocialLinks] = useState(
     Object.fromEntries(SOCIAL_PLATFORMS.map((p) => [p.key, ""]))
   );
+
+  const [activeField, setActiveField] = useState(null); //  for slide-in edit page
 
   const fields = useMemo(() => getProfileFields(profile), [profile]);
   const allInterests = useMemo(
@@ -103,9 +102,9 @@ export default function ProfileEditPage() {
 
   // ======== Render ========
   return (
-    <div className="flex flex-col h-screen bg-white font-inter">
+    <div className="flex flex-col h-screen bg-white font-inter relative overflow-hidden">
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Header + Avatar */}
+        {/* Header */}
         <section className="relative bg-white px-5 pt-6 pb-8 border-b border-gray-200">
           <div className="flex items-center space-x-2">
             <button
@@ -118,57 +117,100 @@ export default function ProfileEditPage() {
               {t("profileEdit.title")}
             </h1>
           </div>
-
-   
         </section>
 
         {/* Main Sections */}
         <div className="p-5 space-y-6">
           {/* Bio */}
-          <LazyWrapper>
-            <EditableBio
-              bioInput={bioInput}
-              setBioInput={setBioInput}
-              profile={profile}
-              updateProfileData={updateProfileData}
-              isEditingBio={isEditingBio}
-              setIsEditingBio={setIsEditingBio}
-              editLabel={t("profileEdit.edit")}
-              placeholderText={t("profileEdit.bioPlaceholder")}
-              emptyText={t("profileEdit.bioEmptyText")}
-            />
-          </LazyWrapper>
+     <LazyWrapper>
+  <EditableBio
+    profile={profile}
+    setActiveField={setActiveField}
+    editLabel={t("profileEdit.edit")}
+    emptyText={t("profileEdit.bioEmptyText")}
+  />
+</LazyWrapper>
 
           {/* About Me Fields */}
           <Section title={t("profileEdit.aboutMe")}>
-       {fields
-  .filter((f) => f.key !== "gender" && f.key !== "location")
-  .map((f) => (
-    <EditableField
-      key={f.key}
-      fieldKey={f.key} 
-      icon={f.icon}
-      label={f.label}
-      value={f.value}
-      onSave={(newValue) => updateProfileData(f.key, newValue)}
-    />
-  ))}
-
+            {fields
+              .filter((f) => f.key !== "gender" && f.key !== "location")
+              .map((f) => (
+                <div
+                  key={f.key}
+                  onClick={() => setActiveField(f)}
+                  className="flex justify-between items-center px-5 py-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-all duration-200"
+                >
+                  <div className="flex items-center space-x-3">
+                    <f.icon size={20} className="text-gray-700" />
+                    <div className="flex flex-col">
+                      <span className="text-gray-800 font-medium">
+                        {f.label}
+                      </span>
+                      <span className="text-gray-500 text-sm">
+                        {Array.isArray(f.value)
+                          ? f.value.join(", ")
+                          : f.value || t("profileEdit.notSet")}
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronLeft size={18} className="rotate-180 text-gray-400" />
+                </div>
+              ))}
           </Section>
 
           {/* Interests */}
-          <LazyWrapper>
-            <EditableSection
-              title={t("profileEdit.interests")}
-              value={profile.interest || []}
-              onSave={(selected) => updateProfileData("interest", selected)}
-              iconMap={allInterests}
-              editLabel={t("profileEdit.edit")}
-              saveLabel={t("profileEdit.save")}
-              cancelLabel={t("profileEdit.cancel")}
-              emptyInterestText={t("profileEdit.interestsEmptyText")}
-            />
-          </LazyWrapper>
+   {/* Interests */}
+{/* Interests */}
+<div
+  onClick={() =>
+    setActiveField({
+      key: "interest",
+      label: t("profileEdit.interests"),
+      value: profile.interest || [],
+    })
+  }
+  className="bg-white rounded-2xl shadow-sm px-5 py-4 mb-4 cursor-pointer hover:shadow-md transition-all duration-300"
+>
+  <div className="flex justify-between items-start">
+    {/* Left Section — Title + Interests */}
+    <div className="flex flex-col flex-1">
+      <span className="text-gray-900 font-semibold mb-3">
+        {t("profileEdit.interests")}
+      </span>
+
+      {Array.isArray(profile.interest) && profile.interest.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {profile.interest.map((key) => {
+            const interest = allInterests.find((i) => i.key === key);
+            if (!interest) return null;
+            const Icon = interest.icon;
+            return (
+              <div
+                key={key}
+                className="flex items-center space-x-1 bg-gray-100 px-3 py-1.5 rounded-full text-sm text-gray-800"
+              >
+                <Icon size={15} className="text-gray-600" />
+                <span className="leading-tight">{interest.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <span className="text-gray-500 text-sm">
+          {t("profileEdit.interestsEmptyText")}
+        </span>
+      )}
+    </div>
+
+    {/* Right Section — Edit Label */}
+    <span className="text-[#FF3366] text-sm font-medium ml-4 mt-1 shrink-0">
+      Edit
+    </span>
+  </div>
+</div>
+
+
 
           {/* Social Links */}
           <LazyWrapper fallbackCount={6}>
@@ -202,6 +244,34 @@ export default function ProfileEditPage() {
           </LazyWrapper>
         </div>
       </main>
+
+      {/*  Slide-In Edit Page */}
+      {activeField && (
+        <FieldEditPage
+          field={{
+            ...activeField,
+            options:
+              activeField.key === "languages"
+                ? LANGUAGES.map((l) => l.label)
+                : [],
+          }}
+          value={
+            activeField.value ||
+            (activeField.key === "languages" ? [] : "")
+          }
+     onSave={(keyOrValue, maybeValue) => {
+  const updateKey =
+    typeof maybeValue !== "undefined" ? keyOrValue : activeField.key;
+  const updateValue =
+    typeof maybeValue !== "undefined" ? maybeValue : keyOrValue;
+
+  updateProfileData(updateKey, updateValue);
+  setActiveField(null);
+}}
+
+          onCancel={() => setActiveField(null)}
+        />
+      )}
     </div>
   );
 }
