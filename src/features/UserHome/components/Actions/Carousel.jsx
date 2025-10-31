@@ -3,40 +3,74 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { motion, AnimatePresence } from 'framer-motion';
 
- const PhotoCarousel = memo(({
+const PhotoCarousel = memo(({
   images,
   activeIdx,
   onNext,
-  onPrev, // not used anymore in touch, but kept for completeness
+  onPrev,
   alt,
   placeholderImage,
   onError,
   className = '',
 }) => {
-  const imageRef = useRef();
-  const hasLoadedOnce = useRef(false);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+  const touchStartY = useRef(0);
+  const containerRef = useRef(null);
 
-  // Handle tap anywhere on image: always go to next
-  const handleTouch = () => {
-    onNext();
-  };
-
-  // Preload next/prev images
   useEffect(() => {
-    const preloadImage = (src) => {
-      if (!src) return;
-      const img = new Image();
-      img.src = src;
+    const handlePhotoTap = (e) => {
+      if (!containerRef.current) return;
+
+      const rect = containerRef.current.getBoundingClientRect();
+      const tapX = e.detail?.x ?? rect.width / 2;
+
+      if (tapX > rect.width / 2) {
+        onNext(); // right side → next
+      } else {
+        onPrev(); // left side → previous
+      }
     };
 
-    const nextIdx = (activeIdx + 1) % images.length;
-    const prevIdx = (activeIdx - 1 + images.length) % images.length;
+    const current = containerRef.current;
+    current?.addEventListener('photoTap', handlePhotoTap);
+    return () => {
+      current?.removeEventListener('photoTap', handlePhotoTap);
+    };
+  }, [onNext, onPrev]);
 
-    preloadImage(images[nextIdx]);
-    preloadImage(images[prevIdx]);
-  }, [activeIdx, images]);
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
 
-  // Progress bar segments
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].clientX;
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaX = touchEndX.current - touchStartX.current;
+    const deltaY = touchEndY - touchStartY.current;
+
+    // Ignore vertical swipes (scroll)
+    if (Math.abs(deltaY) > 40) return;
+
+    // Treat small horizontal movement as tap
+    if (Math.abs(deltaX) < 30) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const tapX = e.changedTouches[0].clientX;
+      if (tapX > rect.width / 2) {
+        onNext();
+      } else {
+        onPrev();
+      }
+    }
+  };
+
+  const handleError = (e) => {
+    if (placeholderImage) e.currentTarget.src = placeholderImage;
+    onError?.(e);
+  };
+
+  // Top segment progress bars
   const segments = useMemo(
     () => (
       <div className="absolute top-1 left-0 right-0 flex justify-center px-2 pt-1 space-x-1 z-10 pointer-events-none">
@@ -58,54 +92,43 @@ import { motion, AnimatePresence } from 'framer-motion';
     [images, activeIdx]
   );
 
-  const handleError = (e) => {
-    if (placeholderImage) {
-      e.currentTarget.src = placeholderImage;
-    }
-    onError?.(e);
-  };
-
-  useEffect(() => {
-    hasLoadedOnce.current = true;
-  }, [activeIdx]);
-
   return (
-    <div className={classnames('relative w-full h-full', className)}>
+    <div
+      ref={containerRef}
+      className={classnames(
+        'relative w-full h-full carousel-touch-zone overflow-hidden rounded-3xl',
+        className
+      )}
+    >
       <motion.div
-        className="relative overflow-hidden select-none w-full h-full"
+        className="relative select-none w-full h-full"
         initial={{ scale: 1 }}
         whileTap={{ scale: 0.97 }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <AnimatePresence initial={false} mode="wait">
           <motion.img
-            ref={imageRef}
             key={images[activeIdx]}
             src={images[activeIdx]}
-            srcSet={`${images[activeIdx]} 1x, ${images[activeIdx]} 2x`}
             alt={`${alt} photo ${activeIdx + 1}`}
             className="w-full h-full object-cover"
             draggable="false"
             loading="lazy"
             decoding="async"
             onError={handleError}
-            onTouchEnd={handleTouch}
             style={{
               maxHeight: '100vh',
               objectFit: 'cover',
               objectPosition: 'center',
               touchAction: 'manipulation',
             }}
-            initial={
-              hasLoadedOnce.current
-                ? { opacity: 0, scale: 0.98 }
-                : false
-            }
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.02 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
           />
         </AnimatePresence>
-
         {segments}
       </motion.div>
     </div>
@@ -122,12 +145,5 @@ PhotoCarousel.propTypes = {
   onError: PropTypes.func,
   className: PropTypes.string,
 };
-
-PhotoCarousel.defaultProps = {
-  placeholderImage: '',
-  onError: null,
-  className: '',
-};
-
 
 export default PhotoCarousel;
