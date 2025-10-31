@@ -156,38 +156,39 @@ export default function UserHomePage() {
           </Suspense>
         </div>
       )}
-
+<div className="relative">
+  <Suspense fallback={<ProfileSkeleton />}>
+    <SwipeDeck
+      idx={idx}
+      direction={direction}
+      profilesLength={profiles.length}
+      onAdvance={advance}
+    >
       <div className="relative">
-        <Suspense fallback={<ProfileSkeleton />}>
-          <SwipeDeck
-            idx={idx}
-            direction={direction}
-            profilesLength={profiles.length}
-            onAdvance={advance}
-          >
-            <div className="relative">
-              <ProfileCard
-                profile={profile}
-                placeholderImage={placeholderImage}
-                onConnectClick={() => {}}
-                onMessageClick={() => console.log('Message clicked')}
-              />
+        <ProfileCard
+          profile={profile}
+          placeholderImage={placeholderImage}
+          onConnectClick={() => {}}
+          onMessageClick={() => console.log('Message clicked')}
+        />
 
-              <ActionControls
-                className="absolute top-[85%] inset-x-0 z-30 flex justify-center"
-                onReject={() => advance(-1)}
-                onRefresh={handleRefresh}
-                onLike={() => advance(1)}
-              />
-            </div>
-
-              <div className="mt-15 sm:mt-14 px-4 relative z-10">
-
-              <DetailSection profile={profile} />
-            </div>
-          </SwipeDeck>
-        </Suspense>
+        {/* Buttons positioned just below the carousel */}
+      <div className="flex justify-center mt-2 mb-2">
+  <ActionControls
+    onReject={() => advance(-1)}
+    onRefresh={handleRefresh}
+    onLike={() => advance(1)}
+  />
+</div>
       </div>
+
+      <div className="mt-16 sm:mt-14 px-4 relative z-10">
+        <DetailSection profile={profile} />
+      </div>
+    </SwipeDeck>
+  </Suspense>
+</div>
+
 
       <BottomNav />
     </div>
