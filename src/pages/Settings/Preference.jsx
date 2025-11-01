@@ -54,16 +54,16 @@ const PreferencesPage = () => {
       <header className="flex items-center px-4 py-4 border-b border-gray-100">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center space-x-1 text-gray-700 hover:text-gray-900"
+          className="flex items-center text-gray-400 hover:text-gray-500 text-sm font-normal"
         >
           <ChevronLeft size={22} />
-          <span className="text-sm font-medium">Back</span>
+          <span className="mr-1 text-lg font-bold">Back</span>
         </button>
       </header>
 
       {/* Content */}
       <main className="flex-1 p-5">
-        <h2 className="text-gray-900 text-lg font-semibold mb-6">
+        <h2 className="text-gray-900 text-xl font-bold mb-6">
           Choose Your Gender Preferences
         </h2>
 
