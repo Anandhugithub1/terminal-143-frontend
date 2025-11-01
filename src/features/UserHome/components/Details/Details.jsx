@@ -36,7 +36,7 @@ function DetailSection({ profile }) {
 
   return (
     <div className="-mt-12 px-4 pb-6 space-y-4">
-      {/* 🟩 Main details card */}
+      {/*  Main details card */}
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
         {/* About */}
         <section>
@@ -65,11 +65,11 @@ function DetailSection({ profile }) {
         {profile.languages?.length > 0 && (
           <section className="mt-5">
             <h3 className="font-semibold text-gray-800 text-sm">{t("languages")}</h3>
-            <div className="mt-2 flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-2 ">
               {profile.languages.map((lang) => (
                 <span
                   key={lang}
-                  className="px-3 py-1 bg-gray-100 text-sm rounded-full text-gray-700"
+                  className="px-3 py-1 bg-gray-200 text-sm rounded-md text-gray-700"
                 >
                   {lang}
                 </span>
@@ -100,22 +100,27 @@ function DetailSection({ profile }) {
         )}
       </div>
 
-      {/* 🟩 Separate Health Status card */}
-      <div className="bg-white rounded-2xl shadow-sm p-4 border border-gray-100">
-        <h3 className="font-semibold text-gray-800 text-sm">{t("healthStatus")}</h3>
+      {/*  Separate Health Status card */}
 
-        <div className="mt-3 grid grid-cols-2 gap-2 text-sm text-gray-700">
-          <div className="flex flex-col">
-            <span className="text-xs text-gray-500">{t("stdStatusLabel")}</span>
-            <span className="font-medium mt-1">{displayStatus}</span>
-          </div>
+<div className="bg-white rounded-2xl shadow-sm p-5 border border-gray-100">
+  <h3 className="font-semibold text-gray-800 text-sm tracking-wide">{t("healthStatus")}</h3>
 
-          <div className="flex flex-col">
-            <span className="text-xs text-gray-500">{t("testedOn")}</span>
-            <span className="font-medium mt-1">{lastTestedDate || "—"}</span>
-          </div>
-        </div>
-      </div>
+  <div className="mt-4 space-y-3 text-sm text-gray-700">
+    {/* STD Status */}
+    <div className="flex justify-between items-center">
+      <span className="text-gray-500">{t("stdStatusLabel")}</span>
+      <span className="font-medium text-gray-800">{displayStatus}</span>
+    </div>
+
+    {/* Tested On */}
+    <div className="flex justify-between items-center">
+      <span className="text-gray-500">{t("testedOn")}</span>
+      <span className="font-medium text-gray-800">{lastTestedDate || "—"}</span>
+    </div>
+  </div>
+</div>
+
+
     </div>
   );
 }
