@@ -60,7 +60,7 @@ export const PrimaryButton = ({ children, to, className = "", ...props }) => (
 export const SecondaryButton = ({ children, to, className = "", ...props }) => (
   <Link
     to={to}
-    className={`${baseButtonClasses} border-2 border-gray-200 bg-white text-gray-700 hover:border-indigo-100 hover:bg-indigo-50 px-6 py-4 ${className}`}
+    className={`${baseButtonClasses}  rounded-3xl border-gray-200 bg-white text-gray-700 hover:border-indigo-100 hover:bg-indigo-50 px-6 py-4 ${className}`}
     {...props}
   >
     {children}
