@@ -29,7 +29,7 @@ const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage
   if (!images.length) return null;
 
   return (
-    <div className="mx-5 mt-4 rounded-3xl shadow-lg overflow-hidden h-[65vh] relative">
+    <div className="mx-5 mt-3 rounded-3xl shadow-lg overflow-hidden relative h-[55vh] sm:h-[60vh] md:h-[65vh]">
       {/* Photo Section */}
       <PhotoCarousel
         images={images}
@@ -41,14 +41,12 @@ const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage
         onError={(e) => {
           e.currentTarget.src = placeholderImage;
         }}
-        className="w-full h-full"
+        className="w-full h-full object-cover"
       />
 
-      {/*  Production-Level Gradient Overlay */}
+      {/* Gradient Overlays for Depth */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Bottom fade (main) */}
         <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-        {/* Right fade (adds depth) */}
         <div className="absolute top-0 right-0 w-1/4 h-full bg-gradient-to-l from-black/40 to-transparent" />
       </div>
 
