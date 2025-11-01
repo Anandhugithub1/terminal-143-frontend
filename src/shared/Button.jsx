@@ -13,7 +13,7 @@ export const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`w-full py-3 px-4 rounded-xl transition-opacity font-medium shadow-lg bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white ${
+      className={`w-full py-3 px-4 rounded-3xl transition-opacity font-medium shadow-lg bg-primary text-white ${
         disabled
           ? 'opacity-50 cursor-not-allowed'
           : 'hover:opacity-90'

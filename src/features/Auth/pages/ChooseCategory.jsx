@@ -88,7 +88,7 @@ const ChooseCategory = () => {
 
         <button
           onClick={handleContinue}
-          className="w-full max-w-md bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold py-3 sm:py-4 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm sm:text-base"
+          className="w-full max-w-md bg-primary text-white font-semibold py-3 sm:py-4 rounded-full hover:opacity-90 transition-opacity shadow-lg text-sm sm:text-base"
           disabled={!selectedCategory}
         >
           Continue

@@ -5,11 +5,11 @@ body {
 }
 
 @theme {
-  --color-primary: #EC4899;
+  --color-primary: #D2449D;
   --color-input:#EBEBEB;
   --color-focus:#EC4899 ;
   --color-border-clr:#E5E7EB;
-  --color-text-pr:oklch(0.592 0.249 0.584);
+  --color-text-pr:#D2449D;
   --color-gradient-primary:#f6339a;
   --color-gradient-secondary:#9810fa;
   --color-text-sec:#1F2937 
@@ -50,3 +50,5 @@ img {
 .animate-slideIn {
   animation: slideIn 0.25s ease-out forwards;
 }
+
+
