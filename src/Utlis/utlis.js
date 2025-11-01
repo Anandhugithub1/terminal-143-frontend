@@ -139,6 +139,15 @@ export function getProfileFields(profile) {
       value: profile.gender === 'M' ? 'Male' : 'Female',
       icon: User,
     },
+    
+
+    {key:"name",
+label:"Name",
+value:profile.name || "",
+icon:User,
+
+
+    },
  {
   key: "age",
   label: "Age",

@@ -20,9 +20,7 @@ const EditableSocialLinks = lazy(() =>
   import("../components/ProfileEdit/EditableSocialLinks")
 );
 const EditableBio = lazy(() => import("../components/ProfileEdit/EditableBio"));
-// const EditableSection = lazy(() =>
-//   import("../components/ProfileEdit/EditableSection")
-// );
+
 
 const SOCIAL_PLATFORMS = [
   { key: "IG" },
@@ -160,8 +158,7 @@ export default function ProfileEditPage() {
           </Section>
 
           {/* Interests */}
-   {/* Interests */}
-{/* Interests */}
+
 <div
   onClick={() =>
     setActiveField({
