@@ -196,7 +196,7 @@ export default function ProfilePage() {
                 <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 font-semibold">
                   {item.icon}
                 </div>
-                <span className="text-gray-800 text-[15px] font-semibold">
+                <span className="text-gray-800 text-[15px] font-bold">
                   {item.label}
                 </span>
               </div>
