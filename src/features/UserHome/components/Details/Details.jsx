@@ -2,7 +2,7 @@ import React from "react";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { MdWorkOutline } from "react-icons/md";
 import { useTranslation } from "react-i18next";
-
+import { getLanguageLabel } from "../../../../Utlis/Global/lanaguage";
 /**
  * DetailSection - matches screenshot: both the main info
  * and health status appear as separate rounded cards.
@@ -62,21 +62,21 @@ function DetailSection({ profile }) {
         </section>
 
         {/* Languages */}
-        {profile.languages?.length > 0 && (
-          <section className="mt-5">
-            <h3 className="font-semibold text-gray-800 text-sm">{t("languages")}</h3>
-            <div className="mt-2 flex flex-wrap gap-2 ">
-              {profile.languages.map((lang) => (
-                <span
-                  key={lang}
-                  className="px-3 py-1 bg-gray-200 text-sm rounded-md text-gray-700"
-                >
-                  {lang}
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
+   {profile.languages?.length > 0 && (
+  <section className="mt-5">
+    <h3 className="font-semibold text-gray-800 text-sm">{t("languages")}</h3>
+    <div className="mt-2 flex flex-wrap gap-2 ">
+      {profile.languages.map((langValue) => (
+        <span
+          key={langValue}
+          className="px-3 py-1 bg-gray-200 text-sm rounded-md text-gray-700"
+        >
+          {getLanguageLabel(langValue)}
+        </span>
+      ))}
+    </div>
+  </section>
+)}
 
         {/* Interests */}
         {profile.interests?.length > 0 && (
