@@ -23,8 +23,8 @@ const PreferencesPage = () => {
     { label: t('others'), value: 'Ot', icon: <Star size={20} /> },
   ];
 
-  const [selectedPreference, setSelectedPreference] = useState('');
-  const [initialPreference, setInitialPreference] = useState('');
+  const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const [initialPreferences, setInitialPreferences] = useState([]);
 
   useEffect(() => {
     if (status === 'idle') {
@@ -33,20 +33,30 @@ const PreferencesPage = () => {
   }, [dispatch, status]);
 
   useEffect(() => {
-    if (profile?.preferences?.length === 1) {
-      setSelectedPreference(profile.preferences[0]);
-      setInitialPreference(profile.preferences[0]);
+    if (profile?.preferences?.length) {
+      setSelectedPreferences(profile.preferences);
+      setInitialPreferences(profile.preferences);
     }
   }, [profile?.preferences]);
 
+  const togglePreference = (value) => {
+    setSelectedPreferences((prev) =>
+      prev.includes(value)
+        ? prev.filter((v) => v !== value)
+        : [...prev, value]
+    );
+  };
+
   const handleSave = () => {
-    if (!selectedPreference) return;
-    dispatch(updateProfile({ preferences: [selectedPreference] }))
+    if (!selectedPreferences.length) return;
+    dispatch(updateProfile({ preferences: selectedPreferences }))
       .then(() => navigate(-1))
       .catch((err) => console.error('Failed to update preferences', err));
   };
 
-  const hasChanged = selectedPreference && selectedPreference !== initialPreference;
+  const hasChanged =
+    JSON.stringify(selectedPreferences.sort()) !==
+    JSON.stringify(initialPreferences.sort());
 
   return (
     <div className="min-h-screen bg-white font-inter flex flex-col justify-between">
@@ -69,11 +79,11 @@ const PreferencesPage = () => {
 
         <div className="space-y-3">
           {PREFERENCES.map(({ label, value, icon }) => {
-            const isSelected = selectedPreference === value;
+            const isSelected = selectedPreferences.includes(value);
             return (
               <button
                 key={value}
-                onClick={() => setSelectedPreference(value)}
+                onClick={() => togglePreference(value)}
                 className={`w-full flex justify-between items-center px-4 py-4 rounded-2xl border transition-all duration-200 ${
                   isSelected
                     ? 'bg-pink-50 border-pink-400'
@@ -97,7 +107,7 @@ const PreferencesPage = () => {
                   </span>
                 </div>
 
-                {/* Right-side radio */}
+                {/* Keep same circular radio style */}
                 <div
                   className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
                     isSelected ? 'border-pink-500' : 'border-gray-300'
