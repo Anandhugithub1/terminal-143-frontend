@@ -61,7 +61,7 @@ Badge.propTypes = {
       <Badge icon={<FaVenus size={12} />} label={gender} />
     
     </div>
-    {about && <p className="mt-2 italic text-sm">“”</p>}
+    {about && <p className="mt-2 italic text-sm"></p>}
 
 
     <div className="flex items-center text-sm mt-2">
