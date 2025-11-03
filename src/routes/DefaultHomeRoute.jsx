@@ -4,6 +4,7 @@ import { fetchMyProfile } from "../features/UserProfile/api/profile.js";
 import { LoadingSpinner } from "../components/Ui/Spinner.jsx";
 import UserHomePage from "../features/UserHome/pages/Home.jsx";
 import AppHome from "../pages/Global/Route.jsx";
+import { Login } from "../features/Auth/pages/Login.jsx";
 
 export default function DefaultHomeRoute() {
   const [loading, setLoading] = useState(true);
@@ -53,5 +54,5 @@ export default function DefaultHomeRoute() {
   }
 
   //  If no userType → Global landing page
-  return <AppHome />;
+  return <Login />;
 }
