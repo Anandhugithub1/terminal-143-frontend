@@ -70,7 +70,7 @@ const Step1BasicInfo = () => {
 
   return (
     <div className="animate-fade-in">
-      <ProgressBar step={1} totalSteps={4} />
+      <ProgressBar step={1} totalSteps={5} />
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h2>
         <p className="text-gray-500">{t('subtitle')}</p>

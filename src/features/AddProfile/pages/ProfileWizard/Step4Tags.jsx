@@ -104,7 +104,7 @@ const handleSubmit = async () => {
 
   return (
     <div className="animate-fade-in">
-      <ProgressBar step={4} totalSteps={4} />
+      <ProgressBar step={5} totalSteps={5} />
 
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Final Touch!</h2>

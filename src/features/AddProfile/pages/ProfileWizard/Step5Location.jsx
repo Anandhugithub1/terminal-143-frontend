@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useWizard } from '../contexts/ProfileWizard';
-import { ProgressBar } from './ProfileWizard/Progess';
-import LocationInput from '../components/LocationInput';
-import LocationRangeSelector from '../components/LocationRangeSelector';
+import { useWizard } from '../../contexts/ProfileWizard';
+import { ProgressBar } from './Progess';
+import LocationInput from '../../components/LocationInput';
+import LocationRangeSelector from '../../components/LocationRangeSelector';
 import { useTranslation } from 'react-i18next';
-import { useLocationService } from '../Hooks/useLocationService';
+import { useLocationService } from '../../Hooks/useLocationService';
 
 const Step5Location = () => {
   const { formData, setFormData } = useWizard();

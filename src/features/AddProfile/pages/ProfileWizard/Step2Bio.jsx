@@ -76,7 +76,7 @@ export default function Step2Bio() {
 
   return (
     <div className="max-w-xl mx-auto p-4 space-y-8 animate-fade-in">
-      <ProgressBar step={2} totalSteps={4} />
+      <ProgressBar step={3} totalSteps={5} />
 
       {/* Bio */}
       <div className="space-y-1">
