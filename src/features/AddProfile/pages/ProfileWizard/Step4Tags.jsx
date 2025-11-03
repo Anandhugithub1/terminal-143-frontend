@@ -4,7 +4,7 @@ import { useWizard } from "../../contexts/ProfileWizard";
 import { useNavigate } from "react-router-dom";
 import { ProgressBar } from "./Progess";
 import { del } from "idb-keyval";
-
+ import {Button} from '../../../../shared/Button'
 import { useDispatch, useSelector } from "react-redux";
 import { uploadProfileImage, completeProfile } from "../../../UserProfile";
 import {  resetProfileState } from "../../../UserProfile";
@@ -143,13 +143,14 @@ const handleSubmit = async () => {
       {apiError && <p className="mt-4 text-center text-red-500">{apiError}</p>}
 
       <div className="mt-8 flex gap-4">
-        <button
+        <Button
           onClick={handleBack}
           disabled={isLoading}
-          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50"
+          textColor="black"
+          className="flex-1 py-3 px-6 border border-gray-200 bg-white"
         >
           Back
-        </button>
+        </Button>
 
         <button
           onClick={handleSubmit}

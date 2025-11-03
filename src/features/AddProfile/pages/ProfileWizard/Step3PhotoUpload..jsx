@@ -1,30 +1,32 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useWizard } from '../../contexts/ProfileWizard';
-import { useNavigate } from 'react-router-dom';
-import { ProgressBar } from './Progess';
-import PhotoGrid from '../../components/PhotoGrid';
-import { set, get, del } from 'idb-keyval';
+import React, { useRef, useState, useEffect } from "react";
+import { useWizard } from "../../contexts/ProfileWizard";
+import { useNavigate } from "react-router-dom";
+import { ProgressBar } from "./Progess";
+import PhotoGrid from "../../components/PhotoGrid";
+import { set, get, del } from "idb-keyval";
+import { Button } from "../../../../shared/Button";
 
 const Step3PhotoUpload = () => {
   const { formData, setFormData } = useWizard();
-  const userType = localStorage.getItem('userType');
+  const userType = localStorage.getItem("userType");
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
 
-  const maxSlots = userType === 'mp' ? 3 : 1;
-  const uploadedPhotos = userType === 'mp' ? formData.profilePhotos || [] : [formData.profilePhoto];
+  const maxSlots = userType === "mp" ? 3 : 1;
+  const uploadedPhotos =
+    userType === "mp" ? formData.profilePhotos || [] : [formData.profilePhoto];
 
   // Load persisted photos from IndexedDB on mount
   useEffect(() => {
     const loadPhotos = async () => {
-      if (userType === 'mp') {
-        const photos = await get('profilePhotos');
+      if (userType === "mp") {
+        const photos = await get("profilePhotos");
         if (photos?.length) {
           setFormData((prev) => ({ ...prev, profilePhotos: photos }));
         }
       } else {
-        const photo = await get('profilePhoto');
+        const photo = await get("profilePhoto");
         if (photo) {
           setFormData((prev) => ({ ...prev, profilePhoto: photo }));
         }
@@ -34,60 +36,55 @@ const Step3PhotoUpload = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-const handleSlotChange = (index) => {
-  if (!inputRef.current) return; 
+  const handleSlotChange = (index) => {
+    if (!inputRef.current) return;
 
-  inputRef.current.dataset.replaceIndex = index;
-  inputRef.current.click();
-};
+    inputRef.current.dataset.replaceIndex = index;
+    inputRef.current.click();
+  };
 
-const handleSlotRemove = async (index) => {
-  if (userType === 'mp') {
-    const newPhotos = [...(formData.profilePhotos || [])];
-    newPhotos.splice(index, 1);
-    setFormData(prev => ({ ...prev, profilePhotos: newPhotos }));
-    await set('profilePhotos', newPhotos);
-  } else {
-    setFormData(prev => ({ ...prev, profilePhoto: null }));
-    await del('profilePhoto');
-  }
-};
-const handlePhotoUpload = async (e) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
+  const handleSlotRemove = async (index) => {
+    if (userType === "mp") {
+      const newPhotos = [...(formData.profilePhotos || [])];
+      newPhotos.splice(index, 1);
+      setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
+      await set("profilePhotos", newPhotos);
+    } else {
+      setFormData((prev) => ({ ...prev, profilePhoto: null }));
+      await del("profilePhoto");
+    }
+  };
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  setUploading(true);
-  await new Promise((res) => setTimeout(res, 300));
+    setUploading(true);
+    await new Promise((res) => setTimeout(res, 300));
 
-  let slotIndex = Number(e.target.dataset.replaceIndex);
-  if (isNaN(slotIndex)) slotIndex = 0; // default to first slot
+    let slotIndex = Number(e.target.dataset.replaceIndex);
+    if (isNaN(slotIndex)) slotIndex = 0; // default to first slot
 
-  if (userType === "mp") {
-    const existing = [...(formData.profilePhotos || [])];
-    while (existing.length < maxSlots) existing.push(null); // ensure array length
+    if (userType === "mp") {
+      const existing = [...(formData.profilePhotos || [])];
+      while (existing.length < maxSlots) existing.push(null); // ensure array length
 
-    // Assign photo to chosen slot (slot order defines index)
-    existing[slotIndex] = file;
+      // Assign photo to chosen slot (slot order defines index)
+      existing[slotIndex] = file;
 
-    setFormData((prev) => ({ ...prev, profilePhotos: existing }));
-    await set("profilePhotos", existing);
-  } else {
-    setFormData((prev) => ({ ...prev, profilePhoto: file }));
-    await set("profilePhoto", file);
-  }
+      setFormData((prev) => ({ ...prev, profilePhotos: existing }));
+      await set("profilePhotos", existing);
+    } else {
+      setFormData((prev) => ({ ...prev, profilePhoto: file }));
+      await set("profilePhoto", file);
+    }
 
-  e.target.value = null;
-  delete e.target.dataset.replaceIndex;
-  setUploading(false);
-};
+    e.target.value = null;
+    delete e.target.dataset.replaceIndex;
+    setUploading(false);
+  };
 
-
-
-
- 
-
-  const handleNext = () => navigate('/complete/tags');
-  const handleBack = () => navigate('/complete/bio');
+  const handleNext = () => navigate("/complete/tags");
+  const handleBack = () => navigate("/complete/bio");
 
   return (
     <div className="animate-fade-in">
@@ -95,24 +92,22 @@ const handlePhotoUpload = async (e) => {
 
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          {userType === 'mp' ? 'Show Your Sparkle ✨' : 'Upload Your Photo'}
+          {userType === "mp" ? "Show Your Sparkle ✨" : "Upload Your Photo"}
         </h2>
         <p className="text-gray-500">
-          {userType === 'mp'
+          {userType === "mp"
             ? `Upload at least ${maxSlots} photos to get started`
-            : 'Upload photo to get started'}
+            : "Upload photo to get started"}
         </p>
       </div>
 
-   
-
       <PhotoGrid
-  photos={uploadedPhotos}
-  maxSlots={maxSlots}
-  onSlotChange={handleSlotChange}
-  onSlotRemove={handleSlotRemove}
-  uploading={uploading}
-/>
+        photos={uploadedPhotos}
+        maxSlots={maxSlots}
+        onSlotChange={handleSlotChange}
+        onSlotRemove={handleSlotRemove}
+        uploading={uploading}
+      />
 
       <input
         ref={inputRef}
@@ -123,19 +118,20 @@ const handlePhotoUpload = async (e) => {
       />
 
       <div className="mt-8 flex gap-4">
-        <button
+        <Button
           onClick={handleBack}
-          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+          textColor="black"
+          className="flex-1 py-3 px-6 border border-gray-200 bg-white"
         >
           Back
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleNext}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700
-                     text-white font-semibold py-3 px-6 rounded-xl transition-all"
+          className="flex-1  font-sembibold
+                      py-3 px-6 "
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );
