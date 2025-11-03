@@ -3,7 +3,7 @@ import { InputField } from '../../../shared/common';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../../shared/Button';
 import PasswordInput from '../../../shared/Passinput';
-import axios from 'axios'; // ✅ Import Axios
+import axios from 'axios'; // 
 import { baseurl } from '../../../Utlis/utlis';
 export const ForgotAndResetPassword = () => {
 
@@ -92,7 +92,7 @@ export const ForgotAndResetPassword = () => {
               />
               {error && <p className="text-red-500 text-sm">{error}</p>}
               {message && <p className="text-green-500 text-sm">{message}</p>}
-              <Button type="submit" className="bg-gradient-to-r from-pink-500 to-purple-600 text-white">
+              <Button type="submit" className=" text-white">
                 Send Reset Code
               </Button>
             </form>
