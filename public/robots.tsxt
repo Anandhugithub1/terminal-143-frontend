@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /static/
+Disallow: /assets/
+Disallow: /_next/
+Disallow: /api/
+
