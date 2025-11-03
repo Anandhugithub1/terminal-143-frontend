@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { InputField } from '../../../../shared/common';
 import { ProgressBar } from './Progess';
-
+import {Button} from '../../../../shared/Button'
 import SocialLinkInput from '../../components/SocialLinkInput';
 import SocialLinkChip from '../../components/SocialLinkChip';
 
@@ -159,12 +159,13 @@ const Step1BasicInfo = () => {
         </div>
       </div>
 
-      <button
-        onClick={handleNext}
-        className="mt-8 w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-4 rounded-xl transition-all transform hover:scale-[1.01] shadow-lg shadow-pink-500/20"
-      >
-        {t('continue')}
-      </button>
+   <Button
+  onClick={handleNext}
+  className="mt-8 py-4"
+>
+  {t('continue')}
+</Button>
+
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { useWizard } from '../../contexts/ProfileWizard';
 
 import { useNavigate } from 'react-router-dom';
 import { ProgressBar } from './Progess';
+import {Button} from '../../../../shared/Button'
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
 import { statusOptions,LANGUAGES } from '../../utlis';
 
@@ -157,18 +158,20 @@ export default function Step2Bio() {
 
       {/* Nav */}
       <div className="flex gap-4">
-        <button
+        <Button
           onClick={handleBack}
-          className="flex-1 py-3 px-6 border border-gray-200 rounded-xl hover:bg-gray-50"
+          textColor='black'
+          className="flex-1 py-3 px-6 border border-gray-200 bg-white"
         >
           Back
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleNext}
-          className="flex-1 py-3 px-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-xl hover:from-pink-600 hover:to-purple-700"
+
+          className="flex-1 py-3 px-6"
         >
           Next
-        </button>
+        </Button>
       </div>
     </div>
   );
