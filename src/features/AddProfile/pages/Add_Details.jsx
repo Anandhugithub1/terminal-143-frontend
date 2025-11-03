@@ -7,6 +7,7 @@ const Step1BasicInfo = lazy(() => import('./ProfileWizard/Step1BasicInfo'));
 const Step2Bio = lazy(() => import('./ProfileWizard/Step2Bio'));
 const Step3PhotoUpload = lazy(() => import('./ProfileWizard/Step3PhotoUpload.'));
 const Step4Tags = lazy(() => import('./ProfileWizard/Step4Tags'));
+const Step4Location =lazy(() => import ('./ProfileWizard/Step5Location'));
 
 const AddDetails = () => {
   return (
@@ -19,6 +20,7 @@ const AddDetails = () => {
             <Route path="bio" element={<Step2Bio />} />
             <Route path="photo" element={<Step3PhotoUpload />} />
             <Route path="tags" element={<Step4Tags />} />
+            <Route path='location' element={<Step4Location/>}/>
             <Route path="*" element={<Navigate to="basic" replace />} />
           </Routes>
         </Suspense>
