@@ -2,11 +2,13 @@ import React, { Suspense, lazy } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Footer from '../../../components/Layout/Footer';
-
+import Navbar from '../../../components/Layout/Navbar';
 const LoginForm = lazy(() => import('../components/LoginForm'));
 
 export const Login = () => {
   return (
+ <>
+ <Navbar/>
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-pink-100 via-pink-50 to-purple-200">
       {/* Top spacing for better breathing room */}
       <div className="flex-grow flex items-start justify-center pt-20 sm:pt-28 pb-12 px-4">
@@ -19,6 +21,7 @@ export const Login = () => {
 
       <Footer />
     </div>
+ </>
   );
 };
 
