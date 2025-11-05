@@ -1,44 +1,83 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
+
+const MIN_RANGE = 1;
+const MAX_RANGE = 30; // UI cap (both units). Converted values above this will clamp and show "30+"
+const PRESETS = [5, 10, 20, 30];
+const UNITS = ["km", "miles"];
+const MI_IN_KM = 1.609344;
+
+const toMiles = (km) => km / MI_IN_KM;
+const toKm = (mi) => mi * MI_IN_KM;
 
 const LocationRangeSelector = ({ formData, setFormData, t }) => {
-  const [unit, setUnit] = useState(formData.distanceUnit || "km");
+  const initialUnit = formData.distanceUnit || "km";
+  const [unit, setUnit] = useState(initialUnit);
 
-  const currentRange = formData.locationRange || 10;
-  const rangePresets = [5, 10, 20, 30];
+  const currentRange = formData.distanceRange ?? 10;
 
-  const handleRangeChange = (e) => {
-    const range = parseInt(e.target.value, 10);
-    setFormData((prev) => ({
-      ...prev,
-      locationRange: range,
-      distanceUnit: unit,
-    }));
-  };
+  const clamp = (n) => Math.min(MAX_RANGE, Math.max(MIN_RANGE, Math.round(Number(n))));
 
-  const handleQuickSelect = (range) => {
-    setFormData((prev) => ({
-      ...prev,
-      locationRange: range,
-      distanceUnit: unit,
-    }));
-  };
+  const updateForm = useCallback(
+    (range, u = unit) => {
+      const next = clamp(range);
+      setFormData((prev) => ({
+        ...prev,
+        distanceRange: next,
+        distanceUnit: u,
+      }));
+    },
+    [setFormData, unit]
+  );
 
-  const getRangeLabel = (range) => {
-    if (range <= 5) return t("rangeNearby") || "Nearby";
-    if (range <= 15) return t("rangeCity") || "Within city";
-    if (range <= 25) return t("rangeRegion") || "Regional";
+  const handleRangeChange = useCallback(
+    (e) => updateForm(e.target.value),
+    [updateForm]
+  );
+
+  const handleQuickSelect = useCallback(
+    (preset) => updateForm(preset),
+    [updateForm]
+  );
+
+  // Convert current value so real-world distance remains constant on unit toggle
+  const handleUnitChange = useCallback(
+    (u) => {
+      if (u === unit) return;
+      let converted = currentRange;
+
+      if (unit === "km" && u === "miles") {
+        converted = toMiles(currentRange);
+      } else if (unit === "miles" && u === "km") {
+        converted = toKm(currentRange);
+      }
+
+      setUnit(u);
+      updateForm(converted, u); // persists converted+clamped value
+    },
+    [unit, currentRange, updateForm]
+  );
+
+  const rangeLabel = useMemo(() => {
+    if (currentRange <= 5) return t("rangeNearby") || "Nearby";
+    if (currentRange <= 15) return t("rangeCity") || "Within city";
+    if (currentRange <= 25) return t("rangeRegion") || "Regional";
     return t("rangeAnywhere") || "Anywhere";
-  };
+  }, [currentRange, t]);
+
+  const formatRange = useCallback(
+    (val) => (val >= MAX_RANGE ? `${MAX_RANGE}+ ${unit}` : `${val} ${unit}`),
+    [unit]
+  );
 
   return (
     <div className="bg-white/80 backdrop-blur-md p-7 rounded-3xl border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 max-w-md mx-auto">
       {/* Title */}
       <label className="block mb-6">
         <span className="block text-xl font-extrabold text-gray-900 mb-2">
-          {t("locationRangeTitle") || "Preferred Distance Range"}
+          {t("distanceRangeTitle") || "Preferred Distance Range"}
         </span>
         <span className="block text-sm text-gray-600">
-          How far are you willing to connect with others?
+          {t("distanceRangeHelp") || "How far are you willing to connect with others?"}
         </span>
       </label>
 
@@ -46,24 +85,24 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
       <div className="mb-8">
         <div className="flex justify-between items-center mb-3">
           <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-            Quick Select
+            {t("quickSelect") || "Quick Select"}
           </span>
         </div>
         <div className="grid grid-cols-4 gap-3">
-          {rangePresets.map((preset) => (
+          {PRESETS.map((preset) => (
             <button
               key={preset}
               type="button"
               onClick={() => handleQuickSelect(preset)}
+              aria-pressed={currentRange === preset}
               className={`p-3 rounded-xl text-sm font-semibold transition-all duration-200 border
                 ${
                   currentRange === preset
-                    ? "bg-gradient-to-br from-main-color to-main-color/80 text-white shadow-lg scale-105 border-transparent"
+                    ? "bg-primary from-main-color to-main-color/80 text-white shadow-lg scale-105 border-transparent"
                     : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:border-main-color/40"
-                }
-              `}
+                }`}
             >
-              {preset === 30 ? `30+ ${unit}` : `${preset} ${unit}`}
+              {formatRange(preset)}
             </button>
           ))}
         </div>
@@ -71,10 +110,13 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
 
       {/* Range Slider */}
       <div className="space-y-6">
-        <div className="relative">
+        <div className="relative" aria-label={t("distanceSlider") || "Distance slider"}>
           <div className="flex justify-between text-xs text-gray-500 mb-3 px-1">
-            {[1, 10, 20, 30].map((mark) => (
-              <span key={mark}>{mark}{unit}</span>
+            {[MIN_RANGE, 10, 20, MAX_RANGE].map((mark) => (
+              <span key={mark}>
+                {mark}
+                {unit}
+              </span>
             ))}
           </div>
 
@@ -83,17 +125,22 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
             <div className="absolute top-1/2 left-0 w-full h-2 rounded-full bg-gray-200 -translate-y-1/2" />
             <div
               className="absolute top-1/2 left-0 h-2 rounded-full bg-gradient-to-r from-main-color to-main-color/70 -translate-y-1/2 transition-all duration-300"
-              style={{ width: `${(currentRange / 30) * 100}%` }}
+              style={{ width: `${(clamp(currentRange) / MAX_RANGE) * 100}%` }}
+              aria-hidden="true"
             />
 
             {/* Input range */}
             <input
               type="range"
-              min="1"
-              max="30"
-              step="1"
-              value={currentRange}
+              min={MIN_RANGE}
+              max={MAX_RANGE}
+              step={1}
+              value={clamp(currentRange)}
               onChange={handleRangeChange}
+              aria-valuemin={MIN_RANGE}
+              aria-valuemax={MAX_RANGE}
+              aria-valuenow={clamp(currentRange)}
+              aria-label={t("distanceSlider") || "Distance slider"}
               className="w-full appearance-none bg-transparent cursor-pointer relative z-10
                 [&::-webkit-slider-thumb]:appearance-none
                 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6
@@ -109,10 +156,10 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
         {/* Current selection */}
         <div className="text-center p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 shadow-inner">
           <div className="text-4xl font-bold text-main-color mb-1">
-            {currentRange === 30 ? `30+ ${unit}` : `${currentRange} ${unit}`}
+            {formatRange(clamp(currentRange))}
           </div>
           <div className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
-            {getRangeLabel(currentRange)}
+            {rangeLabel}
           </div>
           <div className="w-12 h-1 bg-main-color/40 rounded-full mx-auto mt-3" />
         </div>
@@ -121,26 +168,31 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
         <div className="flex items-center justify-between pt-5 border-t border-gray-100">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">
-              Distance Unit
+              {t("distanceUnit") || "Distance Unit"}
             </label>
             <p className="text-xs text-gray-500">
-              Choose your preferred measurement
+              {t("distanceUnitHelp") || "Choose your preferred measurement"}
             </p>
           </div>
 
-          <div className="flex bg-gray-100 rounded-xl p-1 border border-gray-200 shadow-inner">
-            {["km", "miles"].map((u) => (
+          <div
+            className="flex bg-gray-100 rounded-xl p-1 border border-gray-200 shadow-inner"
+            role="tablist"
+            aria-label={t("distanceUnit") || "Distance Unit"}
+          >
+            {UNITS.map((u) => (
               <button
                 key={u}
                 type="button"
-                onClick={() => setUnit(u)}
+                onClick={() => handleUnitChange(u)}
+                role="tab"
+                aria-selected={unit === u}
                 className={`px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 min-w-[80px]
                   ${
                     unit === u
                       ? "bg-white text-main-color shadow-md border border-gray-200 scale-105"
                       : "text-gray-600 hover:text-gray-900 hover:bg-gray-200/60"
-                  }
-                `}
+                  }`}
               >
                 {u.charAt(0).toUpperCase() + u.slice(1)}
               </button>

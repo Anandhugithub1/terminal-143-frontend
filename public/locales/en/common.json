@@ -45,7 +45,22 @@
   "invalidLink": "Invalid link. Must be https:// or plain username.",
 
 
-
-  "preferencesRequired": "Please select at least one preference."
-
+  "locationRequired": "Please select a location",
+  
+  "location": "Location",
+  "locationHelper": "City or area where you live",
+  "typeOrSearchLocation": "Search for your city or area...",
+  "useMyCurrentLocation": "Use My Current Location",
+  "locationHelpText": "Start typing or tap 'Use My Current Location'",
+  "preferencesRequired": "Please select at least one preference.",
+  "distanceRangeTitle": "Preferred Distance Range",
+  "distanceRangeHelp": "How far are you willing to connect with others?",
+  "quickSelect": "Quick Select",
+  "distanceSlider": "Distance slider",
+  "distanceUnit": "Distance Unit",
+  "distanceUnitHelp": "Choose your preferred measurement",
+  "rangeNearby": "Nearby",
+  "rangeCity": "Within city",
+  "rangeRegion": "Regional",
+  "rangeAnywhere": "Anywhere"
 }

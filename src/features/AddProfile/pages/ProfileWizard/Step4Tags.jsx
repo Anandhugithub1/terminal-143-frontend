@@ -42,10 +42,10 @@ const handleSubmit = async () => {
   try {
     const photoUrls = [];
 
-    // 1️⃣ Get MP photos in slot order
+    // 1️ Get MP photos in slot order
     const photos = userType === "mp" ? [...(formData.profilePhotos || [])] : [];
 
-    // 2️⃣ Upload photos in slot order
+    // 2️ Upload photos in slot order
     for (let i = 0; i < photos.length; i++) {
       const file = photos[i];
       if (!file) continue; // skip empty slots
@@ -62,7 +62,7 @@ const handleSubmit = async () => {
       }
     }
 
-    // 3️⃣ For single photo users
+    // 3️ For single photo users
     if (userType !== "mp" && formData.profilePhoto) {
       try {
         const { publicUrl } = await dispatch(
@@ -74,21 +74,21 @@ const handleSubmit = async () => {
       }
     }
 
-    // 4️⃣ Build payload
+    // 4️ Build payload
     const payload = { ...formData, interests: selectedInterests };
     if (userType === "mp") payload.photos = photoUrls;
     else payload.photo = photoUrls[0] || "";
 
-    // 5️⃣ Complete profile
+    // 5️ Complete profile
     await dispatch(completeProfile(payload)).unwrap();
     dispatch(resetProfileState());
 
-    // 6️⃣ Clear local form data
+    // 6️ Clear local form data
     clearFormData();
     await del("profilePhoto");
     await del("profilePhotos");
 
-    // 7️⃣ Navigate to home
+    // 7️ Navigate to home
     navigate("/home", { state: { profileJustCompleted: true } });
   } catch (err) {
     console.error("Profile completion error:", err);

@@ -34,7 +34,7 @@ const Step1BasicInfo = () => {
       return setError(t('preferencesRequired'));
 
     setError('');
-    navigate('/complete/bio');
+    navigate('/complete/location');
   };
 
   const togglePreference = (value) => {

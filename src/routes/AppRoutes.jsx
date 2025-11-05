@@ -49,7 +49,7 @@ export const appRoutes = (
               <AddDetails />
             </Suspense>
           </WizardProvider>
-        </RequireProfileIncomplete>
+          </RequireProfileIncomplete>
       }
     />
 
