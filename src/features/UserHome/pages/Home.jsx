@@ -9,13 +9,14 @@ import ProfileSkeleton from '../components/ProfileSkeleton';
 import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
 import placeholderImage from '../../../assets/woman.png';
 import { getMatchProviders } from '../../../features/Profiles/profilesapi';
-
 // Lazy-loaded components
 const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'));
 const DetailSection = lazy(() => import('../components/Details/Details'));
 const ActionControls = lazy(() => import('../components/Actions/ActionControls'));
 const AlertMessage = lazy(() => import('../../../components/Ui/Alerts'));
 const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'));
+
+
 
 export default function UserHomePage() {
   const dispatch = useDispatch();
@@ -128,7 +129,8 @@ export default function UserHomePage() {
     location: rawProfile.location || '',
     popularity: rawProfile.popularity || 0,
     healthStatus: rawProfile.healthStatus || { status: 'Unknown', lastTestedDate: 'Unknown' },
-    lastSeen: rawProfile.lastSeen || 'Last seen within a month ',
+    // convert lastSeen timestamp (or fallback) into friendly text
+    lastSeen: rawProfile.lastSeen,
     job: rawProfile.jobTitle || '',
     languages: rawProfile.languagesKnown?.length
       ? rawProfile.languagesKnown

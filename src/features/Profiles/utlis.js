@@ -1,27 +1,34 @@
-export function formatLastSeen(isoString) {
-  if (!isoString) return 'Unknown';
-
-  const now = Date.now();
-  const then = new Date(isoString).getTime();
-  const diffMs = now - then;
-
-  const minute = 1000 * 60;
-  const hour = minute * 60;
-  const day = hour * 24;
-
-  if (diffMs < minute) {
-    return 'Active just now';
-  } else if (diffMs < hour) {
-    const mins = Math.floor(diffMs / minute);
-    return `Active ${mins} minute${mins > 1 ? 's' : ''} ago`;
-  } else if (diffMs < day) {
-    const hrs = Math.floor(diffMs / hour);
-    return `Active ${hrs} hour${hrs > 1 ? 's' : ''} ago`;
-  } else if (diffMs < day * 7) {
-    const days = Math.floor(diffMs / day);
-    return `Last seen ${days} day${days > 1 ? 's' : ''} ago`;
-  } else {
-    // For anything more than 7 days ago, show full locale date
-    return `Last seen on ${new Date(isoString).toLocaleDateString()}`;
+export function formatLastSeen(raw) {
+  // If backend already provided a friendly string, return it
+  if (typeof raw === 'string') {
+    return raw;
   }
+
+  // If missing, return one of the two fallbacks (50/50)
+  if (raw == null) {
+    return Math.random() < 0.5 ? 'Last seen within a month' : 'Last seen: 2 months ago';
+  }
+
+  // Normalize numeric timestamps: accept seconds or ms
+  const n = Number(raw);
+  if (!Number.isFinite(n)) {
+    return 'Last seen within a month';
+  }
+  const ts = n > 1e12 ? n : n > 1e9 ? n * 1000 : n; // ms
+
+  const diff = Date.now() - ts;
+  if (diff < 0) return 'Last seen just now';
+
+  const mins = Math.floor(diff / (1000 * 60));
+  if (mins < 1) return 'Last seen just now';
+  if (mins < 60) return 'Last seen within a day';
+
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return 'Last seen within a day';
+
+  const days = Math.floor(hours / 24);
+  if (days < 7) return 'Last seen within a week';
+  if (days < 30) return 'Last seen within a month';
+  if (days < 60) return 'Last seen: 2 months ago';
+  return 'Last seen: more than 2 months ago';
 }
