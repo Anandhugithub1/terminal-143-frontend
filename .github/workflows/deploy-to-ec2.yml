@@ -1,24 +1,22 @@
-name: "Deploy to EC2 (Local Runner)"
+name: Deploy to EC2 (SSH-run)
 
 on:
   push:
-    branches:
-      - "main"
+    branches: [ main ]
 
 jobs:
   deploy:
-    runs-on: self-hosted
-
+    runs-on: ubuntu-latest
     steps:
-      - name: "Checkout code"
-        uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-      - name: "Install dependencies"
-        run: |
-          cd ~/terminal-143-frontend
-          npm install
-
-      - name: "Build project"
-        run: |
-          cd ~/terminal-143-frontend
-          npm run build
+      - name: Run deploy.sh on EC2
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            bash -lc "cd '/home/ec2-user/terminal-143-frontend' && chmod +x ./deploy.sh && ./deploy.sh"
