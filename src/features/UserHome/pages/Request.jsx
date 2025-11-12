@@ -1,6 +1,6 @@
 // src/pages/RequestsPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useMatchRequestResponse,useMatchRequests } from '../api';
+import { useMatchRequestResponse, useMatchRequests } from '../api';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import TopNav from '../../../components/Layout/TopNavigation';
@@ -22,21 +22,19 @@ export default function RequestsPage() {
 
   // Ensure current user profile is loaded
   useEffect(() => {
- 
-
     if (axios.isAxiosError(error)) {
       const status = error?.response?.status;
       if (status === 401 || status === 403) {
-        console.warn('🔐 Unauthorized. Redirecting to /login...');
+        console.warn(' Unauthorized. Redirecting to /login...');
         navigate('/login');
       }
     }
-  }, [ error,  navigate]);
+  }, [error, navigate]);
 
   // Open confirmation modal
   const openModal = (request, action) => {
     setSelectedRequest({
-      senderUsername: request.senderUsername, // ✅ correct field
+      senderUsername: request.senderUsername,
       action,
     });
     setModalOpen(true);
@@ -56,7 +54,7 @@ export default function RequestsPage() {
     setProcessingRequests((prev) => new Set(prev).add(senderUsername));
 
     mutation.mutate(
-      { senderUsername, action }, // ✅ removed recipient
+      { senderUsername, action },
       {
         onSettled: () => {
           refetch();
@@ -117,26 +115,30 @@ export default function RequestsPage() {
     }
 
     return (
-      <div className="px-4 pt-4 flex-1">
-        <h1 className="text-2xl font-bold mb-4 text-gray-800">
-          Your Match Requests
-        </h1>
-        <div className="space-y-4">
-          {requests.map(({ request }) => (
-            <RequestItem
-              key={`${request.senderUsername}-${request.sentAt}`} // ✅ updated key
-              request={request}
-              openModal={openModal}
-              isProcessing={processingRequests.has(request.senderUsername)}
-            />
-          ))}
+      // center and constrain the column so it looks like your screenshot on mobile
+      <div className="flex-1 bg-white pb-28">
+        <div className="max-w-md w-full mx-auto px-4 pt-4">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">
+            Your Match Requests
+          </h1>
+
+          <div className="divide-y divide-gray-200">
+            {requests.map(({ request }, idx) => (
+              <RequestItem
+                key={`${request.senderUsername}-${request.sentAt}-${idx}`}
+                request={request}
+                openModal={openModal}
+                isProcessing={processingRequests.has(request.senderUsername)}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="bg-white min-h-screen pb-24 flex flex-col">
+    <div className="bg-gray-50 min-h-screen pb-24 flex flex-col">
       <TopNav />
       {renderContent()}
       <BottomNav />
@@ -146,7 +148,7 @@ export default function RequestsPage() {
         onClose={() => setModalOpen(false)}
         onConfirm={confirmAction}
         action={selectedRequest?.action}
-        name={selectedRequest?.senderUsername} // ✅ use correct field
+        name={selectedRequest?.senderUsername}
       />
     </div>
   );
