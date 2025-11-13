@@ -1,19 +1,16 @@
 // src/pages/components/QRShareCard.jsx
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Share2 } from 'lucide-react';
-
+import {Button} from '../../../../shared/Button'
 export default function QRShareCard({ profile, onShare }) {
   const qrCodeSrc = profile?.qrCodeUrl?.startsWith('http')
     ? profile.qrCodeUrl
     : `https://${profile.qrCodeUrl}`;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 flex flex-col items-center space-y-6"
-    >
+    <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 flex flex-col items-center space-y-6">
+      
+      {/* Heading */}
       <div className="text-center space-y-2">
         <h2 className="text-3xl font-bold text-gray-800">{profile.name}</h2>
         <p className="text-gray-600 text-sm max-w-xs">
@@ -21,6 +18,7 @@ export default function QRShareCard({ profile, onShare }) {
         </p>
       </div>
 
+      {/* QR Code */}
       <div className="relative p-6 bg-white rounded-2xl shadow-inner border-4 border-dotted border-pink-100">
         <img
           src={qrCodeSrc}
@@ -33,16 +31,16 @@ export default function QRShareCard({ profile, onShare }) {
         </div>
       </div>
 
-      <motion.button
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        onClick={onShare}
-        disabled={!profile.profileLink}
-        className="w-full py-4 px-6 flex items-center justify-center bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50"
-      >
-        <Share2 className="mr-3" size={20} />
+  
+      <Button onClick={onShare}
+      
+      disabled={!profile.profileLink} className='flex items-center justify-center  transition-all disabled:opacity-50 active:scale-95'>
+        
+            <Share2 className="mr-3" size={20} />
         Share Profile
-      </motion.button>
-    </motion.div>
+
+
+      </Button>
+    </div>
   );
 }
