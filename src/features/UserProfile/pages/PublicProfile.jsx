@@ -127,7 +127,7 @@ export default function PublicProfilePage() {
 
             <div className="mt-3 text-center text-sm text-gray-600">
               Don't have an account?{" "}
-              <button onClick={() => navigate("/signup")} className="text-primary font-semibold underline-offset-2 hover:underline">
+              <button onClick={() => navigate("/register")} className="text-primary font-semibold underline-offset-2 hover:underline">
                 Sign up
               </button>
             </div>
