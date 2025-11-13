@@ -66,22 +66,24 @@ export default function PublicProfilePage() {
   if (profileError) return <div className="text-center mt-10 text-red-500">{profileError.message}</div>;
 
   return (
-    <div className="relative bg-gray-50 min-h-screen pb-36">
+    <div className="relative bg-gray-50 min-h-screen">
       {/* top bar: show app TopBar for logged-in users, otherwise PublicTopbar */}
       {hasAccess ? <TopBar /> : <PublicTopbar />}
 
-      <div className="relative max-w-2xl mb-6 mx-auto px-4 pt-4">
+      {/* NOTE: when not signed in we add extra bottom padding (pb-40) so CTA never overlaps content */}
+      <div className={`relative max-w-2xl mx-auto px-4 pt-4 ${!hasAccess ? 'pb-36 md:pb-44' : 'pb-6'}`}>
         <div className="relative">
           <ProfileCard profile={normalized} placeholderImage={placeholderImage} />
         </div>
 
         {!hasAccess && (
-          <div className="mt-5 px-2 mb-4">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 text-center py-5">
-              <div className="mx-auto w-12 h-12 rounded-full bg-pink-50 flex items-center justify-center mb-3">
-                <FiLock size={18} color="#ec4899" />
+          <div className="mt-5 px-2 mb-6">
+            {/* reduced py on very small screens to avoid giant banner */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 text-center py-4 md:py-5 px-4">
+              <div className="mx-auto w-11 h-11 rounded-full bg-pink-200 flex items-center justify-center mb-3">
+                <FiLock size={18}  className="text-primary" />
               </div>
-              <h3 className="text-lg font-semibold mb-1">Want to see more?</h3>
+              <h3 className="text-base md:text-lg font-semibold mb-1">Want to see more?</h3>
               <p className="text-sm text-gray-500 max-w-[20rem] mx-auto">
                 Sign in or create an account to view the full profile and connect with {normalized.name}.
               </p>
@@ -89,11 +91,12 @@ export default function PublicProfilePage() {
           </div>
         )}
 
-        <div className="mt-3 px-2 relative z-0 pb-6">
+        <div className="mt-3 px-2 relative z-0">
           <div ref={wrapperRef} className="relative transition-all duration-300">
             <DetailSection profile={normalized} locked={!hasAccess} />
           </div>
 
+          {/* overlay layer for small locks (positioned above details but inside the content container) */}
           {!hasAccess && (
             <div ref={layerRef} aria-hidden className="absolute inset-0 pointer-events-none z-40">
               {locks.map((lock) => (
@@ -119,11 +122,19 @@ export default function PublicProfilePage() {
         </div>
       </div>
 
-      {/* CTA only for non-logged-in users */}
+      {/* CTA only for non-logged-in users. Use safe-area and responsive spacing so it never overlaps the big banner */}
       {!hasAccess && (
-        <div className="fixed bottom-4 left-0 right-0 flex items-center justify-center px-4 z-50">
+        <div
+          className="fixed left-0 right-0 flex items-center justify-center px-4 z-50"
+          style={{
+            bottom: 'env(safe-area-inset-bottom, 16px)',
+            paddingBottom: 'env(safe-area-inset-bottom, 16px)',
+          }}
+        >
           <div className="w-full max-w-md">
-            <Button onClick={() => navigate("/login")}>Sign In to View Profile</Button>
+            <Button onClick={() => navigate("/login")} className="w-full">
+              Sign In to View Profile
+            </Button>
 
             <div className="mt-3 text-center text-sm text-gray-600">
               Don't have an account?{" "}
