@@ -122,16 +122,51 @@ export default function RequestsPage() {
             Your Match Requests
           </h1>
 
-          <div className="divide-y divide-gray-200">
-            {requests.map(({ request }, idx) => (
-              <RequestItem
-                key={`${request.senderUsername}-${request.sentAt}-${idx}`}
-                request={request}
-                openModal={openModal}
-                isProcessing={processingRequests.has(request.senderUsername)}
-              />
-            ))}
-          </div>
+ <div className="divide-y divide-gray-200">
+  {requests.map(({ request }, idx) => {
+    // Prefer the exact fields present in the payload (case-sensitive)
+    const pk =
+      request.senderPK ||
+      request.senderPk ||
+      request.senderpk ||
+      request.pk ||
+      null;
+    const sk =
+      request.senderSK ||
+      request.senderSk ||
+      request.sendersk ||
+      request.sk ||
+      null;
+    const username = request.senderUsername || request.username || '';
+
+    const handleClick = () => {
+      if (pk && sk) {
+        // encode to avoid URL issues
+        navigate(`/user/${encodeURIComponent(pk)}/${encodeURIComponent(sk)}`);
+      } else {
+        console.warn('No identifier available for profile navigation', request);
+      }
+    };
+
+    const keyId = pk || request.senderUsername || `${idx}`;
+
+    return (
+      <div
+        key={`${keyId}-${request.sentAt || idx}`}
+        onClick={handleClick}
+        className="cursor-pointer hover:bg-gray-50 transition"
+      >
+        <RequestItem
+          request={request}
+          openModal={openModal}
+          isProcessing={processingRequests.has(request.senderUsername)}
+        />
+      </div>
+    );
+  })}
+</div>
+
+
         </div>
       </div>
     );
