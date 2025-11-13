@@ -6,6 +6,7 @@ import {
   Edit2,
   Sliders,
   User,
+  Share2
 } from "lucide-react";
 import { useAvatarUpload } from "../Hooks/useAvatarUpload";
 import { UploadOptions } from "../components/ProfileEdit/UploadOptions";
@@ -24,7 +25,7 @@ export default function ProfilePage() {
 
   const profile = useSelector((state) => state.userProfile.currentUser);
   const status = useSelector((state) => state.userProfile.status);
-
+  const userType =localStorage.getItem("userType")
   const { updateProfileData, uploadImage } = useEditableProfile();
 
   const {
@@ -182,28 +183,39 @@ export default function ProfilePage() {
         </div>
 
         {/* Options Section */}
-        <div className="bg-white mt-2 divide-y divide-gray-100">
-          {[
-            { label: "Preferences", icon: <Sliders color="black" size={16} />, route: "/preferences" },
-            { label: "Profile Information", icon: <User size={16} color="black" />, route: "/edit-profile" },
-          ].map((item, index) => (
-            <button
-              key={index}
-              onClick={() => navigate(item.route)}
-              className="flex items-center justify-between w-full px-6 py-4 hover:bg-gray-50 transition"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 font-semibold">
-                  {item.icon}
-                </div>
-                <span className="text-gray-800 text-[15px] font-bold">
-                  {item.label}
-                </span>
-              </div>
-              <span className="text-gray-400 text-lg">›</span>
-            </button>
-          ))}
+    {/* Options Section */}
+<div className="bg-white mt-2 divide-y divide-gray-100">
+  {[
+    { label: "Preferences", icon: <Sliders color="black" size={16} />, route: "/preferences" },
+    { label: "Profile Information", icon: <User size={16} color="black" />, route: "/edit-profile" },
+
+    //  Conditionally add QR option
+    ...(userType === "mp"
+      ? [
+          {
+            label: "Share QR Code",
+            icon: <Share2 size={16} color="black" />,   
+            route: "/share-qr"
+          }
+        ]
+      : [])
+  ].map((item, index) => (
+    <button
+      key={index}
+      onClick={() => navigate(item.route)}
+      className="flex items-center justify-between w-full px-6 py-4 hover:bg-gray-50 transition"
+    >
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 font-semibold">
+          {item.icon}
         </div>
+        <span className="text-gray-800 text-[15px] font-bold">{item.label}</span>
+      </div>
+      <span className="text-gray-400 text-lg">›</span>
+    </button>
+  ))}
+</div>
+
       </main>
 
       {/* Bottom Navigation */}
