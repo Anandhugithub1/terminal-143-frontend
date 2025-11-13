@@ -71,7 +71,7 @@ export default function PublicProfilePage() {
       {hasAccess ? <TopBar /> : <PublicTopbar />}
 
       {/* NOTE: when not signed in we add extra bottom padding (pb-40) so CTA never overlaps content */}
-      <div className={`relative max-w-2xl mx-auto px-4 pt-4 ${!hasAccess ? 'pb-36 md:pb-44' : 'pb-6'}`}>
+      <div className={`relative max-w-2xl mx-auto px-2 pt-2 ${!hasAccess ? 'pb-36 md:pb-44' : 'pb-6'}`}>
         <div className="relative">
           <ProfileCard profile={normalized} placeholderImage={placeholderImage} />
         </div>
@@ -80,8 +80,8 @@ export default function PublicProfilePage() {
           <div className="mt-5 px-2 mb-6">
             {/* reduced py on very small screens to avoid giant banner */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 text-center py-4 md:py-5 px-4">
-              <div className="mx-auto w-11 h-11 rounded-full bg-pink-200 flex items-center justify-center mb-3">
-                <FiLock size={18}  className="text-primary" />
+              <div className="mx-auto w-11 h-11 rounded-full bg-pink-100 flex items-center justify-center mb-3">
+                <FiLock size={18}  className="text-primary font-bold" />
               </div>
               <h3 className="text-base md:text-lg font-semibold mb-1">Want to see more?</h3>
               <p className="text-sm text-gray-500 max-w-[20rem] mx-auto">
@@ -132,7 +132,7 @@ export default function PublicProfilePage() {
           }}
         >
           <div className="w-full max-w-md">
-            <Button onClick={() => navigate("/login")} className="w-full">
+            <Button onClick={() => navigate("/login")} className="w-full px-4">
               Sign In to View Profile
             </Button>
 
