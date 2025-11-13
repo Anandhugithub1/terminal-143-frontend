@@ -24,7 +24,7 @@ export default function ShareQRCodePage() {
     if (status === 'idle') dispatch(fetchProfile());
   }, [dispatch, status]);
 
-  // 🚨 Redirect fm users away from this page
+  //  Redirect fm users away from this page
   useEffect(() => {
     if (status === 'succeeded' && profile?.userType === 'fm') {
       navigate('/home', { replace: true });
