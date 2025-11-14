@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchProfile,
-  updateProfile,
-  uploadProfileImage,
-} from '../features/UserProfile';
 
+import { fetchProfile,updateProfile,uploadProfileImage} from '../thunks/profile'
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
 export function useEditableProfile() {
