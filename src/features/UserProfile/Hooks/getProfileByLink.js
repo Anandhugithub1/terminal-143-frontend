@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProfileByLink } from '../features/UserProfile/api/profile';
-
+import { getProfileByLink } from '../api/profile';
 
 
 export const useProfileByLink = (link) => {

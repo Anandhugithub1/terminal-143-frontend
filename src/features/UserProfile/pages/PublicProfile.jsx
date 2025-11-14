@@ -3,7 +3,7 @@
   import { useDispatch, useSelector } from "react-redux";
   import { FiLock } from "react-icons/fi";
   import { fetchProfile } from "../../../features/UserProfile";
-  import { useProfileByLink } from "../../../Hooks/getProfileByLink";
+  import { useProfileByLink } from "../Hooks/getProfileByLink";
   import ProfileCard from "../../UserHome/components/Cards/ProfileCard";
   import placeholderImage from "../../../assets/woman.png";
   import { computeAge } from "../../../Utlis/utlis";
