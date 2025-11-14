@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 
 import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import { interestMap, getProfileFields } from "../../../Utlis/utlis";
-import { useEditableProfile } from "../Hooks/EditProfile";
+import { useEditableProfile } from "../../../Hooks/EditProfile";
 import {
   Section,
   LazyWrapper,
