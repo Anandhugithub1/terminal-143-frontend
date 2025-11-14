@@ -1,37 +1,60 @@
 import React from "react";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { MdWorkOutline } from "react-icons/md";
+import { FiLock } from "react-icons/fi";
 import { useTranslation } from "react-i18next";
 import { getLanguageLabel } from "../../../../Utlis/Global/lanaguage";
 
-/** small wrapper to avoid repeating blur/select-none classes and data attribute */
-function ProtectedCard({ children, locked = false, className = "" }) {
-  const lockClasses = locked ? "filter blur-sm opacity-60 select-none pointer-events-none" : "";
-  return (
-    <div data-protected-card className={`relative bg-white rounded-2xl shadow-sm p-5 border border-gray-100 overflow-hidden ${className}`}>
-      <div className={`transition-all ${lockClasses}`}>{children}</div>
-    </div>
-  );
+/**
+ * ProtectedCard
+ * - title: heading to show in the floating protected header (e.g. "About me")
+ * - subtitle: small helper text (e.g. "Sign in to unlock")
+ */
+function ProtectedCard({ children, locked = false, className = "", title }) {
+const lockClasses = locked ? "filter blur-sm opacity-60 select-none pointer-events-none" : "";
+
+
+return (
+<div
+data-protected-card
+className={`relative bg-white rounded-2xl shadow-sm p-6 border border-gray-100 overflow-hidden ${className}`}
+style={{ minHeight: "140px" }} // increased card height slightly
+>
+<h3 className="font-semibold text-gray-800 text-base mb-4">{title}</h3>
+
+
+<div className={`transition-all ${lockClasses}`}>{children}</div>
+
+
+{locked && (
+<div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+<FiLock size={28} className="text-gray-500 opacity-80" /> {/* increased size */}
+</div>
+)}
+</div>
+);
 }
+
+
+
 
 function DetailSection({ profile, locked = false }) {
   const { t } = useTranslation("common");
   const { stdStatus = "", lastTestedDate = "" } = profile.healthStatus || {};
 
   const displayStatus =
-    stdStatus === "n" ? t("stdStatusNegative") : stdStatus === "p" ? t("stdStatusPositive") : t("stdStatusUnknown");
-
-  const badgeColors = ["#E3F2FD", "#FFF3E0", "#F3E5F5", "#E8F5E9", "#FFF8E1", "#FCE4EC", "#F5F5F5"];
-  const getColorFor = (str, idx) => {
-    const hash = [...(str || "")].reduce((a, c) => a + c.charCodeAt(0), 0);
-    return badgeColors[(hash + idx) % badgeColors.length];
-  };
+    stdStatus === "n" ? t("stdStatusNegative") :
+    stdStatus === "p" ? t("stdStatusPositive") :
+    t("stdStatusUnknown");
 
   return (
     <div className="space-y-4">
-      <ProtectedCard locked={locked}>
-        <h3 className="font-semibold text-gray-800 text-base mb-2">{t("aboutMe")}</h3>
-        <p className="text-sm text-gray-500 leading-relaxed">{profile.about || t("noBioAvailable")}</p>
+
+      {/* ABOUT ME */}
+      <ProtectedCard locked={locked} title={t("aboutMe")}>
+        <p className="text-sm text-gray-500 leading-relaxed">
+          {profile.about || t("noBioAvailable")}
+        </p>
 
         <div className="mt-3 flex flex-wrap gap-2 items-center">
           {profile.location && (
@@ -69,7 +92,7 @@ function DetailSection({ profile, locked = false }) {
                 <span
                   key={`${interest}-${i}`}
                   className="px-3 py-1 rounded-full text-sm font-medium"
-                  style={{ backgroundColor: getColorFor(interest, i), color: "#1f2937" }}
+                  style={{ backgroundColor: "#F3F4F6", color: "#1f2937" }}
                 >
                   {interest}
                 </span>
@@ -79,8 +102,9 @@ function DetailSection({ profile, locked = false }) {
         )}
       </ProtectedCard>
 
-      <ProtectedCard locked={locked}>
-        <h3 className="font-semibold text-gray-800 text-sm tracking-wide mb-2">{t("healthStatus")}</h3>
+
+      {/* HEALTH STATUS */}
+      <ProtectedCard locked={locked} title={t("healthStatus")}>
         <div className="space-y-3 text-sm text-gray-700">
           <div className="flex justify-between items-center">
             <span className="text-gray-500">{t("stdStatusLabel")}</span>
@@ -93,8 +117,10 @@ function DetailSection({ profile, locked = false }) {
           </div>
         </div>
       </ProtectedCard>
+
     </div>
-  );
+  );  
 }
+
 
 export default DetailSection;
