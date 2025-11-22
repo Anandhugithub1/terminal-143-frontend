@@ -36,11 +36,22 @@ export default function DesktopCirclesPanel({ circles, selectedCircleId, onSelec
               >
                 <div className="flex items-center gap-4">
                   <div className="relative">
-                    <div 
-                      className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-gradient-primary to-gradient-secondary"
-                    >
-                      {c.name[0]}
-                    </div>
+              <div
+  className="w-12 h-12 rounded-xl overflow-hidden shadow-lg group-hover:scale-105 transition-transform duration-200"
+>
+  {c.coverPhoto ? (
+    <img
+      src={c.coverPhoto}
+      alt={c.name}
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <div className="w-full h-full flex items-center justify-center text-white font-bold bg-gradient-to-r from-gradient-primary to-gradient-secondary">
+      {c.name?.[0] || "C"}
+    </div>
+  )}
+</div>
+
                     {c.onlineCount > 0 && (
                       <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
                     )}
