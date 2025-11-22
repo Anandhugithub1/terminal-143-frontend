@@ -1,12 +1,166 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+  createPost as createPostApi,
+  getPresignedUrl as getPresignedUrlApi,
+  updatePost as updatePostApi, // <-- import updatePost
+} from "../../api";
 
-export default function CreatePostForm({ onCreate, onCancel }) {
+export default function CreatePostForm({ onCreate, onCancel, circleName }) {
   const [body, setBody] = useState("");
-  const submit = (e) => {
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // cleanup preview URL
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
+
+  const handleFileSelect = (f) => {
+    setError(null);
+    setFile(null);
+    if (preview) {
+      URL.revokeObjectURL(preview);
+      setPreview(null);
+    }
+    if (!f) return;
+    const allowed = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (!allowed.includes(f.type)) {
+      setError("Invalid file type. Allowed: jpeg, png, webp");
+      return;
+    }
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+  };
+
+  const removeFile = () => {
+    setFile(null);
+    setError(null);
+    if (preview) {
+      URL.revokeObjectURL(preview);
+      setPreview(null);
+    }
+  };
+
+  // small helper to normalize circle name just like backend
+  const normalize = (name = "") =>
+    String(name).trim().toLowerCase().replace(/\s+/g, "-");
+
+  const submit = async (e) => {
     e.preventDefault();
-    if (!body.trim()) return;
-    onCreate({ body, author: { name: "You", role: "Member" } });
-    setBody("");
+    setError(null);
+
+    if (!body.trim() && !file) {
+      setError("Please provide text or attach an image.");
+      return;
+    }
+    if (!circleName) {
+      setError("Circle name is required to create a post.");
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      // 1) CREATE POST FIRST (no media)
+      const createPayload = {
+        body: body.trim(),
+        media: [],
+        visibility: "members",
+      };
+
+      const createRes = await createPostApi(circleName, createPayload);
+      const createdPost = createRes?.post ?? createRes?.item ?? createRes;
+
+      if (!createdPost) {
+        throw new Error("Post creation failed: no post returned");
+      }
+
+      const postId = createRes?.postId ?? createdPost?.postId;
+      if (!postId) {
+        throw new Error("Post creation failed: missing postId");
+      }
+
+      // derive postedAtEpoch from SK: "POST#<epoch>#<postId>"
+      let postedAtEpoch = null;
+      const sk = createdPost.SK || createdPost.sk;
+      if (sk && sk.startsWith("POST#")) {
+        const parts = sk.split("#"); // ["POST", "<epoch>", "<postId>"]
+        if (parts.length >= 3) {
+          postedAtEpoch = parts[1];
+        }
+      }
+
+      if (!postedAtEpoch) {
+        console.warn("Could not derive postedAtEpoch from SK:", sk);
+      }
+
+      let finalPost = createdPost;
+
+      // 2) IF THERE IS A FILE, UPLOAD IT AFTER POST IS CREATED
+      if (file && postId && postedAtEpoch) {
+        const normalizedCircleName = normalize(circleName);
+
+        const presPayload = {
+          fileType: file.type,
+          kind: "postMedia",
+          circleName: normalizedCircleName,
+          postId,
+          mediaIndex: 0,
+        };
+
+        // request presigned URL from backend (cookies-based auth)
+        const presResp = await getPresignedUrlApi(presPayload);
+        const { presignedUrl, publicUrl } = presResp || {};
+        if (!presignedUrl || !publicUrl) {
+          throw new Error("Invalid presign response from server");
+        }
+
+        // upload file directly to S3
+        const putRes = await fetch(presignedUrl, {
+          method: "PUT",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+        if (!putRes.ok) {
+          throw new Error(`Upload failed with status ${putRes.status}`);
+        }
+
+        // 3) UPDATE POST WITH MEDIA URL (PATCH)
+        const updatePayload = {
+          media: [publicUrl],
+        };
+
+        const updateRes = await updatePostApi(
+          circleName,
+          postId,
+          postedAtEpoch,
+          updatePayload
+        );
+
+        finalPost =
+          updateRes?.post ?? updateRes?.item ?? updateRes ?? createdPost;
+      } else if (file && (!postId || !postedAtEpoch)) {
+        console.warn(
+          "File attached but missing postId or postedAtEpoch; cannot attach media"
+        );
+      }
+
+      // 4) Notify parent with the final post (with media if any)
+      if (onCreate) onCreate(finalPost);
+
+      // reset form
+      setBody("");
+      removeFile();
+    } catch (err) {
+      console.error("Create post failed", err);
+      setError(err.message || "Failed to create post");
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -25,39 +179,49 @@ export default function CreatePostForm({ onCreate, onCancel }) {
         />
       </div>
 
-      <div className="flex items-center justify-between flex-col sm:flex-row gap-3">
-        <div className="flex gap-2 w-full sm:w-auto">
-          <button
-            type="button"
-            className="w-10 h-10 rounded-xl border border-border-clr flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors duration-200 bg-white"
+      <div>
+        <label className="text-sm font-medium text-gray-900 mb-2 block">
+          Attach image (optional)
+        </label>
+        <div className="flex items-center gap-3">
+          <input
+            id="postMedia"
+            type="file"
+            accept="image/*"
+            onChange={(e) => handleFileSelect(e.target.files?.[0])}
+            className="hidden"
+          />
+          <label
+            htmlFor="postMedia"
+            className="px-4 py-3 rounded-xl border border-border-clr font-medium transition-all duration-200 hover:shadow-md bg-white cursor-pointer"
           >
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            className="w-10 h-10 rounded-xl border border-border-clr flex items-center justify-center text-gray-500 hover:bg-gray-50 transition-colors duration-200 bg-white"
-          >
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </button>
+            {uploading ? "Preparing..." : "Choose image"}
+          </label>
+
+          {preview ? (
+            <div className="flex items-center gap-2">
+              <img
+                src={preview}
+                alt="preview"
+                className="w-24 h-16 object-cover rounded-md border"
+              />
+              <button
+                type="button"
+                onClick={removeFile}
+                className="text-sm text-red-600 underline"
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <div className="text-sm text-gray-500">No image selected</div>
+          )}
         </div>
 
+        {error && <div className="text-sm text-red-600 mt-2">{error}</div>}
+      </div>
+
+      <div className="flex items-center justify-between flex-col sm:flex-row gap-3">
         <div className="flex gap-3 w-full sm:w-auto">
           <button
             type="button"
@@ -68,10 +232,10 @@ export default function CreatePostForm({ onCreate, onCancel }) {
           </button>
           <button
             type="submit"
-            disabled={!body.trim()}
-            className="flex-1 sm:flex-none px-6 py-3 rounded-xl text-white font-semibold shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl disabled:hover:shadow-lg bg-gradient-to-r from-gradient-primary to-gradient-secondary"
+            disabled={uploading || (!body.trim() && !file)}
+            className="flex-1 sm:flex-none px-6 py-3 rounded-xl text-white font-semibold shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-xl bg-gradient-to-r from-gradient-primary to-gradient-secondary"
           >
-            Post to Circle
+            {uploading ? "Posting..." : "Post to Circle"}
           </button>
         </div>
       </div>
