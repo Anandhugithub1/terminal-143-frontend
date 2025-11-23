@@ -1,7 +1,7 @@
 // src/pages/CirclesPagePro.jsx
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
- import { useQueryClient } from "@tanstack/react-query";
+
 import MobileCirclesDrawer from "../components/mobileui/MobileCirclesDrawer";
 import MobileBottomNav from "../components/mobileui/MobileBottomNav";
 import DesktopCirclesPanel from "../components/desktopui/DesktopCirclesPanel";
@@ -15,19 +15,6 @@ import PostCard from "../components/Cards/Postcard";
 import { getCirclesByUser, listPosts } from "../api";
 import { normalizeCircle } from "../models/circleModel";
 
-const makeId = (prefix) => `${prefix}-${Date.now().toString(36)}`;
-
-// const CircleAvatar = ({ name, size = 40 }) => (
-//   <div
-//     className={`w-${Math.round(size / 4)} h-${Math.round(
-//       size / 4
-//     )} sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-white font-bold shadow-lg bg-gradient-to-r from-gradient-primary to-gradient-secondary`}
-//     aria-hidden
-//   >
-//     {name?.[0] || "C"}
-//   </div>
-// );
-
 export default function CirclesPagePro() {
   const [circles, setCircles] = useState([]);
   const [selectedCircleId, setSelectedCircleId] = useState(null);
@@ -37,7 +24,7 @@ export default function CirclesPagePro() {
   const [isNewCircleOpen, setIsNewCircleOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("feed");
   const [isCirclesDrawerOpen, setIsCirclesDrawerOpen] = useState(false);
- const queryClient = useQueryClient();
+
   // -- circles list (react-query)
   const {
     data: rawCirclesData,
@@ -79,7 +66,7 @@ export default function CirclesPagePro() {
     [selectedCircle]
   );
 
-  // -- posts query (react-query per-circle) (v5 single-object signature)
+  // -- posts query (react-query per-circle)
   const {
     data: postsData,
     isLoading: loadingPosts,
@@ -99,43 +86,43 @@ export default function CirclesPagePro() {
     keepPreviousData: true,
     staleTime: 1000 * 30, // 30s
     retry: 1,
-    select: (raw) => {
-      if (!raw) return [];
-      const arr = Array.isArray(raw)
-        ? raw
-        : raw.items || raw.posts || raw.data || [];
-      // defensive: handle DynamoDB typed items if your client didn't convert them
-      if (!Array.isArray(arr) && arr?.Items && Array.isArray(arr.Items)) {
-        return arr.Items;
+   select: (raw) => {
+  if (!raw) return [];
+
+  const arr = Array.isArray(raw)
+    ? raw
+    : raw.items || raw.posts || raw.data || [];
+
+  const baseArray =
+    !Array.isArray(arr) && arr?.Items && Array.isArray(arr.Items)
+      ? arr.Items
+      : Array.isArray(arr)
+      ? arr
+      : [];
+
+  return baseArray.map((post) => {
+    let postPostedAtEpoch = null;
+
+    // Parse postedAtEpoch from SK = "POST#<epoch>#<postId>"
+    if (typeof post.SK === "string" && post.SK.startsWith("POST#")) {
+      const parts = post.SK.split("#");
+      if (parts.length >= 3) {
+        postPostedAtEpoch = parts[1];
       }
-      return Array.isArray(arr) ? arr : [];
-    },
+    }
+
+    return {
+      ...post,
+      postCircleId: post.circleId,      
+      postPostedAtEpoch,               
+    };
+  });
+},
+
   });
 
-  // local optimistic createPost (UI-only for now)
-  const createPost = useCallback(
-    (payload) => {
-      const newP = {
-        postId: makeId("p"),
-        createdAt: Date.now(),
-        previews: [],
-        likeCount: 0,
-        commentCount: 0,
-        isLiked: false,
-        attachments: 0,
-        ...payload,
-      };
-      // simple optimistic UI: prepend to local list (not persisted)
-      // In production, use useMutation invalidateQueries(['posts', selectedCircleName])
-      // For now: update postsData locally by using a small local state or refetch after API call.
-      // We'll just close modal for this simplified snippet and rely on refetch when API integrated.
-      setIsComposeOpen(false);
-    },
-    [setIsComposeOpen]
-  );
-
   const toggleLike = useCallback((postId) => {
-    // UI-only toggle placeholder
+    // UI-only toggle placeholder for now
   }, []);
 
   const openCompose = useCallback(() => setIsComposeOpen(true), []);
@@ -464,24 +451,23 @@ export default function CirclesPagePro() {
         selectedCircle={selectedCircle}
       />
 
-    {isComposeOpen && (
-       <Model title="Create Post" onClose={closeCompose}>
-        <CreatePostForm
-  onCreate={async (post) => {
-    try {
-      await refetchPosts();
-    } catch (err) {
-      console.error("Failed to refresh posts after create:", err);
-    } finally {
-      setIsComposeOpen(false);
-    }
-  }}
-  onCancel={closeCompose}
-  circleName={selectedCircle?.name}
-/>
-
-      </Model>
-     )}
+      {isComposeOpen && (
+        <Model title="Create Post" onClose={closeCompose}>
+          <CreatePostForm
+            onCreate={async (post) => {
+              try {
+                await refetchPosts();
+              } catch (err) {
+                console.error("Failed to refresh posts after create:", err);
+              } finally {
+                setIsComposeOpen(false);
+              }
+            }}
+            onCancel={closeCompose}
+            circleName={selectedCircle?.name}
+          />
+        </Model>
+      )}
 
       {isNewCircleOpen && (
         <Model title="Create New Circle" onClose={closeNewCircle}>

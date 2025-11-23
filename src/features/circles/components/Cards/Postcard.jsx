@@ -1,5 +1,82 @@
+import { useState, useEffect } from "react";
+import { createComment, listComments } from "../../api";
+
 export default function PostCard({ post, onLike, style }) {
   const hasMedia = Array.isArray(post.media) && post.media.length > 0;
+
+  const [comments, setComments] = useState(post.comments || []);
+  const [isCommentBoxOpen, setIsCommentBoxOpen] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+
+  // Load comments from backend when postId changes
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadComments() {
+      if (!post.postId) return;
+      setIsLoadingComments(true);
+      try {
+        const res = await listComments(post.postId, { limit: 20 });
+        if (!cancelled) {
+          // backend: { postId, total, comments: [...], cursor }
+          setComments(res.comments || []);
+          // if you ever want total or cursor:
+          //   res.total, res.cursor
+        }
+      } catch (err) {
+        console.error("Failed to load comments", err);
+      } finally {
+        if (!cancelled) setIsLoadingComments(false);
+      }
+    }
+
+    loadComments();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [post.postId]);
+
+  const handleSubmitComment = async () => {
+    const text = commentText.trim();
+    if (!text) return;
+
+    const optimisticComment = {
+      id: `local-${Date.now()}`,
+      commentId: `local-${Date.now()}`,
+      body: text,
+      authorName: "You",
+      createdAt: Date.now(),
+    };
+
+    setComments((prev) => [...prev, optimisticComment]);
+    setCommentText("");
+    setIsCommentBoxOpen(false);
+
+    try {
+      setIsSubmitting(true);
+
+      const payload = {
+        body: text,
+        postCircleId: post.postCircleId,
+        postPostedAtEpoch: post.postPostedAtEpoch,
+      };
+
+      console.log("createComment payload", payload, post); // TEMP: debug
+
+      await createComment(post.postId, payload);
+    } catch (err) {
+      console.error("Failed to create comment", err);
+      // rollback optimistic comment
+      setComments((prev) =>
+        prev.filter((c) => c.commentId !== optimisticComment.commentId)
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <article
@@ -108,7 +185,7 @@ export default function PostCard({ post, onLike, style }) {
           >
             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
           </svg>
-          <span>{post.commentCount ?? 0} comments</span>
+          <span>{post.commentCount ?? comments.length ?? 0} comments</span>
         </div>
       </div>
 
@@ -154,6 +231,17 @@ export default function PostCard({ post, onLike, style }) {
         </div>
       )}
 
+      {/* Full Comment List */}
+      {comments.length > 0 && (
+        <div className="mb-2 border-t border-border-clr pt-3">
+          {isLoadingComments ? (
+            <p className="text-[11px] text-gray-400">Loading comments...</p>
+          ) : (
+            <CommentList comments={comments} />
+          )}
+        </div>
+      )}
+
       {/* Actions */}
       <div className="flex gap-1 pt-2 border-t border-border-clr mt-1">
         <button
@@ -179,6 +267,7 @@ export default function PostCard({ post, onLike, style }) {
 
         <button
           type="button"
+          onClick={() => setIsCommentBoxOpen((prev) => !prev)}
           className="flex-1 flex items-center justify-center gap-1 py-2 rounded-xl bg-gray-100 text-gray-600 text-xs font-medium hover:bg-gray-200 active:scale-95 transition-all duration-150"
         >
           <svg
@@ -209,7 +298,81 @@ export default function PostCard({ post, onLike, style }) {
           <span>Share</span>
         </button>
       </div>
+
+      {/* Add comment input */}
+      {isCommentBoxOpen && (
+        <div className="mt-2 flex items-center gap-2">
+          <input
+            type="text"
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSubmitComment();
+              }
+            }}
+            placeholder="Write a comment..."
+            className="flex-1 text-xs px-3 py-2 rounded-xl border border-border-clr bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50"
+          />
+          <button
+            type="button"
+            onClick={handleSubmitComment}
+            disabled={!commentText.trim() || isSubmitting}
+            className="px-3 py-2 rounded-xl bg-primary text-white text-xs font-medium disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? "..." : "Post"}
+          </button>
+        </div>
+      )}
     </article>
+  );
+}
+
+export function CommentList({ comments = [] }) {
+  if (!comments.length) return null;
+
+  return (
+    <div className="space-y-2">
+      {comments.map((c) => (
+        <CommentCard key={c.commentId ?? c.id} comment={c} />
+      ))}
+    </div>
+  );
+}
+
+export function CommentCard({ comment }) {
+  const initial = comment.authorName?.[0]?.toUpperCase() ?? "U";
+
+  return (
+    <div className="flex gap-2">
+      <div className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-semibold flex-shrink-0 overflow-hidden">
+        {comment.authorProfileImage ? (
+          <img
+            src={comment.authorProfileImage}
+            alt={comment.authorName || "User"}
+            className="w-full h-full object-cover rounded-full"
+          />
+        ) : (
+          <span>{initial}</span>
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1 mb-0.5">
+          <span className="text-xs font-semibold text-gray-900 truncate">
+            {comment.authorName || "Unknown"}
+          </span>
+          {comment.createdAt && (
+            <span className="text-[10px] text-gray-400">
+              {timeAgo(comment.createdAt)}
+            </span>
+          )}
+        </div>
+        <p className="text-xs text-gray-700 whitespace-pre-line">
+          {comment.body}
+        </p>
+      </div>
+    </div>
   );
 }
 
