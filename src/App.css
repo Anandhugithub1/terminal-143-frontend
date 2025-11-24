@@ -52,3 +52,14 @@ img {
 }
 
 
+/* Chrome, Edge, Safari */
+input[type="date"].with-custom-date-icon::-webkit-calendar-picker-indicator {
+  opacity: 0;           /* make it invisible */
+  cursor: pointer;      /* still clickable if user hits that area */
+}
+
+/* (optional) remove extra clear/spin icons if present */
+input[type="date"].with-custom-date-icon::-webkit-inner-spin-button,
+input[type="date"].with-custom-date-icon::-webkit-clear-button {
+  display: none;
+}
