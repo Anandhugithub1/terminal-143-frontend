@@ -1,188 +1,151 @@
-import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { Cake, MapPin, Heart, Star, Image, Smile } from 'lucide-react';
-import '@fontsource-variable/inter';
+  import React, { useEffect } from "react";
+  import { useParams, useNavigate } from "react-router-dom";
+  import { useDispatch, useSelector } from "react-redux";
+  import { FiLock } from "react-icons/fi";
+  import { fetchProfile } from "../../../features/UserProfile";
+  import { useProfileByLink } from "../Hooks/getProfileByLink";
+  import ProfileCard from "../../UserHome/components/Cards/ProfileCard";
+  import placeholderImage from "../../../assets/woman.png";
+  import { computeAge } from "../../../Utlis/utlis";
+  import { LoadingSpinner } from "../../../components/Ui/Spinner";
+  import DetailSection from "../components/PublicProfile/DetailsSection";
+  import { Button } from "../../../shared/Button";
+  import PublicTopbar from "../components/PublicProfile/TopBar";
+  import TopBar from '../../../components/Layout/TopNavigation';
+  import BottomNav from "../../../components/Layout/BottomNavigation";
+  import { useProtectedLocks } from '../Hooks/useProtectedLocks';
 
-import { useProfileByLink } from '../../../Hooks/getProfileByLink'; 
+  export default function PublicProfilePage() {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { type, gender, level, username } = useParams();
+    const profileLink = `${type}/${gender}/${level}/${username}`;
 
-import { fetchProfile } from '../../../features/UserProfile';
-import { LoadingSpinner } from '../../../components/Ui/Spinner';
+    const { data, isLoading: isProfileLoading, error: profileError } = useProfileByLink(profileLink);
+    const profileFromHook = data?.profile ?? data ?? null;
+    const userStatus = useSelector((s) => s.userProfile?.status);
 
-export default function PublicProfilePage() {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { type, gender, level, username } = useParams();
-  const profileLink = `${type}/${gender}/${level}/${username}`;
+    useEffect(() => {
+      if (type !== "mp") {
+        navigate("/home", { replace: true });
+        return;
+      }
+      dispatch(fetchProfile());
+    }, [type, navigate, dispatch]);
 
-  // Fetch the target profile
-  const { data: profile, isLoading: isProfileLoading, error: profileError } = useProfileByLink(profileLink);
+    const hasAccess = userStatus === "succeeded";
 
-  // Fetch current user's own profile to check access
-  const { currentUser, status: userStatus, error: userError } = useSelector((state) => state.userProfile);
+    // normalized (small, declarative)
+    const src = profileFromHook ?? {};
+    const mainPhoto = src.photo ?? src.profilePhoto ?? (Array.isArray(src.photos) ? src.photos[0] : null) ?? placeholderImage;
 
-  useEffect(() => {
-    if (type !== 'mp') {
-      navigate('/home', { replace: true });
-      return; // stop execution here if not mp
-    }
-  
-    dispatch(fetchProfile());
-  }, [type, navigate, dispatch]);
-  
+    const normalized = {
+      name: src.name ?? src.username ?? "",
+      age: src.dob ? computeAge(src.dob) : 26,
+      about: src.bio ?? src.about ?? "",
+      images: Array.isArray(src.photos) && src.photos.length ? src.photos : [mainPhoto],
+      mainPhoto,
+      interests: Array.isArray(src.interests) ? src.interests
+                  : Array.isArray(src.interest) ? src.interest
+                  : typeof src.interests === "string" ? [src.interests]
+                  : typeof src.interest === "string" ? [src.interest]
+                  : [],
+      languages: Array.isArray(src.languages) ? src.languages
+                : Array.isArray(src.languagesKnown) ? src.languagesKnown
+                : src.language ? [src.language]
+                : [],
+      location: src.location ?? src.city ?? "",
+      job: src.job ?? src.employer ?? "",
+      healthStatus: src.healthStatus ?? {},
+    };
 
-  // Allow full view only if fetchProfile succeeded
-  const hasAccess = userStatus === 'succeeded';
+    // hook provides refs + locks positions
+    const { wrapperRef, layerRef, locks } = useProtectedLocks(!hasAccess);
 
-  const age = profile?.dob
-    ? Math.floor((Date.now() - new Date(profile.dob).getTime()) / (1000 * 60 * 60 * 24 * 365))
-    : '—';
+    if (isProfileLoading || userStatus === "loading") return <LoadingSpinner />;
+    if (profileError) return <div className="text-center mt-10 text-red-500">{profileError.message}</div>;
 
-  const ProtectedSection = ({ children }) => (
-    <div className="relative bg-white rounded-xl shadow-sm p-5 mb-6 overflow-hidden">
-      {!hasAccess ? (
-        <div className="pointer-events-none blur-sm select-none opacity-60">{children}</div>
-      ) : (
-        children
-      )}
-    </div>
-  );
+    return (
+      <div className="relative bg-gray-50 min-h-screen">
+        {/* top bar: show app TopBar for logged-in users, otherwise PublicTopbar */}
+        {hasAccess ? <TopBar /> : <PublicTopbar />}
 
-  if (isProfileLoading || userStatus === 'loading') return <LoadingSpinner />;
-  if (profileError) return <div className="text-center mt-10 text-red-500">{profileError.message}</div>;
-  if (userError && userStatus === 'failed') {
-    // treat failed fetch as no access
-    console.error('User profile fetch failed:', userError);
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#fdf2f8] to-[#f0f9ff] font-inter pb-40 relative">
-      {/* Cover + Avatar */}
-      <div className="relative w-full h-52 bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300">
-        <div className="absolute bottom-0 left-0 w-full h-12 bg-white rounded-t-3xl z-0" />
-        <div className="absolute left-1/2 bottom-[-3rem] transform -translate-x-1/2 z-10">
+        {/* NOTE: when not signed in we add extra bottom padding (pb-40) so CTA never overlaps content */}
+        <div className={`relative max-w-2xl mx-auto px-2 pt-2 ${!hasAccess ? 'pb-36 md:pb-44' : 'pb-6'}`}>
           <div className="relative">
-            <img
-              src={
-                (profile.userType === 'mp' && profile.photos?.[0]) ||
-                profile.photo ||
-                profile.profilePhoto ||
-                '/default-avatar.jpg'
-              }
-              alt="Profile"
-              className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = '/default-avatar.jpg';
-              }}
-            />
-            <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-white flex items-center justify-center">
-              <Heart size={16} className="fill-pink-500 text-pink-500" />
-            </div>
+            <ProfileCard profile={normalized} placeholderImage={placeholderImage} />
           </div>
-        </div>
-      </div>
 
-      {/* Main Content */}
-      <div className={`mt-16 px-4 max-w-2xl mx-auto ${!hasAccess ? 'blur-sm pointer-events-none select-none opacity-60' : ''}`}>
-        {/* Header */}
-        <div className="text-center mb-6">
-          <div className="flex justify-center items-center gap-2">
-            <h1 className="text-3xl font-bold text-gray-900">{profile.name}</h1>
-            {profile.isVerified && (
-              <div className="bg-blue-100 p-1 rounded-full">
-                <Star size={16} className="fill-blue-500 text-blue-500" />
-              </div>
-            )}
-          </div>
-          <div className="flex items-center justify-center gap-3 mt-2 text-gray-600">
-            <div className="flex items-center">
-              <Cake size={16} className="mr-1 text-pink-500" />
-              <span>{age} years</span>
-            </div>
-            {profile.location && (
-              <div className="flex items-center">
-                <MapPin size={16} className="mr-1 text-blue-500" />
-                <span>{profile.location}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Bio */}
-        {profile.bio && (
-          <ProtectedSection>
-            <div className="flex items-center gap-2 mb-3">
-              <Smile size={20} className="text-pink-500" />
-              <h3 className="text-lg font-semibold text-gray-800">About Me</h3>
-            </div>
-            <p className="text-gray-700 leading-relaxed">{profile.bio}</p>
-          </ProtectedSection>
-        )}
-
-        {/* Gallery */}
-        {profile.photos?.length > 0 && (
-          <ProtectedSection>
-            <div className="flex items-center gap-2 mb-4">
-              <Image size={20} className="text-purple-500" />
-              <h3 className="text-lg font-semibold text-gray-800">Gallery</h3>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {profile.photos.map((url, i) => (
-                <div key={i} className="aspect-square rounded-xl overflow-hidden shadow-md">
-                  <img
-                    src={url}
-                    alt={`Gallery ${i + 1}`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/default-gallery.jpg';
-                    }}
-                  />
+          {!hasAccess && (
+            <div className="mt-5 px-2 mb-6">
+              {/* reduced py on very small screens to avoid giant banner */}
+              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 text-center py-4 md:py-5 px-4">
+                <div className="mx-auto w-11 h-11 rounded-full bg-pink-100 flex items-center justify-center mb-3">
+                  <FiLock size={18}  className="text-primary font-bold" />
                 </div>
-              ))}
+                <h3 className="text-base md:text-lg font-semibold mb-1">Want to see more?</h3>
+                <p className="text-sm text-gray-500 max-w-[20rem] mx-auto">
+                  Sign in or create an account to view the full profile and connect with {normalized.name}.
+                </p>
+              </div>
             </div>
-          </ProtectedSection>
-        )}
+          )}
 
-        {/* Interests */}
-        {profile.interest?.length > 0 && (
-          <ProtectedSection>
-            <div className="flex items-center gap-2 mb-4">
-              <Heart size={20} className="text-red-500" />
-              <h3 className="text-lg font-semibold text-gray-800">Interests</h3>
+          <div className="mt-3 px-2 relative z-0">
+            <div ref={wrapperRef} className="relative transition-all duration-300">
+              <DetailSection profile={normalized} locked={!hasAccess} />
             </div>
-            <div className="flex flex-wrap gap-2">
-              {profile.interest.map((item, i) => (
-                <span
-                  key={i}
-                  className="bg-gradient-to-r from-pink-50 to-purple-50 text-pink-700 text-sm px-4 py-2 rounded-full border border-pink-100 shadow-sm"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-          </ProtectedSection>
-        )}
-      </div>
 
-      {/* Prompt for Unauthenticated Users */}
-      {!hasAccess && (
-        <div className="fixed bottom-4 w-full flex flex-col items-center gap-3 px-4 z-10">
-          <button
-            onClick={() => navigate('/login')}
-            className="bg-white text-gray-800 text-sm font-semibold px-6 py-3 rounded-full w-full max-w-md shadow-lg border border-gray-200 hover:bg-gray-50 transition-all duration-300"
-          >
-            Log in to View Full Profile
-          </button>
-          <button
-            onClick={() => navigate('/choose-category')}
-            className="text-white text-sm font-semibold px-6 py-3 rounded-full w-full max-w-md shadow-lg bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 transition-all duration-300"
-          >
-            Create Free Account
-          </button>
+            {/* overlay layer for small locks (positioned above details but inside the content container) */}
+            {!hasAccess && (
+              <div ref={layerRef} aria-hidden className="absolute inset-0 pointer-events-none z-40">
+                {locks.map((lock) => (
+                  <div
+                    key={lock.id}
+                    className="absolute flex items-center justify-center"
+                    style={{
+                      top: `${lock.top}px`,
+                      left: `${lock.left}px`,
+                      transform: "translate(-50%, -50%)",
+                      width: `${lock.width}px`,
+                      height: `${lock.height}px`,
+                      pointerEvents: "none",
+                    }}
+                  >
+                
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      )}
-    </div>
-  );
-}
+
+        {/* CTA only for non-logged-in users. Use safe-area and responsive spacing so it never overlaps the big banner */}
+        {!hasAccess && (
+          <div
+            className="fixed left-0 right-0 flex items-center justify-center px-4 z-50"
+            style={{
+              bottom: 'env(safe-area-inset-bottom, 16px)',
+              paddingBottom: 'env(safe-area-inset-bottom, 16px)',
+            }}
+          >
+            <div className="w-full max-w-md">
+              <Button onClick={() => navigate("/login")} className="w-full px-4">
+                Sign In to View Profile
+              </Button>
+
+              <div className="mt-3 text-center text-sm text-gray-600">
+                Don't have an account?{" "}
+                <button onClick={() => navigate("/register")} className="text-primary font-semibold underline-offset-2 hover:underline">
+                  Sign up
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Bottom navigation for logged-in users */}
+        {hasAccess && <BottomNav />}
+      </div>
+    );
+  }

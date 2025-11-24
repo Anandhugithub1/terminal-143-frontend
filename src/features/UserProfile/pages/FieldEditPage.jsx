@@ -55,8 +55,8 @@ const handleSave = () => {
       .map((item) => item.key);
     onSave(selectedKeys);
   } else if (field.key === "languages") {
-    const selectedValues = selectedLanguages.map((l) => l.value);
-    onSave(selectedValues);
+     const selectedValues = selectedLanguages.map((l) => l.value);
+    onSave("languagesKnown", selectedValues);
   } else if (field.key === "age") {
     // Save as 'dob' instead of 'age'
     onSave("dob", inputValue.trim());

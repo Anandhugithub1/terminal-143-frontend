@@ -1,7 +1,6 @@
 import React, { memo, useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const PhotoCarousel = memo(({
   images,
@@ -18,12 +17,55 @@ const PhotoCarousel = memo(({
   const touchStartY = useRef(0);
   const containerRef = useRef(null);
 
+  // Cache of already-preloaded URLs to avoid duplicate work
+  const loadedSetRef = useRef(new Set());
+
+  // How many images ahead/behind to preload. 1 = next + prev; increase to 2/3 to be more aggressive.
+  const prefetchDistance = 1;
+
+  // Utility to normalize index with wrap-around
+  const norm = (idx) => {
+    if (!images || images.length === 0) return 0;
+    return ((idx % images.length) + images.length) % images.length;
+  };
+
+  // Preload logic: create Image() objects for specified indices
+  useEffect(() => {
+    if (!images || images.length === 0) return;
+
+    const toPreload = new Set();
+
+    // Always preload current (ensures current is in cache) + neighbors according to distance
+    for (let d = -prefetchDistance; d <= prefetchDistance; d++) {
+      const idx = norm(activeIdx + d);
+      const url = images[idx];
+      if (url) toPreload.add(url);
+    }
+
+    // Preload each URL not already loaded
+    toPreload.forEach((url) => {
+      if (loadedSetRef.current.has(url)) return;
+      const img = new window.Image();
+      img.src = url;
+      // optional handlers: mark as loaded on success, fallback on error
+      img.onload = () => {
+        loadedSetRef.current.add(url);
+      };
+      img.onerror = () => {
+        loadedSetRef.current.add(url); // mark as attempted so we don't retry forever
+      };
+    });
+
+    // Cleanup: nothing to revoke for Image() objects
+  }, [images, activeIdx, prefetchDistance]);
+
   useEffect(() => {
     const handlePhotoTap = (e) => {
       if (!containerRef.current) return;
 
       const rect = containerRef.current.getBoundingClientRect();
-      const tapX = e.detail?.x ?? rect.width / 2;
+      // `e.detail?.x` is nonstandard — fallback to center
+      const tapX = (e?.detail && typeof e.detail.x === 'number') ? e.detail.x : rect.width / 2;
 
       if (tapX > rect.width / 2) {
         onNext(); // right side → next
@@ -62,6 +104,10 @@ const PhotoCarousel = memo(({
       } else {
         onPrev();
       }
+    } else {
+      // large horizontal swipe -> change photo direction
+      if (deltaX < 0) onNext();
+      else onPrev();
     }
   };
 
@@ -78,7 +124,7 @@ const PhotoCarousel = memo(({
           <div
             key={idx}
             className={classnames(
-              'h-1 transition-all duration-300 rounded-full',
+              'h-1 rounded-full',
               {
                 'bg-white shadow-sm shadow-black/50': idx === activeIdx,
                 'bg-gray-200/80 shadow-sm shadow-black/30': idx !== activeIdx,
@@ -92,6 +138,8 @@ const PhotoCarousel = memo(({
     [images, activeIdx]
   );
 
+  if (!images || images.length === 0) return null;
+
   return (
     <div
       ref={containerRef}
@@ -100,37 +148,31 @@ const PhotoCarousel = memo(({
         className
       )}
     >
-      <motion.div
+      <div
         className="relative select-none w-full h-full"
-        initial={{ scale: 1 }}
-        whileTap={{ scale: 0.97 }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <AnimatePresence initial={false} mode="wait">
-          <motion.img
-            key={images[activeIdx]}
-            src={images[activeIdx]}
-            alt={`${alt} photo ${activeIdx + 1}`}
-            className="w-full h-full object-cover"
-            draggable="false"
-            loading="lazy"
-            decoding="async"
-            onError={handleError}
-            style={{
-              maxHeight: '100vh',
-              objectFit: 'cover',
-              objectPosition: 'center',
-              touchAction: 'manipulation',
-            }}
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.02 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-          />
-        </AnimatePresence>
+        {/* Plain <img> for instant show (no framer-motion fade) */}
+        <img
+          key={images[norm(activeIdx)]}
+          src={images[norm(activeIdx)]}
+          alt={`${alt} photo ${norm(activeIdx) + 1}`}
+          className="w-full h-full object-cover"
+          draggable="false"
+          loading="eager"     // request immediate loading for the visible image
+          decoding="sync"     // prefer synchronous decoding for fastest display
+          onError={handleError}
+          style={{
+            maxHeight: '100vh',
+            objectFit: 'cover',
+            objectPosition: 'center',
+            touchAction: 'manipulation',
+          }}
+        />
+
         {segments}
-      </motion.div>
+      </div>
     </div>
   );
 });

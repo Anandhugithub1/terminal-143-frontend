@@ -37,7 +37,7 @@ Badge.propTypes = {
     <div className="flex items-center justify-between">
       <div>
         <h2 className="text-xl font-semibold">{name}, {age}</h2>
-        {/* <p className="text-sm opacity-75"> {lastSeen}</p> */}
+        <p className="text-sm opacity-75"> {lastSeen}</p>
       </div>
       <div className="flex space-x-2">
         {/* <button

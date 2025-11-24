@@ -8,7 +8,7 @@ const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage
     images = [],
     name,
     age,
-    lastSeen = 'just now',
+    lastSeen = '',
     about,
     gender,
     top,

@@ -23,11 +23,9 @@ export const ConfirmationModal = ({ isOpen, onClose, onConfirm, action, name }) 
           </button>
           <button
             onClick={onConfirm}
-            className={`px-4 py-2 rounded-xl text-white ${
-              action === "accept"
-                ? "bg-gradient-to-r from-gradient-primary to-gradient-secondary"
-                : "bg-gradient-to-r from-pink-400 to-pink-500"
-            } hover:opacity-90 transition`}
+            className={`px-4 py-2 rounded-xl text-white 
+             bg-primary
+            hover:opacity-90 transition`}
           >
             Confirm
           </button>

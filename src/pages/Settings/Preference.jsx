@@ -32,18 +32,17 @@ const PreferencesPage = () => {
     }
   }, [dispatch, status]);
 
+  // Copy profile.preferences into local state (defensive copy to avoid frozen refs)
   useEffect(() => {
-    if (profile?.preferences?.length) {
-      setSelectedPreferences(profile.preferences);
-      setInitialPreferences(profile.preferences);
+    if (profile && Array.isArray(profile.preferences)) {
+      setSelectedPreferences([...profile.preferences]);
+      setInitialPreferences([...profile.preferences]);
     }
-  }, [profile?.preferences]);
+  }, [profile]);
 
   const togglePreference = (value) => {
     setSelectedPreferences((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
     );
   };
 
@@ -54,9 +53,14 @@ const PreferencesPage = () => {
       .catch((err) => console.error('Failed to update preferences', err));
   };
 
-  const hasChanged =
-    JSON.stringify(selectedPreferences.sort()) !==
-    JSON.stringify(initialPreferences.sort());
+  // Order-insensitive comparison (treat arrays as sets)
+  const arraysEqualAsSets = (a = [], b = []) => {
+    if (a.length !== b.length) return false;
+    const setB = new Set(b);
+    return a.every((x) => setB.has(x));
+  };
+
+  const hasChanged = !arraysEqualAsSets(selectedPreferences, initialPreferences);
 
   return (
     <div className="min-h-screen bg-white font-inter flex flex-col justify-between">
@@ -85,24 +89,14 @@ const PreferencesPage = () => {
                 key={value}
                 onClick={() => togglePreference(value)}
                 className={`w-full flex justify-between items-center px-4 py-4 rounded-2xl border transition-all duration-200 ${
-                  isSelected
-                    ? 'bg-pink-50 border-pink-400'
-                    : 'bg-white border-gray-200'
+                  isSelected ? 'bg-pink-50 border-pink-400' : 'bg-white border-gray-200'
                 }`}
               >
                 <div className="flex items-center space-x-3">
-                  <span
-                    className={`text-gray-600 ${
-                      isSelected ? 'text-pink-600' : ''
-                    }`}
-                  >
+                  <span className={`text-gray-600 ${isSelected ? 'text-pink-600' : ''}`}>
                     {icon}
                   </span>
-                  <span
-                    className={`text-base font-medium ${
-                      isSelected ? 'text-pink-600' : 'text-gray-800'
-                    }`}
-                  >
+                  <span className={`text-base font-medium ${isSelected ? 'text-pink-600' : 'text-gray-800'}`}>
                     {label}
                   </span>
                 </div>
@@ -113,9 +107,7 @@ const PreferencesPage = () => {
                     isSelected ? 'border-pink-500' : 'border-gray-300'
                   }`}
                 >
-                  {isSelected && (
-                    <div className="w-2.5 h-2.5 rounded-full bg-pink-500" />
-                  )}
+                  {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-pink-500" />}
                 </div>
               </button>
             );

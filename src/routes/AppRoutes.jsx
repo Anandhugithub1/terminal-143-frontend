@@ -17,6 +17,7 @@ import PricingPage from "../pages/Global/Pricing.jsx";
 import UserHomePage from "../features/UserHome/pages/Home.jsx";
 // import AppHome from "../pages/Global/Route.jsx";
 import DefaultHomeRoute from "./DefaultHomeRoute.jsx";
+import UserProfilePage from "../features/UserHome/pages/UserProfileById.jsx";
 // Lazy
 const MatchesPage = lazy(() => import("../features/UserHome/pages/Matches.jsx"));
 const ChooseCategory =lazy(()=> import ("../features/Auth/pages/ChooseCategory.jsx") )
@@ -38,6 +39,8 @@ export const appRoutes = (
     <Route path="login" element={<Login />} />
     <Route path="verify" element={<EmailOTPVerification />} />
     <Route path="reset-password" element={<ForgotAndResetPassword />} />
+      <Route path="/user/:pk/:sk" element={<UserProfilePage />} />
+
     {/* <Route path="choose-category" element={<ChooseCategory />} /> */}
 
     <Route
