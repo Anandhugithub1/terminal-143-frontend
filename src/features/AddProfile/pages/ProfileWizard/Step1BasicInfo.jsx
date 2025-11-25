@@ -37,7 +37,7 @@ const dobRef = useRef(null);
       return setError(t('preferencesRequired'));
 
     setError('');
-    navigate('/complete/location');
+    navigate('/complete/bio');
   };
 
   const togglePreference = (value) => {
