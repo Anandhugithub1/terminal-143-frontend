@@ -1,52 +1,19 @@
 import { useState } from 'react';
 import ngeohash from 'ngeohash';
-
-const TIMEOUT_MS = 8000;
-
-/** Abortable fetch with timeout + JSON parsing */
-async function fetchJSON(url, opts = {}, timeout = TIMEOUT_MS) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  try {
-    const res = await fetch(url, { ...opts, signal: controller.signal, headers: {
-      // Be a good citizen to public services
-      'Accept': 'application/json',
-      ...(opts.headers || {}),
-    }});
-    if (!res.ok) throw new Error(`HTTP_${res.status}`);
-    return await res.json();
-  } finally {
-    clearTimeout(id);
-  }
-}
-
-/** Sequentially try providers until one returns a result */
-async function tryProviders(providers) {
-  let lastErr;
-  for (const fn of providers) {
-    try {
-      const out = await fn();
-      if (out) return out;
-    } catch (e) {
-      lastErr = e;
-      // continue to next
-    }
-  }
-  throw lastErr || new Error('allProvidersFailed');
-}
+import { locationAPi } from '../../../api/clients';
 
 export const useLocationService = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [detecting, setDetecting] = useState(false);
 
-  const userLang = (navigator.language?.split('-')[0]) || 'en'; // Detect browser language
+  const userLang = (navigator.language?.split('-')[0]) || 'en'; 
 
-  //  Utility to build structured location object (no lastUpdated)
+  // Utility to build structured location object (no lastUpdated)
   const buildLocationObject = (lat, lon, address = {}) => ({
     type: 'Point',
     coordinates: [lon, lat], // GeoJSON format [longitude, latitude]
-    city:
+    city: 
       address.city ||
       address.town ||
       address.village ||
@@ -62,156 +29,10 @@ export const useLocationService = () => {
   });
 
   /** -------------------------
-   *  REVERSE GEOCODING PROVIDERS
+   *  CURRENT LOCATION (reverse geocode via own API)
    *  ------------------------- */
 
-  // 1) Nominatim (primary)
-  const reverseNominatim = async (lat, lon, lang) => {
-    const data = await fetchJSON(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=${lang}`
-    );
-    const address = data.address || {};
-    return buildLocationObject(lat, lon, address);
-  };
-
-  // 2) Open-Meteo (fallback #2 for reverse)
-  const reverseOpenMeteo = async (lat, lon, lang) => {
-    const data = await fetchJSON(
-      `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=${lang}&count=1`
-    );
-    const r = data?.results?.[0];
-    if (!r) throw new Error('openmeteo_no_result');
-    const address = {
-      city: r.city || r.name || '',
-      state: r.admin1 || r.admin2 || '',
-      country: r.country || '',
-      name: r.name,
-    };
-    return buildLocationObject(lat, lon, address);
-  };
-
-  // 3) Maps.co (fallback #3 for reverse)
-  const reverseMapsCo = async (lat, lon, lang) => {
-    const data = await fetchJSON(
-      `https://geocode.maps.co/reverse?lat=${lat}&lon=${lon}&accept-language=${lang}`
-    );
-    const address = data.address || {};
-    return buildLocationObject(lat, lon, address);
-  };
-
-  // Extra safety: Nominatim FR mirror
-  const reverseNominatimFR = async (lat, lon, lang) => {
-    const data = await fetchJSON(
-      `https://nominatim.openstreetmap.fr/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=${lang}`
-    );
-    const address = data.address || {};
-    return buildLocationObject(lat, lon, address);
-  };
-
-  /** -------------------------
-   *  FORWARD GEOCODING PROVIDERS (SEARCH)
-   *  ------------------------- */
-
-  // Helper to normalize Nominatim-like search results
-  const formatNominatimResults = (data) =>
-    (data || []).map((item) => {
-      const addr = item.address || {};
-      const shortName =
-        addr.city ||
-        addr.town ||
-        addr.village ||
-        addr.county ||
-        addr.state_district ||
-        addr.state ||
-        (item.display_name ? item.display_name.split(',')[0] : '');
-      const location = buildLocationObject(parseFloat(item.lat), parseFloat(item.lon), addr);
-      return { name: shortName, ...location };
-    });
-
-  // 1) Nominatim (primary)
-  const searchNominatim = async (query, lang) => {
-    const data = await fetchJSON(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-        query
-      )}&addressdetails=1&limit=5&accept-language=${lang}`
-    );
-    return formatNominatimResults(data);
-  };
-
-  // 2) Photon (Komoot) — search only (fallback #1 for search)
-  const searchPhoton = async (query, lang) => {
-    const data = await fetchJSON(
-      `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lang=${lang}`
-    );
-    const feats = data?.features || [];
-    const results = feats.map((f) => {
-      const p = f.properties || {};
-      const [lon, lat] = f.geometry?.coordinates || [];
-      const addr = {
-        city: p.city || p.town || p.village || p.name,
-        county: p.county,
-        state: p.state,
-        country: p.country,
-        name: p.name,
-      };
-      return {
-        name: addr.city || addr.name || '',
-        ...buildLocationObject(lat, lon, addr),
-      };
-    });
-    if (!results.length) throw new Error('photon_no_results');
-    return results;
-  };
-
-  // 3) Open-Meteo (fallback #2 for search)
-  const searchOpenMeteo = async (query, lang) => {
-    const data = await fetchJSON(
-      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-        query
-      )}&count=5&language=${lang}`
-    );
-    const results = (data?.results || []).map((r) => {
-      const addr = {
-        city: r.city || r.name,
-        state: r.admin1 || r.admin2,
-        country: r.country,
-        name: r.name,
-      };
-      return {
-        name: addr.city || addr.name || '',
-        ...buildLocationObject(r.latitude, r.longitude, addr),
-      };
-    });
-    if (!results.length) throw new Error('openmeteo_no_results');
-    return results;
-  };
-
-  // 4) Maps.co (fallback #3 for search)
-  const searchMapsCo = async (query, lang) => {
-    const data = await fetchJSON(
-      `https://geocode.maps.co/search?q=${encodeURIComponent(query)}&accept-language=${lang}`
-    );
-    const results = (data || []).map((item) => {
-      const addr = item.address || {};
-      const shortName =
-        addr.city ||  
-        addr.town ||
-        addr.village ||
-        addr.county ||
-        addr.state_district ||
-        addr.state ||
-        (item.display_name ? item.display_name.split(',')[0] : '');
-      return {
-        name: shortName,
-        ...buildLocationObject(parseFloat(item.lat), parseFloat(item.lon), addr),
-      };
-    });
-    if (!results.length) throw new Error('mapsco_no_results');
-    return results;
-  };
-
-  //  Get current location with reverse geocoding + fallbacks
-  const getCurrentLocation = async (lang = userLang) => {
+  const getCurrentLocation = async () => {
     setDetecting(true);
     try {
       if (!navigator.geolocation) throw new Error('geolocationNotSupported');
@@ -226,13 +47,27 @@ export const useLocationService = () => {
 
       const { latitude, longitude } = position.coords;
 
-      // Try: Nominatim → Open-Meteo → Maps.co → Nominatim FR (mirror)
-      return await tryProviders([
-        () => reverseNominatim(latitude, longitude, lang),
-        () => reverseOpenMeteo(latitude, longitude, lang),
-        () => reverseMapsCo(latitude, longitude, lang),
-        () => reverseNominatimFR(latitude, longitude, lang),
-      ]);
+      // Call your backend reverse geocode
+      const res = await locationAPi.post('/reverse-geocode', {
+        lat: latitude,
+        lng: longitude,
+      },{
+
+        withCredentials:true
+      }
+    
+    );
+
+      const data = res?.data || {};
+
+      // Backend returns: { lat, lng, placeName, country, formattedAddress, types, geohash }
+      const address = {
+        city: data.placeName || '',
+        country: data.country || '',
+        name: data.placeName || '',
+      };
+
+      return buildLocationObject(latitude, longitude, address);
     } catch (error) {
       console.error('Location error:', error);
 
@@ -241,6 +76,7 @@ export const useLocationService = () => {
       else if (error?.code === 2) message = 'locationUnavailable';
       else if (error?.code === 3) message = 'locationTimeout';
       else if (error?.message === 'geolocationNotSupported') message = 'geoNotSupported';
+      else if (error?.response?.data?.code === 'OUT_OF_REGION') message = 'locationOutOfRegion';
 
       throw new Error(message);
     } finally {
@@ -248,20 +84,39 @@ export const useLocationService = () => {
     }
   };
 
-  //  Search locations with fallbacks
-  const searchLocations = async (query, lang = userLang) => {
+  /** -------------------------
+   *  SEARCH / AUTOCOMPLETE (via own API)
+   *  ------------------------- */
+
+  const searchLocations = async (query) => {
     setLoading(true);
     try {
-      // Try: Nominatim → Photon → Open-Meteo → Maps.co
-      const results = await tryProviders([
-        () => searchNominatim(query, lang),
-        () => searchPhoton(query, lang),
-        () => searchOpenMeteo(query, lang),
-        () => searchMapsCo(query, lang),
-      ]);
+      const trimmed = (query || '').trim();
+      if (!trimmed || trimmed.length < 2) {
+        setSuggestions([]);
+        return;
+      }
+
+      // GET /autocomplete?input=<query>
+      const res = await locationAPi.get('/autocomplete', {
+        params: { input: trimmed },
+              withCredentials: true,   
+
+      });
+
+      const predictions = res?.data?.predictions || [];
+
+      // Normalize for UI: simple list with name, country, placeId
+      const results = predictions.map((p) => ({
+        name: p.placeName,
+        country: p.countryName,
+        placeId: p.placeId,
+        // coordinates will come from /place-details when user selects one
+      }));
+
       setSuggestions(results);
     } catch (err) {
-      console.error('Search error (all providers failed):', err);
+      console.error('Search error (location API failed):', err);
       setSuggestions([]);
     } finally {
       setLoading(false);
