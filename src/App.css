@@ -7,11 +7,11 @@ body {
 @theme {
   --color-primary: #D2449D;
   --color-input:#EBEBEB;
-  --color-focus:#EC4899 ;
+  --color-focus:#D2449D ;
   --color-border-clr:#E5E7EB;
   --color-text-pr:#D2449D;
-  --color-gradient-primary:#f6339a;
-  --color-gradient-secondary:#9810fa;
+  --color-gradient-primary:#D2449D;
+  --color-gradient-secondary:#D2449D;
   --color-text-sec:#1F2937 
 
 }
@@ -52,3 +52,14 @@ img {
 }
 
 
+/* Chrome, Edge, Safari */
+input[type="date"].with-custom-date-icon::-webkit-calendar-picker-indicator {
+  opacity: 0;           /* make it invisible */
+  cursor: pointer;      /* still clickable if user hits that area */
+}
+
+/* (optional) remove extra clear/spin icons if present */
+input[type="date"].with-custom-date-icon::-webkit-inner-spin-button,
+input[type="date"].with-custom-date-icon::-webkit-clear-button {
+  display: none;
+}

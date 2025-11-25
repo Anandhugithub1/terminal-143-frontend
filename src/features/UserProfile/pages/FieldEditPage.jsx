@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronDownIcon } from "lucide-react";
 import { interestMap } from "../../../Utlis/utlis";
-import { LANGUAGES } from "../utlis/profileUtils";
+
+const LANGUAGES_CDN_URL =
+  "https://d36zx1g74mcorc.cloudfront.net/website_files/languages/languages.json";
 
 export default function FieldEditPage({ field, value, onSave, onCancel }) {
   const [inputValue, setInputValue] = useState(value || "");
   const [selectedInterests, setSelectedInterests] = useState([]);
+  const [languagesList, setLanguagesList] = useState([]);
   const [selectedLanguages, setSelectedLanguages] = useState([]);
   const [openLanguagePicker, setOpenLanguagePicker] = useState(false);
 
@@ -15,6 +18,49 @@ export default function FieldEditPage({ field, value, onSave, onCancel }) {
     icon: value.icon,
   }));
 
+  // Fetch + normalize languages from CDN
+  useEffect(() => {
+    if (field.key !== "languages") return;
+
+    fetch(LANGUAGES_CDN_URL)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!Array.isArray(data)) {
+          console.error("Languages JSON is not an array", data);
+          return;
+        }
+
+        const normalised = data.map((item, index) => {
+          if (typeof item === "string") {
+            return { value: item, label: item };
+          }
+
+          const value =
+            item.value ||
+            item.code ||
+            item.shortCode ||
+            item.languageCode ||
+            `lang-${index}`;
+          const label =
+            item.label ||
+            item.name ||
+            item.language ||
+            item.nativeName ||
+            value;
+
+          return { value, label };
+        });
+
+        normalised.sort((a, b) =>
+          a.label.localeCompare(b.label, undefined, { sensitivity: "base" })
+        );
+
+        setLanguagesList(normalised);
+      })
+      .catch((err) => console.error("Failed to load languages", err));
+  }, [field.key]);
+
+  // Initialise state based on field + value
   useEffect(() => {
     if (field.key === "interest") {
       const updated = allInterests.map((item) => ({
@@ -25,20 +71,18 @@ export default function FieldEditPage({ field, value, onSave, onCancel }) {
     } else if (field.key === "languages") {
       const normalized =
         Array.isArray(value) && value.length > 0
-          ? value.map((v) =>
-              typeof v === "string"
-                ? LANGUAGES.find((lang) => lang.value === v) || {
-                    label: v,
-                    value: v,
-                  }
-                : v
-            )
+          ? value.map((v) => {
+              if (typeof v !== "string") return v;
+              const match =
+                languagesList.find((lang) => lang.value === v) || null;
+              return match || { label: v, value: v };
+            })
           : [];
       setSelectedLanguages(normalized);
     } else {
       setInputValue(value || "");
     }
-  }, [field, value]);
+  }, [field, value, languagesList]);
 
   const toggleInterest = (key) => {
     setSelectedInterests((prev) =>
@@ -48,23 +92,22 @@ export default function FieldEditPage({ field, value, onSave, onCancel }) {
     );
   };
 
-const handleSave = () => {
-  if (field.key === "interest") {
-    const selectedKeys = selectedInterests
-      .filter((item) => item.selected)
-      .map((item) => item.key);
-    onSave(selectedKeys);
-  } else if (field.key === "languages") {
-     const selectedValues = selectedLanguages.map((l) => l.value);
-    onSave("languagesKnown", selectedValues);
-  } else if (field.key === "age") {
-    // Save as 'dob' instead of 'age'
-    onSave("dob", inputValue.trim());
-
-  } else {
-    onSave(inputValue.trim());
-  }
-};
+  const handleSave = () => {
+    if (field.key === "interest") {
+      const selectedKeys = selectedInterests
+        .filter((item) => item.selected)
+        .map((item) => item.key);
+      onSave(selectedKeys);
+    } else if (field.key === "languages") {
+      const selectedValues = selectedLanguages.map((l) => l.value);
+      onSave("languagesKnown", selectedValues);
+    } else if (field.key === "age") {
+      // Save as 'dob' instead of 'age'
+      onSave("dob", inputValue.trim());
+    } else {
+      onSave(inputValue.trim());
+    }
+  };
 
   const isBioField =
     field.key === "bio" ||
@@ -135,7 +178,7 @@ const handleSave = () => {
 
             {openLanguagePicker && (
               <div className="mt-3 border border-gray-200 rounded-lg shadow-sm bg-white max-h-60 overflow-y-auto">
-                {LANGUAGES.map((lang) => (
+                {languagesList.map((lang) => (
                   <div
                     key={lang.value}
                     onClick={() =>

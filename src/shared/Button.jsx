@@ -25,25 +25,31 @@ export const Button = ({
 };
 
 
+<<<<<<< HEAD
 
 export const GoogleButton = ({ onClick,disabled, type = 'button',...props  
 }) => {
   return (
+=======
+// export const GoogleButton = ({ onClick,disabled, type = 'button',...props  
+// }) => {
+//   return (
+>>>>>>> origin/main
  
-    <button
-    type={type}
-    onClick={onClick}
-    className="w-full mt-4 flex items-center justify-center gap-2 bg-white border border-border-clr text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors"
-  disabled={disabled} {...props}> 
-    <img
-      src="https://www.svgrepo.com/show/475656/google-color.svg"
-      alt="Google logo"
-      className="w-5 h-5"
-    />
-    <span className="text-sm">Google</span>
-  </button>
-  );
-}
+//     <button
+//     type={type}
+//     onClick={onClick}
+//     className="w-full mt-4 flex items-center justify-center gap-2 bg-white border border-border-clr text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-50 transition-colors"
+//   disabled={disabled} {...props}> 
+//     <img
+//       src="https://www.svgrepo.com/show/475656/google-color.svg"
+//       alt="Google logo"
+//       className="w-5 h-5"
+//     />
+//     <span className="text-sm">Google</span>
+//   </button>
+//   );
+// }
 
 export const baseButtonClasses =
   "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:scale-105 active:scale-95";

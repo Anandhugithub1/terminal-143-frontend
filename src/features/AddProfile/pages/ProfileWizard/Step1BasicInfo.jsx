@@ -6,6 +6,8 @@ import { ProgressBar } from './Progess';
 import {Button} from '../../../../shared/Button'
 import SocialLinkInput from '../../components/SocialLinkInput';
 import SocialLinkChip from '../../components/SocialLinkChip';
+import { AiOutlineCalendar } from 'react-icons/ai';
+import { useRef } from 'react';
 
 import { calculateAge, validateLink, PREFERENCES, SOCIAL_PLATFORMS } from '../../utlis';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +18,7 @@ const Step1BasicInfo = () => {
   const [error, setError] = useState('');
   const [socialPlatform, setSocialPlatform] = useState('');
   const [socialInput, setSocialInput] = useState('');
+const dobRef = useRef(null);
 
   const { t } = useTranslation('common');
 
@@ -87,20 +90,43 @@ const Step1BasicInfo = () => {
         />
 
         {/* Date of Birth */}
-        <div>
-          <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
-            {t('dob')}
-          </label>
-          <InputField
-            id="dob"
-            type="date"
-            value={formData.dob}
-            onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
-            min={minDob}
-            max={maxDob}
-            className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
-          />
-        </div>
+<div>
+  <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
+    {t('dob')}
+  </label>
+
+  <div className="relative mt-1">
+    <InputField
+      ref={dobRef}
+      id="dob"
+      type="date"
+      value={formData.dob}
+      onChange={(e) => setFormData({ ...formData, dob: e.target.value })}
+      min={minDob}
+      max={maxDob}
+      className="w-full p-4 pr-11 border-0 bg-gray-50 rounded-xl
+                 focus:ring-2 focus:ring-pink-500 appearance-none with-custom-date-icon"
+    />
+
+    <button
+      type="button"
+      className="absolute right-4 top-1/2 -translate-y-1/2"
+      onClick={() => {
+        if (dobRef.current?.showPicker) {
+          // Modern browsers
+          dobRef.current.showPicker();
+        } else {
+          // Fallback
+          dobRef.current?.focus();
+        }
+      }}
+    >
+      <AiOutlineCalendar className="text-gray-400" size={20} />
+    </button>
+  </div>
+</div>
+
+
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
