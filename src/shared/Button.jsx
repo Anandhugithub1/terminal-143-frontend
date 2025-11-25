@@ -25,16 +25,10 @@ export const Button = ({
 };
 
 
-<<<<<<< HEAD
 
-export const GoogleButton = ({ onClick,disabled, type = 'button',...props  
-}) => {
-  return (
-=======
 // export const GoogleButton = ({ onClick,disabled, type = 'button',...props  
 // }) => {
 //   return (
->>>>>>> origin/main
  
 //     <button
 //     type={type}
@@ -50,6 +44,7 @@ export const GoogleButton = ({ onClick,disabled, type = 'button',...props
 //   </button>
 //   );
 // }
+
 
 export const baseButtonClasses =
   "inline-flex items-center justify-center font-medium rounded-xl transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 transform hover:scale-105 active:scale-95";
