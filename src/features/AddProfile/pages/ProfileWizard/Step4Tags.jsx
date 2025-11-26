@@ -8,6 +8,8 @@ import { Button } from "../../../../shared/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadProfileImage, completeProfile, resetProfileState } from "../../../UserProfile";
 import { categories } from "../../utlis";
+import { toast } from "sonner";
+import { normalizeGeoForApi } from '../../utlis/geo'; 
 
 export default function Step4Tags() {
   const { formData, setFormData, clearFormData } = useWizard();
@@ -47,23 +49,17 @@ export default function Step4Tags() {
     });
   }, []);
 
-  const handleSubmit = useCallback(async () => {
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
-    setErrorMessage("");
-    setPhotoStatuses([]);
-
-    // Sonner loading toast → return toastId
-    const toastId = toast.loading("Completing your profile…");
+const handleSubmit = async () => {
+  if (isSubmitting) return;
+  setIsSubmitting(true);
 
   try {
     const photoUrls = [];
 
-    // 1️⃣ Get MP photos in slot order
+    // 1) Get MP photos in slot order
     const photos = userType === "mp" ? [...(formData.profilePhotos || [])] : [];
 
-    // 2️⃣ Upload photos in slot order
+    // 2) Upload photos in slot order
     for (let i = 0; i < photos.length; i++) {
       const file = photos[i];
       if (!file) continue; // skip empty slots
@@ -80,7 +76,7 @@ export default function Step4Tags() {
       }
     }
 
-    // 3️⃣ For single photo users
+    // 3) For single-photo users
     if (userType !== "mp" && formData.profilePhoto) {
       try {
         const { publicUrl } = await dispatch(
@@ -92,31 +88,51 @@ export default function Step4Tags() {
       }
     }
 
-    // 4️⃣ Build payload
-    const payload = { ...formData, interests: selectedInterests };
+    // 4) Build payload (normalize geoLocation -> backend location)
+    const normalizedLocation = normalizeGeoForApi(formData.geoLocation); // returns null if invalid
+    const payload = {
+      ...formData,
+      interests: selectedInterests,
+    };
+
+    // attach photos in the shape your backend expects
     if (userType === "mp") payload.photos = photoUrls;
     else payload.photo = photoUrls[0] || "";
 
-    // 5️⃣ Complete profile
+    // attach normalized location only when valid
+    if (normalizedLocation) {
+      payload.location = normalizedLocation;
+    } else {
+      // ensure we don't accidentally send the front-end geoLocation object
+      delete payload.geoLocation;
+    }
+
+    // ensure searchRadius matches backend name (searchRadius: { distance, unit })
+    if (formData.searchRadius) {
+      payload.searchRadius = {
+        distance: Number(formData.searchRadius.distance) || 10,
+        unit: formData.searchRadius.unit || 'km',
+      };
+    }
+
+    // 5) Complete profile
     await dispatch(completeProfile(payload)).unwrap();
     dispatch(resetProfileState());
 
-    // 6️⃣ Clear local form data
+    // 6) Clear local form data + IndexedDB
     clearFormData();
     await del("profilePhoto");
     await del("profilePhotos");
 
-    // 7️⃣ Navigate to home
+    // 7) Navigate to home
     navigate("/home", { state: { profileJustCompleted: true } });
   } catch (err) {
     console.error("Profile completion error:", err);
+    // consider showing user-facing error toast here
   } finally {
     setIsSubmitting(false);
   }
 };
-
-
-
 
   const isLoading = isSubmitting || reduxCompleteStatus === "loading";
 
