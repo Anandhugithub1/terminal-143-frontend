@@ -1,3 +1,4 @@
+// Step5Location.jsx
 import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWizard } from '../../contexts/ProfileWizard';
@@ -9,15 +10,15 @@ import { useLocationService } from '../../Hooks/useLocationService';
 import ngeohash from 'ngeohash';
 
 const toGeo = (r) => {
-  if (!r) return { type: 'Point', coordinates: [], city: '', country: '', geoHash: '' };
+  if (!r) return { type: 'Point', coordinates: [], placeName: '', countryCode: '', geohash: '' };
   const lon = r.lon ?? r.coordinates?.[0];
   const lat = r.lat ?? r.coordinates?.[1];
   return {
     type: 'Point',
     coordinates: [lon, lat],
-    city: r.city || r.name || '',
-    country: r.country || '',
-    geoHash: r.geoHash || (lat != null && lon != null ? ngeohash.encode(lat, lon, 7) : ''),
+    placeName: r.city || r.name || r.placeName || '',
+    countryCode: r.countryCode || (r.country ? r.country.toUpperCase() : '') || '',
+    geohash: r.geohash || (lat != null && lon != null ? ngeohash.encode(lat, lon, 7) : ''),
   };
 };
 
@@ -26,7 +27,7 @@ const Step5Location = () => {
   const { geoLocation } = formData;
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-  const { detectLocation, loading, error: locationError } = useLocationService();
+  const { getCurrentLocation, loading: searchLoading, detecting, suggestions } = useLocationService();
 
   const [error, setError] = useState('');
 
@@ -58,7 +59,7 @@ const Step5Location = () => {
 
   const handleDetectLocation = useCallback(async () => {
     try {
-      const result = await detectLocation();
+      const result = await getCurrentLocation();
       if (result) {
         setGeo(result);
         setError('');
@@ -67,9 +68,9 @@ const Step5Location = () => {
       console.error('Location detection failed:', e);
       setError(t('locationDetectError') || 'Unable to detect your location');
     }
-  }, [detectLocation, setGeo, t]);
+  }, [getCurrentLocation, setGeo, t]);
 
-  const effectiveError = useMemo(() => error || locationError, [error, locationError]);
+  const effectiveError = useMemo(() => error, [error]);
 
   return (
     <div className="animate-fade-in max-w-2xl mx-auto">
@@ -95,15 +96,15 @@ const Step5Location = () => {
             </h3>
             <button
               onClick={handleDetectLocation}
-              disabled={loading}
+              disabled={detecting}
               className="text-sm text-blue-600 hover:underline disabled:text-gray-400"
               type="button"
             >
-              {loading ? t('detecting') || 'Detecting...' : t('useCurrentLocation') || 'Use Current Location'}
+              {detecting ? t('detecting') || 'Detecting...' : t('useCurrentLocation') || 'Use Current Location'}
             </button>
           </div>
 
-          <LocationInput formData={formData} setFormData={setFormData} t={t} />
+          <LocationInput formData={formData} setFormData={setFormData} t={t} suggestions={suggestions} />
         </div>
 
         {/* Range Selector */}

@@ -16,22 +16,27 @@ export const WizardProvider = ({ children }) => {
     socialMediaLinks: [],
 
     // Step 2: Photos
-    profilePhoto: null, // single file
-    profilePhotos: [], // multiple files
+    profilePhoto: null, // single file (stored in IndexedDB)
+    profilePhotos: [], // multiple files (stored in IndexedDB)
 
     // Step 3: Interests & Languages
     interests: [],
     languages: [],
 
+    // Step 4: Location (matches backend User.location)
     geoLocation: {
-  type: 'Point',
-  coordinates: [],
-  city: '',
-  country: '',
-  geoHash: '',
-},
-    distanceRange: 25, // Default radius in km
-    distanceUnit: 'km',
+      type: 'Point',
+      coordinates: [], // [lon, lat]
+      placeName: '',
+      countryCode: '',
+      geohash: '',
+    },
+
+    // Search radius preference (single value, 1-100)
+    searchRadius: {
+      distance: 25, // default in km
+      unit: 'km',
+    },
   };
 
   /** Load initial state (sessionStorage for non-blocking quick start) */
@@ -55,7 +60,7 @@ export const WizardProvider = ({ children }) => {
           profilePhotos: profilePhotos || prev.profilePhotos,
         }));
       } catch (err) {
-        console.error(' Failed to load photos from IndexedDB:', err);
+        console.error('Failed to load photos from IndexedDB:', err);
       }
     };
     loadFiles();
@@ -64,10 +69,11 @@ export const WizardProvider = ({ children }) => {
   /** Persist text & non-file fields to sessionStorage */
   useEffect(() => {
     try {
+      // exclude file blobs before persisting
       const { profilePhoto, profilePhotos, ...persistedFields } = formData;
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(persistedFields));
     } catch (err) {
-      console.error(' Failed to persist wizard data:', err);
+      console.error('Failed to persist wizard data:', err);
     }
   }, [formData]);
 
@@ -79,7 +85,7 @@ export const WizardProvider = ({ children }) => {
 
       await Promise.all([del('profilePhoto'), del('profilePhotos')]);
     } catch (err) {
-      console.error(' Failed to clear stored wizard data:', err);
+      console.error('Failed to clear stored wizard data:', err);
     }
   };
 

@@ -1,7 +1,8 @@
+// LocationRangeSelector.jsx
 import { useState, useCallback, useMemo } from "react";
 
 const MIN_RANGE = 1;
-const MAX_RANGE = 30; // UI cap (both units). Converted values above this will clamp and show "30+"
+const MAX_RANGE = 30; // UI cap
 const PRESETS = [5, 10, 20, 30];
 const UNITS = ["km", "miles"];
 const MI_IN_KM = 1.609344;
@@ -10,10 +11,10 @@ const toMiles = (km) => km / MI_IN_KM;
 const toKm = (mi) => mi * MI_IN_KM;
 
 const LocationRangeSelector = ({ formData, setFormData, t }) => {
-  const initialUnit = formData.distanceUnit || "km";
+  const initialUnit = formData?.searchRadius?.unit || "km";
   const [unit, setUnit] = useState(initialUnit);
 
-  const currentRange = formData.distanceRange ?? 10;
+  const currentRange = formData?.searchRadius?.distance ?? 10;
 
   const clamp = (n) => Math.min(MAX_RANGE, Math.max(MIN_RANGE, Math.round(Number(n))));
 
@@ -22,8 +23,7 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
       const next = clamp(range);
       setFormData((prev) => ({
         ...prev,
-        distanceRange: next,
-        distanceUnit: u,
+        searchRadius: { distance: next, unit: u },
       }));
     },
     [setFormData, unit]

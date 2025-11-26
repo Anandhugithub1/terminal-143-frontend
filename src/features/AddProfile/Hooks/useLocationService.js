@@ -1,3 +1,4 @@
+// Hooks/useLocationService.js
 import { useState } from 'react';
 import ngeohash from 'ngeohash';
 import { locationAPi } from '../../../api/clients';
@@ -7,13 +8,13 @@ export const useLocationService = () => {
   const [loading, setLoading] = useState(false);
   const [detecting, setDetecting] = useState(false);
 
-  const userLang = (navigator.language?.split('-')[0]) || 'en'; 
+  const userLang = (navigator.language?.split('-')[0]) || 'en';
 
-  // Utility to build structured location object (no lastUpdated)
+  // Build a location object that matches User.location in backend
   const buildLocationObject = (lat, lon, address = {}) => ({
     type: 'Point',
-    coordinates: [lon, lat], // GeoJSON format [longitude, latitude]
-    city: 
+    coordinates: [lon, lat], // GeoJSON [lon, lat]
+    placeName:
       address.city ||
       address.town ||
       address.village ||
@@ -23,15 +24,12 @@ export const useLocationService = () => {
       address.locality ||
       address.name ||
       '',
-    state: address.state || address.state_district || address.region || address.admin1 || '',
-    country: address.country || address.country_code || address.country_name || '',
-    geoHash: ngeohash.encode(lat, lon, 7),
+    // countryCode should be ISO alpha-2 if available
+    countryCode: (address.country_code || address.country || '').toString().toUpperCase(),
+    geohash: (lat != null && lon != null) ? ngeohash.encode(lat, lon, 7) : '',
   });
 
-  /** -------------------------
-   *  CURRENT LOCATION (reverse geocode via own API)
-   *  ------------------------- */
-
+  /** Get current location (reverse geocode via backend) */
   const getCurrentLocation = async () => {
     setDetecting(true);
     try {
@@ -47,23 +45,20 @@ export const useLocationService = () => {
 
       const { latitude, longitude } = position.coords;
 
-      // Call your backend reverse geocode
-      const res = await locationAPi.post('/reverse-geocode', {
-        lat: latitude,
-        lng: longitude,
-      },{
-
-        withCredentials:true
-      }
-    
-    );
+      // Call backend reverse geocode
+      const res = await locationAPi.post(
+        '/reverse-geocode',
+        { lat: latitude, lng: longitude },
+        { withCredentials: true }
+      );
 
       const data = res?.data || {};
 
-      // Backend returns: { lat, lng, placeName, country, formattedAddress, types, geohash }
+      // Normalize backend response to an address object
       const address = {
         city: data.placeName || '',
         country: data.country || '',
+        country_code: data.countryCode || data.country_code || '',
         name: data.placeName || '',
       };
 
@@ -84,10 +79,7 @@ export const useLocationService = () => {
     }
   };
 
-  /** -------------------------
-   *  SEARCH / AUTOCOMPLETE (via own API)
-   *  ------------------------- */
-
+  /** Autocomplete/search (calls backend autocomplete) */
   const searchLocations = async (query) => {
     setLoading(true);
     try {
@@ -97,21 +89,18 @@ export const useLocationService = () => {
         return;
       }
 
-      // GET /autocomplete?input=<query>
       const res = await locationAPi.get('/autocomplete', {
         params: { input: trimmed },
-              withCredentials: true,   
-
+        withCredentials: true,
       });
 
       const predictions = res?.data?.predictions || [];
 
-      // Normalize for UI: simple list with name, country, placeId
+      // Normalize: include placeId for details fetch
       const results = predictions.map((p) => ({
         name: p.placeName,
-        country: p.countryName,
+        countryName: p.countryName || p.country || '',
         placeId: p.placeId,
-        // coordinates will come from /place-details when user selects one
       }));
 
       setSuggestions(results);
