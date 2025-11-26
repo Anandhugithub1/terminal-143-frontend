@@ -25,13 +25,16 @@ const Step1BasicInfo = () => {
   const minDob = '1950-01-01';
   const maxDob = `${currentYear}-12-31`;
 
+  const hasSocial = !!(formData?.socialMediaLinks && formData.socialMediaLinks.length > 0);
+
   // computed disabled state for Next button
   const isNextDisabled =
     !formData?.name?.trim() ||
     !formData?.dob ||
     calculateAge(formData.dob) < 18 ||
     !formData?.preferences ||
-    formData.preferences.length === 0;
+    formData.preferences.length === 0 ||
+    !hasSocial; // <-- require at least one social link
 
   // clear error when user fixes the required fields
   useEffect(() => {
@@ -39,12 +42,13 @@ const Step1BasicInfo = () => {
     const hasName = !!formData?.name?.trim();
     const hasDob = !!formData?.dob && calculateAge(formData.dob) >= 18;
     const hasPrefs = !!formData?.preferences && formData.preferences.length > 0;
+    const hasSocialNow = !!(formData?.socialMediaLinks && formData.socialMediaLinks.length > 0);
 
-    if (hasName && hasDob && hasPrefs) {
+    if (hasName && hasDob && hasPrefs && hasSocialNow) {
       setError('');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData.name, formData.dob, formData.preferences]);
+  }, [formData.name, formData.dob, formData.preferences, formData.socialMediaLinks]);
 
   const handleNext = () => {
     // Double-check validations in case user triggers (keyboard etc.)
@@ -65,6 +69,13 @@ const Step1BasicInfo = () => {
 
     if (!formData.preferences || formData.preferences.length === 0) {
       setError(t('preferencesRequired'));
+      return;
+    }
+
+    // NEW: require at least one social link or username
+    if (!formData.socialMediaLinks || formData.socialMediaLinks.length === 0) {
+      // translation key 'socialRequired' expected — fallback text if missing
+      setError(t('socialRequired') || 'Please add at least one social media username or link.');
       return;
     }
 
@@ -196,11 +207,11 @@ const Step1BasicInfo = () => {
           </div>
         </div>
 
-        {/* Social Media Links */}
+        {/* Social Media Links (REQUIRED) */}
         <div className="mt-6">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            {t('socialLabel')}{' '}
-            <span className="text-xs text-gray-400">{t('socialOptional')}</span>
+            {t('socialLabel')}
+            {/* removed optional hint — social is required now */}
           </label>
 
           <SocialLinkInput
@@ -224,6 +235,14 @@ const Step1BasicInfo = () => {
                 />
               ))}
             </div>
+          )}
+
+          {/* subtle hint when none added yet */}
+          {!hasSocial && (
+            <p className="mt-2 text-xs text-gray-500">
+              {/* {t('socialHelper') ||   'Add at least one social username or link to continue.'  } */}
+              Add at least one social username or link to continue
+            </p>
           )}
         </div>
       </div>
