@@ -11,14 +11,6 @@ import {
   Edit2,
   Calendar,
 } from 'lucide-react';
-export  const LANGUAGE_LABELS = {
-  en: 'English',
-  fr: 'French',
-  de: 'German',
-  zh: 'Chinese',
-  ja: 'Japanese',
-  ar: 'Arabic',
-};
 
 
 export const interestMap = {
