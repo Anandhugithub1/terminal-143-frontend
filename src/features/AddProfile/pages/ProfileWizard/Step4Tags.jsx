@@ -233,6 +233,7 @@ export default function Step4Tags() {
         <Button
           onClick={handleBack}
           disabled={isLoading}
+          textColor="black"
           className="flex-1 py-3 border border-gray-200 bg-white"
         >
           Back
@@ -241,7 +242,7 @@ export default function Step4Tags() {
         <button
           onClick={handleSubmit}
           disabled={isLoading}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex-1 bg-primary text-white font-semibold py-3 px-6 rounded-3xl transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? "Saving..." : "Finish Setup"}
         </button>
