@@ -16,7 +16,6 @@ export default function LocationInput({
   setFormData,
   t,
   onSelect: onSelectProp,
-  suggestions: externalSuggestions,
 }) {
   const [query, setQuery] = useState(formData?.geoLocation?.placeName || "");
   const [error, setError] = useState("");
@@ -29,7 +28,7 @@ export default function LocationInput({
   const listboxRef = useRef(null);
 
   const {
-    suggestions: svcSuggestions,
+    suggestions,
     loading,
     detecting,
     getCurrentLocation,
@@ -38,11 +37,10 @@ export default function LocationInput({
     getPlaceDetails,
   } = useLocationService();
 
-  const suggestions = externalSuggestions ?? svcSuggestions;
   const locale = useMemo(() => (navigator?.language || "en").split("-")[0], []);
 
-  // Persist selection into wizard/form state — rely on backend/suggestion for geohash/countryCode.
-  const fallbackSetGeo = useCallback(
+  // persist selection
+  const setGeo = useCallback(
     (loc) =>
       setFormData((prev) => ({
         ...prev,
@@ -59,27 +57,57 @@ export default function LocationInput({
                 .toString()
                 .toUpperCase()
                 .slice(0, 2),
-              // Only use geohash if provided by backend/suggestion
               geohash: loc.geohash || loc.geoHash || "",
             },
       })),
     [setFormData]
   );
 
-  // When user selects a suggestion, prefer backend place-details lookup if placeId exists.
-  const handleSelection = useCallback(
-    async (rawItem) => {
-      if (!rawItem) return;
-      const raw = rawItem._raw || rawItem;
+  // debounced search
+  const handleSearch = useCallback(
+    (value) => {
+      setQuery(value);
+      setTouched(true);
+      setOpen(true);
 
-      // get placeId from prediction
+      clearTimeout(typingTimeout.current);
+      typingTimeout.current = setTimeout(async () => {
+        const trimmed = value.trim();
+        if (!trimmed) {
+          clearSuggestions();
+          setGeo(null);
+          setError("");
+          return;
+        }
+        if (trimmed.length > 1) {
+          try {
+            await searchLocations(trimmed);
+          } catch (err) {
+            console.error("[LocationInput] searchLocations error:", err);
+            setError(t("locationSearchFailed") || "Search failed");
+          }
+        } else {
+          clearSuggestions();
+          const msg = t("locationMinLength") || "Enter at least 2 characters";
+          setError(msg);
+          toast.info(msg);
+        }
+      }, 300);
+    },
+    [searchLocations, clearSuggestions, setGeo, t]
+  );
+
+  useEffect(() => () => clearTimeout(typingTimeout.current), []);
+
+  // fetch place details on select if available
+  const onSelect = useCallback(
+    async (item) => {
+      if (!item) return;
+
       const placeId =
-        rawItem.placeId ||
-        rawItem._raw?.placeId ||
-        rawItem._raw?.place_id ||
-        rawItem.id;
-
+        item.placeId || item._raw?.placeId || item._raw?.place_id || item.id;
       let final = null;
+
       if (placeId && typeof getPlaceDetails === "function") {
         try {
           const details = await getPlaceDetails(placeId);
@@ -90,8 +118,8 @@ export default function LocationInput({
               placeName:
                 details.placeName ||
                 details.formattedAddress ||
-                rawItem.name ||
-                rawItem.placeName ||
+                item.placeName ||
+                item.name ||
                 "",
               country: details.country || "",
               countryCode: details.countryCode || "",
@@ -99,74 +127,68 @@ export default function LocationInput({
             };
           }
         } catch (err) {
-          console.warn("[LocationInput] getPlaceDetails failed:", err);
+          // fall back to suggestion
           final = null;
         }
       }
 
-      // fallback to suggestion if details not available
       if (!final) {
+        const raw = item._raw || item;
         final = {
           lat:
-            rawItem.lat ??
-            raw?.lat ??
-            (Array.isArray(raw?.center) ? raw.center[1] : null),
+            item.lat ??
+            raw.lat ??
+            raw.geometry?.location?.lat ??
+            (Array.isArray(raw.center) ? raw.center[1] : null) ??
+            null,
           lon:
-            rawItem.lon ??
-            raw?.lon ??
-            (Array.isArray(raw?.center) ? raw.center[0] : null),
+            item.lon ??
+            raw.lon ??
+            raw.geometry?.location?.lng ??
+            (Array.isArray(raw.center) ? raw.center[0] : null) ??
+            null,
           placeName:
-            rawItem.placeName ||
-            rawItem.name ||
-            raw?.placeName ||
-            raw?.name ||
-            "",
+            item.placeName ?? item.name ?? raw.placeName ?? raw.name ?? "",
           country:
-            rawItem.country ||
-            rawItem.countryName ||
-            raw?.country ||
-            raw?.country_code ||
+            item.country ??
+            item.countryName ??
+            raw.country ??
+            raw.country_code ??
             "",
           countryCode: (
-            rawItem.countryCode ||
-            rawItem.country ||
-            raw?.country ||
-            raw?.country_code ||
+            item.countryCode ||
+            item.country ||
+            raw.country ||
+            raw.country_code ||
             ""
           )
             .toString()
             .toUpperCase()
             .slice(0, 2),
-          geohash: rawItem.geohash || rawItem.geoHash || raw?.geohash || "",
+          geohash: item.geohash || item.geoHash || raw.geohash || "",
         };
       }
 
       if (typeof onSelectProp === "function") {
         onSelectProp(final);
       } else {
-        fallbackSetGeo(final);
+        setGeo(final);
       }
-    },
-    [getPlaceDetails, fallbackSetGeo, onSelectProp]
-  );
 
-  const applySelection = useCallback(
-    async (loc, inputLabel) => {
-      if (!loc) return;
-      await handleSelection(loc);
-      setQuery(inputLabel ?? loc?.name ?? loc?.placeName ?? "");
-      setError("");
+      // UI update
+      setQuery(final.placeName || final.name || "");
       setOpen(false);
       setTouched(false);
       clearSuggestions();
       setActiveIndex(-1);
       toast.success(
-        `${t("selected") || "Selected"}: ${loc?.placeName || loc?.name || ""}`
+        `${t("selected") || "Selected"}: ${final.placeName || final.name || ""}`
       );
     },
-    [clearSuggestions, handleSelection, t]
+    [getPlaceDetails, setGeo, onSelectProp, clearSuggestions, t]
   );
 
+  // outside click close
   useEffect(() => {
     const onDocClick = (e) => {
       if (
@@ -180,71 +202,39 @@ export default function LocationInput({
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
-  const handleSearch = useCallback(
-    (value) => {
-      setQuery(value);
-      setTouched(true);
-      setOpen(true);
-      clearTimeout(typingTimeout.current);
-      typingTimeout.current = setTimeout(() => {
-        const trimmed = value.trim();
-        if (!trimmed) {
-          clearSuggestions();
-          if (typeof onSelectProp === "function") onSelectProp(null);
-          else fallbackSetGeo(null);
-          setError("");
-          return;
-        }
-        if (trimmed.length > 1) {
-          searchLocations(trimmed);
-        } else {
-          clearSuggestions();
-          const msg = t("locationMinLength") || "Enter at least 2 characters";
-          setError(msg);
-          toast.info(msg);
-        }
-      }, 300);
-    },
-    [searchLocations, clearSuggestions, fallbackSetGeo, onSelectProp, t]
-  );
-
-  useEffect(() => () => clearTimeout(typingTimeout.current), []);
-
-  const onSelect = useCallback((loc) => applySelection(loc), [applySelection]);
-
   const handleAutoDetect = useCallback(async () => {
     setError("");
     setTouched(true);
     try {
       const loc = await getCurrentLocation(locale);
-      await applySelection(loc, loc?.placeName || loc?.country || "");
+      await onSelect(loc);
     } catch (err) {
       const msg = t(err?.message) || "Unable to detect location";
       setError(msg);
       toast.error(msg);
     }
-  }, [getCurrentLocation, applySelection, t, locale]);
+  }, [getCurrentLocation, onSelect, t, locale]);
 
   const handleClear = useCallback(() => {
     setQuery("");
-    if (typeof onSelectProp === "function") onSelectProp(null);
-    else fallbackSetGeo(null);
+    setGeo(null);
     setError("");
     clearSuggestions();
     setActiveIndex(-1);
     inputRef.current?.focus();
-  }, [fallbackSetGeo, clearSuggestions, onSelectProp]);
+  }, [setGeo, clearSuggestions]);
 
-  // keyboard interactions
   const handleKeyDown = (e) => {
     if (!open && ["ArrowDown", "ArrowUp"].includes(e.key)) setOpen(true);
 
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActiveIndex((i) => (i + 1) % Math.max(suggestions.length, 1));
+      setActiveIndex((i) => (i + 1) % Math.max(suggestions.length || 1, 1));
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setActiveIndex((i) => (i <= 0 ? suggestions.length - 1 : i - 1));
+      setActiveIndex((i) =>
+        i <= 0 ? Math.max(suggestions.length || 1, 1) - 1 : i - 1
+      );
     } else if (e.key === "Enter" && open && suggestions[activeIndex]) {
       e.preventDefault();
       onSelect(suggestions[activeIndex]);
@@ -253,20 +243,14 @@ export default function LocationInput({
     }
   };
 
-  const hasPlace = !!formData?.geoLocation?.placeName;
-  const showError = !!error && touched;
-  const listboxId = "location-listbox";
-
-  // open the list when suggestions are present and user touched input
+  // show list when suggestions arrive after user touched input
   useEffect(() => {
     if (touched && Array.isArray(suggestions) && suggestions.length > 0)
       setOpen(true);
-    else if (
-      touched &&
-      (!Array.isArray(suggestions) || suggestions.length === 0)
-    )
-      setOpen(false);
+    else if (touched) setOpen(false);
   }, [suggestions, touched]);
+
+  const listboxId = "location-listbox";
 
   return (
     <div className="relative space-y-2">
@@ -306,14 +290,7 @@ export default function LocationInput({
             placeholder={
               t("typeOrSearchLocation") || "Search for your city or area..."
             }
-            className={`w-full pl-11 pr-4 py-4 rounded-xl border bg-gray-50 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition placeholder-gray-400 ${
-              showError
-                ? "border-red-300 ring-2 ring-red-100"
-                : hasPlace
-                ? "border-green-300"
-                : "border-gray-200"
-            }`}
-            aria-invalid={showError || undefined}
+            className={`w-full pl-11 pr-4 py-4 rounded-xl border bg-gray-50 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition placeholder-gray-400`}
             aria-controls={open ? listboxId : undefined}
             aria-expanded={open}
             role="combobox"
@@ -357,11 +334,7 @@ export default function LocationInput({
           type="button"
           onClick={handleAutoDetect}
           disabled={detecting}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
-            detecting
-              ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-              : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100"
-          }`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium`}
         >
           {detecting ? (
             <>
@@ -379,7 +352,7 @@ export default function LocationInput({
           ref={listboxRef}
           id={listboxId}
           role="listbox"
-          className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto animate-fadeIn"
+          className="absolute z-[99999] w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto"
         >
           {suggestions.map((item, idx) => (
             <button
@@ -389,17 +362,21 @@ export default function LocationInput({
               aria-selected={activeIndex === idx}
               onMouseEnter={() => setActiveIndex(idx)}
               onClick={() => onSelect(item)}
-              className={`w-full text-left px-4 py-3 transition border-b last:border-b-0 focus:outline-none ${
-                activeIndex === idx ? "bg-gray-50" : "hover:bg-gray-50"
-              }`}
+              className={`w-full text-left px-4 py-3 border-b last:border-b-0`}
               type="button"
             >
               <div className="font-medium text-gray-900">
-                {item.name ?? item.placeName ?? item.label ?? item.id}
+                {item.name ??
+                  item.placeName ??
+                  item.label ??
+                  item._raw?.placeName ??
+                  item._raw?.name ??
+                  item.id ??
+                  "Unknown"}
               </div>
-              {(item.country || item.countryName) && (
+              {(item.country || item.countryName || item._raw?.country) && (
                 <div className="text-xs text-gray-500 mt-0.5">
-                  {item.country || item.countryName}
+                  {item.country || item.countryName || item._raw?.country}
                 </div>
               )}
             </button>
