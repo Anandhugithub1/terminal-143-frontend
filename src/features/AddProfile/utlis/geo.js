@@ -1,49 +1,79 @@
-// src/utils/geo.js
+import ngeohash from "ngeohash";
+
 /**
- * Convert frontend geoLocation (GeoJSON-like) into backend `location` payload.
- *
- * Frontend geoLocation shape expected:
+ * Normalize frontend geoLocation into backend-friendly:
  * {
- *   type: 'Point',
- *   coordinates: [lon, lat],
- *   placeName: 'Bangkok',
- *   countryCode: 'TH',
- *   geohash: 'afeg2...'
+ *   geohash: "...",
+ *   coordinates: { lat, lon },
+ *   placeName: "...",
+ *   countryCode: "TH"
  * }
  *
- * Backend `location` shape expected:
- * {
- *   geohash: 'afeg2...',
- *   coordinates: { lat: 13.7, lon: 100.5 },
- *   placeName: 'Bangkok',
- *   countryCode: 'TH'
- * }
- *
- * Returns null if geoLocation is missing/invalid (caller should omit the field).
+ * Accepts:
+ *  - { type:'Point', coordinates:[lon,lat] }
+ *  - { coordinates:{lat,lon} }
+ *  - { lat, lon }
+ *  - Optional placeName, countryCode, geohash
  */
-export function normalizeGeoForApi(geoLocation) {
-  if (!geoLocation || !Array.isArray(geoLocation.coordinates) || geoLocation.coordinates.length < 2) {
+export function normalizeGeoForApi(input) {
+  if (!input) return null;
+
+  let lat = null;
+  let lon = null;
+
+  // 1) GeoJSON style { coordinates: [lon, lat] }
+  if (Array.isArray(input.coordinates) && input.coordinates.length >= 2) {
+    lon = Number(input.coordinates[0]);
+    lat = Number(input.coordinates[1]);
+  }
+
+  // 2) coordinates object { coordinates:{lat,lon} }
+  if ((lat == null || lon == null) && input.coordinates && typeof input.coordinates === "object") {
+    if (input.coordinates.lat != null && input.coordinates.lon != null) {
+      lat = Number(input.coordinates.lat);
+      lon = Number(input.coordinates.lon);
+    }
+  }
+
+  // 3) direct { lat, lon }
+  if ((lat == null || lon == null) && input.lat != null && input.lon != null) {
+    lat = Number(input.lat);
+    lon = Number(input.lon);
+  }
+
+  // Fail only if STILL invalid
+  if (
+    lat == null ||
+    lon == null ||
+    Number.isNaN(lat) ||
+    Number.isNaN(lon)
+  ) {
     return null;
   }
 
-  const lon = geoLocation.coordinates[0];
-  const lat = geoLocation.coordinates[1];
+  // Place name and country
+  const placeName = input.placeName || input.name || "";
+  const countryCode = (input.countryCode || input.country || "")
+    .toString()
+    .toUpperCase()
+    .slice(0, 2);
 
-  if (lat == null || lon == null || Number.isNaN(Number(lat)) || Number.isNaN(Number(lon))) {
-    return null;
+  // Compute geohash if missing
+  let geohash = input.geohash || "";
+  if (!geohash) {
+    try {
+      geohash = ngeohash.encode(lat, lon, 7);
+    } catch (e) {
+      geohash = "";
+    }
   }
 
-  const result = {
-    geohash: geoLocation.geohash || '',
-    coordinates: {
-      lat: Number(lat),
-      lon: Number(lon),
-    },
-    placeName: geoLocation.placeName || geoLocation.name || '',
-    countryCode: (geoLocation.countryCode || '').toString().toUpperCase(),
+  if (!geohash) return null;
+
+  return {
+    geohash,
+    coordinates: { lat, lon },
+    placeName,
+    countryCode,
   };
-
-  // If geohash is missing but lat/lon present we could compute one here using ngeohash,
-  // but prefer server-side generation for canonicalization.
-  return result;
 }

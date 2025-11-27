@@ -100,13 +100,13 @@ const handleSubmit = async () => {
     else payload.photo = photoUrls[0] || "";
 
     // attach normalized location only when valid
-    if (normalizedLocation) {
-      payload.location = normalizedLocation;
-    } else {
-      // ensure we don't accidentally send the front-end geoLocation object
-      delete payload.geoLocation;
-    }
-
+if (normalizedLocation) {
+  payload.geoLocation  = normalizedLocation;
+  console.log(normalizedLocation)
+} else {
+  // ensure we don't accidentally send the front-end geoLocation object
+  delete payload.geoLocation;
+}
     // ensure searchRadius matches backend name (searchRadius: { distance, unit })
     if (formData.searchRadius) {
       payload.searchRadius = {

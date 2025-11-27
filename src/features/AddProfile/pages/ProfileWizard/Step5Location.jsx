@@ -1,4 +1,3 @@
-// Step5Location.jsx
 import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWizard } from '../../contexts/ProfileWizard';
@@ -7,18 +6,19 @@ import LocationInput from '../../components/LocationInput';
 import LocationRangeSelector from '../../components/LocationRangeSelector';
 import { useTranslation } from 'react-i18next';
 import { useLocationService } from '../../Hooks/useLocationService';
-import ngeohash from 'ngeohash';
 
+// Convert raw suggestion into frontend geo shape (minimal)
 const toGeo = (r) => {
   if (!r) return { type: 'Point', coordinates: [], placeName: '', countryCode: '', geohash: '' };
   const lon = r.lon ?? r.coordinates?.[0];
   const lat = r.lat ?? r.coordinates?.[1];
+  const coords = (typeof lon === 'number' && typeof lat === 'number') ? [lon, lat] : [];
   return {
     type: 'Point',
-    coordinates: [lon, lat],
+    coordinates: coords,
     placeName: r.city || r.name || r.placeName || '',
     countryCode: r.countryCode || (r.country ? r.country.toUpperCase() : '') || '',
-    geohash: r.geohash || (lat != null && lon != null ? ngeohash.encode(lat, lon, 7) : ''),
+    geohash: r.geohash || '',
   };
 };
 
@@ -27,30 +27,30 @@ const Step5Location = () => {
   const { geoLocation } = formData;
   const navigate = useNavigate();
   const { t } = useTranslation('common');
-  const { getCurrentLocation, loading: searchLoading, detecting, suggestions } = useLocationService();
+  const { getCurrentLocation, detecting, suggestions } = useLocationService();
 
   const [error, setError] = useState('');
 
+  // central setter used by LocationInput via onSelect
   const setGeo = useCallback(
-    (payload) =>
-      setFormData((prev) => ({
-        ...prev,
-        geoLocation: toGeo(payload),
-      })),
+    (payload) => {
+      const next = toGeo(payload);
+      setFormData((prev) => ({ ...prev, geoLocation: next }));
+    },
     [setFormData]
   );
 
   const validate = useCallback(
-    () =>
-      geoLocation?.coordinates?.length
-        ? null
-        : t('locationRequired') || 'Please select your location',
+    () => (geoLocation?.coordinates?.length ? null : t('locationRequired') || 'Please select your location'),
     [geoLocation?.coordinates?.length, t]
   );
 
   const handleNext = useCallback(() => {
     const v = validate();
-    if (v) return setError(v);
+    if (v) {
+      setError(v);
+      return;
+    }
     setError('');
     navigate('/complete/bio');
   }, [navigate, validate]);
@@ -76,24 +76,17 @@ const Step5Location = () => {
     <div className="animate-fade-in max-w-2xl mx-auto">
       <ProgressBar step={2} totalSteps={5} />
 
-      {/* Header */}
       <header className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
           {t('locationTitle') || 'Location Details'}
         </h2>
-        <p className="text-gray-500">
-          {t('locationSubtitle') || 'Tell us about your location preferences'}
-        </p>
+        <p className="text-gray-500">{t('locationSubtitle') || 'Tell us about your location preferences'}</p>
       </header>
 
-      {/* Location Section */}
       <section className="space-y-6">
-        {/* Location Input */}
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-800">
-              {t('yourLocation') || 'Your Location'}
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-800">{t('yourLocation') || 'Your Location'}</h3>
             <button
               onClick={handleDetectLocation}
               disabled={detecting}
@@ -104,13 +97,17 @@ const Step5Location = () => {
             </button>
           </div>
 
-          <LocationInput formData={formData} setFormData={setFormData} t={t} suggestions={suggestions} />
+          <LocationInput
+            formData={formData}
+            setFormData={setFormData}
+            t={t}
+            onSelect={setGeo}   // ensures all selections go through setGeo
+            suggestions={suggestions}
+          />
         </div>
 
-        {/* Range Selector */}
         <LocationRangeSelector formData={formData} setFormData={setFormData} t={t} />
 
-        {/* Error */}
         {effectiveError && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-600 flex items-center gap-2">{effectiveError}</p>
@@ -118,7 +115,6 @@ const Step5Location = () => {
         )}
       </section>
 
-      {/* Navigation */}
       <div className="mt-8 flex gap-4">
         <button
           onClick={handleBack}
