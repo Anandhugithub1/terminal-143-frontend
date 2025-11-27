@@ -1,4 +1,3 @@
-// src/Hooks/useLocationService.js
 import { useState, useRef, useCallback, useEffect } from 'react';
 import ngeohash from 'ngeohash';
 import { useMutation } from '@tanstack/react-query';
@@ -61,7 +60,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
     useErrorBoundary: false,
   });
 
-  // NEW: place details fetch (calls your backend GET /place-details?placeId=...)
+  // place details fetch (calls your backend GET /place-details?placeId=...)
   const getPlaceDetails = useCallback(async (placeId) => {
     if (!placeId) return null;
     try {
@@ -70,7 +69,20 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
         withCredentials: true,
         headers: { 'Accept-Language': userLang },
       });
-      return res?.data || null;
+      // ensure we return a standardized object with lat/lng/placeName/country/countryCode/geohash
+      const d = res?.data || null;
+      if (!d) return null;
+
+      return {
+        lat: d.lat,
+        lng: d.lng,
+        placeName: d.placeName || d.formattedAddress || '',
+        country: d.country || '',
+        countryCode: d.countryCode || '',
+        geohash: d.geohash || '',
+        formattedAddress: d.formattedAddress || '',
+        types: d.types || [],
+      };
     } catch (err) {
       console.warn('getPlaceDetails failed', err);
       return null;

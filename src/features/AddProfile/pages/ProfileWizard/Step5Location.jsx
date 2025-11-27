@@ -7,7 +7,7 @@ import LocationRangeSelector from '../../components/LocationRangeSelector';
 import { useTranslation } from 'react-i18next';
 import { useLocationService } from '../../Hooks/useLocationService';
 
-// Convert raw suggestion into frontend geo shape (minimal)
+// Convert raw suggestion / details into frontend geo shape (minimal)
 const toGeo = (r) => {
   if (!r) return { type: 'Point', coordinates: [], placeName: '', countryCode: '', geohash: '' };
   const lon = r.lon ?? r.coordinates?.[0];
@@ -16,9 +16,9 @@ const toGeo = (r) => {
   return {
     type: 'Point',
     coordinates: coords,
-    placeName: r.city || r.name || r.placeName || '',
-    countryCode: r.countryCode || (r.country ? r.country.toUpperCase() : '') || '',
-    geohash: r.geohash || '',
+    placeName: r.placeName || r.city || r.name || '',
+    countryCode: (r.countryCode || r.country || '').toString().toUpperCase().slice(0, 2),
+    geohash: r.geohash || r.geoHash || '',
   };
 };
 
