@@ -1,5 +1,5 @@
-// LocationRangeSelector.jsx
-import { useState, useCallback, useMemo } from "react";
+import  { useState, useCallback, useMemo, useEffect } from "react";
+import { Radio, RadioGroup } from "@headlessui/react";
 
 const MIN_RANGE = 1;
 const MAX_RANGE = 30; // UI cap
@@ -10,23 +10,42 @@ const MI_IN_KM = 1.609344;
 const toMiles = (km) => km / MI_IN_KM;
 const toKm = (mi) => mi * MI_IN_KM;
 
-const LocationRangeSelector = ({ formData, setFormData, t }) => {
+const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
   const initialUnit = formData?.searchRadius?.unit || "km";
   const [unit, setUnit] = useState(initialUnit);
 
-  const currentRange = formData?.searchRadius?.distance ?? 10;
+  // numeric currentRange with fallback
+  const currentRange = Number(formData?.searchRadius?.distance ?? 10);
 
-  const clamp = (n) => Math.min(MAX_RANGE, Math.max(MIN_RANGE, Math.round(Number(n))));
+  const clamp = useCallback(
+    (n) => Math.min(MAX_RANGE, Math.max(MIN_RANGE, Math.round(Number(n)))),
+    []
+  );
+
+  // Sync local unit if formData changes externally (production-friendly)
+  useEffect(() => {
+    const externalUnit = formData?.searchRadius?.unit;
+    if (externalUnit && externalUnit !== unit) {
+      setUnit(externalUnit);
+    }
+    // we intentionally don't include `unit` in deps to avoid loops; only react to formData changes
+  }, [formData]);
 
   const updateForm = useCallback(
     (range, u = unit) => {
       const next = clamp(range);
-      setFormData((prev) => ({
-        ...prev,
-        searchRadius: { distance: next, unit: u },
-      }));
+      // avoid unnecessary state writes
+      setFormData((prev) => {
+        const prevUnit = prev?.searchRadius?.unit;
+        const prevDistance = prev?.searchRadius?.distance;
+        if (prevUnit === u && prevDistance === next) return prev;
+        return {
+          ...prev,
+          searchRadius: { distance: next, unit: u },
+        };
+      });
     },
-    [setFormData, unit]
+    [setFormData, unit, clamp]
   );
 
   const handleRangeChange = useCallback(
@@ -81,31 +100,39 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
         </span>
       </label>
 
-      {/* Preset Buttons */}
+      {/* Preset Buttons (Headless UI Radio) */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-3">
           <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
             {t("quickSelect") || "Quick Select"}
           </span>
         </div>
-        <div className="grid grid-cols-4 gap-3">
+
+        <RadioGroup
+          value={clamp(currentRange)}
+          onChange={handleQuickSelect}
+          as="div"
+          className="grid grid-cols-4 gap-3"
+        >
           {PRESETS.map((preset) => (
-            <button
+            <Radio
               key={preset}
-              type="button"
-              onClick={() => handleQuickSelect(preset)}
-              aria-pressed={currentRange === preset}
-              className={`p-3 rounded-xl text-sm font-semibold transition-all duration-200 border
-                ${
-                  currentRange === preset
+              value={preset}
+              as="button"
+              className={({ checked }) =>
+                `p-3 rounded-xl text-sm font-semibold transition-all duration-200 border ${
+                  checked
                     ? "bg-primary from-main-color to-main-color/80 text-white shadow-lg scale-105 border-transparent"
                     : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100 hover:border-main-color/40"
-                }`}
+                }`
+              }
+              // ensure button semantics
+              type="button"
             >
               {formatRange(preset)}
-            </button>
+            </Radio>
           ))}
-        </div>
+        </RadioGroup>
       </div>
 
       {/* Range Slider */}
@@ -164,7 +191,7 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
           <div className="w-12 h-1 bg-main-color/40 rounded-full mx-auto mt-3" />
         </div>
 
-        {/* Unit Toggle */}
+        {/* Unit Toggle (Headless UI Radio) */}
         <div className="flex items-center justify-between pt-5 border-t border-gray-100">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -175,29 +202,28 @@ const LocationRangeSelector = ({ formData, setFormData, t }) => {
             </p>
           </div>
 
-          <div
+          <RadioGroup
+            value={unit}
+            onChange={handleUnitChange}
+            as="div"
             className="flex bg-gray-100 rounded-xl p-1 border border-gray-200 shadow-inner"
-            role="tablist"
-            aria-label={t("distanceUnit") || "Distance Unit"}
           >
             {UNITS.map((u) => (
-              <button
+              <Radio
                 key={u}
+                value={u}
+                as="button"
                 type="button"
-                onClick={() => handleUnitChange(u)}
-                role="tab"
-                aria-selected={unit === u}
-                className={`px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 min-w-[80px]
-                  ${
-                    unit === u
-                      ? "bg-white text-main-color shadow-md border border-gray-200 scale-105"
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-200/60"
-                  }`}
+                className={({ checked }) =>
+                  `px-5 py-2.5 rounded-lg font-semibold transition-all duration-200 min-w-[80px] ${
+                    checked ? "bg-white text-main-color shadow-md border border-gray-200 scale-105" : "text-gray-600 hover:text-gray-900 hover:bg-gray-200/60"
+                  }`
+                }
               >
                 {u.charAt(0).toUpperCase() + u.slice(1)}
-              </button>
+              </Radio>
             ))}
-          </div>
+          </RadioGroup>
         </div>
       </div>
     </div>

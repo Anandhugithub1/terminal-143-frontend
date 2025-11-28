@@ -6,6 +6,7 @@ import LocationInput from '../../components/LocationInput';
 import LocationRangeSelector from '../../components/LocationRangeSelector';
 import { useTranslation } from 'react-i18next';
 import { useLocationService } from '../../Hooks/useLocationService';
+import { Button } from "../../../../shared/Button";
 
 // Convert raw suggestion / details into frontend geo shape (minimal)
 const toGeo = (r) => {
@@ -26,7 +27,7 @@ const Step5Location = () => {
   const { formData, setFormData } = useWizard();
   const { geoLocation } = formData;
   const navigate = useNavigate();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('location');
   const { getCurrentLocation, detecting, suggestions } = useLocationService();
 
   const [error, setError] = useState('');
@@ -116,20 +117,22 @@ const Step5Location = () => {
       </section>
 
       <div className="mt-8 flex gap-4">
-        <button
+        <Button
           onClick={handleBack}
-          className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-4 rounded-xl transition-all border border-gray-200"
+          textColor='black'
+          className="flex-1 py-3 border border-gray-200 bg-white"
           type="button"
         >
           {t('back') || 'Back'}
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={handleNext}
-          className="flex-1 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-4 rounded-xl transition-all hover:scale-[1.01] shadow-lg shadow-pink-500/20"
+          
+          className="flex-1   text-white font-semibold py-4 rounded-3xl transition-all hover:scale-[1.01] shadow-lg shadow-pink-500/20"
           type="button"
         >
           {t('continue') || 'Continue'}
-        </button>
+        </Button>
       </div>
     </div>
   );
