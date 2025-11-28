@@ -10,14 +10,14 @@ export default function RequireProfileIncomplete({ children }) {
   const location     = useLocation();
   const { currentUser, status, error } = useSelector((s) => s.userProfile);
 
-  // 1️⃣ Kick off fetching if we haven't yet
+  // 1️ Kick off fetching if we haven't yet
   useEffect(() => {
     if (status === 'idle') {
       dispatch(fetchProfile());
     }
   }, [status, dispatch]);
 
-  // 2️⃣ While loading, show spinner
+  // 2️ While loading, show spinner
   if (status === 'loading') {
     return <LoadingSpinner />;
   }
@@ -26,7 +26,7 @@ export default function RequireProfileIncomplete({ children }) {
     return children;
   }
 
-  // 3️⃣ If fetch failed, you could redirect or show an error:
+  // 3️ If fetch failed, you could redirect or show an error:
   if (status === 'failed') {
     return (
       <div className="p-4 text-center text-red-500">
@@ -35,12 +35,12 @@ export default function RequireProfileIncomplete({ children }) {
     );
   }
 
-  // 4️⃣ Once succeeded, check the flag
+  // 4️ Once succeeded, check the flag
   if (currentUser?.profileCompleted) {
     // Already completed → send them home (or wherever)
     return <Navigate to="/home" state={{ from: location }} replace />;
   }
 
-  // 5️⃣ Otherwise render the wizard steps
+  // 5️ Otherwise render the wizard steps
   return children;
 }
