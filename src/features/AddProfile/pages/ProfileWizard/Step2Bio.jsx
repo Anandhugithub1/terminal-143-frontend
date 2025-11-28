@@ -129,7 +129,7 @@ export default function Step2Bio() {
 
       <div className="flex gap-4">
         <Button
-          onClick={() => navigate("/complete/basic")}
+          onClick={() => navigate("/complete/location")}
           textColor="black"
           className="flex-1 py-3 px-6 border border-gray-200 bg-white"
         >
