@@ -48,6 +48,7 @@
   "locationRequired": "Please select a location",
   
   "location": "Location",
+  
   "locationHelper": "City or area where you live",
   "typeOrSearchLocation": "Search for your city or area...",
   "useMyCurrentLocation": "Use My Current Location",
