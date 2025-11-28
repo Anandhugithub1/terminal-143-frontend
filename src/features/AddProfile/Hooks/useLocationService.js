@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-import ngeohash from 'ngeohash';
+// import ngeohash from 'ngeohash'; // removed — geohash comes from the API now
 import { useMutation } from '@tanstack/react-query';
 import { locationAPi } from '../../../api/clients';
 
@@ -27,7 +27,8 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
       address.name ||
       '',
     countryCode: (address.country_code || address.country || '').toString().toUpperCase().slice(0, 2),
-    geohash: (lat != null && lon != null) ? ngeohash.encode(lat, lon, 7) : '',
+    // prefer geohash returned by the API; if not present, leave empty
+    geohash: address.geohash || '',
   });
 
   const reverseGeocodeMutation = useMutation({
@@ -110,6 +111,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
         country: data.country || '',
         country_code: data.countryCode || data.country_code || '',
         name: data.placeName || '',
+        geohash: data.geohash || '', // prefer geohash from API
       };
 
       return buildLocationObject(latitude, longitude, address);
