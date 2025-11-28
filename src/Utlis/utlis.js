@@ -96,7 +96,14 @@ icon:User,
 
 
 
-
+export  const LANGUAGE_LABELS = {
+  en: 'English',
+  fr: 'French',
+  de: 'German',
+  zh: 'Chinese',
+  ja: 'Japanese',
+  ar: 'Arabic',
+};
 
 
 export const baseurl ="https://authapi.terminal143.com"
