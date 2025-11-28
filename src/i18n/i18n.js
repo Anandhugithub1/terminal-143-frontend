@@ -26,8 +26,7 @@ i18n
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
 
-    // your namespaces (must match your filenames)
-    ns: ['common', 'home', 'nav' ,'auth','settings'],
+    ns: ['common', 'home', 'nav' ,'auth','settings','location'],
     defaultNS: 'common',
 
     // turn on/react options
