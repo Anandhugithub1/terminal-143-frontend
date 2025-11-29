@@ -2,7 +2,6 @@ import React, { useCallback, useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import PhotoCarousel from '../Actions/Carousel';
 import ProfileInfo from '../Details/ProfileInfo';
-
 const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage }) => {
   const {
     images = [],
@@ -30,6 +29,7 @@ const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage
 
   return (
     <div className="mx-5 mt-3 rounded-3xl shadow-lg overflow-hidden relative h-[55vh] sm:h-[60vh] md:h-[65vh]">
+      
       {/* Photo Section */}
       <PhotoCarousel
         images={images}
