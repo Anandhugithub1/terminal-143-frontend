@@ -3,11 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useWizard } from '../../contexts/ProfileWizard';
 import { ProgressBar } from './Progess';
 import LocationInput from '../../components/LocationInput';
-import LocationRangeSelector from '../../components/LocationRangeSelector';
 import { useTranslation } from 'react-i18next';
 import { useLocationService } from '../../Hooks/useLocationService';
 import { Button } from "../../../../shared/Button";
-
+import LocationRangeSelector from '../../components/Location/LocationRangeSelector';
 // Convert raw suggestion / details into frontend geo shape (minimal)
 const toGeo = (r) => {
   if (!r) return { type: 'Point', coordinates: [], placeName: '', countryCode: '', geohash: '' };
@@ -88,14 +87,7 @@ const Step5Location = () => {
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-800">{t('yourLocation') || 'Your Location'}</h3>
-            <button
-              onClick={handleDetectLocation}
-              disabled={detecting}
-              className="text-sm text-blue-600 hover:underline disabled:text-gray-400"
-              type="button"
-            >
-              {detecting ? t('detecting') || 'Detecting...' : t('useCurrentLocation') || 'Use Current Location'}
-            </button>
+         
           </div>
 
           <LocationInput

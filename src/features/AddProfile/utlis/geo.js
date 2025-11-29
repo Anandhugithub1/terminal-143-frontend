@@ -70,3 +70,27 @@ export function normalizeGeoForApi(input) {
     countryCode,
   };
 }
+
+
+
+export const EMPTY_GEO = {
+  type: "Point",
+  coordinates: [],
+  placeName: "",
+  countryCode: "",
+  geohash: "",
+};
+
+// small helpers used by LocationInput and SuggestionList
+export const normalizeCountryCode = (value = "") =>
+  value.toString().toUpperCase().slice(0, 2);
+
+export const extractCoords = (item = {}) => {
+  const raw = item._raw || item;
+  const lon =
+    Number(item.lon ?? raw.lon ?? (Array.isArray(raw.center) ? raw.center[0] : undefined)) || null;
+  const lat =
+    Number(item.lat ?? raw.lat ?? (Array.isArray(raw.center) ? raw.center[1] : undefined)) || null;
+  return { lon: Number.isFinite(lon) ? lon : null, lat: Number.isFinite(lat) ? lat : null };
+};
+
