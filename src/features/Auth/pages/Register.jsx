@@ -23,11 +23,7 @@ const RegisterSkeleton = () => (
   const navigate = useNavigate();
   const userType = location.state?.userType;
 
-  useEffect(() => {
-    if (!userType) {
-      navigate('/choose-category', { replace: true });
-    }
-  }, [userType, navigate]);
+
 
   if (!userType) return null;
 

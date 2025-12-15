@@ -20,7 +20,6 @@ import DefaultHomeRoute from "./DefaultHomeRoute.jsx";
 import UserProfilePage from "../features/UserHome/pages/UserProfileById.jsx";
 // Lazy
 const MatchesPage = lazy(() => import("../features/UserHome/pages/Matches.jsx"));
-const ChooseCategory =lazy(()=> import ("../features/Auth/pages/ChooseCategory.jsx") )
 const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx"));
 const AddDetails = lazy(() => import("../features/AddProfile/pages/Add_Details.jsx"));
 const NotFoundPage = lazy(() => import("../pages/404/404.jsx"));
@@ -41,7 +40,6 @@ export const appRoutes = (
     <Route path="reset-password" element={<ForgotAndResetPassword />} />
       <Route path="/user/:pk/:sk" element={<UserProfilePage />} />
 
-    {/* <Route path="choose-category" element={<ChooseCategory />} /> */}
 
     <Route
       path="complete/*"
@@ -112,13 +110,6 @@ export const appRoutes = (
     />
 
 
-    <Route path ="choose-category" element ={
-
-<Suspense fallback={<LoadingSpinner />}> 
-<ChooseCategory/>
-
-</Suspense>
-    } />
     <Route
       path="requests"
       element={
