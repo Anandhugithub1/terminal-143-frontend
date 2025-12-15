@@ -19,13 +19,10 @@ const RegisterSkeleton = () => (
 );
 
  const Register = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const userType = location.state?.userType;
 
 
 
-  if (!userType) return null;
+
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
