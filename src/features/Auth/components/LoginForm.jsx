@@ -149,7 +149,7 @@ const LoginForm = () => {
       <p className="mt-6 text-center text-sm text-gray-500">
         {t('noAccount')}{' '}
         <Link
-          to="/choose-category"
+          to="/register"
           className="text-text-pr font-semibold hover:underline"
         >
           {t('register')}
