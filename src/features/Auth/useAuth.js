@@ -6,7 +6,8 @@ import {
   apiForgotPassword,
   apiConfirmForgotPassword,
   apiLogin,
-  apiRegister
+  apiRegister,
+  signOut
 } from './authApi';
 
 export const useVerifyOtp = () =>
@@ -35,12 +36,28 @@ export const useResendOtp = () =>
     mutationFn: apiResendOtp,
   });
 
-export const useForgotPassword = () =>
+
+export const useSignOut = () =>
   useMutation({
-    mutationFn: apiForgotPassword,
+    mutationFn: (action = 'signout') => signOut(action),
   });
 
-export const useConfirmForgotPassword = () =>
-  useMutation({
-    mutationFn: apiConfirmForgotPassword,
+  // ─── FORGOT PASSWORD ─────────────────────────
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: ({ email }) =>
+      apiForgotPassword({ email }),
   });
+};
+
+// ─── CONFIRM FORGOT PASSWORD ─────────────────
+export const useConfirmForgotPassword = () => {
+  return useMutation({
+    mutationFn: ({ email, ConfirmationCode, Password }) =>
+      apiConfirmForgotPassword({
+        email,
+        ConfirmationCode,
+        Password,
+      }),
+  });
+};

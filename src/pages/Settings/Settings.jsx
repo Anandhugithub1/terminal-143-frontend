@@ -21,7 +21,7 @@ const SettingsPage = () => {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // Mutation for logging out current device
+  // ✅ SAME logout behavior, TanStack only
   const logoutMutation = useMutation({
     mutationFn: () => signOut('signout'),
     onSuccess: () => {
@@ -83,6 +83,7 @@ const SettingsPage = () => {
             <h2 className="text-xl font-semibold mb-6 text-center">
               {t('logoutOptions')}
             </h2>
+
             <div className="flex flex-col gap-3">
               <PrimaryButton
                 onClick={() => logoutMutation.mutate()}
@@ -94,20 +95,6 @@ const SettingsPage = () => {
                   ? t('loggingOut')
                   : t('logoutThisDevice')}
               </PrimaryButton>
-
-              {/*
-              Commenting out "Logout All Devices" option for now:
-              <PrimaryButton
-                onClick={() => logoutAllMutation.mutate()}
-                className="!py-3 bg-red-600 hover:bg-red-700"
-                to="#"
-                disabled={logoutAllMutation.isPending}
-              >
-                {logoutAllMutation.isPending
-                  ? t('loggingOut')
-                  : t('logoutAllDevices')}
-              </PrimaryButton>
-              */}
 
               <SecondaryButton
                 onClick={() => setShowLogoutModal(false)}

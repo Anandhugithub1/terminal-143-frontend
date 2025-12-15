@@ -1,29 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { InputField } from '../../../shared/common';
 import PasswordInput from '../../../shared/Passinput';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../../shared/Button';
 import Loader from '../../../components/Ui/Loading';
-import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { useLogin } from '../useAuth';
 
 const LoginForm = () => {
   const { t } = useTranslation('auth');
-  const navigate = useNavigate();
   const [emailPhone, setEmailPhone] = useState('');
   const [password, setPassword] = useState('');
 
-  const { mutate, isPending, isSuccess, data, error } = useLogin();
+  const navigate = useNavigate();
 
+  const {
+    mutate,
+    isPending,
+    isSuccess,
+    data,
+    isError,
+    error,
+  } = useLogin();
+
+  //  navigation logic as Redux version
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data) {
       if (!data.profileCompleted) {
         navigate('/complete');
+      } else if (data.userType === 'mp') {
+        navigate('/requests');
       } else {
         navigate('/home');
       }
-      localStorage.setItem('userType', data.userType);
     }
   }, [isSuccess, data, navigate]);
 
@@ -39,10 +49,15 @@ const LoginForm = () => {
       {
         onError: (err) => {
           const apiErr = err?.response?.data;
-          if (apiErr?.notVerified) {
+
+          if (apiErr?.notVerified === true) {
             navigate('/verify', { state: { emailPhone } });
           } else {
-            toast.error(apiErr?.error || apiErr?.message || t('loginFailed'));
+            toast.error(
+              apiErr?.error ||
+              apiErr?.message ||
+              t('loginFailed')
+            );
           }
         },
       }
@@ -51,43 +66,92 @@ const LoginForm = () => {
 
   return (
     <>
+      {/*  loader overlay */}
       {isPending && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/70 z-10">
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
           <Loader />
         </div>
       )}
 
-      <h1 className="text-2xl font-bold text-center mb-6">
+      {/*  icon header */}
+      <div className="flex justify-center mb-6">
+        <div className="bg-gradient-to-r from-gradient-primary to-gradient-secondary p-3 rounded-full">
+          <svg
+            className="w-8 h-8 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/*  title */}
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
         {t('welcomeBack')}
       </h1>
 
+      {/*  form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <InputField
           value={emailPhone}
           onChange={(e) => setEmailPhone(e.target.value)}
           placeholder={t('emailOrPhone')}
+          disabled={isPending}
         />
 
         <PasswordInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder={t('password')}
+          disabled={isPending}
         />
 
         <div className="text-right">
-          <Link to="/reset-password" className="text-sm font-semibold">
+          <Link
+            to="/reset-password"
+            className="text-text-pr font-semibold text-sm hover:underline"
+          >
             {t('forgotPassword')}
           </Link>
         </div>
+
+        {/*  error rendering */}
+        {isError && (
+          <p className="text-red-500 text-sm">
+            {error?.response?.data?.error ||
+             error?.response?.data?.message ||
+             t('loginFailed')}
+          </p>
+        )}
 
         <Button type="submit" disabled={isPending}>
           {isPending ? <Loader /> : t('login')}
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm">
+      {/*  divider */}
+      <div className="mt-6 flex items-center justify-center space-x-2">
+        <div className="flex-1 border-t border-border-clr"></div>
+        <span className="px-4 text-sm text-gray-500">
+          {t('orContinueWith')}
+        </span>
+        <div className="flex-1 border-t border-border-clr"></div>
+      </div>
+
+      {/*  footer */}
+      <p className="mt-6 text-center text-sm text-gray-500">
         {t('noAccount')}{' '}
-        <Link to="/choose-category" className="font-semibold">
+        <Link
+          to="/choose-category"
+          className="text-text-pr font-semibold hover:underline"
+        >
           {t('register')}
         </Link>
       </p>

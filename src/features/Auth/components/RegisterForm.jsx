@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { InputField } from '../../../shared/common';
 import PasswordInput from '../../../shared/Passinput';
 import { Button } from '../../../shared/Button';
 import { ChevronDown } from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { useRegister } from '../useAuth';
 
 const RegisterForm = () => {
   const { t, ready } = useTranslation('auth');
-  const navigate = useNavigate();
   const location = useLocation();
   const userType = location.state?.userType;
 
@@ -19,8 +18,18 @@ const RegisterForm = () => {
   const [gender, setGender] = useState('');
   const [localError, setLocalError] = useState('');
 
-  const { mutate, isPending, isSuccess, error } = useRegister();
+  const navigate = useNavigate();
 
+  const {
+    mutate,
+    isPending,
+    isError,
+    isSuccess,
+    data,
+    error,
+  } = useRegister();
+
+ 
   useEffect(() => {
     if (isSuccess) {
       navigate('/verify', { state: { email: emailPhone } });
@@ -31,10 +40,13 @@ const RegisterForm = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      return setLocalError(t('passwordMismatch'));
+      setLocalError(t('passwordMismatch'));
+      return;
     }
+
     if (!gender) {
-      return setLocalError(t('selectGender'));
+      setLocalError(t('selectGender'));
+      return;
     }
 
     setLocalError('');
@@ -52,21 +64,36 @@ const RegisterForm = () => {
       />
 
       <div>
-        <label className="text-sm font-semibold">{t('gender')}</label>
+        <label
+          htmlFor="gender"
+          className="block text-gray-700 text-sm font-semibold mb-2"
+        >
+          {t('gender')}
+        </label>
+
         <div className="relative">
           <select
+            id="gender"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            className="w-full border rounded-lg px-4 py-3 pr-10"
+            className="w-full border border-gray-300 rounded-lg px-4 py-3
+                       focus:outline-none focus:ring-2 focus:ring-pink-500
+                       focus:border-transparent transition-all appearance-none
+                       pr-10 bg-white hover:border-gray-400"
           >
-            <option value="">{t('select')}</option>
+            <option value="">— {t('select')} —</option>
             <option value="MALE">{t('male')}</option>
             <option value="FEMALE">{t('female')}</option>
             <option value="TO_FEMALE">{t('transFemale')}</option>
             <option value="TO_MALE">{t('transMale')}</option>
             <option value="OTHERS">{t('other')}</option>
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2" />
+
+          <ChevronDown
+            className="absolute right-3 top-1/2 -translate-y-1/2
+                       text-gray-500 pointer-events-none"
+            size={20}
+          />
         </div>
       </div>
 
@@ -76,15 +103,27 @@ const RegisterForm = () => {
         placeholder={t('createPassword')}
       />
 
+      <div className="text-xs text-gray-500">
+        {t('passwordRequirements')}
+      </div>
+
       <PasswordInput
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
         placeholder={t('confirmPassword')}
       />
 
-      {(localError || error) && (
+      {(localError || isError) && (
         <p className="text-red-500 text-sm">
-          {localError || error?.response?.data?.message}
+          {localError ||
+            error?.response?.data?.error ||
+            error?.response?.data?.message}
+        </p>
+      )}
+
+      {isSuccess && (
+        <p className="text-green-600 text-sm">
+          {data?.message}
         </p>
       )}
 
@@ -92,12 +131,15 @@ const RegisterForm = () => {
         {isPending ? t('registering') : t('getStarted')}
       </Button>
 
-      <p className="text-center text-sm mt-4">
+      <div className="mt-6 text-center text-sm text-gray-500">
         {t('alreadyHaveAccount')}{' '}
-        <Link to="/login" className="font-semibold">
+        <Link
+          to="/login"
+          className="text-pink-600 font-semibold hover:underline"
+        >
           {t('signIn')}
         </Link>
-      </p>
+      </div>
     </form>
   );
 };

@@ -1,6 +1,6 @@
 // src/features/auth/authAPI.js
 import client from '../../Utlis/client';
-
+import axios from 'axios';
 // REGISTER
 export const apiRegister = async ({ emailPhone, password, gender, userType }) => {
   const payload = {
@@ -45,6 +45,28 @@ export const apiResendOtp = async ({ email }) => {
 export const apiForgotPassword = async ({ email }) => {
   const { data } = await client.post('/forgot-password', { email });
   return data;
+};
+
+export const signOut = async (action = 'signout') => {
+  try {
+    const response = await axios.post(
+      'https://authapi.terminal143.com/signout',
+      { action },
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  } catch (err) {
+    const message =
+      err.response?.data?.message ||
+      err.message ||
+      'Failed to sign out';
+    throw new Error(message);
+  }
 };
 
 // CONFIRM FORGOT PASSWORD

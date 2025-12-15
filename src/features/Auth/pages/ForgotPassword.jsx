@@ -1,17 +1,21 @@
-import React, { useState } from "react";
-import { InputField } from "../../../shared/common";
-import PasswordInput from "../../../shared/Passinput";
-import { Button } from "../../../shared/Button";
-import { useNavigate } from "react-router-dom";
-import { useForgotPassword, useConfirmForgotPassword } from "../useAuth";
+import React, { useState } from 'react';
+import { InputField } from '../../../shared/common';
+import { Button } from '../../../shared/Button';
+import PasswordInput from '../../../shared/Passinput';
+import { useNavigate } from 'react-router-dom';
+import {
+  useForgotPassword,
+  useConfirmForgotPassword,
+} from '../useAuth';
 
 export const ForgotAndResetPassword = () => {
-  const [step, setStep] = (useState < "forgot") | ("reset" > "forgot");
-  const [email, setEmail] = useState("");
-  const [ConfirmationCode, setConfirmationCode] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [localError, setLocalError] = useState("");
+  const [step, setStep] = useState('forgot');
+  const [email, setEmail] = useState('');
+  const [ConfirmationCode, setConfirmationCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -21,18 +25,26 @@ export const ForgotAndResetPassword = () => {
   // ─── SEND RESET CODE ─────────────────────────────────────
   const handleForgotSubmit = (e) => {
     e.preventDefault();
-    setLocalError("");
 
     if (!email) {
-      setLocalError("Please enter your email.");
+      setError('Please enter your email.');
       return;
     }
+
+    setError('');
+    setMessage('');
 
     forgotPassword.mutate(
       { email },
       {
         onSuccess: () => {
-          setStep("reset");
+          setMessage('Reset code sent successfully. Please check your email.');
+          setTimeout(() => setStep('reset'), 1500);
+        },
+        onError: (err) => {
+          setError(
+            err?.response?.data?.error || 'Failed to send reset code.'
+          );
         },
       }
     );
@@ -41,17 +53,19 @@ export const ForgotAndResetPassword = () => {
   // ─── CONFIRM RESET ───────────────────────────────────────
   const handleResetSubmit = (e) => {
     e.preventDefault();
-    setLocalError("");
 
-    if (!ConfirmationCode || !newPassword || !confirmPassword) {
-      setLocalError("Please fill in all fields.");
+    if (!email || !ConfirmationCode || !newPassword || !confirmPassword) {
+      setError('Please fill in all fields.');
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setLocalError("Passwords do not match.");
+      setError('Passwords do not match.');
       return;
     }
+
+    setError('');
+    setMessage('');
 
     confirmForgotPassword.mutate(
       {
@@ -61,7 +75,13 @@ export const ForgotAndResetPassword = () => {
       },
       {
         onSuccess: () => {
-          setTimeout(() => navigate("/login"), 1500);
+          setMessage('Password has been reset successfully.');
+          setTimeout(() => navigate('/login'), 2000);
+        },
+        onError: (err) => {
+          setError(
+            err?.response?.data?.error || 'Password reset failed.'
+          );
         },
       }
     );
@@ -70,7 +90,26 @@ export const ForgotAndResetPassword = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
-        {step === "forgot" ? (
+
+        <div className="flex justify-center mb-6">
+          <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-3 rounded-full">
+            <svg
+              className="w-8 h-8 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+              />
+            </svg>
+          </div>
+        </div>
+
+        {step === 'forgot' ? (
           <>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
               Reset Password
@@ -83,22 +122,11 @@ export const ForgotAndResetPassword = () => {
                 placeholder="Enter your email"
               />
 
-              {(localError || forgotPassword.isError) && (
-                <p className="text-red-500 text-sm">
-                  {localError ||
-                    forgotPassword.error?.response?.data?.error ||
-                    "Failed to send reset code."}
-                </p>
-              )}
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+              {message && <p className="text-green-500 text-sm">{message}</p>}
 
-              {forgotPassword.isSuccess && (
-                <p className="text-green-500 text-sm">
-                  Reset code sent successfully.
-                </p>
-              )}
-
-              <Button type="submit" disabled={forgotPassword.isPending}>
-                {forgotPassword.isPending ? "Sending..." : "Send Reset Code"}
+              <Button type="submit" className="text-white">
+                Send Reset Code
               </Button>
             </form>
           </>
@@ -129,24 +157,11 @@ export const ForgotAndResetPassword = () => {
                 placeholder="Confirm new password"
               />
 
-              {(localError || confirmForgotPassword.isError) && (
-                <p className="text-red-500 text-sm">
-                  {localError ||
-                    confirmForgotPassword.error?.response?.data?.error ||
-                    "Password reset failed."}
-                </p>
-              )}
+              {error && <p className="text-red-500 text-sm">{error}</p>}
+              {message && <p className="text-green-500 text-sm">{message}</p>}
 
-              {confirmForgotPassword.isSuccess && (
-                <p className="text-green-500 text-sm">
-                  Password reset successfully.
-                </p>
-              )}
-
-              <Button type="submit" disabled={confirmForgotPassword.isPending}>
-                {confirmForgotPassword.isPending
-                  ? "Resetting..."
-                  : "Reset Password"}
+              <Button type="submit">
+                Reset Password
               </Button>
             </form>
           </>
