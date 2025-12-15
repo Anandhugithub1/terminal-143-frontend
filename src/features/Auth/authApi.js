@@ -1,6 +1,7 @@
 // src/features/auth/authAPI.js
 import client from '../../Utlis/client';
-import axios from 'axios';
+
+// REGISTER
 export const apiRegister = async ({ emailPhone, password, gender, userType }) => {
   const payload = {
     email: emailPhone.includes('@') ? emailPhone : '',
@@ -9,50 +10,53 @@ export const apiRegister = async ({ emailPhone, password, gender, userType }) =>
     password,
     userType,
   };
-  return client.post('/register', payload);
+  const { data } = await client.post('/register', payload);
+  return data;
 };
 
-export const apiVerifyOtp = async ({ email, code }) =>
-  client.post('/confirm', { email, ConfirmationCode: code });
-
-export const apiResendOtp = async ({ email }) =>
-  client.post('/resend-otp', { email });
-
-// ─── NEW: apiLogin ─────────────────────────────────────────────────────────
+// LOGIN
 export const apiLogin = async ({ emailPhone, password }) => {
-  // We’ll determine whether it’s email vs phone and send the correct payload:
-  const isEmail = emailPhone.includes('@');
-  const payload = isEmail
+  const payload = emailPhone.includes('@')
     ? { email: emailPhone, password }
     : { phoneNumber: emailPhone, password };
 
-  // Note: client is pre‐configured with baseurl. If you need withCredentials, add it here or in Thunk.
-  return client.post('/login', payload, {
+  const { data } = await client.post('/login', payload, {
     withCredentials: true,
-    
-    headers: { 'Content-Type': 'application/json' },
   });
+  return data;
 };
 
+// OTP VERIFY
+export const apiVerifyOtp = async ({ email, code }) => {
+  const { data } = await client.post('/confirm', {
+    email,
+    ConfirmationCode: code,
+  });
+  return data;
+};
 
-// services/auth.js
-export const signOut = async (action = 'signout') => {
-  try {
-    const response = await axios.post(
-      'https://authapi.terminal143.com/signout',
-      { action },
-      {
-        withCredentials: true,           // ← include cookies
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-    return response.data;
-  } catch (err) {
-    // Axios wraps non-2xx responses in err.response
-    const message =
-      err.response?.data?.message || err.message || 'Failed to sign out';
-    throw new Error(message);
-  }
+// RESEND OTP
+export const apiResendOtp = async ({ email }) => {
+  const { data } = await client.post('/resend-otp', { email });
+  return data;
+};
+
+// FORGOT PASSWORD
+export const apiForgotPassword = async ({ email }) => {
+  const { data } = await client.post('/forgot-password', { email });
+  return data;
+};
+
+// CONFIRM FORGOT PASSWORD
+export const apiConfirmForgotPassword = async ({
+  email,
+  code,
+  newPassword,
+}) => {
+  const { data } = await client.post('/confirm-forgot-password', {
+    email,
+    ConfirmationCode: code,
+    Password: newPassword,
+  });
+  return data;
 };

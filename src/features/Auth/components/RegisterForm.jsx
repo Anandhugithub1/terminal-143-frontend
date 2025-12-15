@@ -1,22 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import React, { useEffect, useState } from 'react';
 import { InputField } from '../../../shared/common';
-import  PasswordInput  from '../../../shared/Passinput';
+import PasswordInput from '../../../shared/Passinput';
 import { Button } from '../../../shared/Button';
 import { ChevronDown } from 'lucide-react';
-import { registerUser } from '../authThunks';
-import { resetAuthState } from '../authSlice';
-import {
-  selectLoading,
-  selectError,
-  selectSuccess,
-  selectMessage,
-} from '../authSelectors';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useRegister } from '../useAuth';
 
- const RegisterForm = () => {
+const RegisterForm = () => {
   const { t, ready } = useTranslation('auth');
+  const navigate = useNavigate();
   const location = useLocation();
   const userType = location.state?.userType;
 
@@ -26,35 +19,26 @@ import {
   const [gender, setGender] = useState('');
   const [localError, setLocalError] = useState('');
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const isLoading = useSelector(selectLoading);
-  const isError = useSelector(selectError);
-  const isSuccess = useSelector(selectSuccess);
-  const message = useSelector(selectMessage);
+  const { mutate, isPending, isSuccess, error } = useRegister();
 
   useEffect(() => {
     if (isSuccess) {
       navigate('/verify', { state: { email: emailPhone } });
     }
-    return () => {
-      dispatch(resetAuthState());
-    };
-  }, [isSuccess, dispatch, navigate, emailPhone]);
+  }, [isSuccess, navigate, emailPhone]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
-      setLocalError(t('passwordMismatch'));
-      return;
+      return setLocalError(t('passwordMismatch'));
     }
     if (!gender) {
-      setLocalError(t('selectGender'));
-      return;
+      return setLocalError(t('selectGender'));
     }
+
     setLocalError('');
-    dispatch(registerUser({ emailPhone, password, gender, userType }));
+    mutate({ emailPhone, password, gender, userType });
   };
 
   if (!ready) return null;
@@ -68,27 +52,21 @@ import {
       />
 
       <div>
-        <label htmlFor="gender" className="block text-gray-700 text-sm font-semibold mb-2">
-          {t('gender')}
-        </label>
+        <label className="text-sm font-semibold">{t('gender')}</label>
         <div className="relative">
           <select
-            id="gender"
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all appearance-none pr-10 bg-white hover:border-gray-400"
+            className="w-full border rounded-lg px-4 py-3 pr-10"
           >
-            <option value="">— {t('select')} —</option>
+            <option value="">{t('select')}</option>
             <option value="MALE">{t('male')}</option>
             <option value="FEMALE">{t('female')}</option>
             <option value="TO_FEMALE">{t('transFemale')}</option>
             <option value="TO_MALE">{t('transMale')}</option>
             <option value="OTHERS">{t('other')}</option>
           </select>
-          <ChevronDown
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
-            size={20}
-          />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2" />
         </div>
       </div>
 
@@ -97,30 +75,31 @@ import {
         onChange={(e) => setPassword(e.target.value)}
         placeholder={t('createPassword')}
       />
-      <div className="text-xs text-gray-500">
-        {t('passwordRequirements')}
-      </div>
+
       <PasswordInput
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
         placeholder={t('confirmPassword')}
       />
 
-      {(localError || isError) && (
-        <p className="text-red-500 text-sm">{localError || message}</p>
+      {(localError || error) && (
+        <p className="text-red-500 text-sm">
+          {localError || error?.response?.data?.message}
+        </p>
       )}
-      {isSuccess && <p className="text-green-600 text-sm">{message}</p>}
 
-      <Button type="submit" disabled={isLoading}>
-        {isLoading ? t('registering') : t('getStarted')}
+      <Button type="submit" disabled={isPending}>
+        {isPending ? t('registering') : t('getStarted')}
       </Button>
 
-      <div className="mt-6 text-center text-sm text-gray-500">
-        {t('alreadyHaveAccount')} <Link to="/login" className="text-pink-600 font-semibold hover:underline">{t('signIn')}</Link>
-      </div>
+      <p className="text-center text-sm mt-4">
+        {t('alreadyHaveAccount')}{' '}
+        <Link to="/login" className="font-semibold">
+          {t('signIn')}
+        </Link>
+      </p>
     </form>
   );
 };
-
 
 export default RegisterForm;

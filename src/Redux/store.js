@@ -1,6 +1,5 @@
 // ==== src/redux/store.js ====
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../features/Auth/authSlice';
 // import profileReducer from './Profile/slice';
 import { profilesReducer } from '../features/Profiles';
 
@@ -11,6 +10,5 @@ export const store = configureStore({
     profiles: profilesReducer,
     userProfile: userProfileReducer,
     // profileUpdate: updateProfileReducer,
-    auth:authReducer,
   }
 });

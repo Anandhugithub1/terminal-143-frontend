@@ -1,98 +1,86 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { InputField } from '../../../shared/common'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Button } from '../../../shared/Button'
-import { verifyOtp, resendOtp } from '../authThunks'
-import { resetAuthState } from '../authSlice'
+import React, { useState } from 'react';
+import { InputField } from '../../../shared/common';
+import { Button } from '../../../shared/Button';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
-  selectLoading as selectOtpLoading,
-  selectError  as selectOtpError,
-  selectSuccess as selectOtpSuccess,
-  selectMessage as selectOtpMessage,
-} from '../authSelectors'
+  useVerifyOtp,
+  useResendOtp,
+} from '../useAuth';
 
 const EmailOTPVerification = () => {
-  const [code, setCode] = useState('')
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const email = location.state?.email
+  const [code, setCode] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email;
 
-  const isLoading = useSelector(selectOtpLoading)
-  const isError   = useSelector(selectOtpError)
-  const isSuccess = useSelector(selectOtpSuccess)
-  const message   = useSelector(selectOtpMessage)
+  const verifyOtp = useVerifyOtp();
+  const resendOtp = useResendOtp();
 
-  // Always clear any old auth state on mount
-  useEffect(() => {
-    dispatch(resetAuthState())
-  }, [dispatch])
+  const handleVerify = (e) => {
+    e.preventDefault();
+    if (!email || !code) return;
 
-  // Debug log
-  useEffect(() => {
-    console.log('OTP state:', { isLoading, isError, isSuccess, message })
-  }, [isLoading, isError, isSuccess, message])
-
-  // When we get success, reset slice and navigate
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(resetAuthState())
-      navigate('/login')
-    }
-  }, [isSuccess, dispatch, navigate])
-
-  const handleVerify = e => {
-    e.preventDefault()
-    if (!email) return
-    dispatch(verifyOtp({ email, code }))
-  }
+    verifyOtp.mutate(
+      { email, code },
+      {
+        onSuccess: () => navigate('/login'),
+      }
+    );
+  };
 
   const handleResend = () => {
-    if (!email) return
-    dispatch(resendOtp({ email }))
-  }
+    if (!email) return;
+    resendOtp.mutate({ email });
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+        <h1 className="text-2xl font-bold text-center mb-4">
           Verify Your Email
         </h1>
-        <p className="text-center text-sm text-gray-500 mb-4">
-          OTP sent to <span className="font-semibold">{email}</span>
+
+        <p className="text-center text-sm mb-4">
+          OTP sent to <strong>{email}</strong>
         </p>
+
         <form onSubmit={handleVerify} className="space-y-4">
           <InputField
             value={code}
-            onChange={e => setCode(e.target.value)}
+            onChange={(e) => setCode(e.target.value)}
             placeholder="Enter OTP"
           />
-          {isError   && <p className="text-red-500 text-sm">{message}</p>}
-          {isSuccess && <p className="text-green-600 text-sm">{message}</p>}
-          <Button type="submit" disabled={isLoading || !email}>
-            {isLoading ? 'Verifying...' : 'Verify OTP'}
+
+          {verifyOtp.isError && (
+            <p className="text-red-500 text-sm">
+              {verifyOtp.error?.response?.data?.error || 'Verification failed'}
+            </p>
+          )}
+
+          <Button type="submit" disabled={verifyOtp.isPending}>
+            {verifyOtp.isPending ? 'Verifying...' : 'Verify OTP'}
           </Button>
         </form>
+
         <div className="mt-4 text-center">
-          <Button
+          <button
             onClick={handleResend}
-            disabled={isLoading || !email}
-            type="button"
-            className="text-sm text-pink-600 hover:underline bg-transparent shadow-none"
+            disabled={resendOtp.isPending}
+            className="text-pink-600 text-sm font-semibold hover:underline"
           >
-            Resend OTP
-          </Button>
+            {resendOtp.isPending ? 'Sending...' : 'Resend OTP'}
+          </button>
         </div>
-        <p className="mt-6 text-center text-sm text-gray-500">
+
+        <p className="mt-6 text-center text-sm">
           Already verified?{' '}
-          <Link to="/login" className="text-pink-600 font-semibold hover:underline">
+          <Link to="/login" className="font-semibold text-pink-600">
             Sign in
           </Link>
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EmailOTPVerification
+export default EmailOTPVerification;
