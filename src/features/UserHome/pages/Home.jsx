@@ -9,6 +9,7 @@ import ProfileSkeleton from '../components/ProfileSkeleton';
 import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
 import placeholderImage from '../../../assets/woman.png';
 import { getMatchProviders } from '../../../features/Profiles/profilesapi';
+import LocationBar from '../components/Actions/LocationBar';
 
 // Lazy-loaded components
 const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'));
@@ -143,6 +144,11 @@ const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'));
     return (
       <div className="relative bg-white min-h-screen pb-20">
         <TopNav />
+<LocationBar
+  title="Thailand"
+  subtitle="JC Street, Acer Point, Thailand"
+  onChange={() => console.log("Change pressed")}
+/>
 
         {requestError && (
           <div className="px-4 mt-4">

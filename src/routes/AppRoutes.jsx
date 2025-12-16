@@ -9,10 +9,10 @@ import LazyFallback from "../components/Ui/LazyFallback.jsx";
 import { WizardProvider } from "../features/AddProfile/contexts/ProfileWizard.jsx";
 // Eager
 import { Login } from "../features/Auth/pages/Login.jsx";
-import  Register  from "../features/Auth/pages/Register.jsx";
+import  Register  from "../features/Auth/pages/Register.jsx"; 
 import EmailOTPVerification from "../features/Auth/pages/OtpVerification.jsx";
 import { ForgotAndResetPassword } from "../features/Auth/pages/ForgotPassword.jsx";
-
+import LocationEditPage from "../features/UserHome/pages/LocationEditPage.jsx";
 import PricingPage from "../pages/Global/Pricing.jsx";
 import UserHomePage from "../features/UserHome/pages/Home.jsx";
 // import AppHome from "../pages/Global/Route.jsx";
@@ -66,6 +66,10 @@ export const appRoutes = (
         </Suspense>
       }
     />
+
+    <Route path="profile/edit-location"
+    
+    element={<LocationEditPage/>}/>
     <Route
       path="language"
       element={
