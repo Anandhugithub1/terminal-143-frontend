@@ -1,5 +1,4 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
-// import ngeohash from 'ngeohash'; // removed — geohash comes from the API now
 import { useMutation } from '@tanstack/react-query';
 import { locationAPi } from '../../../api/clients';
 
@@ -27,8 +26,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
       address.name ||
       '',
     countryCode: (address.country_code || address.country || '').toString().toUpperCase().slice(0, 2),
-    // prefer geohash returned by the API; if not present, leave empty
-    geohash: address.geohash || '',
+    h3Index: address.h3Index || '',
   });
 
   const reverseGeocodeMutation = useMutation({
@@ -70,7 +68,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
         withCredentials: true,
         headers: { 'Accept-Language': userLang },
       });
-      // ensure we return a standardized object with lat/lng/placeName/country/countryCode/geohash
+      // ensure we return a standardized object with lat/lng/placeName/country/countryCode/h3Index
       const d = res?.data || null;
       if (!d) return null;
 
@@ -80,7 +78,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
         placeName: d.placeName || d.formattedAddress || '',
         country: d.country || '',
         countryCode: d.countryCode || '',
-        geohash: d.geohash || '',
+        h3Index: d.h3Index || '',
         formattedAddress: d.formattedAddress || '',
         types: d.types || [],
       };
@@ -111,7 +109,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
         country: data.country || '',
         country_code: data.countryCode || data.country_code || '',
         name: data.placeName || '',
-        geohash: data.geohash || '', // prefer geohash from API
+        h3Index: data.h3Index || '', // prefer h3Index from API
       };
 
       return buildLocationObject(latitude, longitude, address);

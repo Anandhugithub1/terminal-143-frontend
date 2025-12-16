@@ -29,7 +29,7 @@ export const WizardProvider = ({ children }) => {
       coordinates: [], // [lon, lat]
       placeName: '',
       countryCode: '',
-      geohash: '',
+      h3Index: '',
     },
 
     // Search radius preference (single value, 1-100)

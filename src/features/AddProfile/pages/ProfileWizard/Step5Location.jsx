@@ -9,18 +9,35 @@ import { Button } from "../../../../shared/Button";
 import LocationRangeSelector from '../../components/Location/LocationRangeSelector';
 // Convert raw suggestion / details into frontend geo shape (minimal)
 const toGeo = (r) => {
-  if (!r) return { type: 'Point', coordinates: [], placeName: '', countryCode: '', geohash: '' };
+  if (!r) {
+    return {
+      type: 'Point',
+      coordinates: [],
+      placeName: '',
+      countryCode: '',
+      h3Index: '',
+    };
+  }
+
   const lon = r.lon ?? r.coordinates?.[0];
   const lat = r.lat ?? r.coordinates?.[1];
-  const coords = (typeof lon === 'number' && typeof lat === 'number') ? [lon, lat] : [];
+  const coords =
+    typeof lon === 'number' && typeof lat === 'number'
+      ? [lon, lat]
+      : [];
+
   return {
     type: 'Point',
     coordinates: coords,
     placeName: r.placeName || r.city || r.name || '',
-    countryCode: (r.countryCode || r.country || '').toString().toUpperCase().slice(0, 2),
-    geohash: r.geohash || r.geoHash || '',
+    countryCode: (r.countryCode || r.country || '')
+      .toString()
+      .toUpperCase()
+      .slice(0, 2),
+    h3Index: r.h3Index || '',
   };
 };
+
 
 const Step5Location = () => {
   const { formData, setFormData } = useWizard();
