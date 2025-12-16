@@ -26,7 +26,7 @@ export default function RequireProfileIncomplete({ children }) {
     return children;
   }
 
-  // 3️ If fetch failed, you could redirect or show an error:
+  // 3️ If fetch failed,
   if (status === 'failed') {
     return (
       <div className="p-4 text-center text-red-500">
