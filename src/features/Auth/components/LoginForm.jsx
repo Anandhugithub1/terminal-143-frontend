@@ -24,13 +24,10 @@ const LoginForm = () => {
     error,
   } = useLogin();
 
-  //  navigation logic as Redux version
   useEffect(() => {
     if (isSuccess && data) {
       if (!data.profileCompleted) {
         navigate('/complete');
-      } else if (data.userType === 'mp') {
-        navigate('/requests');
       } else {
         navigate('/home');
       }
