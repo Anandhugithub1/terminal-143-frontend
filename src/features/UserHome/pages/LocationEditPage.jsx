@@ -1,8 +1,10 @@
-// src/pages/LocationEditPage.jsx
 import React, { useCallback, useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import { FiArrowLeft, FiMapPin, FiInfo } from "react-icons/fi";
+import { ImSpinner2 } from "react-icons/im";
+import { FiZap } from "react-icons/fi";
 import LocationInput from "../../AddProfile/components/LocationInput";
 import { fetchProfile, updateProfile } from "../../UserProfile/";
 
@@ -44,7 +46,7 @@ const LocationEditPage = () => {
     try {
       setSaving(true);
       await dispatch(updateProfile({ geoLocation })).unwrap?.();
-      toast.success("📍 Location updated successfully!");
+      toast.success("Location updated successfully");
       dispatch(fetchProfile());
       navigate(-1);
     } catch (err) {
@@ -60,7 +62,6 @@ const LocationEditPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Enhanced Header */}
       <div className="bg-white p-4 border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-3 max-w-2xl mx-auto w-full">
           <button
@@ -68,20 +69,9 @@ const LocationEditPage = () => {
             className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors"
             disabled={saving}
           >
-            <svg
-              className="w-5 h-5 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
+            <FiArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
+
           <div className="flex-1">
             <h1 className="text-xl font-bold text-gray-900">Edit Location</h1>
             <p className="text-sm text-gray-500 mt-1">
@@ -91,9 +81,7 @@ const LocationEditPage = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 p-4 max-w-2xl mx-auto w-full">
-        {/* Search Section */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-4">
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">
@@ -114,29 +102,15 @@ const LocationEditPage = () => {
               t={(k) => k}
             />
 
-            {/* Search Indicator */}
             {isSearching && (
               <div className="absolute right-3 top-3">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-500"></div>
+                <ImSpinner2 className="h-4 w-4 animate-spin text-pink-500" />
               </div>
             )}
           </div>
 
-          {/* Help Text */}
           <div className="mt-3 flex items-start gap-2 text-xs text-gray-500">
-            <svg
-              className="w-4 h-4 mt-0.5 flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <FiInfo className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <span>
               Select your location from the dropdown suggestions for best
               accuracy
@@ -144,7 +118,6 @@ const LocationEditPage = () => {
           </div>
         </div>
 
-        {/* Selected Location Preview */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-semibold text-gray-900">
@@ -161,25 +134,7 @@ const LocationEditPage = () => {
             <div className="p-4 rounded-xl bg-gradient-to-r from-gray-50 to-blue-50 border border-gray-200">
               <div className="flex items-start gap-3">
                 <div className="flex-shrink-0 w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
+                  <FiMapPin className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-semibold text-gray-900 text-lg truncate">
@@ -190,25 +145,7 @@ const LocationEditPage = () => {
             </div>
           ) : (
             <div className="text-center py-8 px-4 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
-              <svg
-                className="w-12 h-12 text-gray-400 mx-auto mb-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+              <FiMapPin className="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <p className="text-gray-500 text-sm">No location selected yet</p>
               <p className="text-gray-400 text-xs mt-1">
                 Search above to find your location
@@ -217,23 +154,10 @@ const LocationEditPage = () => {
           )}
         </div>
 
-        {/* Action Tips */}
-        <div className="mt-4 bg-blue-50 rounded-xl p-4 border border-blue-200">
+        <div className="mt-4 bg-primary/10 rounded-xl p-4 border border-primary/20">
           <div className="flex items-start gap-3">
-            <svg
-              className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-              />
-            </svg>
-            <div className="text-sm text-blue-800">
+            <FiZap className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-primary">
               <strong className="font-semibold">Pro tip:</strong> Include your
               neighborhood for the best match.
             </div>
@@ -241,7 +165,6 @@ const LocationEditPage = () => {
         </div>
       </div>
 
-      {/* Enhanced Bottom Action Bar */}
       <div className="bg-white border-t border-gray-200 p-4 sticky bottom-0 z-10 shadow-lg">
         <div className="max-w-2xl mx-auto w-full">
           <div className="flex gap-3">
@@ -252,19 +175,20 @@ const LocationEditPage = () => {
             >
               Cancel
             </button>
+
             <button
               onClick={handleSave}
               disabled={!selectedLoc || saving || !hasChanges}
               className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-all ${
                 selectedLoc && hasChanges && !saving
-                  ? "bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  ? "bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-lg"
                   : "bg-gray-200 text-gray-500 cursor-not-allowed"
               }`}
             >
               {saving ? (
                 <span className="flex items-center justify-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                  Saving...
+                  <ImSpinner2 className="h-4 w-4 animate-spin" />
+                  Saving
                 </span>
               ) : (
                 "Save Location"
