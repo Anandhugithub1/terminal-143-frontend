@@ -1,0 +1,52 @@
+// features/UserProfile/useMyProfile.js
+import { useQuery } from "@tanstack/react-query"
+// import { fetchMyProfile } from "../api/profile"
+
+import {userProfilesApi} from '../../../api/clients'
+
+export const fetchMyProfile = async () => {
+  const res = await userProfilesApi.get(
+    "v0.2/user/profile",
+    { withCredentials: true }
+  )
+  return res.data
+}
+
+
+export const mapProfile = (data) => {
+  const photos = Array.isArray(data?.photos) ? data.photos : []
+  const sortedPhotos = [...photos].sort((a, b) => a.order - b.order)
+
+  const profilePhoto =
+    photos.find(p => p.isProfile)?.url ||
+    sortedPhotos[0]?.url ||
+    null
+
+  return {
+    name: data?.name || "User",
+    dob: data?.dob || null,
+    gender: data?.gender || null,
+    bio: data?.bio || "",
+    languagesKnown: data?.languagesKnown || [],
+    preferences: data?.preferences || [],
+    interest: data?.interest || [],
+    location: data?.location || null,
+    qrCodeUrl: data?.qrCodeUrl || null,
+    profileCompleted: Boolean(data?.profileCompleted),
+    popularity: data?.popularity || 0,
+    photos,
+    profilePhoto,
+    raw: data
+  }
+}
+
+
+
+export const useMyProfile = () => {
+  return useQuery({
+    queryKey: ["my-profile"],
+    queryFn: fetchMyProfile,
+    select: mapProfile,
+    staleTime: 1000 * 60 * 5
+  })
+}

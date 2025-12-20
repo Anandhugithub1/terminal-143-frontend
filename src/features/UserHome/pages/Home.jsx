@@ -10,6 +10,7 @@ import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest';
 import placeholderImage from '../../../assets/woman.png';
 import { getMatchProviders } from '../../../features/Profiles/profilesapi';
 import LocationBar from '../components/Actions/LocationBar';
+import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
 
 // Lazy-loaded components
 const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'));
@@ -24,6 +25,11 @@ const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'));
       (state) => state.profiles,
       shallowEqual
     );
+const { data: myProfile } = useMyProfile()
+const locationTitle = myProfile?.location?.placeName || "Location"
+const locationSubtitle = myProfile?.location
+  ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
+  : ""
 
     const [idx, setIdx] = useState(0);
     const [direction, setDirection] = useState(0);
@@ -145,10 +151,11 @@ const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'));
       <div className="relative bg-white min-h-screen pb-20">
         <TopNav />
 <LocationBar
-  title="Thailand"
-  subtitle="JC Street, Acer Point, Thailand"
+  title={locationTitle}
+  subtitle={locationSubtitle}
   onChange={() => console.log("Change pressed")}
 />
+
 
         {requestError && (
           <div className="px-4 mt-4">

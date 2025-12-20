@@ -3,7 +3,7 @@
 import { userProfilesApi } from "../../../api/clients";
 /** Fetch the current user's profile */
 export const fetchMyProfile = () =>
-  userProfilesApi.get('/user/profile', { withCredentials: true });
+  userProfilesApi.get('v0.2/user/profile', { withCredentials: true });
 
 /** Patch any profile fields */
 export const updateProfileData = (payload) =>
