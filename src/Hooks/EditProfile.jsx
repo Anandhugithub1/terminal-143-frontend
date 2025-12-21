@@ -1,83 +1,79 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import {
+  fetchMyProfile,
+  updateMyProfile,
+  getPresignedUrl
+} from "../features/UserProfile/api/profile"
 
-import { fetchProfile,updateProfile,uploadProfileImage} from '../features/UserProfile'
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp"
+]
 
 export function useEditableProfile() {
-  const dispatch = useDispatch();
-  const profile = useSelector((state) => state.userProfile.currentUser);
-  const reduxStatus = useSelector((state) => state.userProfile.status);
-  const [localAvatar, setLocalAvatar] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
+  const queryClient = useQueryClient()
+  const [localAvatar, setLocalAvatar] = useState("")
+  const [isUploading, setIsUploading] = useState(false)
 
-  useEffect(() => {
-    if (reduxStatus === 'idle') fetchProfileData();
-  }, [reduxStatus]);
+  // READ
+  const { data: profile, isLoading } = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: fetchMyProfile
+  })
 
-  useEffect(() => {
-    if (reduxStatus === 'succeeded' && profile) setLocalAvatar(profile.photo || '');
-  }, [reduxStatus, profile]);
-
-  const fetchProfileData = async () => {
-    try {
-      setIsFetching(true);
-      await dispatch(fetchProfile()).unwrap();
-    } catch (err) {
-      console.error('Profile fetch failed:', err);
-    } finally {
-      setIsFetching(false);
+  // UPDATE
+  const updateMutation = useMutation({
+    mutationFn: updateMyProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["my-profile"])
     }
-  };
+  })
 
   const updateProfileData = async (key, value) => {
-    try {
-      await dispatch(updateProfile({ [key]: value })).unwrap();
+    await updateMutation.mutateAsync({ [key]: value })
+  }
 
-      if (key === 'photo' && !value) setLocalAvatar('');
-
-      await fetchProfileData();
-    } catch (err) {
-      console.error('Profile update failed:', err);
-    }
-  };
-
+  // UPLOAD IMAGE (client-side)
   const uploadImage = async (file, photoIndex = 0) => {
-    //  Validate file type
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      alert('Invalid file format. Only JPG, JPEG, PNG, or WEBP images are allowed.');
-      return;
+      alert("Invalid image format")
+      return
     }
 
-    const localURL = URL.createObjectURL(file);
-    setLocalAvatar(localURL);
-    setIsUploading(true);
+    setIsUploading(true)
+    const preview = URL.createObjectURL(file)
+    setLocalAvatar(preview)
 
     try {
-      const result = await dispatch(uploadProfileImage({ file, photoIndex })).unwrap();
-      const timestampedUrl = `${result.publicUrl}?t=${Date.now()}`;
+      const { presignedUrl, publicUrl } =
+        await getPresignedUrl({ fileType: file.type, photoIndex })
 
-      await dispatch(updateProfile({ photo: timestampedUrl })).unwrap();
-      setLocalAvatar(timestampedUrl);
+      await fetch(presignedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file
+      })
 
-      await fetchProfileData();
-      window.location.reload();
-    } catch (error) {
-      console.error('Image upload failed:', error);
+      await updateMutation.mutateAsync({
+        photos: [{ url: publicUrl, isProfile: photoIndex === 0, order: photoIndex }]
+      })
+
+      queryClient.invalidateQueries(["my-profile"])
     } finally {
-      setIsUploading(false);
+      setIsUploading(false)
     }
-  };
+  }
 
   return {
     profile,
-    status: reduxStatus,
+    status: isLoading ? "loading" : "succeeded",
     isUploading,
-    isFetching,
+    isFetching: isLoading,
     localAvatar,
     updateProfileData,
-    uploadImage,
-    refetch: fetchProfileData,
-  };
+    uploadImage
+  }
 }
