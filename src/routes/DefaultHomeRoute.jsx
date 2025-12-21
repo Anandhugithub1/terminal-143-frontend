@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { fetchMyProfile } from "../features/UserProfile/api/profile.js";
 import { LoadingSpinner } from "../components/Ui/Spinner.jsx";
 import UserHomePage from "../features/UserHome/pages/Home.jsx";
-import AppHome from "../pages/Global/Route.jsx";
+// import AppHome from "../pages/Global/Route.jsx";
 import { Login } from "../features/Auth/pages/Login.jsx";
 
 export default function DefaultHomeRoute() {
