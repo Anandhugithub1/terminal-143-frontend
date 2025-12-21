@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import tailwindcss from '@tailwindcss/vite'
-import fs from 'fs'
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
@@ -9,10 +8,10 @@ export default defineConfig({
   server: {
     host: 'local.terminal143.com',
     strictPort: true,
-   https: {
-  key: './certs/local.terminal143.com-key.pem',
-  cert: './certs/local.terminal143.com.pem'
-} ,
+    https: {
+      key: './certs/local.terminal143.com-key.pem',
+      cert: './certs/local.terminal143.com.pem',
+    },
     port: 5173,
   },
 
@@ -20,9 +19,17 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor'
-          }
+          if (!id.includes('node_modules')) return
+
+          if (id.includes('@tanstack')) return 'tanstack'
+          if (id.includes('react-router')) return 'router'
+          if (id.includes('i18next')) return 'i18n'
+          if (id.includes('headlessui')) return 'headlessui'
+          if (id.includes('react-icons')) return 'icons'
+          if (id.includes('framer-motion')) return 'motion'
+          if (id.includes('axios')) return 'axios'
+
+          return 'vendor'
         },
       },
     },
