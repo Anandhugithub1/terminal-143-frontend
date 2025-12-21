@@ -2,13 +2,31 @@
   /* ========== features/UserProfile/api.js ========== */
 import { userProfilesApi } from "../../../api/clients";
 /** Fetch the current user's profile */
-export const fetchMyProfile = () =>
-  userProfilesApi.get('v0.2/user/profile', { withCredentials: true });
+// export const fetchMyProfile = () =>
+//   userProfilesApi.get('v0.2/user/profile', { withCredentials: true });
+export const fetchMyProfile = async () => {
+  const res = await userProfilesApi.get(
+    "v0.2/user/profile",
+    { withCredentials: true }
+  )
+  return res.data
+}
+
+/** Patch any profile fields */
+
+/** Update profile fields */
+export const updateMyProfile = async (payload) => {
+  const res = await userProfilesApi.post(
+    "v0.2/user/update",
+    payload,
+    { withCredentials: true }
+  )
+  return res.data
+}
 
 /** Patch any profile fields */
 export const updateProfileData = (payload) =>
   userProfilesApi.post('/user/update', payload, { withCredentials: true });
-
 /** Get profile by public link */
 export const getProfileByLink = async (link) => {
   const fullUrl = `https://terminal143.com/profile/${link}`;
@@ -20,16 +38,19 @@ export const getProfileByLink = async (link) => {
 };
 
 /** Get presigned URL for image upload */
-export const getPresignedUrl = ({ fileType, photoIndex }) =>
-  userProfilesApi.post(
-    '/user/presigned-url',
+export const getPresignedUrl = async ({ fileType, photoIndex }) => {
+  const res = await userProfilesApi.post(
+    "/user/presigned-url",
     { fileType, photoIndex },
     { withCredentials: true }
-  );
+  )
+  return res.data
+}
+
 
 /** Complete profile setup (finalize user profile) */
 export const completeProfileApi = (payload) =>
-  userProfilesApi.post('/user/complete-profile', payload, {
+  userProfilesApi.post('v0.2//user/complete-profile', payload, {
     withCredentials: true,
   });
 
