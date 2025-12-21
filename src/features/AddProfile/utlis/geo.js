@@ -18,58 +18,42 @@
  *   It must already be provided by the backend or existing input.
  */
 export function normalizeGeoForApi(input) {
-  if (!input) return null;
+  if (!input) return null
 
-  let lat = null;
-  let lon = null;
+  let lat = null
+  let lon = null
 
-  // 1) GeoJSON style { coordinates: [lon, lat] }
-  if (Array.isArray(input.coordinates) && input.coordinates.length >= 2) {
-    lon = Number(input.coordinates[0]);
-    lat = Number(input.coordinates[1]);
+  if (input.coordinates?.lat != null && input.coordinates?.lon != null) {
+    lat = Number(input.coordinates.lat)
+    lon = Number(input.coordinates.lon)
   }
 
-  // 2) coordinates object { coordinates:{lat,lon} }
-  if ((lat == null || lon == null) && input.coordinates && typeof input.coordinates === "object") {
-    if (input.coordinates.lat != null && input.coordinates.lon != null) {
-      lat = Number(input.coordinates.lat);
-      lon = Number(input.coordinates.lon);
-    }
-  }
-
-  // 3) direct { lat, lon }
-  if ((lat == null || lon == null) && input.lat != null && input.lon != null) {
-    lat = Number(input.lat);
-    lon = Number(input.lon);
-  }
-
-  // Fail if invalid
   if (
     lat == null ||
     lon == null ||
     Number.isNaN(lat) ||
     Number.isNaN(lon)
   ) {
-    return null;
+    return null
   }
 
-  // Use existing geohash only
-  const geohash = input.geohash || "";
-  if (!geohash) return null;
-
-  const placeName = input.placeName || input.name || "";
-  const countryCode = (input.countryCode || input.country || "")
+  const placeName = input.placeName || input.name || ""
+  const countryCode = (input.countryCode || "")
     .toString()
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2)
+
+  const h3 = input.h3?.r4 ? { r4: input.h3.r4 } : null
+  if (!h3) return null
 
   return {
-    geohash,
     coordinates: { lat, lon },
     placeName,
     countryCode,
-  };
+    h3
+  }
 }
+
 
 
 

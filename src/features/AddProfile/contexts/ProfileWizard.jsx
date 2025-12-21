@@ -24,13 +24,17 @@ export const WizardProvider = ({ children }) => {
     languages: [],
 
     // Step 4: Location (matches backend User.location)
-    geoLocation: {
-      type: 'Point',
-      coordinates: [], // [lon, lat]
-      placeName: '',
-      countryCode: '',
-      h3Index: '',
-    },
+  location: {
+  coordinates: {
+    lat: null,
+    lon: null,
+  },
+  placeName: '',
+  countryCode: '',
+  h3: {
+    r4: '',
+  },
+},
 
     // Search radius preference (single value, 1-100)
     searchRadius: {

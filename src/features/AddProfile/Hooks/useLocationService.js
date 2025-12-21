@@ -12,22 +12,30 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
   const debounceTimerRef = useRef(null);
   const activeSearchAbortRef = useRef(null);
 
-  const buildLocationObject = (lat, lon, address = {}) => ({
-    type: 'Point',
-    coordinates: [lon, lat],
-    placeName:
-      address.city ||
-      address.town ||
-      address.village ||
-      address.hamlet ||
-      address.county ||
-      address.municipality ||
-      address.locality ||
-      address.name ||
-      '',
-    countryCode: (address.country_code || address.country || '').toString().toUpperCase().slice(0, 2),
-    h3Index: address.h3Index || '',
-  });
+const buildLocationObject = (lat, lon, address = {}) => ({
+  coordinates: {
+    lat,
+    lon
+  },
+  placeName:
+    address.city ||
+    address.town ||
+    address.village ||
+    address.hamlet ||
+    address.county ||
+    address.municipality ||
+    address.locality ||
+    address.name ||
+    "",
+  countryCode: (address.country_code || address.country || "")
+    .toString()
+    .toUpperCase()
+    .slice(0, 2),
+  h3: {
+    r4: address.h3Index || ""
+  }
+})
+
 
   const reverseGeocodeMutation = useMutation({
     mutationFn: async ({ lat, lng }) => {
@@ -129,86 +137,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
     }
   }, [reverseGeocodeMutation, userLang]);
 
-  const searchLocations = useCallback(async (query) => {
-    setLoading(true);
-    try {
-      const trimmed = (query || '').trim();
-      if (!trimmed || trimmed.length < 2) {
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current);
-          debounceTimerRef.current = null;
-        }
-        if (activeSearchAbortRef.current) {
-          try { activeSearchAbortRef.current.abort(); } catch (e) { /* ignore */ }
-          activeSearchAbortRef.current = null;
-        }
-        setSuggestions([]);
-        return;
-      }
-
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-
-      await new Promise((resolve) => {
-        debounceTimerRef.current = setTimeout(async () => {
-          debounceTimerRef.current = null;
-          if (activeSearchAbortRef.current) {
-            try { activeSearchAbortRef.current.abort(); } catch (e) { /* ignore */ }
-            activeSearchAbortRef.current = null;
-          }
-
-          const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-          if (controller) activeSearchAbortRef.current = controller;
-
-          try {
-            const data = await autocompleteMutation.mutateAsync({
-              input: trimmed,
-              signal: controller?.signal,
-            });
-
-            if (Array.isArray(data?.predictions) && data.predictions.length === 0 && data.message) {
-              setSuggestions([{ _raw: data, name: String(data.message) }]);
-              resolve();
-              return;
-            }
-
-            const predictions = Array.isArray(data?.predictions) ? data.predictions : [];
-
-            const results = predictions.map((p, idx) => ({
-              id: p.placeId || `${p.placeName || 'place'}_${idx}`,
-              name: p.placeName || p.name || '',
-              countryName: p.countryName || p.country || '',
-              placeId: p.placeId,
-              _raw: p,
-            }));
-
-            setSuggestions(results);
-            resolve();
-          } catch (err) {
-            const isAbort = err?.name === 'CanceledError' || err?.name === 'AbortError' || err?.message === 'canceled';
-            if (isAbort) {
-              resolve();
-              return;
-            }
-
-            console.error('Search error (location API failed):', err);
-            const backendMsg = err?.response?.data?.message;
-            if (backendMsg) {
-              setSuggestions([{ _raw: err.response.data, name: String(backendMsg) }]);
-            } else {
-              setSuggestions([]);
-            }
-            resolve();
-          } finally {
-            if (activeSearchAbortRef.current === controller) activeSearchAbortRef.current = null;
-          }
-        }, debounceMs);
-      });
-    } finally {
-      setLoading(false);
-    }
-  }, [autocompleteMutation, debounceMs]);
-
-  const clearSuggestions = useCallback(() => {
+const clearSuggestions = useCallback(() => {
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
@@ -220,6 +149,61 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
     setSuggestions([]);
   }, []);
 
+
+const searchLocations = useCallback((query) => {
+  const trimmed = (query || "").trim()
+
+  if (!trimmed || trimmed.length < 2) {
+    clearSuggestions()
+    return
+  }
+
+  if (debounceTimerRef.current) {
+    clearTimeout(debounceTimerRef.current)
+  }
+
+  debounceTimerRef.current = setTimeout(async () => {
+    setLoading(true)
+
+    try {
+      if (activeSearchAbortRef.current) {
+        activeSearchAbortRef.current.abort()
+      }
+
+      const controller = new AbortController()
+      activeSearchAbortRef.current = controller
+
+      const data = await autocompleteMutation.mutateAsync({
+        input: trimmed,
+        signal: controller.signal
+      })
+
+      const predictions = Array.isArray(data?.predictions)
+        ? data.predictions
+        : []
+
+      setSuggestions(
+        predictions.map((p, idx) => ({
+          id: p.placeId || `${idx}`,
+          name: p.placeName || "",
+          country: p.country || "",
+          placeId: p.placeId,
+          h3Index: p.h3Index || "",
+          _raw: p
+        }))
+      )
+    } catch (err) {
+      if (err.name !== "AbortError") {
+        console.error("Location search failed", err)
+        setSuggestions([])
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, debounceMs)
+}, [autocompleteMutation, debounceMs, clearSuggestions])
+
+  
   useEffect(() => {
     return () => {
       if (debounceTimerRef.current) {

@@ -21,7 +21,8 @@ export default function LocationInput({
   t,
   onSelect: onSelectProp,
 }) {
-  const [query, setQuery] = useState(formData?.geoLocation?.placeName || "");
+  const [query, setQuery] = useState(formData?.location?.placeName || "")
+
   const [selected, setSelected] = useState(null); // selected suggestion object
   const [error, setError] = useState("");
   const [touched, setTouched] = useState(false);
@@ -48,33 +49,33 @@ export default function LocationInput({
   );
 
   // helper to set geo into parent
-  const setGeo = useCallback(
-    (loc) => {
-      if (!loc) {
-        setFormData((p) => ({ ...p, geoLocation: EMPTY_GEO }));
-        return;
-      }
-      const { lon, lat } = extractCoords(loc);
-      const placeName = loc.placeName || loc.name || loc.label || query || "";
-      setFormData((p) => ({
-        ...p,
-        geoLocation: {
-          type: "Point",
-          coordinates:
-            Number.isFinite(lon) && Number.isFinite(lat) ? [lon, lat] : [],
-          placeName,
-          countryCode: normalizeCountryCode(
-            loc.countryCode ||
-              loc.country ||
-              (loc._raw && loc._raw.country) ||
-              ""
-          ),
-          geohash: loc.geohash || loc.geoHash || "",
+ const setGeo = useCallback(
+  (loc) => {
+    if (!loc) {
+      setFormData((p) => ({ ...p, location: null }))
+      return
+    }
+
+    setFormData((p) => ({
+      ...p,
+      location: {
+        coordinates: {
+          lat: loc.lat,
+          lon: loc.lon
         },
-      }));
-    },
-    [setFormData, query]
-  );
+        placeName: loc.placeName || loc.name || "",
+        countryCode: normalizeCountryCode(
+          loc.countryCode || loc.country || ""
+        ),
+        h3: {
+          r4: loc.h3 || loc.h3Index || ""
+        }
+      }
+    }))
+  },
+  [setFormData]
+)
+
 
   // debounced search
   const handleSearch = useCallback(
