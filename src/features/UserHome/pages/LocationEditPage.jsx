@@ -1,64 +1,74 @@
-import React, { useCallback, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "sonner";
-import { FiArrowLeft, FiMapPin, FiInfo } from "react-icons/fi";
-import { ImSpinner2 } from "react-icons/im";
-import { FiZap } from "react-icons/fi";
-import LocationInput from "../../AddProfile/components/LocationInput";
-import { fetchProfile, updateProfile } from "../../UserProfile/";
+import React, { useCallback, useState, useMemo } from "react"
+import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
+import { FiArrowLeft, FiMapPin, FiInfo, FiZap } from "react-icons/fi"
+import { ImSpinner2 } from "react-icons/im"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+
+import LocationInput from "../../AddProfile/components/LocationInput"
+import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
+import { updateMyProfile } from "../../UserProfile/api/profile"
 
 const LocationEditPage = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const profile = useSelector((s) => s.userProfile?.profile || null);
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
-  const [selectedLoc, setSelectedLoc] = useState(null);
-  const [saving, setSaving] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
+  const { data: profile } = useMyProfile()
 
-  const initial = useMemo(() => profile?.geoLocation || null, [profile]);
+  const [selectedLoc, setSelectedLoc] = useState(null)
+  const [saving, setSaving] = useState(false)
+
+  const initial = useMemo(
+    () => profile?.location || null,
+    [profile]
+  )
+
+  const mutation = useMutation({
+    mutationFn: updateMyProfile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-profile"] })
+      toast.success("Location updated successfully")
+      navigate(-1)
+    },
+    onError: (err) => {
+      toast.error(err?.message || "Failed to update location")
+    },
+    onSettled: () => {
+      setSaving(false)
+    }
+  })
 
   const handleSelect = useCallback((loc) => {
-    setSelectedLoc(loc || null);
-  }, []);
+    setSelectedLoc(loc || null)
+  }, [])
 
-  const handleSave = useCallback(async () => {
+  const handleSave = useCallback(() => {
     if (!selectedLoc) {
-      toast.error("Please select a location from the list");
-      return;
+      toast.error("Please select a location from the list")
+      return
     }
 
-    const geoLocation = {
-      type: "Point",
-      coordinates:
-        typeof selectedLoc.lon === "number" &&
-        typeof selectedLoc.lat === "number"
-          ? [selectedLoc.lon, selectedLoc.lat]
-          : [],
+    const location = {
+      coordinates: {
+        lat: selectedLoc.lat,
+        lon: selectedLoc.lon
+      },
       placeName: selectedLoc.placeName || selectedLoc.name || "",
       countryCode: (selectedLoc.countryCode || selectedLoc.country || "")
         .toUpperCase()
         .slice(0, 2),
-      geohash: selectedLoc.geohash || "",
-    };
-
-    try {
-      setSaving(true);
-      await dispatch(updateProfile({ geoLocation })).unwrap?.();
-      toast.success("Location updated successfully");
-      dispatch(fetchProfile());
-      navigate(-1);
-    } catch (err) {
-      toast.error(err?.message || "Failed to update location");
-    } finally {
-      setSaving(false);
+      h3: {
+        r4: selectedLoc.h3 || selectedLoc.h3Index || ""
+      }
     }
-  }, [dispatch, navigate, selectedLoc]);
 
-  const preview = selectedLoc || initial;
+    setSaving(true)
+    mutation.mutate({ location })
+  }, [mutation, selectedLoc])
+
+  const preview = selectedLoc || initial
   const hasChanges =
-    selectedLoc && JSON.stringify(selectedLoc) !== JSON.stringify(initial);
+    selectedLoc && JSON.stringify(selectedLoc) !== JSON.stringify(initial)
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -94,19 +104,11 @@ const LocationEditPage = () => {
 
           <div className="relative">
             <LocationInput
-              formData={{ geoLocation: initial || {} }}
+              formData={{ location: initial || {} }}
               setFormData={() => {}}
               onSelect={handleSelect}
-              onSearchStart={() => setIsSearching(true)}
-              onSearchEnd={() => setIsSearching(false)}
               t={(k) => k}
             />
-
-            {isSearching && (
-              <div className="absolute right-3 top-3">
-                <ImSpinner2 className="h-4 w-4 animate-spin text-pink-500" />
-              </div>
-            )}
           </div>
 
           <div className="mt-3 flex items-start gap-2 text-xs text-gray-500">
@@ -198,7 +200,7 @@ const LocationEditPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LocationEditPage;
+export default LocationEditPage
