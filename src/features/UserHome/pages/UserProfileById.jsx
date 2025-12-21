@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserProfileById } from '../api';
 import TopNav from '../../../components/Layout/TopNavigation';
 import BottomNav from '../../../components/Layout/BottomNavigation';
 import ProfileSkeleton from '../components/ProfileSkeleton';
-import DetailSection from '../components/Details/Details';
+
 import placeholderImage from '../../../assets/woman.png';
-import ProfileCard from '../components/Cards/ProfileCard';
+// import ProfileCard from '../components/Cards/ProfileCard';
+const ProfileCard =lazy(()=> import('../components/Cards/ProfileCard'))
+const DetailSection =lazy(()=>import('../components/Details/Details'))
 import { computeAge } from '../../../Utlis/utlis';
 export default function UserProfilePage() {
   const { pk, sk } = useParams();
@@ -69,12 +71,14 @@ export default function UserProfilePage() {
 
       <div className="relative">
         <div className="relative">
-          <ProfileCard
+         <Suspense fallback={null}>
+           <ProfileCard
             profile={normalized}
             placeholderImage={placeholderImage}
             onConnectClick={() => {}}
             onMessageClick={() => {}}
           />
+         </Suspense>
 
           {/* <div className="flex justify-center mt-2 mb-2">
             <ActionControls
@@ -86,7 +90,10 @@ export default function UserProfilePage() {
         </div>
 
         <div className="mt-16 sm:mt-14 px-4 relative z-10">
-          <DetailSection profile={normalized} />
+          <Suspense fallback={null}>
+                      <DetailSection profile={normalized} />
+
+          </Suspense>
         </div>
       </div>
 
