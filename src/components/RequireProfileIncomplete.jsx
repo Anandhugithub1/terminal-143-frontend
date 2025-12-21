@@ -12,6 +12,13 @@ export default function RequireProfileIncomplete({ children }) {
   }
 
   if (isError) {
+    const status = error?.response?.status
+    const code = error?.response?.data?.code
+
+    if (status === 404 || code === "PROFILE_NOT_FOUND") {
+      return children
+    }
+
     return (
       <div className="p-4 text-center text-red-500">
         Error loading your profile: {error?.message}
