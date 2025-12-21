@@ -4,8 +4,10 @@ import { toast } from "sonner"
 import { FiArrowLeft, FiMapPin, FiInfo, FiZap } from "react-icons/fi"
 import { ImSpinner2 } from "react-icons/im"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-
-import LocationInput from "../../AddProfile/components/LocationInput"
+import { lazy, Suspense } from 'react';
+const LocationInput = lazy(() =>
+  import('../../AddProfile/components/LocationInput')
+);
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
 import { updateMyProfile } from "../../UserProfile/api/profile"
 
@@ -103,12 +105,15 @@ const LocationEditPage = () => {
           </div>
 
           <div className="relative">
-            <LocationInput
+         <Suspense fallback={null}>
+
+             <LocationInput
               formData={{ location: initial || {} }}
               setFormData={() => {}}
               onSelect={handleSelect}
               t={(k) => k}
             />
+         </Suspense>
           </div>
 
           <div className="mt-3 flex items-start gap-2 text-xs text-gray-500">
