@@ -3,11 +3,11 @@ import { Suspense, lazy } from 'react';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
 
 // Lazy load components
-const Step1BasicInfo = lazy(() => import('./ProfileWizard/Step1BasicInfo'));
-const Step2Bio = lazy(() => import('./ProfileWizard/Step2Bio'));
-const Step3PhotoUpload = lazy(() => import('./ProfileWizard/Step3PhotoUpload.'));
-const Step4Tags = lazy(() => import('./ProfileWizard/Step4Tags'));
-const Step4Location =lazy(() => import ('./ProfileWizard/Step5Location'));
+const Step1BasicInfo = lazy(() => import('./ProfileWizard/BasicInfo'));
+const Bio = lazy(() => import('./ProfileWizard/Bio'));
+const Photo = lazy(() => import('./ProfileWizard/Photo'));
+const Tags = lazy(() => import('./ProfileWizard/Tags'));
+const Location =lazy(() => import ('./ProfileWizard/Location'));
 
 const AddDetails = () => {
   return (
@@ -17,10 +17,10 @@ const AddDetails = () => {
           <Routes>
             <Route index element={<Navigate to="basic" replace />} />
             <Route path="basic" element={<Step1BasicInfo />} />
-            <Route path="bio" element={<Step2Bio />} />
-            <Route path="photo" element={<Step3PhotoUpload />} />
-            <Route path="tags" element={<Step4Tags />} />
-            <Route path='location' element={<Step4Location/>}/>
+            <Route path="bio" element={<Bio />} />
+            <Route path="photo" element={<Photo />} />
+            <Route path="tags" element={<Tags />} />
+            <Route path='location' element={<Location/>}/>
             <Route path="*" element={<Navigate to="basic" replace />} />
           </Routes>
         </Suspense>

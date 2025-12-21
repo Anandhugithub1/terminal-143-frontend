@@ -44,7 +44,7 @@ const toGeo = (r) => {
   }
 }
 
-const Step5Location = () => {
+const Location = () => {
   const { formData, setFormData } = useWizard()
   const { geoLocation } = formData
   const navigate = useNavigate()
@@ -155,4 +155,4 @@ const Step5Location = () => {
   )
 }
 
-export default Step5Location
+export default Location

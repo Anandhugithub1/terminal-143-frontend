@@ -7,7 +7,7 @@ import { statusOptions } from "../../utlis";
 import useLanguages from "../../hooks/useLanguages";
 import LanguagePicker from "../../components/LanguagePicker";
 
-export default function Step2Bio() {
+export default function Bio() {
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();
   const charLimit = 500;

@@ -13,7 +13,7 @@ import {
   completeProfileApi
 } from "../../../UserProfile/api/profile"
 
-export default function Step4Tags() {
+export default function Tags() {
   const { formData, setFormData, clearFormData } = useWizard()
   const navigate = useNavigate()
   const userType = localStorage.getItem("userType")

@@ -6,7 +6,7 @@ import PhotoGrid from "../../components/PhotoGrid";
 import { set, get, del } from "idb-keyval";
 import { Button } from "../../../../shared/Button";
 
-const Step3PhotoUpload = () => {
+const Photo = () => {
   const { formData, setFormData } = useWizard();
   const userType = localStorage.getItem("userType");
   const navigate = useNavigate();
@@ -137,4 +137,4 @@ const Step3PhotoUpload = () => {
   );
 };
 
-export default Step3PhotoUpload;
+export default Photo;
