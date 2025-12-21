@@ -24,10 +24,7 @@ export const updateMyProfile = async (payload) => {
   return res.data
 }
 
-/** Patch any profile fields */
-export const updateProfileData = (payload) =>
-  userProfilesApi.post('/user/update', payload, { withCredentials: true });
-/** Get profile by public link */
+
 export const getProfileByLink = async (link) => {
   const fullUrl = `https://terminal143.com/profile/${link}`;
   const res = await userProfilesApi.get('/user/by-link', {
@@ -50,7 +47,7 @@ export const getPresignedUrl = async ({ fileType, photoIndex }) => {
 
 /** Complete profile setup (finalize user profile) */
 export const completeProfileApi = (payload) =>
-  userProfilesApi.post('v0.2//user/complete-profile', payload, {
+  userProfilesApi.post('v0.2/user/complete-profile', payload, {
     withCredentials: true,
   });
 
