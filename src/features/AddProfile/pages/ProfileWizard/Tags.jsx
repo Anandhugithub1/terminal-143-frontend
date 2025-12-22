@@ -46,8 +46,7 @@ const hasAtLeastOneInterest = selectedInterests.length > 0
     mutationFn: completeProfileApi,
     onSuccess: async () => {
       clearFormData()
-      await del("profilePhoto")
-      await del("profilePhotos")
+     
       navigate("/home", { state: { profileJustCompleted: true } })
     },
     onError: (err) => {
