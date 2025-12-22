@@ -40,6 +40,7 @@ export default function Tags() {
       ),
     [formData]
   )
+const hasAtLeastOneInterest = selectedInterests.length > 0
 
   const completeMutation = useMutation({
     mutationFn: completeProfileApi,
@@ -78,8 +79,9 @@ export default function Tags() {
   }
 
   const handleSubmit = async () => {
-    if (isSubmitting) return
-    setIsSubmitting(true)
+  if (isSubmitting || !hasAtLeastOneInterest) return
+  setIsSubmitting(true)
+
 
     try {
       const files = isSinglePhoto
@@ -197,6 +199,13 @@ export default function Tags() {
         </p>
       )}
 
+
+{!hasAtLeastOneInterest && (
+  <p className="text-center mt-4 text-sm text-gray-400">
+    Select at least one interest to continue
+  </p>
+)}
+
       <div className="mt-8 flex gap-4">
         <Button
           onClick={() => navigate("/complete/photo")}
@@ -207,11 +216,15 @@ export default function Tags() {
           Back
         </Button>
 
-        <button
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-          className="flex-1 bg-primary text-white font-semibold py-3 px-6 rounded-3xl"
-        >
+       <button
+  onClick={handleSubmit}
+  disabled={isSubmitting || !hasAtLeastOneInterest}
+  className={`flex-1 font-semibold py-3 px-6 rounded-3xl transition ${
+    isSubmitting || !hasAtLeastOneInterest
+      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+      : "bg-primary text-white"
+  }`}
+>
           {isSubmitting ? "Saving..." : "Finish Setup"}
         </button>
       </div>
