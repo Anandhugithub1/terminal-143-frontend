@@ -1,4 +1,9 @@
-import React, { useState, useRef, useMemo, useCallback, useEffect } from "react"
+import React, {
+  useState,
+  useRef,
+  useMemo,
+  useEffect
+} from "react"
 import { useWizard } from "../../contexts/ProfileWizard"
 import { useNavigate } from "react-router-dom"
 import { ProgressBar } from "./Progess"
@@ -12,11 +17,12 @@ import {
   getPresignedUrl,
   completeProfileApi
 } from "../../../UserProfile/api/profile"
+import { Checkbox } from "@headlessui/react"
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM"]
 
 export default function Tags() {
-  const { formData, clearFormData } = useWizard()
+  const { formData, setFormData, clearFormData } = useWizard()
   const navigate = useNavigate()
   const gender = localStorage.getItem("gender")
   const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender)
@@ -28,7 +34,10 @@ export default function Tags() {
   useEffect(() => () => { isMountedRef.current = false }, [])
 
   const selectedInterests = useMemo(
-    () => Object.entries(categories).flatMap(([cat]) => formData[cat] || []),
+    () =>
+      Object.entries(categories).flatMap(
+        ([cat]) => formData[cat] || []
+      ),
     [formData]
   )
 
@@ -41,7 +50,9 @@ export default function Tags() {
       navigate("/home", { state: { profileJustCompleted: true } })
     },
     onError: (err) => {
-      const msg = err?.response?.data?.message || "Profile completion failed"
+      const msg =
+        err?.response?.data?.message ||
+        "Profile completion failed"
       setErrorMessage(msg)
       toast.error(msg)
     },
@@ -51,10 +62,11 @@ export default function Tags() {
   })
 
   const uploadSinglePhoto = async (file, index) => {
-    const { uploadUrl, publicUrl } = await getPresignedUrl({
-      fileType: file.type,
-      photoIndex: index
-    })
+    const { uploadUrl, publicUrl } =
+      await getPresignedUrl({
+        fileType: file.type,
+        photoIndex: index
+      })
 
     await fetch(uploadUrl, {
       method: "PUT",
@@ -97,13 +109,17 @@ export default function Tags() {
         photos: uploaded
       }
 
-      const normalizedLocation = normalizeGeoForApi(formData.location)
-      if (normalizedLocation) payload.location = normalizedLocation
+      const normalizedLocation =
+        normalizeGeoForApi(formData.location)
+
+      if (normalizedLocation)
+        payload.location = normalizedLocation
       else delete payload.location
 
       if (formData.searchRadius) {
         payload.searchRadius = {
-          distance: Number(formData.searchRadius.distance) || 25,
+          distance:
+            Number(formData.searchRadius.distance) || 25,
           unit: formData.searchRadius.unit || "km"
         }
       }
@@ -114,6 +130,17 @@ export default function Tags() {
       toast.error("Something went wrong")
       setIsSubmitting(false)
     }
+  }
+
+  const toggleInterest = (category, value, checked) => {
+    const current = formData[category] || []
+
+    setFormData({
+      ...formData,
+      [category]: checked
+        ? [...current, value]
+        : current.filter((v) => v !== value)
+    })
   }
 
   return (
@@ -132,28 +159,31 @@ export default function Tags() {
       <div className="space-y-8">
         {Object.entries(categories).map(([title, items]) => (
           <div key={title}>
-            <h3 className="text-lg font-semibold mb-4">{title}</h3>
+            <h3 className="text-lg font-semibold mb-4">
+              {title}
+            </h3>
+
             <div className="flex flex-wrap gap-3">
               {items.map((item) => {
-                const isActive = (formData[title] || []).includes(item)
+                const checked =
+                  (formData[title] || []).includes(item)
+
                 return (
-                  <button
+                  <Checkbox
                     key={item}
-                    type="button"
+                    checked={checked}
                     disabled={isSubmitting}
-                    onClick={() =>
-                      formData[title] = isActive
-                        ? formData[title].filter((v) => v !== item)
-                        : [...(formData[title] || []), item]
+                    onChange={(val) =>
+                      toggleInterest(title, item, val)
                     }
-                    className={`px-5 py-2 rounded-full text-sm font-medium ${
-                      isActive
+                    className={`cursor-pointer rounded-full px-5 py-2 text-sm font-medium transition ${
+                      checked
                         ? "bg-pink-500 text-white"
                         : "bg-gray-100 text-gray-600"
                     }`}
                   >
                     {item}
-                  </button>
+                  </Checkbox>
                 )
               })}
             </div>
@@ -162,7 +192,9 @@ export default function Tags() {
       </div>
 
       {errorMessage && (
-        <p className="text-center mt-4 text-red-500">{errorMessage}</p>
+        <p className="text-center mt-4 text-red-500">
+          {errorMessage}
+        </p>
       )}
 
       <div className="mt-8 flex gap-4">
