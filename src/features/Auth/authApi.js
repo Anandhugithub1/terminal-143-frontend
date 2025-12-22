@@ -10,7 +10,7 @@ export const apiRegister = async ({ emailPhone, password, gender }) => {
     password,
   
   };
-  const { data } = await client.post('/register', payload);
+  const { data } = await client.post('/v0.2/register', payload);
   return data;
 };
 
@@ -20,7 +20,7 @@ export const apiLogin = async ({ emailPhone, password }) => {
     ? { email: emailPhone, password }
     : { phoneNumber: emailPhone, password };
 
-  const { data } = await client.post('/login', payload, {
+  const { data } = await client.post('/v0.2/login', payload, {
     withCredentials: true,
   });
   return data;
@@ -28,7 +28,7 @@ export const apiLogin = async ({ emailPhone, password }) => {
 
 // OTP VERIFY
 export const apiVerifyOtp = async ({ email, code }) => {
-  const { data } = await client.post('/confirm', {
+  const { data } = await client.post('/v0.2/confirm', {
     email,
     ConfirmationCode: code,
   });
@@ -37,20 +37,20 @@ export const apiVerifyOtp = async ({ email, code }) => {
 
 // RESEND OTP
 export const apiResendOtp = async ({ email }) => {
-  const { data } = await client.post('/resend-otp', { email });
+  const { data } = await client.post('/v0.2/resend-otp', { email });
   return data;
 };
 
 // FORGOT PASSWORD
 export const apiForgotPassword = async ({ email }) => {
-  const { data } = await client.post('/forgot-password', { email });
+  const { data } = await client.post('/v0.2/forgot-password', { email });
   return data;
 };
 
 export const signOut = async (action = 'signout') => {
   try {
     const response = await axios.post(
-      'https://authapi.terminal143.com/signout',
+      'https://authapi.terminal143.com/v0.2/signout',
       { action },
       {
         withCredentials: true,
@@ -75,7 +75,7 @@ export const apiConfirmForgotPassword = async ({
   code,
   newPassword,
 }) => {
-  const { data } = await client.post('/confirm-forgot-password', {
+  const { data } = await client.post('/v0.2/confirm-forgot-password', {
     email,
     ConfirmationCode: code,
     Password: newPassword,

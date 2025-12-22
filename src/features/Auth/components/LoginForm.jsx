@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { InputField } from '../../../shared/common';
-import PasswordInput from '../../../shared/Passinput';
-import { Link, useNavigate } from 'react-router-dom';
-import { Button } from '../../../shared/Button';
-import Loader from '../../../components/Ui/Loading';
-import { toast } from 'sonner';
-import { useTranslation } from 'react-i18next';
-import { useLogin } from '../useAuth';
+import React, { useState, useEffect } from 'react'
+import { InputField } from '../../../shared/common'
+import PasswordInput from '../../../shared/Passinput'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button } from '../../../shared/Button'
+import Loader from '../../../components/Ui/Loading'
+import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
+import { useLogin } from '../useAuth'
 
 const LoginForm = () => {
-  const { t } = useTranslation('auth');
-  const [emailPhone, setEmailPhone] = useState('');
-  const [password, setPassword] = useState('');
+  const { t } = useTranslation('auth')
+  const [emailPhone, setEmailPhone] = useState('')
+  const [password, setPassword] = useState('')
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const {
     mutate,
@@ -21,56 +21,58 @@ const LoginForm = () => {
     isSuccess,
     data,
     isError,
-    error,
-  } = useLogin();
+    error
+  } = useLogin()
 
   useEffect(() => {
     if (isSuccess && data) {
+      if (data.gender) {
+        localStorage.setItem('gender', data.gender)
+      }
+
       if (!data.profileCompleted) {
-        navigate('/complete');
+        navigate('/complete')
       } else {
-        navigate('/home');
+        navigate('/home')
       }
     }
-  }, [isSuccess, data, navigate]);
+  }, [isSuccess, data, navigate])
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!emailPhone || !password) {
-      return toast.error(t('enterCredentials'));
+      return toast.error(t('enterCredentials'))
     }
 
     mutate(
       { emailPhone, password },
       {
         onError: (err) => {
-          const apiErr = err?.response?.data;
+          const apiErr = err?.response?.data
 
           if (apiErr?.notVerified === true) {
-            navigate('/verify', { state: { emailPhone } });
+            navigate('/verify', { state: { emailPhone } })
           } else {
             toast.error(
               apiErr?.error ||
               apiErr?.message ||
               t('loginFailed')
-            );
+            )
           }
-        },
+        }
       }
-    );
-  };
+    )
+  }
 
   return (
     <>
-      {/*  loader overlay */}
       {isPending && (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-10">
           <Loader />
         </div>
       )}
 
-      {/*  icon header */}
       <div className="flex justify-center mb-6">
         <div className="bg-gradient-to-r from-gradient-primary to-gradient-secondary p-3 rounded-full">
           <svg
@@ -89,12 +91,10 @@ const LoginForm = () => {
         </div>
       </div>
 
-      {/*  title */}
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
         {t('welcomeBack')}
       </h1>
 
-      {/*  form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <InputField
           value={emailPhone}
@@ -119,7 +119,6 @@ const LoginForm = () => {
           </Link>
         </div>
 
-        {/*  error rendering */}
         {isError && (
           <p className="text-red-500 text-sm">
             {error?.response?.data?.error ||
@@ -133,7 +132,6 @@ const LoginForm = () => {
         </Button>
       </form>
 
-      {/*  divider */}
       <div className="mt-6 flex items-center justify-center space-x-2">
         <div className="flex-1 border-t border-border-clr"></div>
         <span className="px-4 text-sm text-gray-500">
@@ -142,7 +140,6 @@ const LoginForm = () => {
         <div className="flex-1 border-t border-border-clr"></div>
       </div>
 
-      {/*  footer */}
       <p className="mt-6 text-center text-sm text-gray-500">
         {t('noAccount')}{' '}
         <Link
@@ -153,7 +150,7 @@ const LoginForm = () => {
         </Link>
       </p>
     </>
-  );
-};
+  )
+}
 
-export default LoginForm;
+export default LoginForm
