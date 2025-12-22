@@ -6,7 +6,7 @@ import PhotoGrid from "../../components/PhotoGrid";
 import { set, get, del } from "idb-keyval";
 import { Button } from "../../../../shared/Button";
 
-const SINGLE_PHOTO_GENDERS = ["fm"];
+const SINGLE_PHOTO_GENDERS = ["M","TM"];
 
 const Photo = () => {
   const { formData, setFormData } = useWizard();
@@ -17,7 +17,7 @@ const Photo = () => {
   const gender = localStorage.getItem("gender");
   const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender);
 
-  const maxSlots = isSinglePhoto ? 1 : 5;
+  const maxSlots = isSinglePhoto ? 1 : 3;
 
   const uploadedPhotos = useMemo(
     () =>
