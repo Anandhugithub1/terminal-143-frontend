@@ -11,8 +11,8 @@ export const SOCIAL_PLATFORMS = ['IG', 'FB', 'Telegram', 'Line', 'Wechat', 'Othe
 export const PREFERENCES = {
     MALE: 'M',
     FEMALE: 'F',
-    TO_FEMALE: 'tF',  // Ladyboy, Shemale, Trans Women
-    TO_MALE: 'tM',    // Trans Man, Tomboy
+    TO_FEMALE: 'TF',  // Ladyboy, Shemale, Trans Women
+    TO_MALE: 'TM',    // Trans Man, Tomboy
     OTHERS: 'Ot',
   };    
   

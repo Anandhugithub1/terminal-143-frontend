@@ -63,13 +63,13 @@ const Photo = () => {
       await del("profilePhoto")
     } else {
       const next = [...photos]
-      next[index] = null // 🔥 DO NOT SPLICE
+      next[index] = null //  DO NOT SPLICE
       setFormData((p) => ({ ...p, profilePhotos: next }))
       await set("profilePhotos", next)
     }
   }
 
-  /* ---------- Upload handler ---------- */
+  /*Upload handle */
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return

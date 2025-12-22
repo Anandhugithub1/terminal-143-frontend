@@ -19,8 +19,8 @@ const PreferencesPage = () => {
   const PREFERENCES = [
     { label: t("male"), value: "M", icon: <User size={20} /> },
     { label: t("female"), value: "F", icon: <UserPlus size={20} /> },
-    { label: t("toFemale"), value: "tF", icon: <Heart size={20} /> },
-    { label: t("toMale"), value: "tM", icon: <Smile size={20} /> },
+    { label: t("toFemale"), value: "TF", icon: <Heart size={20} /> },
+    { label: t("toMale"), value: "TM", icon: <Smile size={20} /> },
     { label: t("others"), value: "Ot", icon: <Star size={20} /> }
   ]
 
