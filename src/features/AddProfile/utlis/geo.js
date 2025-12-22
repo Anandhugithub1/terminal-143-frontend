@@ -18,16 +18,9 @@
  *   It must already be provided by the backend or existing input.
  */
 export function normalizeGeoForApi(input) {
-  if (!input) return null
+  if (!input?.coordinates) return null
 
-  let lat = null
-  let lon = null
-
-  if (input.coordinates?.lat != null && input.coordinates?.lon != null) {
-    lat = Number(input.coordinates.lat)
-    lon = Number(input.coordinates.lon)
-  }
-
+  const { lat, lon } = input.coordinates
   if (
     lat == null ||
     lon == null ||
@@ -37,20 +30,13 @@ export function normalizeGeoForApi(input) {
     return null
   }
 
-  const placeName = input.placeName || input.name || ""
-  const countryCode = (input.countryCode || "")
-    .toString()
-    .toUpperCase()
-    .slice(0, 2)
-
-  const h3 = input.h3?.r4 ? { r4: input.h3.r4 } : null
-  if (!h3) return null
-
   return {
-    coordinates: { lat, lon },
-    placeName,
-    countryCode,
-    h3
+    coordinates: { lat: Number(lat), lon: Number(lon) },
+    placeName: input.placeName || "",
+    countryCode: (input.countryCode || "").toUpperCase().slice(0, 2),
+    h3: {
+      r4: input.h3?.r4 || ""
+    }
   }
 }
 

@@ -46,28 +46,56 @@ const toGeo = (r) => {
 
 const Location = () => {
   const { formData, setFormData } = useWizard()
-  const { geoLocation } = formData
+  const { location  } = formData
   const navigate = useNavigate()
   const { t } = useTranslation('location')
 
   const [error, setError] = useState('')
 
   // central setter used by LocationInput via onSelect
-  const setGeo = useCallback(
-    (payload) => {
-      const next = toGeo(payload)
-      setFormData((prev) => ({ ...prev, geoLocation: next }))
-    },
-    [setFormData]
-  )
+const setGeo = useCallback(
+  (payload) => {
+    if (!payload) {
+      setFormData(prev => ({
+        ...prev,
+        location: {
+          coordinates: { lat: null, lon: null },
+          placeName: "",
+          countryCode: "",
+          h3: { r4: "" }
+        }
+      }))
+      return
+    }
 
+    setFormData(prev => ({
+      ...prev,
+      location: {
+        coordinates: {
+          lat: payload.lat,
+          lon: payload.lon
+        },
+        placeName: payload.placeName || payload.name || "",
+        countryCode: (payload.countryCode || payload.country || "")
+          .toUpperCase()
+          .slice(0, 2),
+        h3: {
+          r4: payload.h3 || payload.h3Index || ""
+        }
+      }
+    }))
+  },
+  [setFormData]
+)
   const validate = useCallback(
-    () =>
-      geoLocation?.coordinates?.length
-        ? null
-        : t('locationRequired') || 'Please select your location',
-    [geoLocation?.coordinates?.length, t]
-  )
+  () =>
+    location?.coordinates?.lat != null &&
+    location?.coordinates?.lon != null
+      ? null
+      : t("locationRequired") || "Please select your location",
+  [location, t]
+)
+
 
   const handleNext = useCallback(() => {
     const v = validate()
@@ -108,12 +136,13 @@ const Location = () => {
           </div>
 
           <Suspense fallback={null}>
-            <LocationInput
-              formData={formData}
-              setFormData={setFormData}
-              t={t}
-              onSelect={setGeo}
-            />
+          <LocationInput
+  formData={{ location }}
+  setFormData={setFormData}
+  t={t}
+  onSelect={setGeo}
+/>
+
           </Suspense>
         </div>
 
