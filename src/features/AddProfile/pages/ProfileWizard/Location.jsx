@@ -5,7 +5,6 @@ import { ProgressBar } from './Progess'
 import { useTranslation } from 'react-i18next'
 import { Button } from "../../../../shared/Button"
 
-// Lazy-loaded components (OWN their heavy deps)
 const LocationInput = lazy(() =>
   import('../../components/LocationInput')
 )
@@ -13,89 +12,62 @@ const LocationRangeSelector = lazy(() =>
   import('../../components/Location/LocationRangeSelector')
 )
 
-// Convert raw suggestion / details into frontend geo shape (minimal)
-const toGeo = (r) => {
-  if (!r) {
-    return {
-      type: 'Point',
-      coordinates: [],
-      placeName: '',
-      countryCode: '',
-      h3Index: '',
-    }
-  }
-
-  const lon = r.lon ?? r.coordinates?.[0]
-  const lat = r.lat ?? r.coordinates?.[1]
-  const coords =
-    typeof lon === 'number' && typeof lat === 'number'
-      ? [lon, lat]
-      : []
-
-  return {
-    type: 'Point',
-    coordinates: coords,
-    placeName: r.placeName || r.city || r.name || '',
-    countryCode: (r.countryCode || r.country || '')
-      .toString()
-      .toUpperCase()
-      .slice(0, 2),
-    h3Index: r.h3Index || '',
-  }
-}
-
 const Location = () => {
   const { formData, setFormData } = useWizard()
-  const { location  } = formData
+  const { location } = formData
   const navigate = useNavigate()
   const { t } = useTranslation('location')
 
   const [error, setError] = useState('')
 
-  // central setter used by LocationInput via onSelect
-const setGeo = useCallback(
-  (payload) => {
-    if (!payload) {
+  // ✅ FIXED: normalize payload correctly
+  const setGeo = useCallback(
+    (payload) => {
+      if (!payload) {
+        setFormData(prev => ({
+          ...prev,
+          location: {
+            coordinates: { lat: null, lon: null },
+            placeName: "",
+            countryCode: "",
+            h3: { r4: "" }
+          }
+        }))
+        return
+      }
+
+      const lat = payload.lat ?? payload.coordinates?.lat
+      const lon = payload.lng ?? payload.lon ?? payload.coordinates?.lon
+
       setFormData(prev => ({
         ...prev,
         location: {
-          coordinates: { lat: null, lon: null },
-          placeName: "",
-          countryCode: "",
-          h3: { r4: "" }
+          coordinates: {
+            lat,
+            lon
+          },
+          placeName: payload.placeName || payload.name || "",
+          countryCode: (payload.countryCode || payload.country || "")
+            .toString()
+            .toUpperCase()
+            .slice(0, 2),
+          h3: {
+            r4: payload.h3Index || ""
+          }
         }
       }))
-      return
-    }
+    },
+    [setFormData]
+  )
 
-    setFormData(prev => ({
-      ...prev,
-      location: {
-        coordinates: {
-          lat: payload.lat,
-          lon: payload.lon
-        },
-        placeName: payload.placeName || payload.name || "",
-        countryCode: (payload.countryCode || payload.country || "")
-          .toUpperCase()
-          .slice(0, 2),
-        h3: {
-          r4: payload.h3 || payload.h3Index || ""
-        }
-      }
-    }))
-  },
-  [setFormData]
-)
   const validate = useCallback(
-  () =>
-    location?.coordinates?.lat != null &&
-    location?.coordinates?.lon != null
-      ? null
-      : t("locationRequired") || "Please select your location",
-  [location, t]
-)
-
+    () =>
+      location?.coordinates?.lat != null &&
+      location?.coordinates?.lon != null
+        ? null
+        : t("locationRequired") || "Please select your location",
+    [location, t]
+  )
 
   const handleNext = useCallback(() => {
     const v = validate()
@@ -129,20 +101,17 @@ const setGeo = useCallback(
 
       <section className="space-y-6">
         <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-800">
-              {t('yourLocation') || 'Your Location'}
-            </h3>
-          </div>
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            {t('yourLocation') || 'Your Location'}
+          </h3>
 
           <Suspense fallback={null}>
-          <LocationInput
-  formData={{ location }}
-  setFormData={setFormData}
-  t={t}
-  onSelect={setGeo}
-/>
-
+            <LocationInput
+              formData={{ location }}
+              setFormData={setFormData}
+              t={t}
+              onSelect={setGeo}
+            />
           </Suspense>
         </div>
 
@@ -156,7 +125,7 @@ const setGeo = useCallback(
 
         {effectiveError && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 flex items-center gap-2">
+            <p className="text-red-600">
               {effectiveError}
             </p>
           </div>
@@ -172,9 +141,10 @@ const setGeo = useCallback(
         >
           {t('back') || 'Back'}
         </Button>
+
         <Button
           onClick={handleNext}
-          className="flex-1 text-white font-semibold py-4 rounded-3xl transition-all hover:scale-[1.01] shadow-lg shadow-pink-500/20"
+          className="flex-1 text-white font-semibold py-4 rounded-3xl transition-all"
           type="button"
         >
           {t('continue') || 'Continue'}

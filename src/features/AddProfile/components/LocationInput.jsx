@@ -129,18 +129,19 @@ export default function LocationInput({
           const details = await getPlaceDetails(placeId);
           if (details) {
             final = {
-              lat: details.lat != null ? Number(details.lat) : null,
-              lon: details.lng != null ? Number(details.lng) : null,
-              placeName:
-                details.placeName ||
-                details.formattedAddress ||
-                item.placeName ||
-                item.name ||
-                "",
-              country: details.country || "",
-              countryCode: details.countryCode || "",
-              geohash: details.geohash || "",
-            };
+  lat: details.lat != null ? Number(details.lat) : null,
+  lon: details.lng != null ? Number(details.lng) : null,
+  placeName:
+    details.placeName ||
+    details.formattedAddress ||
+    item.placeName ||
+    item.name ||
+    "",
+  country: details.country || "",
+  countryCode: details.countryCode || "",
+  h3Index: details.h3Index || "",   
+};
+
           }
         } catch (err) {
           console.warn(

@@ -44,29 +44,36 @@ const LocationEditPage = () => {
     setSelectedLoc(loc || null)
   }, [])
 
-  const handleSave = useCallback(() => {
-    if (!selectedLoc) {
-      toast.error("Please select a location from the list")
-      return
-    }
+const handleSave = useCallback(() => {
+  if (!selectedLoc) {
+    toast.error("Please select a location from the list")
+    return
+  }
 
-    const location = {
-      coordinates: {
-        lat: selectedLoc.lat,
-        lon: selectedLoc.lon
-      },
-      placeName: selectedLoc.placeName || selectedLoc.name || "",
-      countryCode: (selectedLoc.countryCode || selectedLoc.country || "")
-        .toUpperCase()
-        .slice(0, 2),
-      h3: {
-        r4: selectedLoc.h3 || selectedLoc.h3Index || ""
-      }
-    }
+  const lat = selectedLoc.lat ?? selectedLoc.coordinates?.lat
+  const lon = selectedLoc.lng ?? selectedLoc.lon ?? selectedLoc.coordinates?.lon
 
-    setSaving(true)
-    mutation.mutate({ location })
-  }, [mutation, selectedLoc])
+  const location = {
+    coordinates: {
+      lat,
+      lon
+    },
+    placeName: selectedLoc.placeName || selectedLoc.name || "",
+    countryCode: (selectedLoc.countryCode || selectedLoc.country || "")
+      .toString()
+      .toUpperCase()
+      .slice(0, 2),
+    h3: {
+      r4: selectedLoc.h3Index || ""
+    }
+  }
+
+  setSaving(true)
+  console.log("LOCATION TO SAVE", location)
+
+  mutation.mutate({ location })
+}, [mutation, selectedLoc])
+
 
   const preview = selectedLoc || initial
   const hasChanges =
