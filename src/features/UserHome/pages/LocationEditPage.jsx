@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react"
+import React, { useCallback, useState, useMemo,useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { FiArrowLeft, FiMapPin, FiInfo, FiZap } from "react-icons/fi"
@@ -14,6 +14,7 @@ import { updateMyProfile } from "../../UserProfile/api/profile"
 const LocationEditPage = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+const detailsPromiseRef = useRef(null)
 
   const { data: profile } = useMyProfile()
 
@@ -44,35 +45,33 @@ const LocationEditPage = () => {
     setSelectedLoc(loc || null)
   }, [])
 
-const handleSave = useCallback(() => {
+const handleSave = useCallback(async () => {
   if (!selectedLoc) {
     toast.error("Please select a location from the list")
     return
   }
 
+  // 🔹 ENSURE details are resolved
+  if (detailsPromiseRef.current) {
+    try {
+      await detailsPromiseRef.current
+    } catch {}
+  }
+
   const lat = selectedLoc.lat ?? selectedLoc.coordinates?.lat
-  const lon = selectedLoc.lng ?? selectedLoc.lon ?? selectedLoc.coordinates?.lon
+  const lon = selectedLoc.lng ?? selectedLoc.coordinates?.lon
 
   const location = {
-    coordinates: {
-      lat,
-      lon
-    },
-    placeName: selectedLoc.placeName || selectedLoc.name || "",
-    countryCode: (selectedLoc.countryCode || selectedLoc.country || "")
-      .toString()
-      .toUpperCase()
-      .slice(0, 2),
-    h3: {
-      r4: selectedLoc.h3Index || ""
-    }
+    coordinates: { lat, lon },
+    placeName: selectedLoc.placeName || "",
+    countryCode: (selectedLoc.countryCode || "").toUpperCase().slice(0, 2),
+    h3: { r4: selectedLoc.h3Index || "" }
   }
 
   setSaving(true)
-  console.log("LOCATION TO SAVE", location)
-
   mutation.mutate({ location })
-}, [mutation, selectedLoc])
+}, [selectedLoc, mutation])
+
 
 
   const preview = selectedLoc || initial
@@ -114,12 +113,15 @@ const handleSave = useCallback(() => {
           <div className="relative">
          <Suspense fallback={null}>
 
-             <LocationInput
-              formData={{ location: initial || {} }}
-              setFormData={() => {}}
-              onSelect={handleSelect}
-              t={(k) => k}
-            />
+          <LocationInput
+  formData={{ location: initial || {} }}
+  setFormData={() => {}}
+  onSelect={(loc) => {
+    setSelectedLoc(loc)
+  }}
+  t={(k) => k}
+/>
+
          </Suspense>
           </div>
 

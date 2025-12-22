@@ -26,6 +26,8 @@ export default function LocationInput({
   const [selected, setSelected] = useState(null); // selected suggestion object
   const [error, setError] = useState("");
   const [touched, setTouched] = useState(false);
+const detailsPromiseRef = useRef(null)
+const lastPlaceIdRef = useRef(null)
 
   const timer = useRef(null);
   const inputRef = useRef(null);
@@ -115,84 +117,81 @@ export default function LocationInput({
   useEffect(() => () => clearTimeout(timer.current), []);
 
   // unified onSelect (used by Combobox onChange)
-  const handleSelect = useCallback(
-    async (item) => {
-      if (!item) return;
-      // if item is a simple string (shouldn't be), ignore
-      // when the user chooses a suggestion, `item` is the whole object from suggestions
-      let final = null;
-      const placeId =
-        item.placeId || item._raw?.placeId || item._raw?.place_id || item.id;
+const handleSelect = useCallback(
+  (item) => {
+    if (!item) return
 
-      if (placeId && typeof getPlaceDetails === "function") {
+    const raw = item._raw || item
+    const { lat, lon } = extractCoords(item)
+
+    const immediate = {
+      lat,
+      lon,
+      placeName:
+        item.placeName ?? item.name ?? raw.placeName ?? raw.name ?? "",
+      country:
+        item.country ?? item.countryName ?? raw.country ?? "",
+      countryCode: normalizeCountryCode(
+        item.countryCode ||
+          item.country ||
+          raw.country ||
+          raw.country_code ||
+          ""
+      ),
+      h3Index: ""
+    }
+
+    //  PHASE 1: instant UI update
+    if (typeof onSelectProp === "function") {
+      onSelectProp(immediate)
+    } else {
+      setGeo(immediate)
+    }
+
+    setSelected(item)
+    setQuery(immediate.placeName)
+    clearSuggestions()
+    setTouched(false)
+
+    //  PHASE 2: background place details fetch
+    const placeId =
+      item.placeId || raw.placeId || raw.place_id || item.id
+
+    if (placeId && placeId !== lastPlaceIdRef.current) {
+      lastPlaceIdRef.current = placeId
+
+      detailsPromiseRef.current = (async () => {
         try {
-          const details = await getPlaceDetails(placeId);
-          if (details) {
-            final = {
-  lat: details.lat != null ? Number(details.lat) : null,
-  lon: details.lng != null ? Number(details.lng) : null,
-  placeName:
-    details.placeName ||
-    details.formattedAddress ||
-    item.placeName ||
-    item.name ||
-    "",
-  country: details.country || "",
-  countryCode: details.countryCode || "",
-  h3Index: details.h3Index || "",   
-};
+          const details = await getPlaceDetails(placeId)
+          if (!details) return
 
+          const enriched = {
+            lat: details.lat != null ? Number(details.lat) : immediate.lat,
+            lon: details.lng != null ? Number(details.lng) : immediate.lon,
+            placeName:
+              details.placeName ||
+              details.formattedAddress ||
+              immediate.placeName,
+            countryCode: normalizeCountryCode(
+              details.countryCode || immediate.countryCode
+            ),
+            h3Index: details.h3Index || ""
+          }
+
+          if (typeof onSelectProp === "function") {
+            onSelectProp(enriched)
+          } else {
+            setGeo(enriched)
           }
         } catch (err) {
-          console.warn(
-            "[LocationInput] getPlaceDetails failed, fallback to suggestion",
-            err
-          );
+          console.warn("getPlaceDetails failed", err)
         }
-      }
+      })()
+    }
+  },
+  [getPlaceDetails, onSelectProp, setGeo, clearSuggestions]
+)
 
-      if (!final) {
-        const raw = item._raw || item;
-        const { lon, lat } = extractCoords(item);
-        final = {
-          lat,
-          lon,
-          placeName:
-            item.placeName ?? item.name ?? raw.placeName ?? raw.name ?? "",
-          country:
-            item.country ??
-            item.countryName ??
-            raw.country ??
-            raw.country_code ??
-            "",
-          countryCode: normalizeCountryCode(
-            item.countryCode ||
-              item.country ||
-              raw.country ||
-              raw.country_code ||
-              ""
-          ),
-          geohash: item.geohash || item.geoHash || raw.geohash || "",
-        };
-      }
-
-      // update parent or call prop
-      if (typeof onSelectProp === "function") {
-        onSelectProp(final);
-      } else {
-        setGeo(final);
-      }
-
-      setSelected(item);
-      setQuery(final.placeName || "");
-      clearSuggestions();
-      setTouched(false);
-      toast.success(
-        `${t?.("selected") || "Selected"}: ${final.placeName || ""}`
-      );
-    },
-    [getPlaceDetails, setGeo, onSelectProp, clearSuggestions, t]
-  );
 
   // auto-detect
   const handleAutoDetect = useCallback(async () => {
