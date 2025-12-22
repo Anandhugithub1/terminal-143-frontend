@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { useWizard } from "../../contexts/ProfileWizard";
 import { useNavigate } from "react-router-dom";
 import { ProgressBar } from "./Progess";
@@ -6,76 +6,87 @@ import PhotoGrid from "../../components/PhotoGrid";
 import { set, get, del } from "idb-keyval";
 import { Button } from "../../../../shared/Button";
 
+const SINGLE_PHOTO_GENDERS = ["fm"];
+
 const Photo = () => {
   const { formData, setFormData } = useWizard();
-  const userType = localStorage.getItem("userType");
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
 
-  const maxSlots = userType === "mp" ? 3 : 1;
-  const uploadedPhotos =
-    userType === "mp" ? formData.profilePhotos || [] : [formData.profilePhoto];
+  const gender = localStorage.getItem("gender");
+  const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender);
 
-  // Load persisted photos from IndexedDB on mount
+  const maxSlots = isSinglePhoto ? 1 : 5;
+
+  const uploadedPhotos = useMemo(
+    () =>
+      isSinglePhoto
+        ? [formData.profilePhoto]
+        : formData.profilePhotos || [],
+    [isSinglePhoto, formData]
+  );
+
+  /* ---------------- Load persisted photos ---------------- */
   useEffect(() => {
     const loadPhotos = async () => {
-      if (userType === "mp") {
-        const photos = await get("profilePhotos");
-        if (photos?.length) {
-          setFormData((prev) => ({ ...prev, profilePhotos: photos }));
-        }
-      } else {
+      if (isSinglePhoto) {
         const photo = await get("profilePhoto");
         if (photo) {
           setFormData((prev) => ({ ...prev, profilePhoto: photo }));
         }
+      } else {
+        const photos = await get("profilePhotos");
+        if (Array.isArray(photos) && photos.length) {
+          setFormData((prev) => ({ ...prev, profilePhotos: photos }));
+        }
       }
     };
+
     loadPhotos();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isSinglePhoto, setFormData]);
 
+  /* ---------------- Slot actions ---------------- */
   const handleSlotChange = (index) => {
-    if (!inputRef.current) return;
-
+    if (!inputRef.current || uploading) return;
     inputRef.current.dataset.replaceIndex = index;
     inputRef.current.click();
   };
 
   const handleSlotRemove = async (index) => {
-    if (userType === "mp") {
-      const newPhotos = [...(formData.profilePhotos || [])];
-      newPhotos.splice(index, 1);
-      setFormData((prev) => ({ ...prev, profilePhotos: newPhotos }));
-      await set("profilePhotos", newPhotos);
-    } else {
+    if (uploading) return;
+
+    if (isSinglePhoto) {
       setFormData((prev) => ({ ...prev, profilePhoto: null }));
       await del("profilePhoto");
+    } else {
+      const next = [...(formData.profilePhotos || [])];
+      next.splice(index, 1);
+      setFormData((prev) => ({ ...prev, profilePhotos: next }));
+      await set("profilePhotos", next);
     }
   };
+
+  /* ---------------- Upload handler ---------------- */
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
-    await new Promise((res) => setTimeout(res, 300));
 
     let slotIndex = Number(e.target.dataset.replaceIndex);
-    if (isNaN(slotIndex)) slotIndex = 0; // default to first slot
+    if (Number.isNaN(slotIndex)) slotIndex = 0;
 
-    if (userType === "mp") {
+    if (isSinglePhoto) {
+      setFormData((prev) => ({ ...prev, profilePhoto: file }));
+      await set("profilePhoto", file);
+    } else {
       const existing = [...(formData.profilePhotos || [])];
-      while (existing.length < maxSlots) existing.push(null); // ensure array length
-
-      // Assign photo to chosen slot (slot order defines index)
+      while (existing.length < maxSlots) existing.push(null);
       existing[slotIndex] = file;
 
       setFormData((prev) => ({ ...prev, profilePhotos: existing }));
       await set("profilePhotos", existing);
-    } else {
-      setFormData((prev) => ({ ...prev, profilePhoto: file }));
-      await set("profilePhoto", file);
     }
 
     e.target.value = null;
@@ -92,12 +103,12 @@ const Photo = () => {
 
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          {userType === "mp" ? "Show Your Sparkle ✨" : "Upload Your Photo"}
+          {isSinglePhoto ? "Upload Your Photo" : "Show Your Sparkle ✨"}
         </h2>
         <p className="text-gray-500">
-          {userType === "mp"
-            ? `Upload at least ${maxSlots} photos to get started`
-            : "Upload photo to get started"}
+          {isSinglePhoto
+            ? "Upload your profile photo"
+            : `Upload up to ${maxSlots} photos`}
         </p>
       </div>
 
@@ -122,13 +133,15 @@ const Photo = () => {
           onClick={handleBack}
           textColor="black"
           className="flex-1 py-3 px-6 border border-gray-200 bg-white"
+          disabled={uploading}
         >
           Back
         </Button>
+
         <Button
           onClick={handleNext}
-          className="flex-1  font-sembibold
-                      py-3 px-6 "
+          className="flex-1 py-3 px-6"
+          disabled={uploading}
         >
           Next
         </Button>
