@@ -13,35 +13,24 @@ import {
   completeProfileApi
 } from "../../../UserProfile/api/profile"
 
+const SINGLE_PHOTO_GENDERS = ["M", "TM"]
+
 export default function Tags() {
-  const { formData, setFormData, clearFormData } = useWizard()
+  const { formData, clearFormData } = useWizard()
   const navigate = useNavigate()
-  const userType = localStorage.getItem("userType")
+  const gender = localStorage.getItem("gender")
+  const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-  const [photoStatuses, setPhotoStatuses] = useState([])
-
   const isMountedRef = useRef(true)
+
   useEffect(() => () => { isMountedRef.current = false }, [])
 
   const selectedInterests = useMemo(
     () => Object.entries(categories).flatMap(([cat]) => formData[cat] || []),
     [formData]
   )
-
-  const handleBack = useCallback(() => {
-    setFormData({ ...formData })
-    navigate("/complete/photo")
-  }, [formData, navigate, setFormData])
-
-  const setSinglePhotoStatus = useCallback((index, patch) => {
-    setPhotoStatuses((prev) => {
-      const next = [...prev]
-      next[index] = { ...(next[index] || { index, status: "idle" }), ...patch }
-      return next
-    })
-  }, [])
 
   const completeMutation = useMutation({
     mutationFn: completeProfileApi,
@@ -81,45 +70,40 @@ export default function Tags() {
     setIsSubmitting(true)
 
     try {
-      const photoUrls = []
+      const files = isSinglePhoto
+        ? [formData.profilePhoto].filter(Boolean)
+        : (formData.profilePhotos || []).filter(Boolean)
 
-      if (userType === "mp") {
-        const photos = [...(formData.profilePhotos || [])]
-
-        for (let i = 0; i < photos.length; i++) {
-          const file = photos[i]
-          if (!file) continue
-
-          setSinglePhotoStatus(i, { status: "uploading" })
-          try {
-            const url = await uploadSinglePhoto(file, i)
-            photoUrls.push(url)
-            setSinglePhotoStatus(i, { status: "done" })
-          } catch {
-            setSinglePhotoStatus(i, { status: "failed" })
-          }
-        }
-      } else if (formData.profilePhoto) {
-        const url = await uploadSinglePhoto(formData.profilePhoto, 0)
-        photoUrls.push(url)
+      if (!files.length) {
+        toast.error("Please upload at least one photo")
+        setIsSubmitting(false)
+        return
       }
 
-      const normalizedLocation = normalizeGeoForApi(formData.location)
+      const uploaded = []
+
+      for (let i = 0; i < files.length; i++) {
+        const url = await uploadSinglePhoto(files[i], i)
+        uploaded.push({
+          url,
+          isProfile: i === 0,
+          order: i
+        })
+      }
 
       const payload = {
         ...formData,
-        interests: selectedInterests
+        interests: selectedInterests,
+        photos: uploaded
       }
 
-      if (userType === "mp") payload.photos = photoUrls
-      else payload.photo = photoUrls[0] || ""
-
+      const normalizedLocation = normalizeGeoForApi(formData.location)
       if (normalizedLocation) payload.location = normalizedLocation
       else delete payload.location
 
       if (formData.searchRadius) {
         payload.searchRadius = {
-          distance: Number(formData.searchRadius.distance) || 10,
+          distance: Number(formData.searchRadius.distance) || 25,
           unit: formData.searchRadius.unit || "km"
         }
       }
@@ -131,8 +115,6 @@ export default function Tags() {
       setIsSubmitting(false)
     }
   }
-
-  const isLoading = isSubmitting || completeMutation.isLoading
 
   return (
     <div className="animate-fade-in">
@@ -158,19 +140,16 @@ export default function Tags() {
                   <button
                     key={item}
                     type="button"
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     onClick={() =>
-                      setFormData({
-                        ...formData,
-                        [title]: isActive
-                          ? (formData[title] || []).filter((v) => v !== item)
-                          : [...(formData[title] || []), item]
-                      })
+                      formData[title] = isActive
+                        ? formData[title].filter((v) => v !== item)
+                        : [...(formData[title] || []), item]
                     }
-                    className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
+                    className={`px-5 py-2 rounded-full text-sm font-medium ${
                       isActive
                         ? "bg-pink-500 text-white"
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        : "bg-gray-100 text-gray-600"
                     }`}
                   >
                     {item}
@@ -183,15 +162,13 @@ export default function Tags() {
       </div>
 
       {errorMessage && (
-        <p className="text-center mt-4 text-red-500">
-          {errorMessage}
-        </p>
+        <p className="text-center mt-4 text-red-500">{errorMessage}</p>
       )}
 
       <div className="mt-8 flex gap-4">
         <Button
-          onClick={handleBack}
-          disabled={isLoading}
+          onClick={() => navigate("/complete/photo")}
+          disabled={isSubmitting}
           textColor="black"
           className="flex-1 py-3 border border-gray-200 bg-white"
         >
@@ -200,10 +177,10 @@ export default function Tags() {
 
         <button
           onClick={handleSubmit}
-          disabled={isLoading}
-          className="flex-1 bg-primary text-white font-semibold py-3 px-6 rounded-3xl transition disabled:opacity-50"
+          disabled={isSubmitting}
+          className="flex-1 bg-primary text-white font-semibold py-3 px-6 rounded-3xl"
         >
-          {isLoading ? "Saving..." : "Finish Setup"}
+          {isSubmitting ? "Saving..." : "Finish Setup"}
         </button>
       </div>
     </div>
