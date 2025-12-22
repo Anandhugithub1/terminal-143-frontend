@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { useWizard } from "../../contexts/ProfileWizard";
 import { useNavigate } from "react-router-dom";
 import { ProgressBar } from "./Progess";
@@ -6,6 +6,7 @@ import { Button } from "../../../../shared/Button";
 import { statusOptions } from "../../utlis";
 import useLanguages from "../../hooks/useLanguages";
 import LanguagePicker from "../../components/LanguagePicker";
+import { Listbox, Transition } from "@headlessui/react";
 
 export default function Bio() {
   const { formData, setFormData } = useWizard();
@@ -22,6 +23,7 @@ export default function Bio() {
     loading: languagesLoading,
     error: languagesError,
   } = useLanguages();
+
   const [selectedLanguages, setSelectedLanguages] = useState([]);
 
   useEffect(() => {
@@ -31,31 +33,43 @@ export default function Bio() {
       formData.languagesKnown.length
     ) {
       setSelectedLanguages(
-        languagesList.filter((l) => formData.languagesKnown.includes(l.value))
+        languagesList.filter((l) =>
+          formData.languagesKnown.includes(l.value)
+        )
       );
     }
-    // run only when languagesList changes (one-time sync)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [languagesList]);
 
+  const isBioValid =
+    typeof formData.bio === "string" &&
+    formData.bio.trim().length > 0;
+
   const handleNext = () => {
-    if (!formData.bio?.trim()) return;
-    if (!healthStatusFromForm.stdStatus) return;
+    if (!isBioValid) return;
 
     setFormData({
       ...formData,
       languagesKnown: selectedLanguages.map((l) => l.value),
       healthStatus: { ...healthStatusFromForm },
     });
+
     navigate("/complete/photo");
   };
+
+  const selectedStatus = statusOptions.find(
+    (s) => s.value === healthStatusFromForm.stdStatus
+  );
 
   return (
     <div className="max-w-xl mx-auto p-4 space-y-8 animate-fade-in">
       <ProgressBar step={3} totalSteps={5} />
 
+      {/* Bio */}
       <div className="space-y-1">
-        <h2 className="text-3xl font-bold text-gray-900">Your Story 💬</h2>
+        <h2 className="text-3xl font-bold text-gray-900">
+          Your Story
+        </h2>
+
         <textarea
           value={formData.bio || ""}
           onChange={(e) =>
@@ -67,13 +81,25 @@ export default function Bio() {
           placeholder="I'm passionate about..."
           className="w-full p-4 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500 min-h-[160px]"
         />
-        <div className="text-right text-sm text-gray-400">
-          {formData.bio?.length || 0}/{charLimit}
+
+        <div className="flex justify-between text-sm">
+          {!isBioValid && (
+            <span className="text-gray-400">
+              Bio is required to continue
+            </span>
+          )}
+          <span className="text-gray-400 ml-auto">
+            {formData.bio?.length || 0}/{charLimit}
+          </span>
         </div>
       </div>
 
+      {/* Languages */}
       <div>
-        <h3 className="mb-2 font-semibold">🌐 Languages You Know</h3>
+        <h3 className="mb-2 font-semibold">
+          Languages You Know (optional)
+        </h3>
+
         <LanguagePicker
           languagesList={languagesList}
           loading={languagesLoading}
@@ -83,34 +109,68 @@ export default function Bio() {
         />
       </div>
 
+      {/* STD Status — Headless UI */}
       <div className="space-y-1">
-        <h3 className="font-semibold">🧬 STD Status</h3>
-        <select
+        <h3 className="font-semibold">
+          STD Status (optional)
+        </h3>
+
+        <Listbox
           value={healthStatusFromForm.stdStatus}
-          onChange={(e) =>
+          onChange={(value) =>
             setFormData({
               ...formData,
               healthStatus: {
                 ...healthStatusFromForm,
-                stdStatus: e.target.value,
+                stdStatus: value,
               },
             })
           }
-          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500"
         >
-          <option value="" disabled>
-            Select your STD status
-          </option>
-          {statusOptions.map(({ label, value }) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          <div className="relative mt-1">
+            <Listbox.Button className="w-full p-3 bg-white border border-gray-300 rounded-xl text-left focus:ring-2 focus:ring-pink-500">
+              {selectedStatus?.label || "Prefer not to say"}
+            </Listbox.Button>
+
+            <Transition
+              as={Fragment}
+              leave="transition ease-in duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <Listbox.Options className="absolute z-10 mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-200">
+                <Listbox.Option
+                  value=""
+                  className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                >
+                  Prefer not to say
+                </Listbox.Option>
+
+                {statusOptions.map(({ label, value }) => (
+                  <Listbox.Option
+                    key={value}
+                    value={value}
+                    className={({ active }) =>
+                      `cursor-pointer px-4 py-2 ${
+                        active ? "bg-pink-50" : ""
+                      }`
+                    }
+                  >
+                    {label}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </Transition>
+          </div>
+        </Listbox>
       </div>
 
+      {/* Last Tested Date */}
       <div className="space-y-1">
-        <h3 className="font-semibold">🗓️ Last Tested Date</h3>
+        <h3 className="font-semibold">
+          Last Tested Date (optional)
+        </h3>
+
         <input
           type="date"
           value={healthStatusFromForm.lastTestedDate}
@@ -127,6 +187,7 @@ export default function Bio() {
         />
       </div>
 
+      {/* Navigation */}
       <div className="flex gap-4">
         <Button
           onClick={() => navigate("/complete/location")}
@@ -135,7 +196,16 @@ export default function Bio() {
         >
           Back
         </Button>
-        <Button onClick={handleNext} className="flex-1 py-3 px-6">
+
+        <Button
+          onClick={handleNext}
+          disabled={!isBioValid}
+          className={`flex-1 py-3 px-6 transition ${
+            !isBioValid
+              ? "opacity-50 cursor-not-allowed"
+              : "cursor-pointer"
+          }`}
+        >
           Next
         </Button>
       </div>
