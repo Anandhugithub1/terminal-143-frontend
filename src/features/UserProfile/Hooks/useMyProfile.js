@@ -1,16 +1,8 @@
 // features/UserProfile/useMyProfile.js
 import { useQuery } from "@tanstack/react-query"
-// import { fetchMyProfile } from "../api/profile"
+import { fetchMyProfile } from "../api/profile"
 
-import {userProfilesApi} from '../../../api/clients'
 
-export const fetchMyProfile = async () => {
-  const res = await userProfilesApi.get(
-    "v0.2/user/profile",
-    { withCredentials: true }
-  )
-  return res.data
-}
 
 
 export const mapProfile = (data) => {
