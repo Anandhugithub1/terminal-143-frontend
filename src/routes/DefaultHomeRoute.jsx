@@ -7,52 +7,34 @@ import UserHomePage from "../features/UserHome/pages/Home.jsx";
 import { Login } from "../features/Auth/pages/Login.jsx";
 
 export default function DefaultHomeRoute() {
-  const [loading, setLoading] = useState(true);
-  const [hasProfile, setHasProfile] = useState(false);
-
-  const userType = localStorage.getItem("userType");
+  const [loading, setLoading] = useState(true)
+  const [hasProfile, setHasProfile] = useState(false)
 
   useEffect(() => {
-    if (!userType) {
-      setLoading(false);
-      return;
-    }
-
     const checkProfile = async () => {
       try {
-        const res = await fetchMyProfile();
-        if (res?.data) {
-          setHasProfile(true);
+        const res = await fetchMyProfile()
+        if (res) {
+          setHasProfile(true)
         } else {
-          setHasProfile(false);
+          setHasProfile(false)
         }
-      } catch (err) {
-        setHasProfile(false);
+      } catch {
+        setHasProfile(false)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    checkProfile();
-  }, [userType]);
+    checkProfile()
+  }, [])
 
-  if (loading) return <LoadingSpinner />;
+  if (loading) return <LoadingSpinner />
 
-  //  If profile exists and userType is 'fm' → UserHomePage
-  if (hasProfile && userType === "fm") {
-    return <UserHomePage />;
+  if (hasProfile) {
+    return <UserHomePage />
   }
 
-  //  If profile exists but userType is not 'fm' → Requests page
-  if (hasProfile && userType !== "fm") {
-    return <Navigate to="/requests" replace />;
-  }
-
-  //  If no profile but userType exists → Login
-  if (userType && !hasProfile) {
-    return <Navigate to="/login" replace />;
-  }
-
-  //  If no userType → Global landing page
-  return <Login />;
+  return <Navigate to="/login" replace />
 }
+
