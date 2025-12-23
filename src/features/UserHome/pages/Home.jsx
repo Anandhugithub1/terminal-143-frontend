@@ -6,7 +6,7 @@ import BottomNav from '../../../components/Layout/BottomNavigation'
 import ProfileSkeleton from '../components/ProfileSkeleton'
 import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest'
 import placeholderImage from '../../../assets/woman.png'
-import { getMatchProviders, postSeen } from '../../../features/Profiles/profilesapi'
+import { getSuggestions, postSeen } from '../../../features/Profiles/profilesapi'
 import LocationBar from '../components/Actions/LocationBar'
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
 import { formatLastSeen } from '../../Profiles/utlis'
@@ -33,7 +33,7 @@ export default function UserHomePage() {
     refetch
   } = useQuery({
     queryKey: ['profiles'],
-    queryFn: () => getMatchProviders({ limit: 10 }),
+    queryFn: () => getSuggestions({ limit: 10 }),
     staleTime: 1000 * 30
   })
 
@@ -54,7 +54,7 @@ export default function UserHomePage() {
   // --- Preload next batch locally when near end ---
   useEffect(() => {
     if (profiles.length - idx <= 2 && nextBatch.length === 0) {
-      getMatchProviders({ limit: 10 })
+      getSuggestions({ limit: 10 })
         .then(setNextBatch)
         .catch(() => {})
     }
@@ -121,7 +121,11 @@ export default function UserHomePage() {
   }
 
   const rawProfile = profiles[idx] || {}
-  const images = rawProfile.photos?.length ? rawProfile.photos : []
+const images = Array.isArray(rawProfile.photos)
+  ? rawProfile.photos
+      .sort((a, b) => a.order - b.order)
+      .map(p => p.url)
+  : []
 
   const profile = {
     name: rawProfile.name || 'Unknown',
@@ -134,7 +138,10 @@ export default function UserHomePage() {
         ? 'Male'
         : rawProfile.gender,
     images,
-    location: rawProfile.location || '',
+    location: rawProfile.location
+  ? `${rawProfile.location.placeName}, ${rawProfile.location.countryCode}`
+  : '',
+
     popularity: rawProfile.popularity || 0,
     healthStatus: rawProfile.healthStatus || {
       status: 'Unknown',
