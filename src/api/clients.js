@@ -7,8 +7,10 @@ const userApiBase = isDev ? import.meta.env.VITE_API_USER : 'https://userapi.ter
 const matchesApiBase = isDev ? import.meta.env.VITE_API_MATCH : 'https://userapi.terminal143.com/match';
 const LocationApiBase = 'https://userapi.terminal143.com/location-service/v0.2'
 const authApiBase = isDev ? import.meta.env.VITE_API_AUTH : 'https://authapi.terminal143.com';
+const suggestionApiBase = "https://userapi.terminal143.com/suggestion/v0.2"
 
 export const userProfilesApi = createApiClient(userApiBase);
 export const matchesApi = createApiClient(matchesApiBase);
 export const authApi = createApiClient(authApiBase);
 export const locationAPi =createApiClient(LocationApiBase);
+export const suggestionApi =createApiClient(suggestionApiBase)
