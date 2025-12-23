@@ -1,12 +1,12 @@
 /* ================= features/profiles/api.js ================= */
-import { matchesApi } from '../../api/clients';
+import { matchesApi,suggestionApi } from '../../api/clients';
 
 /**
  * Fetches the next batch of suggested profiles.
  * Now only takes a `limit` — the handler uses Redis to page under the hood.
  */
-export const getMatchProviders = async ({ limit = 10 }) => {
-  const response = await matchesApi.get('/user/recommendations', {
+export const getSuggestions = async ({ limit = 10 }) => {
+  const response = await suggestionApi.get('/user/recommend', {
     params: { limit },
     withCredentials: true, 
   });
