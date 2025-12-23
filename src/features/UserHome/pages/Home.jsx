@@ -10,7 +10,8 @@ import { getSuggestions, postSeen } from '../../../features/Profiles/profilesapi
 import LocationBar from '../components/Actions/LocationBar'
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
 import { formatLastSeen } from '../../Profiles/utlis'
-// Lazy-loaded components
+import { computeAge } from '../../../Utlis/utlis'
+
 const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'))
 const DetailSection = lazy(() => import('../components/Details/Details'))
 const ActionControls = lazy(() => import('../components/Actions/ActionControls'))
@@ -19,6 +20,12 @@ const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'))
 
 export default function UserHomePage() {
   const { data: myProfile } = useMyProfile()
+
+  const [idx, setIdx] = useState(0)
+  const [direction, setDirection] = useState(0)
+  const [requestError, setRequestError] = useState('')
+  const [nextBatch, setNextBatch] = useState([])
+  const [hasMore, setHasMore] = useState(true)
 
   const locationTitle = myProfile?.location?.placeName || "Location"
   const locationSubtitle = myProfile?.location
@@ -37,11 +44,6 @@ export default function UserHomePage() {
     staleTime: 1000 * 30
   })
 
-  const [idx, setIdx] = useState(0)
-  const [direction, setDirection] = useState(0)
-  const [requestError, setRequestError] = useState('')
-  const [nextBatch, setNextBatch] = useState([])
-
   const { send: sendMatchRequest } = useSendMatchRequest()
 
   const seenMutation = useMutation({
@@ -51,18 +53,27 @@ export default function UserHomePage() {
     }
   })
 
-  // --- Preload next batch locally when near end ---
   useEffect(() => {
-    if (profiles.length - idx <= 2 && nextBatch.length === 0) {
-      getSuggestions({ limit: 10 })
-        .then(setNextBatch)
-        .catch(() => {})
-    }
-  }, [idx, profiles, nextBatch])
+    if (!hasMore) return
+    if (profiles.length === 0) return
+    if (profiles.length - idx > 2) return
+    if (nextBatch.length > 0) return
+
+    getSuggestions({ limit: 10 })
+      .then((data) => {
+        if (!data || data.length === 0) {
+          setHasMore(false)
+          return
+        }
+        setNextBatch(data)
+      })
+      .catch(() => {})
+  }, [idx, profiles.length, nextBatch.length, hasMore])
 
   const handleRefresh = useCallback(() => {
     setIdx(0)
     setNextBatch([])
+    setHasMore(true)
     refetch()
   }, [refetch])
 
@@ -87,49 +98,38 @@ export default function UserHomePage() {
         const next = prev + 1
 
         if (next >= profiles.length - 1 && nextBatch.length > 0) {
-          profiles.push(...nextBatch)
           setNextBatch([])
+          refetch()
         }
 
         return next
       })
     },
-    [profiles, seenMutation, sendMatchRequest, nextBatch]
+    [profiles, seenMutation, sendMatchRequest, nextBatch, refetch]
   )
 
-  if (isLoading && profiles.length === 0) return <ProfileSkeleton />
-  if (isError) return <div className="p-4 text-red-500">{error.message}</div>
-
-  const isEnd = profiles.length === 0 || idx >= profiles.length
-
-  if (isEnd) {
-    return (
-      <div className="bg-white min-h-screen flex flex-col items-center justify-center">
-        <p className="text-gray-500 text-lg">
-          {profiles.length === 0
-            ? 'No profiles available'
-            : 'Reached the end of profiles'}
-        </p>
-        <button
-          onClick={handleRefresh}
-          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
-        >
-          Refresh Profiles
-        </button>
-      </div>
-    )
+  if (isLoading && profiles.length === 0) {
+    return <ProfileSkeleton />
   }
 
+  if (isError) {
+    return <div className="p-4 text-red-500">{error.message}</div>
+  }
+
+  const isEnd = !hasMore || idx >= profiles.length
+
   const rawProfile = profiles[idx] || {}
-const images = Array.isArray(rawProfile.photos)
-  ? rawProfile.photos
-      .sort((a, b) => a.order - b.order)
-      .map(p => p.url)
-  : []
+
+  const images = Array.isArray(rawProfile.photos)
+    ? rawProfile.photos
+        .sort((a, b) => a.order - b.order)
+        .map(p => p.url)
+    : []
 
   const profile = {
     name: rawProfile.name || 'Unknown',
-    age: rawProfile.age || 'N/A',
+    age: computeAge(rawProfile.dob),
+
     about: rawProfile.bio || '',
     gender:
       rawProfile.gender === 'F'
@@ -139,16 +139,14 @@ const images = Array.isArray(rawProfile.photos)
         : rawProfile.gender,
     images,
     location: rawProfile.location
-  ? `${rawProfile.location.placeName}, ${rawProfile.location.countryCode}`
-  : '',
-
+      ? `${rawProfile.location.placeName}, ${rawProfile.location.countryCode}`
+      : '',
     popularity: rawProfile.popularity || 0,
     healthStatus: rawProfile.healthStatus || {
       status: 'Unknown',
       lastTestedDate: 'Unknown'
     },
     lastSeen: formatLastSeen(rawProfile.lastSeen),
-
     job: rawProfile.jobTitle || '',
     languages: rawProfile.languagesKnown?.length
       ? rawProfile.languagesKnown
@@ -161,7 +159,7 @@ const images = Array.isArray(rawProfile.photos)
   }
 
   return (
-    <div className="relative bg-white min-h-screen pb-20">
+    <div className="relative bg-white min-h-screen pb-20 flex flex-col">
       <TopNav />
 
       <LocationBar
@@ -183,36 +181,53 @@ const images = Array.isArray(rawProfile.photos)
         </div>
       )}
 
-      <div className="relative">
-        <Suspense fallback={<ProfileSkeleton />}>
-          <SwipeDeck
-            idx={idx}
-            direction={direction}
-            profilesLength={profiles.length}
-            onAdvance={advance}
-          >
-            <div className="relative">
-              <ProfileCard
-                profile={profile}
-                placeholderImage={placeholderImage}
-                onConnectClick={() => {}}
-                onMessageClick={() => console.log('Message clicked')}
-              />
+      <div className="relative flex-1">
+        {isEnd ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+            <p className="text-gray-500 text-lg">
+              {profiles.length === 0
+                ? 'No profiles available'
+                : 'Reached the end of profiles'}
+            </p>
 
-              <div className="flex justify-center mt-2 mb-2">
-                <ActionControls
-                  onReject={() => advance(-1)}
-                  onRefresh={handleRefresh}
-                  onLike={() => advance(1)}
+            <button
+              onClick={handleRefresh}
+              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
+            >
+              Refresh Profiles
+            </button>
+          </div>
+        ) : (
+          <Suspense fallback={<ProfileSkeleton />}>
+            <SwipeDeck
+              idx={idx}
+              direction={direction}
+              profilesLength={profiles.length}
+              onAdvance={advance}
+            >
+              <div className="relative">
+                <ProfileCard
+                  profile={profile}
+                  placeholderImage={placeholderImage}
+                  onConnectClick={() => {}}
+                  onMessageClick={() => console.log('Message clicked')}
                 />
-              </div>
-            </div>
 
-            <div className="mt-16 sm:mt-14 px-4 relative z-10">
-              <DetailSection profile={profile} />
-            </div>
-          </SwipeDeck>
-        </Suspense>
+                <div className="flex justify-center mt-2 mb-2">
+                  <ActionControls
+                    onReject={() => advance(-1)}
+                    onRefresh={handleRefresh}
+                    onLike={() => advance(1)}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-16 sm:mt-14 px-4 relative z-10">
+                <DetailSection profile={profile} />
+              </div>
+            </SwipeDeck>
+          </Suspense>
+        )}
       </div>
 
       <BottomNav />
