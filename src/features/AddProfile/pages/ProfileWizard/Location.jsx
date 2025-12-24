@@ -20,7 +20,7 @@ const Location = () => {
 
   const [error, setError] = useState('')
 
-  // ✅ FIXED: normalize payload correctly
+  // FIXED: normalize payload correctly
   const setGeo = useCallback(
     (payload) => {
       if (!payload) {

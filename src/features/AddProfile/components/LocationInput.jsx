@@ -1,12 +1,20 @@
 // src/components/LocationInput.jsx
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import { Combobox } from "@headlessui/react";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxOptions,
+  ComboboxOption
+} from "@headlessui/react";
+
 import { useLocationService } from "../Hooks/useLocationService";
 import { HiOutlineSearch, HiX, HiLocationMarker } from "react-icons/hi";
 import Spinner from "../components/Location/Spinner";
 import IconButton from "./Location/IconButton";
 import { EMPTY_GEO, normalizeCountryCode, extractCoords } from "../utlis/geo";
 import { toast } from "sonner";
+import { useTranslation } from 'react-i18next'
+
 
 const LISTBOX_ID = "location-listbox";
 
@@ -22,6 +30,7 @@ export default function LocationInput({
   onSelect: onSelectProp,
 }) {
   const [query, setQuery] = useState(formData?.location?.placeName || "")
+  const { s } = useTranslation('location')
 
   const [selected, setSelected] = useState(null); // selected suggestion object
   const [error, setError] = useState("");
@@ -105,7 +114,7 @@ const lastPlaceIdRef = useRef(null)
         } catch (err) {
           console.error("[LocationInput] searchLocations:", err);
           const msg =
-            t?.("locationSearchFailed") || "Search failed, please try again";
+            s?.("locationSearchFailed") || "Search failed, please try again";
           setError(msg);
           toast.error(msg);
         }
@@ -205,8 +214,8 @@ const handleSelect = useCallback(
     } catch (err) {
       console.error("[LocationInput] Auto-detect:", err);
       const msg =
-        t?.(err?.message) ||
-        t?.("locationDetectionFailed") ||
+        s?.(err?.message) ||
+        s?.("locationDetectionFailed") ||
         "Unable to detect your location";
       setError(msg);
       toast.error(msg);
@@ -239,9 +248,9 @@ const handleSelect = useCallback(
   return (
     <div className="relative space-y-3">
       <label className="block text-sm font-semibold text-gray-700">
-        {t?.("location") || "Location"}
+        {s?.("location") || "Location"}
         <span className="text-gray-400 font-normal text-xs ml-1">
-          {t?.("locationHelper") || "City or area where you live"}
+          {s?.("locationHelper") || "City or area where you live"}
         </span>
       </label>
 
@@ -256,7 +265,7 @@ const handleSelect = useCallback(
             {/* icon */}
             <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none z-10" />
 
-            <Combobox.Input
+            <ComboboxInput
               ref={inputRef}
               className="w-full pl-11 pr-20 py-4 rounded-xl border bg-gray-50 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition placeholder-gray-400 text-base"
               displayValue={displayValue}
@@ -268,7 +277,7 @@ const handleSelect = useCallback(
                 setTouched(true);
               }}
               placeholder={
-                t?.("typeOrSearchLocation") || "Search for your city or area..."
+                s?.("typeOrSearchLocation") || "Search for your city or area..."
               }
               aria-describedby={error ? "location-error" : undefined}
             />
@@ -282,7 +291,7 @@ const handleSelect = useCallback(
                 query && (
                   <IconButton
                     onClick={handleClear}
-                    ariaLabel={t?.("clear") || "Clear location"}
+                    ariaLabel={s?.("clear") || "Clear location"}
                   >
                     <HiX className="w-4 h-4 text-gray-500" />
                   </IconButton>
@@ -292,7 +301,7 @@ const handleSelect = useCallback(
           </div>
 
           {/* Options rendered by Headless UI */}
-          <Combobox.Options
+          <ComboboxOptions
             static
             id={LISTBOX_ID}
             className={`absolute z-[99999] w-full mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-72 overflow-y-auto ${
@@ -312,7 +321,7 @@ const handleSelect = useCallback(
               const country =
                 item.country ?? item.countryName ?? item._raw?.country;
               return (
-                <Combobox.Option
+                <ComboboxOption
                   key={`${label}-${idx}-${item.id || ""}`}
                   value={item}
                   as="div"
@@ -332,10 +341,10 @@ const handleSelect = useCallback(
                       {country}
                     </div>
                   )}
-                </Combobox.Option>
+                </ComboboxOption>
               );
             })}
-          </Combobox.Options>
+          </ComboboxOptions>
         </Combobox>
 
         {/* Auto-detect button */}
@@ -353,14 +362,14 @@ const handleSelect = useCallback(
             <>
               <div className="h-4 w-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
               <span className="whitespace-nowrap">
-                {t?.("detecting") || "Detecting..."}
+                {s?.("detecting") || "Detecting..."}
               </span>
             </>
           ) : (
             <>
               <HiLocationMarker className="w-4 h-4" />
               <span className="whitespace-nowrap">
-                {t?.("useMyCurrentLocation") || "Use My Location"}
+                {s?.("useMyCurrentLocation") || "Use My Location"}
               </span>
             </>
           )}
@@ -399,10 +408,10 @@ const handleSelect = useCallback(
             </svg>
           </div>
           <p className="text-gray-600 font-medium">
-            {t?.("noResults") || "No locations found"}
+            {s?.("noResults") || "No locations found"}
           </p>
           <p className="text-gray-400 text-sm mt-1">
-            {t?.("tryDifferentSearch") ||
+            {s?.("tryDifferentSearch") ||
               "Try searching for a different city or area"}
           </p>
         </div>
