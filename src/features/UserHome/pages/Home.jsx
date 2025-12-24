@@ -183,20 +183,27 @@ export default function UserHomePage() {
 
       <div className="relative flex-1">
         {isEnd ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
-            <p className="text-gray-500 text-lg">
-              {profiles.length === 0
-                ? 'No profiles available'
-                : 'Reached the end of profiles'}
-            </p>
+         <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
+  <h2 className="text-xl font-semibold text-gray-800">
+    You are all caught up
+  </h2>
 
-            <button
-              onClick={handleRefresh}
-              className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-full shadow"
-            >
-              Refresh Profiles
-            </button>
-          </div>
+  <p className="mt-2 text-gray-500 max-w-md">
+   You’ve seen all the nearby profiles. Come back later — new faces are always joining.
+  </p>
+
+  <p className="mt-2 text-gray-400 text-sm">
+    Check back later or refresh to see if new profiles appear.
+  </p>
+
+  <button
+    onClick={handleRefresh}
+    className="mt-6 px-6 py-2 bg-primary text-white rounded-full shadow"
+  >
+    Refresh profiles
+  </button>
+</div>
+
         ) : (
           <Suspense fallback={<ProfileSkeleton />}>
             <SwipeDeck
