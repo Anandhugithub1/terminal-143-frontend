@@ -46,12 +46,11 @@ export default function Bio() {
 
   const handleNext = () => {
     if (!isBioValid) return;
+setFormData(p => ({
+  languagesKnown: selectedLanguages.map(l => l.value),
+  healthStatus: { ...healthStatusFromForm }
+}));
 
-    setFormData({
-      ...formData,
-      languagesKnown: selectedLanguages.map((l) => l.value),
-      healthStatus: { ...healthStatusFromForm },
-    });
 
     navigate("/complete/photo");
   };
@@ -73,10 +72,10 @@ export default function Bio() {
         <textarea
           value={formData.bio || ""}
           onChange={(e) =>
-            setFormData({
-              ...formData,
-              bio: e.target.value.slice(0, charLimit),
-            })
+         setFormData(p => ({
+  bio: e.target.value.slice(0, charLimit)
+}))
+
           }
           placeholder="I'm passionate about..."
           className="w-full p-4 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500 min-h-[160px]"
@@ -118,13 +117,13 @@ export default function Bio() {
         <Listbox
           value={healthStatusFromForm.stdStatus}
           onChange={(value) =>
-            setFormData({
-              ...formData,
-              healthStatus: {
-                ...healthStatusFromForm,
-                stdStatus: value,
-              },
-            })
+           setFormData(p => ({
+  healthStatus: {
+    ...(p.healthStatus || {}),
+    stdStatus: value
+  }
+}))
+
           }
         >
           <div className="relative mt-1">
@@ -175,13 +174,13 @@ export default function Bio() {
           type="date"
           value={healthStatusFromForm.lastTestedDate}
           onChange={(e) =>
-            setFormData({
-              ...formData,
-              healthStatus: {
-                ...healthStatusFromForm,
-                lastTestedDate: e.target.value,
-              },
-            })
+          setFormData(p => ({
+  healthStatus: {
+    ...(p.healthStatus || {}),
+    lastTestedDate: e.target.value
+  }
+}))
+
           }
           className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500"
         />

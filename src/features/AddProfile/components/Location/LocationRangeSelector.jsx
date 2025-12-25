@@ -37,16 +37,10 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
     (range, u = unit) => {
       const next = snapToStep(range)
 
-      setFormData((prev) => {
-        const prevUnit = prev?.searchRadius?.unit
-        const prevDistance = prev?.searchRadius?.distance
-        if (prevUnit === u && prevDistance === next) return prev
+     setFormData({
+  searchRadius: { distance: next, unit: u }
+})
 
-        return {
-          ...prev,
-          searchRadius: { distance: next, unit: u },
-        }
-      })
     },
     [setFormData, unit, snapToStep]
   )

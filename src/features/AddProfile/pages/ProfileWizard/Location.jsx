@@ -21,49 +21,37 @@ const Location = () => {
   const [error, setError] = useState('')
 
   // FIXED: normalize payload correctly
-  const setGeo = useCallback(
-    (payload) => {
-      if (!payload) {
-        setFormData(prev => ({
-          ...prev,
-          location: {
-            coordinates: { lat: null, lon: null },
-            placeName: "",
-            countryCode: "",
-            h3: { r4: "" }
-          }
-        }))
-        return
+ const setGeo = useCallback((payload) => {
+  if (!payload) {
+    setFormData({
+      location: {
+        coordinates: { lat: null, lon: null },
+        placeName: "",
+        countryCode: "",
+        h3: { r4: "" }
       }
+    })
+    return
+  }
 
-      const lat = payload.lat ?? payload.coordinates?.lat
-      const lon = payload.lng ?? payload.lon ?? payload.coordinates?.lon
+  const lat = payload.lat
+  const lon = payload.lon
 
-      setFormData(prev => ({
-        ...prev,
-        location: {
-          coordinates: {
-            lat,
-            lon
-          },
-          placeName: payload.placeName || payload.name || "",
-          countryCode: (payload.countryCode || payload.country || "")
-            .toString()
-            .toUpperCase()
-            .slice(0, 2),
-          h3: {
-            r4: payload.h3Index || ""
-          }
-        }
-      }))
-    },
-    [setFormData]
-  )
+  setFormData({
+    location: {
+      coordinates: { lat, lon },
+      placeName: payload.placeName || "",
+      countryCode: payload.countryCode || "",
+      h3: { r4: payload.h3Index || "" }
+    }
+  })
+}, [setFormData])
+
 
   const validate = useCallback(
     () =>
-      location?.coordinates?.lat != null &&
-      location?.coordinates?.lon != null
+     location?.placeName && location.placeName.length > 0
+
         ? null
         : t("locationRequired") || "Please select your location",
     [location, t]

@@ -7,7 +7,6 @@ import React, {
 import { useWizard } from "../../contexts/ProfileWizard"
 import { useNavigate } from "react-router-dom"
 import { ProgressBar } from "./Progess"
-import { del } from "idb-keyval"
 import { Button } from "../../../../shared/Button"
 import { useMutation } from "@tanstack/react-query"
 import { categories } from "../../utlis"
@@ -24,43 +23,88 @@ const SINGLE_PHOTO_GENDERS = ["M", "TM"]
 export default function Tags() {
   const { formData, setFormData, clearFormData } = useWizard()
   const navigate = useNavigate()
+
   const gender = localStorage.getItem("gender")
   const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+
   const isMountedRef = useRef(true)
+  const submittingRef = useRef(false)
 
-  useEffect(() => () => { isMountedRef.current = false }, [])
-
-  const selectedInterests = useMemo(
-    () =>
-      Object.entries(categories).flatMap(
-        ([cat]) => formData[cat] || []
-      ),
-    [formData]
-  )
-const hasAtLeastOneInterest = selectedInterests.length > 0
-
-  const completeMutation = useMutation({
-    mutationFn: completeProfileApi,
-    onSuccess: async () => {
-      clearFormData()
-     
-      navigate("/home", { state: { profileJustCompleted: true } })
-    },
-    onError: (err) => {
-      const msg =
-        err?.response?.data?.message ||
-        "Profile completion failed"
-      setErrorMessage(msg)
-      toast.error(msg)
-    },
-    onSettled: () => {
-      if (isMountedRef.current) setIsSubmitting(false)
+  /* ============================
+     Lifecycle safety
+     ============================ */
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false
     }
-  })
+  }, [])
 
+  /* ============================
+     Prevent refresh / tab close
+     ============================ */
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!submittingRef.current) return
+      e.preventDefault()
+      e.returnValue = ""
+    }
+
+    window.addEventListener("beforeunload", handleBeforeUnload)
+    return () =>
+      window.removeEventListener("beforeunload", handleBeforeUnload)
+  }, [])
+
+  /* ============================
+     Interests
+     ============================ */
+  const selectedInterests = useMemo(() => {
+    return Object.keys(categories).flatMap(
+      (cat) => formData[cat] || []
+    )
+  }, [formData])
+
+  const hasAtLeastOneInterest = selectedInterests.length > 0
+
+  /* ============================
+     Mutation
+     ============================ */
+const completeMutation = useMutation({
+  mutationFn: completeProfileApi,
+
+  onSuccess: () => {
+    submittingRef.current = false
+    clearFormData()
+      toast.success(" Your profile is ready! Welcome aboard.", {
+    duration: 3000
+  })
+  setTimeout(() => {
+    navigate("/home", {
+      state: { profileJustCompleted: true }
+    })
+  }, 500)
+
+
+  },
+
+  onError: (err) => {
+    submittingRef.current = false
+    toast.error(
+      err?.response?.data?.message || "Profile completion failed"
+    )
+  },
+
+  onSettled: () => {
+    submittingRef.current = false
+    setIsSubmitting(false)
+  }
+})
+
+  /* ============================
+     Upload helper
+     ============================ */
   const uploadSinglePhoto = async (file, index) => {
     const { uploadUrl, publicUrl } =
       await getPresignedUrl({
@@ -77,76 +121,107 @@ const hasAtLeastOneInterest = selectedInterests.length > 0
     return publicUrl
   }
 
+  /* ============================
+     Submit
+     ============================ */
   const handleSubmit = async () => {
-  if (isSubmitting || !hasAtLeastOneInterest) return
-  setIsSubmitting(true)
+  if (submittingRef.current) return
 
-
-    try {
-      const files = isSinglePhoto
-        ? [formData.profilePhoto].filter(Boolean)
-        : (formData.profilePhotos || []).filter(Boolean)
-
-      if (!files.length) {
-        toast.error("Please upload at least one photo")
-        setIsSubmitting(false)
-        return
-      }
-
-      const uploaded = []
-
-      for (let i = 0; i < files.length; i++) {
-        const url = await uploadSinglePhoto(files[i], i)
-        uploaded.push({
-          url,
-          isProfile: i === 0,
-          order: i
-        })
-      }
-
-      const payload = {
-        ...formData,
-        interests: selectedInterests,
-        photos: uploaded
-      }
-
-      const normalizedLocation =
-        normalizeGeoForApi(formData.location)
-
-      if (normalizedLocation)
-        payload.location = normalizedLocation
-      else delete payload.location
-
-      if (formData.searchRadius) {
-        payload.searchRadius = {
-          distance:
-            Number(formData.searchRadius.distance) || 25,
-          unit: formData.searchRadius.unit || "km"
-        }
-      }
-
-      completeMutation.mutate(payload)
-    } catch (err) {
-      console.error("Profile completion error:", err)
-      toast.error("Something went wrong")
-      setIsSubmitting(false)
-    }
+  if (!hasAtLeastOneInterest) {
+    toast.error("Select at least one interest")
+    return
   }
 
-  const toggleInterest = (category, value, checked) => {
-    const current = formData[category] || []
+  submittingRef.current = true
+  setIsSubmitting(true)
 
-    setFormData({
+  toast.warning(
+    "Please don’t refresh or leave this page while we finish setting up your profile.",
+    { duration: 5000 }
+  )
+
+  try {
+    const files = isSinglePhoto
+      ? [formData.profilePhoto].filter(Boolean)
+      : (formData.profilePhotos || []).filter(Boolean)
+
+    if (!files.length) {
+      throw new Error("NO_PHOTOS")
+    }
+
+    const photos = []
+
+    for (let i = 0; i < files.length; i++) {
+      const url = await uploadSinglePhoto(files[i], i)
+      photos.push({
+        url,
+        isProfile: i === 0,
+        order: i
+      })
+    }
+
+    const payload = {
       ...formData,
-      [category]: checked
-        ? [...current, value]
-        : current.filter((v) => v !== value)
+      interests: selectedInterests,
+      photos,
+      searchRadius: {
+        distance: Number(formData.searchRadius?.distance) || 25,
+        unit: formData.searchRadius?.unit || "km"
+      }
+    }
+
+    const normalizedLocation = normalizeGeoForApi(formData.location)
+    if (normalizedLocation) payload.location = normalizedLocation
+
+    console.log("FINAL PAYLOAD →", payload)
+
+    await completeMutation.mutateAsync(payload)
+
+  } catch (err) {
+    console.error("Profile completion error:", err)
+
+    if (err.message === "NO_PHOTOS") {
+      toast.error("Please upload at least one photo")
+    } else {
+      toast.error("Something went wrong")
+    }
+
+    submittingRef.current = false
+    setIsSubmitting(false)
+  }
+}
+
+
+  /* ============================
+     Toggle interests
+     ============================ */
+  const toggleInterest = (category, value, checked) => {
+    setFormData((prev) => {
+      const current = prev[category] || []
+      return {
+        ...prev,
+        [category]: checked
+          ? current.includes(value)
+            ? current
+            : [...current, value]
+          : current.filter((v) => v !== value)
+      }
     })
   }
 
+  /* ============================
+     Render
+     ============================ */
   return (
     <div className="animate-fade-in">
       <ProgressBar step={5} totalSteps={5} />
+
+      {isSubmitting && (
+        <div className="mb-6 rounded-xl border border-yellow-300 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+          <strong>Almost done!</strong>{" "}
+          Please don’t refresh or leave this page.
+        </div>
+      )}
 
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -198,12 +273,11 @@ const hasAtLeastOneInterest = selectedInterests.length > 0
         </p>
       )}
 
-
-{!hasAtLeastOneInterest && (
-  <p className="text-center mt-4 text-sm text-gray-400">
-    Select at least one interest to continue
-  </p>
-)}
+      {!hasAtLeastOneInterest && (
+        <p className="text-center mt-4 text-sm text-gray-400">
+          Select at least one interest to continue
+        </p>
+      )}
 
       <div className="mt-8 flex gap-4">
         <Button
@@ -215,15 +289,15 @@ const hasAtLeastOneInterest = selectedInterests.length > 0
           Back
         </Button>
 
-       <button
-  onClick={handleSubmit}
-  disabled={isSubmitting || !hasAtLeastOneInterest}
-  className={`flex-1 font-semibold py-3 px-6 rounded-3xl transition ${
-    isSubmitting || !hasAtLeastOneInterest
-      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-      : "bg-primary text-white"
-  }`}
->
+        <button
+          onClick={handleSubmit}
+          disabled={isSubmitting || !hasAtLeastOneInterest}
+          className={`flex-1 font-semibold py-3 px-6 rounded-3xl transition ${
+            isSubmitting || !hasAtLeastOneInterest
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-primary text-white"
+          }`}
+        >
           {isSubmitting ? "Saving..." : "Finish Setup"}
         </button>
       </div>

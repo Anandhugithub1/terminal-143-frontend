@@ -1,64 +1,87 @@
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect, useCallback } from "react"
 
 const WizardContext = createContext()
 
-export const WizardProvider = ({ children }) => {
-  const STORAGE_KEY = "profileWizardData"
+const STORAGE_KEY = "profileWizardData"
 
-  const defaultFormData = {
-    name: "",
-    bio: "",
-    age: "",
-    socialMediaLinks: [],
+const getDefaultFormData = () => ({
+  name: "",
+  bio: "",
+  age: "",
+  socialMediaLinks: [],
 
-    profilePhoto: null,
-    profilePhotos: [],
+  profilePhoto: null,
+  profilePhotos: [],
 
-    interests: [],
-    languages: [],
+  interests: [],
+  languages: [],
 
-    location: {
-      coordinates: {
-        lat: null,
-        lon: null
-      },
-      placeName: "",
-      countryCode: "",
-      h3: {
-        r4: ""
-      }
+  location: {
+    coordinates: {
+      lat: null,
+      lon: null
     },
-
-    searchRadius: {
-      distance: 25,
-      unit: "km"
+    placeName: "",
+    countryCode: "",
+    h3: {
+      r4: ""
     }
+  },
+
+  searchRadius: {
+    distance: 25,
+    unit: "km"
   }
+})
 
+export const WizardProvider = ({ children }) => {
   const saved = sessionStorage.getItem(STORAGE_KEY)
-  const initialData = saved
-    ? { ...defaultFormData, ...JSON.parse(saved) }
-    : defaultFormData
 
-  const [formData, setFormData] = useState(initialData)
+  const initialData = saved
+    ? { ...getDefaultFormData(), ...JSON.parse(saved) }
+    : getDefaultFormData()
+
+  const [formData, setFormDataState] = useState(initialData)
 
   useEffect(() => {
     const { profilePhoto, profilePhotos, ...rest } = formData
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(rest))
   }, [formData])
 
-  const clearFormData = () => {
+const setFormData = (updater) => {
+  setFormDataState(prev => {
+    const next =
+      typeof updater === "function"
+        ? updater(prev)
+        : updater
+
+    return { ...prev, ...next }
+  })
+}
+
+
+  const clearFormData = useCallback(() => {
     sessionStorage.removeItem(STORAGE_KEY)
-    setFormData(defaultFormData)
-  }
+    setFormDataState(getDefaultFormData())
+  }, [])
 
   return (
     <WizardContext.Provider
-      value={{ formData, setFormData, clearFormData }}
+      value={{
+        formData,
+        setFormData,
+        clearFormData
+      }}
     >
       {children}
     </WizardContext.Provider>
   )
 }
 
-export const useWizard = () => useContext(WizardContext)
+export const useWizard = () => {
+  const ctx = useContext(WizardContext)
+  if (!ctx) {
+    throw new Error("useWizard must be used inside WizardProvider")
+  }
+  return ctx
+}

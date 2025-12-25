@@ -84,15 +84,19 @@ const Step1BasicInfo = () => {
     navigate('/complete/location');
   };
 
-  const togglePreference = (value) => {
-    const prefs = formData.preferences || [];
-    setFormData({
-      ...formData,
+ const togglePreference = (value) => {
+  setFormData((prev) => {
+    const prefs = prev.preferences || [];
+
+    return {
+      ...prev,
       preferences: prefs.includes(value)
         ? prefs.filter((p) => p !== value)
         : [...prefs, value],
-    });
-  };
+    };
+  });
+};
+
 
   const addSocialLink = () => {
     const trimmed = socialInput.trim();
@@ -103,7 +107,13 @@ const Step1BasicInfo = () => {
       ...(formData.socialMediaLinks || []),
       { platform: socialPlatform, usernameOrLink: trimmed },
     ];
-    setFormData({ ...formData, socialMediaLinks: updated });
+    setFormData(p => ({
+  socialMediaLinks: [
+    ...(p.socialMediaLinks || []),
+    { platform: socialPlatform, usernameOrLink: trimmed }
+  ]
+}));
+
     setSocialInput('');
     setSocialPlatform('');
     setError('');
@@ -112,7 +122,10 @@ const Step1BasicInfo = () => {
   const removeSocialLink = (index) => {
     const updated = [...(formData.socialMediaLinks || [])];
     updated.splice(index, 1);
-    setFormData({ ...formData, socialMediaLinks: updated });
+    setFormData(p => ({
+  socialMediaLinks: (p.socialMediaLinks || []).filter((_, i) => i !== index)
+}));
+
   };
 
   return (
@@ -129,7 +142,8 @@ const Step1BasicInfo = () => {
           id="fullName"
           value={formData.name}
           onChange={(e) => {
-            setFormData({ ...formData, name: e.target.value });
+            setFormData(p => ({ name: e.target.value }));
+
             // optimistically clear inline error about name
             if (error && e.target.value?.trim()) setError('');
           }}
@@ -150,7 +164,8 @@ const Step1BasicInfo = () => {
               type="date"
               value={formData.dob}
               onChange={(e) => {
-                setFormData({ ...formData, dob: e.target.value });
+                setFormData(p => ({ dob: e.target.value }));
+
                 // clear dob-related error if fixed
                 if (error && calculateAge(e.target.value) >= 18) setError('');
               }}
