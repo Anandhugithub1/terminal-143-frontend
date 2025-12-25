@@ -27,6 +27,7 @@ export const mapProfile = (data) => {
     profileCompleted: Boolean(data?.profileCompleted),
     popularity: data?.popularity || 0,
     photos,
+    profileLink:data?.profileLink || "",
     profilePhoto,
     raw: data
   }
