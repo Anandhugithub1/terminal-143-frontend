@@ -22,7 +22,6 @@ export default defineConfig({
           if (!id.includes('node_modules')) return
 
           if (id.includes('@tanstack')) return 'tanstack'
-          if (id.includes('react-router')) return 'router'
           if (id.includes('i18next')) return 'i18n'
           if (id.includes('headlessui')) return 'headlessui'
           if (id.includes('react-icons')) return 'icons'
