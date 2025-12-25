@@ -1,232 +1,243 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useWizard } from '../../contexts/ProfileWizard';
-import { InputField } from '../../../../shared/common';
-import { ProgressBar } from './Progess';
-import { Button } from '../../../../shared/Button';
-import SocialLinkInput from '../../components/SocialLinkInput';
-import SocialLinkChip from '../../components/SocialLinkChip';
-import { AiOutlineCalendar } from 'react-icons/ai';
+import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useWizard } from '../../contexts/ProfileWizard'
+import { InputField } from '../../../../shared/common'
+import { ProgressBar } from './Progess'
+import { Button } from '../../../../shared/Button'
+import SocialLinkInput from '../../components/SocialLinkInput'
+import SocialLinkChip from '../../components/SocialLinkChip'
+import { AiOutlineCalendar } from 'react-icons/ai'
 
-import { calculateAge, validateLink, PREFERENCES, SOCIAL_PLATFORMS } from '../../utlis';
-import { useTranslation } from 'react-i18next';
+import {
+  calculateAge,
+  validateLink,
+  PREFERENCES,
+  SOCIAL_PLATFORMS
+} from '../../utlis'
+import { useTranslation } from 'react-i18next'
+
+const MAX_PREFERENCES = 2
 
 const Step1BasicInfo = () => {
-  const { formData, setFormData } = useWizard();
-  const navigate = useNavigate();
-  const [error, setError] = useState('');
-  const [socialPlatform, setSocialPlatform] = useState('');
-  const [socialInput, setSocialInput] = useState('');
-  const dobRef = useRef(null);
+  const { formData, setFormData } = useWizard()
+  const navigate = useNavigate()
 
-  const { t } = useTranslation('common');
+  const [error, setError] = useState('')
+  const [socialPlatform, setSocialPlatform] = useState('')
+  const [socialInput, setSocialInput] = useState('')
 
-  const currentYear = new Date().getFullYear();
-  const minDob = '1950-01-01';
-  const maxDob = `${currentYear}-12-31`;
+  const dobRef = useRef(null)
+  const { t } = useTranslation('common')
 
-  const hasSocial = !!(formData?.socialMediaLinks && formData.socialMediaLinks.length > 0);
+  const currentYear = new Date().getFullYear()
+  const minDob = '1950-01-01'
+  const maxDob = `${currentYear}-12-31`
 
-  // computed disabled state for Next button
+  const preferences = formData?.preferences || []
+  const hasSocial =
+    !!formData?.socialMediaLinks &&
+    formData.socialMediaLinks.length > 0
+
   const isNextDisabled =
     !formData?.name?.trim() ||
     !formData?.dob ||
     calculateAge(formData.dob) < 18 ||
-    !formData?.preferences ||
-    formData.preferences.length === 0 ||
-    !hasSocial; // <-- require at least one social link
+    preferences.length === 0 ||
+    !hasSocial
 
-  // clear error when user fixes the required fields
   useEffect(() => {
-    if (!error) return;
-    const hasName = !!formData?.name?.trim();
-    const hasDob = !!formData?.dob && calculateAge(formData.dob) >= 18;
-    const hasPrefs = !!formData?.preferences && formData.preferences.length > 0;
-    const hasSocialNow = !!(formData?.socialMediaLinks && formData.socialMediaLinks.length > 0);
+    if (!error) return
 
-    if (hasName && hasDob && hasPrefs && hasSocialNow) {
-      setError('');
+    if (
+      formData?.name?.trim() &&
+      formData?.dob &&
+      calculateAge(formData.dob) >= 18 &&
+      preferences.length > 0 &&
+      hasSocial
+    ) {
+      setError('')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formData.name, formData.dob, formData.preferences, formData.socialMediaLinks]);
+  }, [
+    formData?.name,
+    formData?.dob,
+    preferences,
+    formData?.socialMediaLinks
+  ])
 
   const handleNext = () => {
-    // Double-check validations in case user triggers (keyboard etc.)
-    if (!formData.name || !formData.name.trim()) {
-      setError(t('nameError'));
-      return;
-    }
-    if (!formData.dob) {
-      setError(t('dobRequired'));
-      return;
+    if (!formData?.name?.trim()) {
+      setError(t('nameError'))
+      return
     }
 
-    const age = calculateAge(formData.dob);
-    if (age < 18) {
-      setError(t('dobError'));
-      return;
+    if (!formData?.dob) {
+      setError(t('dobRequired'))
+      return
     }
 
-    if (!formData.preferences || formData.preferences.length === 0) {
-      setError(t('preferencesRequired'));
-      return;
+    if (calculateAge(formData.dob) < 18) {
+      setError(t('dobError'))
+      return
     }
 
-    // NEW: require at least one social link or username
-    if (!formData.socialMediaLinks || formData.socialMediaLinks.length === 0) {
-      // translation key 'socialRequired' expected — fallback text if missing
-      setError(t('socialRequired') || 'Please add at least one social media username or link.');
-      return;
+    if (preferences.length === 0) {
+      setError(t('preferencesRequired'))
+      return
     }
 
-    // all good
-    setError('');
-    navigate('/complete/location');
-  };
+    if (!hasSocial) {
+      setError(
+        t('socialRequired') ||
+          'Please add at least one social media username or link.'
+      )
+      return
+    }
 
- const togglePreference = (value) => {
-  setFormData((prev) => {
-    const prefs = prev.preferences || [];
+    setError('')
+    navigate('/complete/location')
+  }
 
-    return {
-      ...prev,
-      preferences: prefs.includes(value)
-        ? prefs.filter((p) => p !== value)
-        : [...prefs, value],
-    };
-  });
-};
+  const togglePreference = (value) => {
+    setFormData((prev) => {
+      const prefs = prev.preferences || []
 
+      if (prefs.includes(value)) {
+        return {
+          ...prev,
+          preferences: prefs.filter((p) => p !== value)
+        }
+      }
+
+      if (prefs.length >= MAX_PREFERENCES) {
+        setError(
+          t('maxTwoPreferences') ||
+            'You can select up to 2 preferences only'
+        )
+        return prev
+      }
+
+      return {
+        ...prev,
+        preferences: [...prefs, value]
+      }
+    })
+  }
 
   const addSocialLink = () => {
-    const trimmed = socialInput.trim();
-    if (!socialPlatform || !trimmed) return;
-    if (!validateLink(trimmed)) return setError(t('invalidLink'));
+    const trimmed = socialInput.trim()
+    if (!socialPlatform || !trimmed) return
+    if (!validateLink(trimmed)) {
+      setError(t('invalidLink'))
+      return
+    }
 
-    const updated = [
-      ...(formData.socialMediaLinks || []),
-      { platform: socialPlatform, usernameOrLink: trimmed },
-    ];
-    setFormData(p => ({
-  socialMediaLinks: [
-    ...(p.socialMediaLinks || []),
-    { platform: socialPlatform, usernameOrLink: trimmed }
-  ]
-}));
+    setFormData((p) => ({
+      ...p,
+      socialMediaLinks: [
+        ...(p.socialMediaLinks || []),
+        { platform: socialPlatform, usernameOrLink: trimmed }
+      ]
+    }))
 
-    setSocialInput('');
-    setSocialPlatform('');
-    setError('');
-  };
+    setSocialInput('')
+    setSocialPlatform('')
+    setError('')
+  }
 
   const removeSocialLink = (index) => {
-    const updated = [...(formData.socialMediaLinks || [])];
-    updated.splice(index, 1);
-    setFormData(p => ({
-  socialMediaLinks: (p.socialMediaLinks || []).filter((_, i) => i !== index)
-}));
-
-  };
+    setFormData((p) => ({
+      ...p,
+      socialMediaLinks: (p.socialMediaLinks || []).filter(
+        (_, i) => i !== index
+      )
+    }))
+  }
 
   return (
     <div className="animate-fade-in">
       <ProgressBar step={1} totalSteps={5} />
+
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">{t('title')}</h2>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          {t('title')}
+        </h2>
         <p className="text-gray-500">{t('subtitle')}</p>
       </div>
 
       <div className="space-y-6">
-        {/* Full Name */}
         <InputField
           id="fullName"
-          value={formData.name}
-          onChange={(e) => {
-            setFormData(p => ({ name: e.target.value }));
-
-            // optimistically clear inline error about name
-            if (error && e.target.value?.trim()) setError('');
-          }}
+          value={formData?.name || ''}
+          onChange={(e) =>
+            setFormData((p) => ({ ...p, name: e.target.value }))
+          }
           placeholder={t('fullName')}
-          className="w-full p-4 border-0 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500"
         />
 
-        {/* Date of Birth */}
         <div>
-          <label htmlFor="dob" className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-700">
             {t('dob')}
           </label>
 
           <div className="relative mt-1">
             <InputField
               ref={dobRef}
-              id="dob"
               type="date"
-              value={formData.dob}
-              onChange={(e) => {
-                setFormData(p => ({ dob: e.target.value }));
-
-                // clear dob-related error if fixed
-                if (error && calculateAge(e.target.value) >= 18) setError('');
-              }}
+              value={formData?.dob || ''}
               min={minDob}
               max={maxDob}
-              className="w-full p-4 pr-11 border-0 bg-gray-50 rounded-xl
-                 focus:ring-2 focus:ring-pink-500 appearance-none with-custom-date-icon"
+              onChange={(e) =>
+                setFormData((p) => ({ ...p, dob: e.target.value }))
+              }
             />
 
             <button
               type="button"
               className="absolute right-4 top-1/2 -translate-y-1/2"
-              onClick={() => {
-                if (dobRef.current?.showPicker) {
-                  // Modern browsers
-                  dobRef.current.showPicker();
-                } else {
-                  // Fallback
-                  dobRef.current?.focus();
-                }
-              }}
+              onClick={() => dobRef.current?.showPicker?.()}
             >
-              <AiOutlineCalendar className="text-gray-400" size={20} />
+              <AiOutlineCalendar size={20} />
             </button>
           </div>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
 
-        {/* Preferences as Chips */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
+          <label className="block text-sm font-medium mb-3">
             {t('preferencesTitle')}
           </label>
+
           <div className="flex flex-wrap gap-3">
-            {Object.entries(PREFERENCES).map(([label, value]) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => {
-                  togglePreference(value);
-                  // clear preference error immediately when selecting
-                  if (error && (formData.preferences || []).length === 0) setError('');
-                }}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${
-                  (formData.preferences || []).includes(value)
-                    ? 'bg-pink-500 text-white shadow-md shadow-pink-500/20'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
+            {Object.entries(PREFERENCES).map(([label, value]) => {
+              const selected = preferences.includes(value)
+              const disabled =
+                !selected && preferences.length >= MAX_PREFERENCES
+
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => togglePreference(value)}
+                  className={`px-5 py-2 rounded-full text-sm font-medium transition ${
+                    selected
+                      ? 'bg-pink-500 text-white'
+                      : disabled
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-gray-100 hover:bg-gray-200'
+                  }`}
+                >
+                  {label}
+                </button>
+              )
+            })}
           </div>
         </div>
 
-        {/* Social Media Links (REQUIRED) */}
-        <div className="mt-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div>
+          <label className="block text-sm font-medium mb-2">
             {t('socialLabel')}
-            {/* removed optional hint — social is required now */}
           </label>
 
           <SocialLinkInput
@@ -239,25 +250,16 @@ const Step1BasicInfo = () => {
             disabled={!socialPlatform || !socialInput.trim()}
           />
 
-          {formData.socialMediaLinks?.length > 0 && (
+          {formData?.socialMediaLinks?.length > 0 && (
             <div className="flex flex-wrap gap-2 mt-3">
-              {formData.socialMediaLinks.map((link, idx) => (
+              {formData.socialMediaLinks.map((link, i) => (
                 <SocialLinkChip
-                  key={idx}
-                  platform={link.platform}
-                  usernameOrLink={link.usernameOrLink}
-                  onRemove={() => removeSocialLink(idx)}
+                  key={i}
+                  {...link}
+                  onRemove={() => removeSocialLink(i)}
                 />
               ))}
             </div>
-          )}
-
-          {/* subtle hint when none added yet */}
-          {!hasSocial && (
-            <p className="mt-2 text-xs text-gray-500">
-              {/* {t('socialHelper') ||   'Add at least one social username or link to continue.'  } */}
-              Add at least one social username or link to continue
-            </p>
           )}
         </div>
       </div>
@@ -265,14 +267,12 @@ const Step1BasicInfo = () => {
       <Button
         onClick={handleNext}
         disabled={isNextDisabled}
-        className={`mt-8 py-4 w-full transition ${
-          isNextDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
-        }`}
+        className="mt-8 w-full"
       >
         {t('continue')}
       </Button>
     </div>
-  );
-};
+  )
+}
 
-export default Step1BasicInfo;
+export default Step1BasicInfo
