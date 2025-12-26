@@ -41,44 +41,31 @@ const profileFromHook = data ?? null
   // Access = logged in AND profile loaded
   const hasAccess = !!myProfile && !!profileFromHook
 
-
 const src = profileFromHook ?? {}
 
-// ---- photos ----
-const photoUrls = Array.isArray(src.photos)
+const images = Array.isArray(src.photos)
   ? src.photos
       .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
       .map(p => p.url)
   : []
 
-const mainPhoto = photoUrls[0] ?? placeholderImage
-
-// ---- normalized profile ----
 const normalized = {
   name: src.name ?? src.username ?? "",
   age: src.dob ? computeAge(src.dob) : null,
   about: src.bio ?? "",
-  images: photoUrls.length ? photoUrls : [placeholderImage],
-  mainPhoto,
 
-  interests: Array.isArray(src.interests)
-    ? src.interests
-    : Array.isArray(src.interest)
-    ? src.interest
-    : Array.isArray(src.preferences)
+  images: images.length ? images : [placeholderImage],
+
+  interests: Array.isArray(src.preferences)
     ? src.preferences
     : [],
 
   languages: Array.isArray(src.languagesKnown)
     ? src.languagesKnown
-    : Array.isArray(src.languages)
-    ? src.languages
-    : src.language
-    ? [src.language]
     : [],
 
-  location: src.location ?? src.city ?? "",
-  job: src.job ?? src.employer ?? "",
+  location: src.location ?? "",
+  job: src.job ?? "",
   healthStatus: src.healthStatus ?? {}
 }
 
