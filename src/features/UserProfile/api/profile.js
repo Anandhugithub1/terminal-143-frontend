@@ -27,7 +27,7 @@ export const updateMyProfile = async (payload) => {
 
 export const getProfileByLink = async (link) => {
   const fullUrl = `https://terminal143.com/profile/${link}`;
-  const res = await userProfilesApi.get('v.02/user/by-link', {
+  const res = await userProfilesApi.get('v0.2/user/by-link', {
     params: { url: fullUrl },  withCredentials: true
   });
 
