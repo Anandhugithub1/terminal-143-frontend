@@ -27,7 +27,7 @@ export const updateMyProfile = async (payload) => {
 
 export const getProfileByLink = async (link) => {
   const fullUrl = `https://terminal143.com/profile/${link}`;
-  const res = await userProfilesApi.get('/user/by-link', {
+  const res = await userProfilesApi.get('v.02/user/by-link', {
     params: { url: fullUrl },  withCredentials: true
   });
 
@@ -37,7 +37,7 @@ export const getProfileByLink = async (link) => {
 /** Get presigned URL for image upload */
 export const getPresignedUrl = async ({ fileType, photoIndex }) => {
   const res = await userProfilesApi.post(
-    "/user/presigned-url",
+    "v0.2/user/presigned-url",
     { fileType, photoIndex },
     { withCredentials: true }
   )

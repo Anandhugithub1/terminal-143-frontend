@@ -19,7 +19,7 @@ import { useProtectedLocks } from "../Hooks/useProtectedLocks"
 export default function PublicProfilePage() {
   const navigate = useNavigate()
   const { type, gender, level, username } = useParams()
-  const profileLink = `${type}/${gender}/${level}/${username}`
+  const profileLink = `${username}`
 
   // Logged-in user profile (TanStack Query)
   const {
@@ -36,12 +36,7 @@ export default function PublicProfilePage() {
 
   const profileFromHook = data?.profile ?? data ?? null
 
-  // Redirect non-mp links
-  useEffect(() => {
-    if (type !== "mp") {
-      navigate("/home", { replace: true })
-    }
-  }, [type, navigate])
+
 
   // Access = logged in AND profile loaded
   const hasAccess = !!myProfile

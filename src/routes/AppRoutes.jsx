@@ -158,7 +158,7 @@ export const appRoutes = (
       }
     />
     <Route
-      path="/profile/:type/:gender/:level/:username"
+      path="/profile/:username"
       element={
         <Suspense fallback={<LoadingSpinner />}>
           <PublicProfilePage />
