@@ -18,7 +18,7 @@ import { useProtectedLocks } from "../Hooks/useProtectedLocks"
 
 export default function PublicProfilePage() {
   const navigate = useNavigate()
-  const { type, gender, level, username } = useParams()
+  const {  username } = useParams()
   const profileLink = `${username}`
 
   // Logged-in user profile (TanStack Query)
@@ -34,12 +34,13 @@ export default function PublicProfilePage() {
     error: profileError
   } = useProfileByLink(profileLink)
 
-  const profileFromHook = data?.profile ?? data ?? null
+const profileFromHook = data ?? null
 
 
 
   // Access = logged in AND profile loaded
-  const hasAccess = !!myProfile
+  const hasAccess = !!myProfile && !!profileFromHook
+
 
   // normalized (unchanged logic)
   const src = profileFromHook ?? {}

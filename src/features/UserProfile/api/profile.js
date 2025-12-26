@@ -25,14 +25,15 @@ export const updateMyProfile = async (payload) => {
 }
 
 
-export const getProfileByLink = async (link) => {
-  const fullUrl = `https://terminal143.com/profile/${link}`;
-  const res = await userProfilesApi.get('v0.2/user/by-link', {
-    params: { url: fullUrl },  withCredentials: true
-  });
+export const getProfileByLink = async (username) => {
+  const res = await userProfilesApi.get("v0.2/user/by-link", {
+    params: { username },
+    withCredentials: true
+  })
 
-  return res.data.profile;
-};
+  return res.data.profile
+}
+
 
 /** Get presigned URL for image upload */
 export const getPresignedUrl = async ({ fileType, photoIndex }) => {
