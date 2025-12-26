@@ -42,43 +42,46 @@ const profileFromHook = data ?? null
   const hasAccess = !!myProfile && !!profileFromHook
 
 
-  // normalized (unchanged logic)
-  const src = profileFromHook ?? {}
-  const mainPhoto =
-    src.photo ??
-    src.profilePhoto ??
-    (Array.isArray(src.photos) ? src.photos[0] : null) ??
-    placeholderImage
+const src = profileFromHook ?? {}
 
-  const normalized = {
-    name: src.name ?? src.username ?? "",
-    age: src.dob ? computeAge(src.dob) : 26,
-    about: src.bio ?? src.about ?? "",
-    images:
-      Array.isArray(src.photos) && src.photos.length
-        ? src.photos
-        : [mainPhoto],
-    mainPhoto,
-    interests: Array.isArray(src.interests)
-      ? src.interests
-      : Array.isArray(src.interest)
-      ? src.interest
-      : typeof src.interests === "string"
-      ? [src.interests]
-      : typeof src.interest === "string"
-      ? [src.interest]
-      : [],
-    languages: Array.isArray(src.languages)
-      ? src.languages
-      : Array.isArray(src.languagesKnown)
-      ? src.languagesKnown
-      : src.language
-      ? [src.language]
-      : [],
-    location: src.location ?? src.city ?? "",
-    job: src.job ?? src.employer ?? "",
-    healthStatus: src.healthStatus ?? {}
-  }
+// ---- photos ----
+const photoUrls = Array.isArray(src.photos)
+  ? src.photos
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      .map(p => p.url)
+  : []
+
+const mainPhoto = photoUrls[0] ?? placeholderImage
+
+// ---- normalized profile ----
+const normalized = {
+  name: src.name ?? src.username ?? "",
+  age: src.dob ? computeAge(src.dob) : null,
+  about: src.bio ?? "",
+  images: photoUrls.length ? photoUrls : [placeholderImage],
+  mainPhoto,
+
+  interests: Array.isArray(src.interests)
+    ? src.interests
+    : Array.isArray(src.interest)
+    ? src.interest
+    : Array.isArray(src.preferences)
+    ? src.preferences
+    : [],
+
+  languages: Array.isArray(src.languagesKnown)
+    ? src.languagesKnown
+    : Array.isArray(src.languages)
+    ? src.languages
+    : src.language
+    ? [src.language]
+    : [],
+
+  location: src.location ?? src.city ?? "",
+  job: src.job ?? src.employer ?? "",
+  healthStatus: src.healthStatus ?? {}
+}
+
 
   // locks when user has no access
   const { wrapperRef, layerRef, locks } = useProtectedLocks(!hasAccess)
