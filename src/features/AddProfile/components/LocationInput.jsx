@@ -96,48 +96,48 @@ export default function LocationInput({
   )
 
   useEffect(() => () => clearTimeout(debounceRef.current), [])
+const handleSelect = useCallback(
+  (item) => {
+    if (!item) return
 
-  const handleSelect = useCallback(
-    async (item) => {
-      if (!item) return
+    const raw = item._raw || item
+    const { lat, lon } = extractCoords(item)
 
-      const raw = item._raw || item
-      const { lat, lon } = extractCoords(item)
+    const base = {
+      lat,
+      lon,
+      placeName:
+        item.placeName ?? item.name ?? raw.placeName ?? raw.name ?? "",
+      countryCode: normalizeCountryCode(
+        item.countryCode ||
+          item.country ||
+          raw.country ||
+          raw.country_code ||
+          ""
+      ),
+      h3Index: ""
+    }
 
-      const base = {
-        lat,
-        lon,
-        placeName:
-          item.placeName ?? item.name ?? raw.placeName ?? raw.name ?? "",
-        countryCode: normalizeCountryCode(
-          item.countryCode ||
-            item.country ||
-            raw.country ||
-            raw.country_code ||
-            ""
-        ),
-        h3Index: ""
-      }
+    //  Immediate UI update
+    onSelect?.(base, null)
+    setSelected(item)
+    setQuery(base.placeName)
+    clearSuggestions()
+    setTouched(false)
 
-      // Immediate update (for validation + UI)
-      onSelect?.(base)
-      setSelected(item)
-      setQuery(base.placeName)
-      clearSuggestions()
-      setTouched(false)
+    // Background enrichment (promise exposed)
+    const placeId =
+      item.placeId || raw.placeId || raw.place_id || item.id
 
-      // Background enrichment
-      const placeId =
-        item.placeId || raw.placeId || raw.place_id || item.id
+    if (!placeId || placeId === lastPlaceIdRef.current) return
+    lastPlaceIdRef.current = placeId
 
-      if (!placeId || placeId === lastPlaceIdRef.current) return
-      lastPlaceIdRef.current = placeId
-
+    const enrichmentPromise = (async () => {
       try {
         const details = await getPlaceDetails(placeId)
-        if (!details) return
+        if (!details) return null
 
-        onSelect?.({
+        const enriched = {
           lat: details.lat ?? base.lat,
           lon: details.lng ?? base.lon,
           placeName:
@@ -148,13 +148,23 @@ export default function LocationInput({
             details.countryCode || base.countryCode
           ),
           h3Index: details.h3Index || ""
-        })
+        }
+
+        //  Final enriched update
+        onSelect?.(enriched, null)
+        return enriched
       } catch (err) {
         console.warn("getPlaceDetails failed", err)
+        return null
       }
-    },
-    [onSelect, clearSuggestions, getPlaceDetails]
-  )
+    })()
+
+    // Send promise to parent so SAVE can await it
+    onSelect?.(base, enrichmentPromise)
+  },
+  [onSelect, clearSuggestions, getPlaceDetails]
+)
+
 
   const handleAutoDetect = useCallback(async () => {
     setError("")

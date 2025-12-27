@@ -47,25 +47,28 @@ const detailsPromiseRef = useRef(null)
 
 const handleSave = useCallback(async () => {
   if (!selectedLoc) {
-    toast.error("Please select a location from the list")
+    toast.error("Please select a location")
     return
   }
 
-  // 🔹 ENSURE details are resolved
   if (detailsPromiseRef.current) {
-    try {
-      await detailsPromiseRef.current
-    } catch {}
+    await detailsPromiseRef.current
   }
 
-  const lat = selectedLoc.lat ?? selectedLoc.coordinates?.lat
-  const lon = selectedLoc.lng ?? selectedLoc.coordinates?.lon
+  const lat = selectedLoc.lat
+  const lon = selectedLoc.lon
+  const h3 = selectedLoc.h3Index
+
+  if (!lat || !lon || !h3) {
+    toast.error("Location details are still loading. Please wait.")
+    return
+  }
 
   const location = {
     coordinates: { lat, lon },
     placeName: selectedLoc.placeName || "",
-    countryCode: (selectedLoc.countryCode || "").toUpperCase().slice(0, 2),
-    h3: { r4: selectedLoc.h3Index || "" }
+    countryCode: selectedLoc.countryCode || "",
+    h3: { r4: h3 }
   }
 
   setSaving(true)
@@ -113,14 +116,14 @@ const handleSave = useCallback(async () => {
           <div className="relative">
          <Suspense fallback={null}>
 
-          <LocationInput
+   <LocationInput
   formData={{ location: initial || {} }}
-  setFormData={() => {}}
-  onSelect={(loc) => {
+  onSelect={(loc, detailsPromise) => {
     setSelectedLoc(loc)
+    detailsPromiseRef.current = detailsPromise || null
   }}
-  t={(k) => k}
 />
+
 
          </Suspense>
           </div>
