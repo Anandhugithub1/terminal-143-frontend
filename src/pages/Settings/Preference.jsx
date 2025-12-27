@@ -9,6 +9,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useMyProfile } from "../../features/UserProfile/Hooks/useMyProfile"
 import { updateMyProfile } from "../../features/UserProfile/api/profile"
 
+const MAX_PREFERENCES = 2
+
 const PreferencesPage = () => {
   const { t } = useTranslation("settings")
   const navigate = useNavigate()
@@ -46,11 +48,17 @@ const PreferencesPage = () => {
   })
 
   const togglePreference = (value) => {
-    setSelectedPreferences((prev) =>
-      prev.includes(value)
-        ? prev.filter((v) => v !== value)
-        : [...prev, value]
-    )
+    setSelectedPreferences((prev) => {
+      if (prev.includes(value)) {
+        return prev.filter((v) => v !== value)
+      }
+
+      if (prev.length >= MAX_PREFERENCES) {
+        return prev
+      }
+
+      return [...prev, value]
+    })
   }
 
   const handleSave = () => {
@@ -86,32 +94,48 @@ const PreferencesPage = () => {
 
       {/* Content */}
       <main className="flex-1 p-5">
-        <h2 className="text-gray-900 text-xl font-bold mb-6">
+        <h2 className="text-gray-900 text-xl font-bold mb-1">
           Choose Your Gender Preferences
         </h2>
+
+        <p className="text-sm text-gray-500 mb-6">
+          Select up to {MAX_PREFERENCES} preferences
+          <span className="ml-2 text-pink-500 font-medium">
+            ({selectedPreferences.length}/{MAX_PREFERENCES})
+          </span>
+        </p>
 
         <div className="space-y-3">
           {PREFERENCES.map(({ label, value, icon }) => {
             const isSelected = selectedPreferences.includes(value)
+            const isDisabled =
+              !isSelected &&
+              selectedPreferences.length >= MAX_PREFERENCES
+
             return (
               <button
                 key={value}
                 onClick={() => togglePreference(value)}
-                disabled={isBusy}
+                disabled={isBusy || isDisabled}
                 className={`w-full flex justify-between items-center px-4 py-4 rounded-2xl border transition-all duration-200 ${
                   isSelected
                     ? "bg-pink-50 border-pink-400"
+                    : isDisabled
+                    ? "bg-gray-100 border-gray-200 opacity-60"
                     : "bg-white border-gray-200"
                 }`}
               >
                 <div className="flex items-center space-x-3">
                   <span
-                    className={`text-gray-600 ${
-                      isSelected ? "text-pink-600" : ""
+                    className={`${
+                      isSelected
+                        ? "text-pink-600"
+                        : "text-gray-600"
                     }`}
                   >
                     {icon}
                   </span>
+
                   <span
                     className={`text-base font-medium ${
                       isSelected
