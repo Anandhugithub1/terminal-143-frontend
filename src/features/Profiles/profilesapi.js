@@ -8,20 +8,37 @@ import { matchesApi,suggestionApi } from '../../api/clients';
 export const getSuggestions = async ({ limit = 10 }) => {
   const response = await suggestionApi.get('/user/recommend', {
     params: { limit },
-    withCredentials: true, 
+    withCredentials: true,
   });
-  // handler now returns { profiles: [ { …, suggestionIndex }, … ] }
-  return response.data.profiles || [];
+
+  // handler returns { profiles, source }
+  return {
+    profiles: response.data?.profiles || [],
+    source: response.data?.source || null,
+  };
 };
+
 
 /**
  * Sends a swipe (seen) action for a profile.
  */
-export async function postSeen({ suggestionIndex, direction }) {
-  const response = await matchesApi.post(
+export async function postSeen({
+  index,
+  direction,
+  source,
+  username,
+}) {
+  const response = await suggestionApi.post(
     '/user/swipe',
-    { suggestionIndex, direction },
-    { withCredentials: true } 
+    {
+      index,
+      direction,
+      source,
+      username, // only used for right swipe
+    },
+    { withCredentials: true }
   );
+
   return response.data;
 }
+
