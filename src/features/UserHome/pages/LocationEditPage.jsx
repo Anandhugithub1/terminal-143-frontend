@@ -116,13 +116,30 @@ const handleSave = useCallback(async () => {
           <div className="relative">
          <Suspense fallback={null}>
 
-   <LocationInput
+ <LocationInput
   formData={{ location: initial || {} }}
-  onSelect={(loc, detailsPromise) => {
+  onSelect={async (loc, detailsPromise) => {
     setSelectedLoc(loc)
     detailsPromiseRef.current = detailsPromise || null
+
+    if (!detailsPromise) return
+
+    try {
+      await detailsPromise
+    } catch (err) {
+      if (err?.code === "OUT_OF_REGION") {
+        toast.error(
+          "This location is not supported. Please select a South East Asia location."
+        )
+        setSelectedLoc(null)
+        detailsPromiseRef.current = null
+      } else {
+        toast.error("Failed to fetch location details")
+      }
+    }
   }}
 />
+
 
 
          </Suspense>

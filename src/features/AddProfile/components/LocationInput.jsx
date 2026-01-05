@@ -154,9 +154,13 @@ const handleSelect = useCallback(
         onSelect?.(enriched, null)
         return enriched
       } catch (err) {
-        console.warn("getPlaceDetails failed", err)
-        return null
-      }
+  if (err?.code === "OUT_OF_REGION") {
+    throw err 
+  }
+
+  console.warn("getPlaceDetails failed", err)
+  throw err
+}
     })()
 
     // Send promise to parent so SAVE can await it
@@ -174,13 +178,30 @@ const handleSelect = useCallback(
       if (!loc) throw new Error("No location detected")
       await handleSelect(loc)
     } catch (err) {
-      console.error("Auto-detect failed", err)
-      const msg =
-        t("locationDetectionFailed") ||
-        "Unable to detect your location"
-      setError(msg)
-      toast.error(msg)
-    }
+  if (err?.code === "OUT_OF_REGION") {
+    const msg =
+      t("locationOutOfRegion") ||
+      "This location is not supported. Please select a South East Asia location."
+
+    setError(msg)
+    toast.error(msg)
+
+    // reset selection state
+    setSelected(null)
+    onSelect?.(null)
+
+    return
+  }
+
+  const msg =
+    t("locationDetectionFailed") ||
+    "Unable to detect your location"
+
+  setError(msg)
+  toast.error(msg)
+}
+
+
   }, [getCurrentLocation, locale, handleSelect, t])
 
 

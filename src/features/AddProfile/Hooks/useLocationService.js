@@ -37,21 +37,31 @@ const buildLocationObject = (lat, lon, address = {}) => ({
 })
 
 
-  const reverseGeocodeMutation = useMutation({
-    mutationFn: async ({ lat, lng }) => {
+const reverseGeocodeMutation = useMutation({
+  mutationFn: async ({ lat, lng }) => {
+    try {
       const res = await locationAPi.post(
-        '/reverse-geocode',
+        "/reverse-geocode",
         { lat, lng },
         {
           withCredentials: true,
-          headers: { 'Accept-Language': userLang },
+          headers: { "Accept-Language": userLang }
         }
-      );
-      return res?.data || {};
-    },
-    retry: 1,
-    useErrorBoundary: false,
-  });
+      )
+      return res.data
+    } catch (err) {
+      const apiErr = err?.response?.data
+      if (apiErr?.code === "OUT_OF_REGION") {
+        const e = new Error("OUT_OF_REGION")
+        e.code = "OUT_OF_REGION"
+        throw e
+      }
+      throw err
+    }
+  },
+  retry: false
+})
+
 
   const autocompleteMutation = useMutation({
     mutationFn: async ({ input, signal }) => {
@@ -122,17 +132,21 @@ const buildLocationObject = (lat, lon, address = {}) => ({
 
       return buildLocationObject(latitude, longitude, address);
     } catch (error) {
-      console.error('Location error:', error);
-      let message = 'geoError';
-      if (error?.code === 1) message = 'locationPermissionDenied';
-      else if (error?.code === 2) message = 'locationUnavailable';
-      else if (error?.code === 3) message = 'locationTimeout';
-      else if (error?.message === 'geolocationNotSupported') message = 'geoNotSupported';
-      else if (error?.response?.data?.code === 'OUT_OF_REGION') message = 'locationOutOfRegion';
+  console.error('Location error:', error);
 
-      if (error?.response?.data?.message) throw new Error(String(error.response.data.message));
-      throw new Error(message);
-    } finally {
+  if (error?.code === "OUT_OF_REGION") {
+    throw error;
+  }
+
+  let message = 'geoError';
+
+  if (error?.code === 1) message = 'locationPermissionDenied';
+  else if (error?.code === 2) message = 'locationUnavailable';
+  else if (error?.code === 3) message = 'locationTimeout';
+  else if (error?.message === 'geolocationNotSupported') message = 'geoNotSupported';
+
+  throw new Error(message);
+} finally {
       setDetecting(false);
     }
   }, [reverseGeocodeMutation, userLang]);
