@@ -11,15 +11,11 @@ import { HiOutlineSearch, HiX, HiLocationMarker } from "react-icons/hi"
 import Spinner from "../components/Location/Spinner"
 import IconButton from "./Location/IconButton"
 import { normalizeCountryCode, extractCoords } from "../utlis/geo"
-import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 
 const LISTBOX_ID = "location-listbox"
 
-export default function LocationInput({
-  formData,
-  onSelect
-}) {
+export default function LocationInput({ formData, onSelect }) {
   const { t } = useTranslation("location")
 
   const [query, setQuery] = useState("")
@@ -41,15 +37,11 @@ export default function LocationInput({
     getPlaceDetails
   } = useLocationService()
 
-  const locale = useMemo(
-    () =>
-      typeof navigator !== "undefined"
-        ? (navigator.language || "en").split("-")[0]
-        : "en",
-    []
-  )
+  const locale = useMemo(() => {
+    if (typeof navigator === "undefined") return "en"
+    return (navigator.language || "en").split("-")[0]
+  }, [])
 
- 
   useEffect(() => {
     const loc = formData?.location
     if (loc?.coordinates?.lat != null && loc?.coordinates?.lon != null) {
@@ -62,7 +54,10 @@ export default function LocationInput({
     (value) => {
       setQuery(value)
       setTouched(true)
+
+      // clear any previous error as soon as user types
       setError("")
+
       clearTimeout(debounceRef.current)
 
       const q = value.trim()
@@ -74,7 +69,9 @@ export default function LocationInput({
       }
 
       if (q.length < 2) {
-        setError(t("locationMinLength") || "Enter at least 2 characters")
+        setError(
+          t("locationMinLength") || "Enter at least 2 characters"
+        )
         clearSuggestions()
         return
       }
@@ -82,128 +79,117 @@ export default function LocationInput({
       debounceRef.current = setTimeout(async () => {
         try {
           await searchLocations(q)
+          setError("")
         } catch (err) {
-          console.error("Location search failed", err)
+          if (err?.name === "AbortError") return
+
           const msg =
+            err?.message ||
             t("locationSearchFailed") ||
             "Search failed, please try again"
+
           setError(msg)
-          toast.error(msg)
         }
       }, 250)
     },
     [searchLocations, clearSuggestions, onSelect, t]
   )
 
-  useEffect(() => () => clearTimeout(debounceRef.current), [])
-const handleSelect = useCallback(
-  (item) => {
-    if (!item) return
+  useEffect(() => {
+    return () => clearTimeout(debounceRef.current)
+  }, [])
 
-    const raw = item._raw || item
-    const { lat, lon } = extractCoords(item)
+  const handleSelect = useCallback(
+    (item) => {
+      if (!item) return
 
-    const base = {
-      lat,
-      lon,
-      placeName:
-        item.placeName ?? item.name ?? raw.placeName ?? raw.name ?? "",
-      countryCode: normalizeCountryCode(
-        item.countryCode ||
-          item.country ||
-          raw.country ||
-          raw.country_code ||
-          ""
-      ),
-      h3Index: ""
-    }
+      const raw = item._raw || item
+      const { lat, lon } = extractCoords(item)
 
-    //  Immediate UI update
-    onSelect?.(base, null)
-    setSelected(item)
-    setQuery(base.placeName)
-    clearSuggestions()
-    setTouched(false)
+      const base = {
+        lat,
+        lon,
+        placeName:
+          item.placeName ?? item.name ?? raw.placeName ?? raw.name ?? "",
+        countryCode: normalizeCountryCode(
+          item.countryCode ||
+            item.country ||
+            raw.country ||
+            raw.country_code ||
+            ""
+        ),
+        h3Index: ""
+      }
 
-    // Background enrichment (promise exposed)
-    const placeId =
-      item.placeId || raw.placeId || raw.place_id || item.id
+      onSelect?.(base, null)
+      setSelected(item)
+      setQuery(base.placeName)
+      clearSuggestions()
+      setTouched(false)
+      setError("")
 
-    if (!placeId || placeId === lastPlaceIdRef.current) return
-    lastPlaceIdRef.current = placeId
+      const placeId =
+        item.placeId || raw.placeId || raw.place_id || item.id
 
-    const enrichmentPromise = (async () => {
-      try {
-        const details = await getPlaceDetails(placeId)
-        if (!details) return null
+      if (!placeId || placeId === lastPlaceIdRef.current) return
+      lastPlaceIdRef.current = placeId
 
-        const enriched = {
-          lat: details.lat ?? base.lat,
-          lon: details.lng ?? base.lon,
-          placeName:
-            details.placeName ||
-            details.formattedAddress ||
-            base.placeName,
-          countryCode: normalizeCountryCode(
-            details.countryCode || base.countryCode
-          ),
-          h3Index: details.h3Index || ""
+      const enrichmentPromise = (async () => {
+        try {
+          const details = await getPlaceDetails(placeId)
+          if (!details) return null
+
+          const enriched = {
+            lat: details.lat ?? base.lat,
+            lon: details.lng ?? base.lon,
+            placeName:
+              details.placeName ||
+              details.formattedAddress ||
+              base.placeName,
+            countryCode: normalizeCountryCode(
+              details.countryCode || base.countryCode
+            ),
+            h3Index: details.h3Index || ""
+          }
+
+          onSelect?.(enriched, null)
+          return enriched
+        } catch (err) {
+          if (err?.code === "OUT_OF_REGION") throw err
+          throw err
         }
+      })()
 
-        //  Final enriched update
-        onSelect?.(enriched, null)
-        return enriched
-      } catch (err) {
-  if (err?.code === "OUT_OF_REGION") {
-    throw err 
-  }
-
-  console.warn("getPlaceDetails failed", err)
-  throw err
-}
-    })()
-
-    // Send promise to parent so SAVE can await it
-    onSelect?.(base, enrichmentPromise)
-  },
-  [onSelect, clearSuggestions, getPlaceDetails]
-)
-
+      onSelect?.(base, enrichmentPromise)
+    },
+    [onSelect, clearSuggestions, getPlaceDetails]
+  )
 
   const handleAutoDetect = useCallback(async () => {
     setError("")
     setTouched(true)
+
     try {
       const loc = await getCurrentLocation(locale)
       if (!loc) throw new Error("No location detected")
       await handleSelect(loc)
     } catch (err) {
-  if (err?.code === "OUT_OF_REGION") {
-    const msg =
-      t("locationOutOfRegion") ||
-      "This location is not supported. Please select a South East Asia location."
+      if (err?.code === "OUT_OF_REGION") {
+        setError(
+          t("locationOutOfRegion") ||
+            "This location is not supported"
+        )
+        setSelected(null)
+        onSelect?.(null)
+        return
+      }
 
-    setError(msg)
-    toast.error(msg)
-
-    // reset selection state
-    setSelected(null)
-    onSelect?.(null)
-
-    return
-  }
-
-  const msg =
-    t("locationDetectionFailed") ||
-    "Unable to detect your location"
-
-  setError(msg)
-  toast.error(msg)
-}
-
-
-  }, [getCurrentLocation, locale, handleSelect, t])
-
+      setError(
+        t("locationDetectionFailed") ||
+          "Unable to detect your location"
+      )
+    }
+  }, [getCurrentLocation, locale, handleSelect, t, onSelect])
 
   const handleClear = useCallback(() => {
     setQuery("")
@@ -214,10 +200,8 @@ const handleSelect = useCallback(
     inputRef.current?.focus()
   }, [onSelect, clearSuggestions])
 
-  const displayValue = (item) =>
-    item?.placeName ?? query
+  const displayValue = (item) => item?.placeName ?? query
 
-  
   return (
     <div className="relative space-y-3">
       <label className="block text-sm font-semibold text-gray-700">
@@ -228,9 +212,8 @@ const handleSelect = useCallback(
       </label>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <Combobox 
+        <Combobox
           as="div"
-
           value={selected}
           onChange={handleSelect}
           className="relative flex-1"
