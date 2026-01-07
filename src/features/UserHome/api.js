@@ -3,7 +3,7 @@ import { matchesApi, userProfilesApi } from '../../api/clients';
 
 /* existing hooks (unchanged) */
 async function fetchMatches() {
-  const res = await matchesApi.get('/match/list', { withCredentials: true });
+  const res = await matchesApi.get('/list', { withCredentials: true });
   return res.data.matches || [];
 }
 
@@ -23,7 +23,7 @@ export function useMatchRequests() {
   return useQuery({
     queryKey: ['matchRequests'],
     queryFn: async () => {
-      const res = await matchesApi.get('/match/requests', {
+      const res = await matchesApi.get('/requests', {
         withCredentials: true,
       });
       return res.data.requests || [];
@@ -38,7 +38,7 @@ export function useMatchRequestResponse() {
   return useMutation({
     mutationFn: async ({ senderUsername, action }) => {
       const res = await matchesApi.post(
-        '/match/request/respond',
+        '/request/respond',
         { senderUsername, action },
         { withCredentials: true }
       );
