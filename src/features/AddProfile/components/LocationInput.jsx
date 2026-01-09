@@ -99,71 +99,52 @@ export default function LocationInput({ formData, onSelect }) {
     return () => clearTimeout(debounceRef.current)
   }, [])
 
-  const handleSelect = useCallback(
-    (item) => {
-      if (!item) return
+const handleSelect = useCallback(
+  (item) => {
+    if (!item) return
 
-      const raw = item._raw || item
-      const { lat, lon } = extractCoords(item)
+    const raw = item._raw || item
+    const { lat, lon } = extractCoords(item)
 
-      const base = {
-        lat,
-        lon,
-        placeName:
-          item.placeName ?? item.name ?? raw.placeName ?? raw.name ?? "",
-        countryCode: normalizeCountryCode(
-          item.countryCode ||
-            item.country ||
-            raw.country ||
-            raw.country_code ||
-            ""
-        ),
-        h3Index: ""
-      }
+    const base = {
+      lat,
+      lon,
+      placeName:
+        item.placeName ?? item.name ?? raw.placeName ?? "",
+      countryCode: normalizeCountryCode(
+        raw.countryCode || raw.country || ""
+      ),
+      admin1: raw.admin1 || null,
+      h3Index: ""
+    }
 
-      onSelect?.(base, null)
-      setSelected(item)
-      setQuery(base.placeName)
-      clearSuggestions()
-      setTouched(false)
-      setError("")
+    onSelect?.(base, null)
+    setSelected(item)
+    setQuery(base.placeName)
+    clearSuggestions()
 
-      const placeId =
-        item.placeId || raw.placeId || raw.place_id || item.id
+    const placeId = item.placeId || raw.placeId
+    if (!placeId) return
 
-      if (!placeId || placeId === lastPlaceIdRef.current) return
-      lastPlaceIdRef.current = placeId
+    const enrich = async () => {
+      const details = await getPlaceDetails(placeId)
+      if (!details) return
 
-      const enrichmentPromise = (async () => {
-        try {
-          const details = await getPlaceDetails(placeId)
-          if (!details) return null
+      onSelect?.({
+        lat: details.lat,
+        lon: details.lng,
+        placeName: details.placeName,
+        countryCode: normalizeCountryCode(details.countryCode),
+        admin1: details.admin1 || null,
+        h3Index: details.h3Index
+      })
+    }
 
-          const enriched = {
-            lat: details.lat ?? base.lat,
-            lon: details.lng ?? base.lon,
-            placeName:
-              details.placeName ||
-              details.formattedAddress ||
-              base.placeName,
-            countryCode: normalizeCountryCode(
-              details.countryCode || base.countryCode
-            ),
-            h3Index: details.h3Index || ""
-          }
+    enrich()
+  },
+  [getPlaceDetails, onSelect, clearSuggestions]
+)
 
-          onSelect?.(enriched, null)
-          return enriched
-        } catch (err) {
-          if (err?.code === "OUT_OF_REGION") throw err
-          throw err
-        }
-      })()
-
-      onSelect?.(base, enrichmentPromise)
-    },
-    [onSelect, clearSuggestions, getPlaceDetails]
-  )
 
   const handleAutoDetect = useCallback(async () => {
     setError("")

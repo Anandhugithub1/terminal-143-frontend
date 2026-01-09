@@ -68,6 +68,7 @@ const handleSave = useCallback(async () => {
     coordinates: { lat, lon },
     placeName: selectedLoc.placeName || "",
     countryCode: selectedLoc.countryCode || "",
+    admin1: selectedLoc.admin1 || null,
     h3: { r4: h3 }
   }
 
