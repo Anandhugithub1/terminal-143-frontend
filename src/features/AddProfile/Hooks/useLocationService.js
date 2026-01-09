@@ -31,7 +31,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
       .toString()
       .toUpperCase()
       .slice(0, 2),
-    admin1: address.admin1 || null,
+    admin1: address.admin1 || '',
     h3: {
       r4: address.h3Index || ""
     }
@@ -94,7 +94,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
         placeName: d.placeName || d.formattedAddress || '',
         country: d.country || '',
         countryCode: d.countryCode || '',
-        admin1: d.admin1 || null,
+        admin1: d.admin1 || "",
         h3Index: d.h3Index || '',
         formattedAddress: d.formattedAddress || '',
         types: d.types || [],
@@ -129,7 +129,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
         country: data.country || '',
         country_code: data.countryCode || data.country_code || '',
         name: data.placeName || '',
-        admin1: data.admin1 || null,
+        admin1: data.admin1 || '',
         h3Index: data.h3Index || '',
       }
 

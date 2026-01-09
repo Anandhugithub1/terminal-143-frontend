@@ -20,38 +20,37 @@ const Location = () => {
 
   const [error, setError] = useState('')
 
-  // FIXED: normalize payload correctly
- const setGeo = useCallback((payload) => {
-  if (!payload) {
+  const setGeo = useCallback((payload) => {
+    if (!payload) {
+      setFormData({
+        location: {
+          coordinates: { lat: null, lon: null },
+          placeName: "",
+          countryCode: "",
+          admin1: '',
+          h3: { r4: "" }
+        }
+      })
+      return
+    }
+
+    const lat = payload.lat
+    const lon = payload.lon
+
     setFormData({
       location: {
-        coordinates: { lat: null, lon: null },
-        placeName: "",
-        countryCode: "",
-        h3: { r4: "" }
+        coordinates: { lat, lon },
+        placeName: payload.placeName || "",
+        countryCode: payload.countryCode || "",
+        admin1: payload.admin1 || null,
+        h3: { r4: payload.h3Index || "" }
       }
     })
-    return
-  }
-
-  const lat = payload.lat
-  const lon = payload.lon
-
-  setFormData({
-    location: {
-      coordinates: { lat, lon },
-      placeName: payload.placeName || "",
-      countryCode: payload.countryCode || "",
-      h3: { r4: payload.h3Index || "" }
-    }
-  })
-}, [setFormData])
-
+  }, [setFormData])
 
   const validate = useCallback(
     () =>
-     location?.placeName && location.placeName.length > 0
-
+      location?.placeName && location.placeName.length > 0
         ? null
         : t("locationRequired") || "Please select your location",
     [location, t]
@@ -113,9 +112,7 @@ const Location = () => {
 
         {effectiveError && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600">
-              {effectiveError}
-            </p>
+            <p className="text-red-600">{effectiveError}</p>
           </div>
         )}
       </section>

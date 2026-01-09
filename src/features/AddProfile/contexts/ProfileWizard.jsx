@@ -23,6 +23,7 @@ const getDefaultFormData = () => ({
     },
     placeName: "",
     countryCode: "",
+    admin1: null,
     h3: {
       r4: ""
     }
@@ -33,6 +34,7 @@ const getDefaultFormData = () => ({
     unit: "km"
   }
 })
+
 
 export const WizardProvider = ({ children }) => {
   const saved = sessionStorage.getItem(STORAGE_KEY)

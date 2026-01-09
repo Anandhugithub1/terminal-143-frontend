@@ -37,19 +37,17 @@ export function normalizeGeoForApi(input) {
     h3: {
       r4: input.h3?.r4 || ""
     }
+
+    ,
+
+    admin1: input.admin1 || ""
   }
 }
 
 
 
 
-export const EMPTY_GEO = {
-  type: "Point",
-  coordinates: [],
-  placeName: "",
-  countryCode: "",
-  geohash: "",
-};
+
 
 // small helpers used by LocationInput and SuggestionList
 export const normalizeCountryCode = (value = "") =>
