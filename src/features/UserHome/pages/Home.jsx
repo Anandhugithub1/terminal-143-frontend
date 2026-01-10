@@ -101,7 +101,6 @@ export default function UserHomePage() {
 
       setIdx((prev) => {
         const current = profiles[prev]
-console.log(profiles)
         if (current) {
           // Seen tracking (requires source)
           if (currentSource) {
