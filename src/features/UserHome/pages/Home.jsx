@@ -96,21 +96,31 @@ export default function UserHomePage() {
 
   const advance = useCallback(
     (dir) => {
+
       setDirection(dir)
 
       setIdx((prev) => {
         const current = profiles[prev]
-
-        if (current && currentSource) {
-          seenMutation.mutate({
-            index: current.suggestionIndex,
-            direction: dir === 1 ? 'r' : 'l',
-            source: currentSource,
-          })
-
-          if (dir === 1 && current.username) {
-            sendMatchRequest(current.username)
+console.log(profiles)
+        if (current) {
+          // Seen tracking (requires source)
+          if (currentSource) {
+            
+            seenMutation.mutate({
+              index: current.suggestionIndex,
+              direction: dir === 1 ? 'r' : 'l',
+              source: currentSource,
+            })
           }
+
+          // Match request (does NOT depend on source)
+       if (dir === 1 && current.PK) {
+  console.log(
+    current.PK
+  )
+  sendMatchRequest(current.PK)
+}
+
         }
 
         const next = prev + 1
@@ -223,12 +233,15 @@ export default function UserHomePage() {
           </div>
         ) : (
           <Suspense fallback={<ProfileSkeleton />}>
-            <SwipeDeck
-              idx={idx}
-              direction={direction}
-              profilesLength={profiles.length}
-              onAdvance={advance}
-            >
+          <SwipeDeck
+  idx={idx}
+  direction={direction}
+  profilesLength={profiles.length}
+  onAdvance={(dir) => {
+    advance(dir)
+  }}
+>
+
               <div className="relative">
                 <ProfileCard
                   profile={profile}
@@ -236,11 +249,16 @@ export default function UserHomePage() {
                 />
 
                 <div className="flex justify-center mt-2 mb-2">
-                  <ActionControls
-                    onReject={() => advance(-1)}
-                    onRefresh={handleRefresh}
-                    onLike={() => advance(1)}
-                  />
+             <ActionControls
+  onReject={() => {
+    advance(-1)
+  }}
+  onRefresh={handleRefresh}
+  onLike={() => {
+    advance(1)
+  }}
+/>
+
                 </div>
               </div>
 
