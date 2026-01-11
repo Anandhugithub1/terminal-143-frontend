@@ -4,12 +4,6 @@ import PropTypes from "prop-types";
 import { Coffee, Mountain } from "lucide-react";
 import { formatDate } from "../../../../Utlis/utlis";
 
-/**
- * ONLY LOGIC FIX:
- * - Stop click propagation on Accept / Reject buttons
- * - Prevent parent row navigation
- * - No UI or layout changes
- */
 
 const ICONS = {
   Coffee: <Coffee size={14} className="text-gray-700" />,
