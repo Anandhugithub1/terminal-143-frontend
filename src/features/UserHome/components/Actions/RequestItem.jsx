@@ -1,9 +1,8 @@
 // src/pages/components/Actions/RequestItem.jsx
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Coffee, Mountain } from 'lucide-react';
-import { formatDate } from '../../../../Utlis/utlis';
-import { toast } from 'sonner';
+import React from "react";
+import PropTypes from "prop-types";
+import { Coffee, Mountain } from "lucide-react";
+import { formatDate } from "../../../../Utlis/utlis";
 
 /**
  * ONLY LOGIC FIX:
@@ -18,16 +17,8 @@ const ICONS = {
 };
 
 const RequestItem = ({ request, openModal, isProcessing }) => {
-  const {
-    senderPhoto,
-    senderName,
-    age,
-    bio,
-    sentAt,
-    status,
-    interests,
-    tags,
-  } = request;
+  const { senderPhoto, senderName, age, bio, sentAt, status, interests, tags } =
+    request;
 
   const chips = Array.isArray(interests)
     ? interests
@@ -65,7 +56,7 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
               </div>
 
               <p className="text-sm text-gray-600 mt-2 line-clamp-3">
-                {bio || 'No bio available.'}
+                {bio || "No bio available."}
               </p>
 
               {chips.length > 0 && (
@@ -111,37 +102,37 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  openModal(request, 'reject');
+                  openModal(request, "reject");
                 }}
                 disabled={isProcessing}
                 className={`w-full rounded-lg px-5 py-2 text-sm font-medium transition
                   ${
                     isProcessing
-                      ? 'bg-white text-gray-400 border border-gray-200 cursor-wait opacity-60'
-                      : 'bg-white text-gray-800 border border-gray-400 hover:shadow-sm'
+                      ? "bg-white text-gray-400 border border-gray-200 cursor-wait opacity-60"
+                      : "bg-white text-gray-800 border border-gray-400 hover:shadow-sm"
                   }
                 `}
                 aria-label={`Reject ${senderName}`}
               >
-                {isProcessing ? 'Processing...' : 'Reject'}
+                {isProcessing ? "Processing..." : "Reject"}
               </button>
 
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  openModal(request, 'accept');
+                  openModal(request, "accept");
                 }}
                 disabled={isProcessing}
                 className={`w-full rounded-lg px-6 py-2 text-sm font-semibold transition shadow-md
                   ${
                     isProcessing
-                      ? 'bg-primary text-white cursor-wait opacity-80'
-                      : 'bg-primary text-white hover:bg-pink-600'
+                      ? "bg-primary text-white cursor-wait opacity-80"
+                      : "bg-primary text-white hover:bg-pink-600"
                   }
                 `}
                 aria-label={`Accept ${senderName}`}
               >
-                {isProcessing ? 'Processing...' : 'Accept'}
+                {isProcessing ? "Processing..." : "Accept"}
               </button>
             </div>
           </div>
