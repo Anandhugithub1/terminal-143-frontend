@@ -9,6 +9,8 @@ import { ConfirmationModal } from '../../../components/Ui/Confirmation';
 import RequestItem from '../components/Actions/RequestItem';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'sonner';
+
 
 export default function RequestsPage() {
   const navigate = useNavigate();
@@ -25,7 +27,6 @@ export default function RequestsPage() {
     if (axios.isAxiosError(error)) {
       const status = error?.response?.status;
       if (status === 401 || status === 403) {
-        console.warn(' Unauthorized. Redirecting to /login...');
         navigate('/login');
       }
     }
@@ -33,6 +34,8 @@ export default function RequestsPage() {
 
   // Open confirmation modal
   const openModal = (request, action) => {
+    if (!request?.senderUsername) return;
+
     setSelectedRequest({
       senderUsername: request.senderUsername,
       action,
@@ -41,34 +44,45 @@ export default function RequestsPage() {
   };
 
   // Handle confirmation action
-  const confirmAction = () => {
-    if (!selectedRequest) return;
+const confirmAction = () => {
+  if (!selectedRequest) return;
 
-    const { senderUsername, action } = selectedRequest;
+  const { senderUsername, action } = selectedRequest;
 
-    console.log('Sending match response payload:', {
-      senderUsername,
-      action,
-    });
+  setProcessingRequests(prev => {
+    const next = new Set(prev);
+    next.add(senderUsername);
+    return next;
+  });
 
-    setProcessingRequests((prev) => new Set(prev).add(senderUsername));
+  mutation.mutate(
+    { senderUsername, action },
+    {
+      onSuccess: () => {
+        toast.success(
+          action === 'accept'
+            ? 'Match request accepted'
+            : 'Match request rejected'
+        );
+        refetch();
+      },
+      onError: (err) => {
+        console.error('Match request action failed', err);
+        toast.error('Something went wrong. Please try again.');
+      },
+      onSettled: () => {
+        setProcessingRequests(prev => {
+          const next = new Set(prev);
+          next.delete(senderUsername);
+          return next;
+        });
+      },
+    }
+  );
 
-    mutation.mutate(
-      { senderUsername, action },
-      {
-        onSettled: () => {
-          refetch();
-          setProcessingRequests((prev) => {
-            const updated = new Set(prev);
-            updated.delete(senderUsername);
-            return updated;
-          });
-        },
-      }
-    );
+  setModalOpen(false);
+};
 
-    setModalOpen(false);
-  };
 
   const renderContent = () => {
     if (isLoading) {
@@ -115,58 +129,39 @@ export default function RequestsPage() {
     }
 
     return (
-      // center and constrain the column so it looks like your screenshot on mobile
       <div className="flex-1 bg-white pb-28">
         <div className="max-w-md w-full mx-auto px-4 pt-4">
           <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">
             Your Match Requests
           </h1>
 
- <div className="divide-y divide-gray-200">
-  {requests.map(({ request }, idx) => {
-    // Prefer the exact fields present in the payload (case-sensitive)
-    const pk =
-      request.senderPK ||
-      request.senderPk ||
-      request.senderpk ||
-      request.pk ||
-      null;
-    const sk =
-      request.senderSK ||
-      request.senderSk ||
-      request.sendersk ||
-      request.sk ||
-      null;
-    const username = request.senderUsername || request.username || '';
+          <div className="divide-y divide-gray-200">
+            {requests.map(({ request }, idx) => {
+              if (!request?.senderUsername) return null;
 
-    const handleClick = () => {
-      if (pk && sk) {
-        // encode to avoid URL issues
-        navigate(`/user/${encodeURIComponent(pk)}/${encodeURIComponent(sk)}`);
-      } else {
-        console.warn('No identifier available for profile navigation', request);
-      }
-    };
+              const handleClick = () => {
+                navigate(
+                  `/profile/${encodeURIComponent(request.senderUsername)}`
+                );
+              };
 
-    const keyId = pk || request.senderUsername || `${idx}`;
-
-    return (
-      <div
-        key={`${keyId}-${request.sentAt || idx}`}
-        onClick={handleClick}
-        className="cursor-pointer hover:bg-gray-50 transition"
-      >
-        <RequestItem
-          request={request}
-          openModal={openModal}
-          isProcessing={processingRequests.has(request.senderUsername)}
-        />
-      </div>
-    );
-  })}
-</div>
-
-
+              return (
+                <div
+                  key={`${request.senderUsername}-${request.sentAt || idx}`}
+                  onClick={handleClick}
+                  className="cursor-pointer hover:bg-gray-50 transition"
+                >
+                  <RequestItem
+                    request={request}
+                    openModal={openModal}
+                    isProcessing={processingRequests.has(
+                      request.senderUsername
+                    )}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     );

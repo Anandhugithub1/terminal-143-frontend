@@ -3,11 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Coffee, Mountain } from 'lucide-react';
 import { formatDate } from '../../../../Utlis/utlis';
+import { toast } from 'sonner';
 
 /**
- * ONLY UI/layout changes here. All request fields & handlers remain unchanged:
- * - Uses request.senderPhoto, request.senderName, request.age, request.bio, request.sentAt, request.status
- * - Calls openModal(request, 'accept'|'reject') and respects isProcessing
+ * ONLY LOGIC FIX:
+ * - Stop click propagation on Accept / Reject buttons
+ * - Prevent parent row navigation
+ * - No UI or layout changes
  */
 
 const ICONS = {
@@ -23,11 +25,15 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
     bio,
     sentAt,
     status,
-    interests, // optional (if present we render chips)
-    tags, // optional fallback
+    interests,
+    tags,
   } = request;
 
-  const chips = Array.isArray(interests) ? interests : Array.isArray(tags) ? tags : [];
+  const chips = Array.isArray(interests)
+    ? interests
+    : Array.isArray(tags)
+    ? tags
+    : [];
 
   return (
     <div className="py-5 px-0">
@@ -45,7 +51,7 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
           )}
         </div>
 
-        {/* Content area */}
+        {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
@@ -53,15 +59,15 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
                 <h3 className="text-lg font-semibold text-gray-900 truncate">
                   {senderName}
                 </h3>
-                {age ? <span className="text-sm text-gray-500">, {age}</span> : null}
+                {age ? (
+                  <span className="text-sm text-gray-500">, {age}</span>
+                ) : null}
               </div>
 
-              {/* bio */}
               <p className="text-sm text-gray-600 mt-2 line-clamp-3">
                 {bio || 'No bio available.'}
               </p>
 
-              {/* chips row */}
               {chips.length > 0 && (
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
                   {chips.slice(0, 2).map((t, i) => (
@@ -84,7 +90,7 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
               )}
             </div>
 
-            {/* right column (status/date) */}
+            {/* Right column */}
             <div className="text-right min-w-[72px]">
               {status && (
                 <div className="text-xs text-blue-500 font-medium capitalize">
@@ -99,17 +105,21 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
             </div>
           </div>
 
-          {/* buttons: mobile-first two equal buttons side-by-side,
-              but on sm+ screens they shift to fixed-size buttons to match screenshot */}
+          {/* Actions */}
           <div className="mt-4">
             <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:gap-4">
               <button
-                onClick={() => openModal(request, 'reject')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openModal(request, 'reject');
+                }}
                 disabled={isProcessing}
                 className={`w-full rounded-lg px-5 py-2 text-sm font-medium transition
-                  ${isProcessing
-                    ? 'bg-white text-gray-400 border border-gray-200 cursor-wait opacity-60'
-                    : 'bg-white text-gray-800 border border-gray-400 hover:shadow-sm'}
+                  ${
+                    isProcessing
+                      ? 'bg-white text-gray-400 border border-gray-200 cursor-wait opacity-60'
+                      : 'bg-white text-gray-800 border border-gray-400 hover:shadow-sm'
+                  }
                 `}
                 aria-label={`Reject ${senderName}`}
               >
@@ -117,12 +127,17 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
               </button>
 
               <button
-                onClick={() => openModal(request, 'accept')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openModal(request, 'accept');
+                }}
                 disabled={isProcessing}
                 className={`w-full rounded-lg px-6 py-2 text-sm font-semibold transition shadow-md
-                  ${isProcessing
-                    ? 'bg-primary  text-white cursor-wait opacity-80'
-                    : 'bg-primary text-white hover:bg-pink-600'}
+                  ${
+                    isProcessing
+                      ? 'bg-primary text-white cursor-wait opacity-80'
+                      : 'bg-primary text-white hover:bg-pink-600'
+                  }
                 `}
                 aria-label={`Accept ${senderName}`}
               >
@@ -133,7 +148,6 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
         </div>
       </div>
 
-      {/* thin divider like screenshot */}
       <div className="mt-5 border-t border-gray-200" />
     </div>
   );
