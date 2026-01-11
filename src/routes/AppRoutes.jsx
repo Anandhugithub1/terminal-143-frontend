@@ -2,7 +2,6 @@
 import React, { Suspense, lazy } from "react";
 import { Route } from "react-router-dom";
 import App from "../App.jsx";
-import ProtectedRouteFM from "./ProtectedRouteFM.jsx";
 import RequireProfileIncomplete from "../components/RequireProfileIncomplete.jsx";
 import { LoadingSpinner } from "../components/Ui/Spinner.jsx";
 import LazyFallback from "../components/Ui/LazyFallback.jsx";
@@ -54,7 +53,7 @@ export const appRoutes = (
       }
     />
 
-    <Route path="/" element={<DefaultHomeRoute />} />
+<Route index element={<DefaultHomeRoute />} />
 
     <Route path="pricing" element={<PricingPage />} />
 
@@ -104,14 +103,11 @@ export const appRoutes = (
       }
     />
 
-    <Route
-      path="home"
-      element={
-        <ProtectedRouteFM>
-          <UserHomePage />
-        </ProtectedRouteFM>
-      }
-    />
+   <Route
+  path="home"
+  element={<DefaultHomeRoute />}
+/>
+
 
     <Route
       path="matches"

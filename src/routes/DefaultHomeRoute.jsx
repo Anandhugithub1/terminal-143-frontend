@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-import { fetchMyProfile } from "../features/UserProfile/api/profile.js";
-import { LoadingSpinner } from "../components/Ui/Spinner.jsx";
-import UserHomePage from "../features/UserHome/pages/Home.jsx";
-// import AppHome from "../pages/Global/Route.jsx";
-import { Login } from "../features/Auth/pages/Login.jsx";
+import React, { useEffect, useState } from "react"
+import { Navigate } from "react-router-dom"
+import { fetchMyProfile } from "../features/UserProfile/api/profile.js"
+import { LoadingSpinner } from "../components/Ui/Spinner.jsx"
+import UserHomePage from "../features/UserHome/pages/Home.jsx"
 
 export default function DefaultHomeRoute() {
   const [loading, setLoading] = useState(true)
@@ -14,11 +12,7 @@ export default function DefaultHomeRoute() {
     const checkProfile = async () => {
       try {
         const res = await fetchMyProfile()
-        if (res) {
-          setHasProfile(true)
-        } else {
-          setHasProfile(false)
-        }
+        setHasProfile(Boolean(res))
       } catch {
         setHasProfile(false)
       } finally {
@@ -31,10 +25,9 @@ export default function DefaultHomeRoute() {
 
   if (loading) return <LoadingSpinner />
 
-  if (hasProfile) {
-    return <UserHomePage />
+  if (!hasProfile) {
+    return <Navigate to="/login" replace />
   }
 
-  return <Navigate to="/login" replace />
+  return <UserHomePage />
 }
-
