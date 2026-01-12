@@ -41,37 +41,35 @@ const Photo = () => {
     }
   }
 
-const handlePhotoUpload = (e) => {
-  const file = e.target.files?.[0]
-  if (!file) return
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
 
-  const index = Number(e.target.dataset.index) || 0
+    const index = Number(e.target.dataset.index) || 0
+    e.target.value = ""
 
-  e.target.value = ""
+    setUploading(true)
 
-  setUploading(true)
-
-  const clonedFile = new File([file], file.name, {
-    type: file.type,
-    lastModified: file.lastModified
-  })
-
-  if (isSinglePhoto) {
-    setFormData(p => ({
-      ...p,
-      profilePhoto: clonedFile
-    }))
-  } else {
-    setFormData(p => {
-      const next = [...photos]
-      next[index] = clonedFile
-      return { ...p, profilePhotos: next }
+    const clonedFile = new File([file], file.name, {
+      type: file.type,
+      lastModified: file.lastModified
     })
+
+    if (isSinglePhoto) {
+      setFormData(p => ({
+        ...p,
+        profilePhoto: clonedFile
+      }))
+    } else {
+      setFormData(p => {
+        const next = [...photos]
+        next[index] = clonedFile
+        return { ...p, profilePhotos: next }
+      })
+    }
+
+    setUploading(false)
   }
-
-  setUploading(false)
-}
-
 
   return (
     <div className="animate-fade-in">
