@@ -101,6 +101,9 @@ export function useEditableProfile() {
 
     queryClient.invalidateQueries(["my-profile"])
   }
+const uploadImage = async (file) => {
+  return uploadProfileImage(file)
+}
 
   return {
     profile,
@@ -109,8 +112,9 @@ export function useEditableProfile() {
 
     // non-photo updates
     updateProfileData,
-
     // photo uploads
+    uploadImage,
+
     uploadProfileImage,
     uploadGalleryImage
   }
