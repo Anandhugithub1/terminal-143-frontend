@@ -8,7 +8,7 @@ import LazyFallback from "../components/Ui/LazyFallback.jsx";
 import { WizardProvider } from "../features/AddProfile/contexts/ProfileWizard.jsx";
 // Eager
 import { Login } from "../features/Auth/pages/Login.jsx";
-import  Register  from "../features/Auth/pages/Register.jsx"; 
+import Register from "../features/Auth/pages/Register.jsx";
 import EmailOTPVerification from "../features/Auth/pages/OtpVerification.jsx";
 import { ForgotAndResetPassword } from "../features/Auth/pages/ForgotPassword.jsx";
 import PricingPage from "../pages/Global/Pricing.jsx";
@@ -17,29 +17,45 @@ import UserHomePage from "../features/UserHome/pages/Home.jsx";
 import DefaultHomeRoute from "./DefaultHomeRoute.jsx";
 import UserProfilePage from "../features/UserHome/pages/UserProfileById.jsx";
 // Lazy
-const MatchesPage = lazy(() => import("../features/UserHome/pages/Matches.jsx"));
-const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx"));
-const AddDetails = lazy(() => import("../features/AddProfile/pages/Add_Details.jsx"));
+const MatchesPage = lazy(() =>
+  import("../features/UserHome/pages/Matches.jsx")
+);
+const RequestsPage = lazy(() =>
+  import("../features/UserHome/pages/Request.jsx")
+);
+const AddDetails = lazy(() =>
+  import("../features/AddProfile/pages/Add_Details.jsx")
+);
 const NotFoundPage = lazy(() => import("../pages/404/404.jsx"));
-const ProfilePage = lazy(() => import("../features/UserProfile/pages/Profile.jsx"));
-const ProfileEditPage = lazy(() => import("../features/UserProfile/pages/ProfileEdit.jsx"));
-const ShareQRCodePage = lazy(() => import("../features/UserProfile/pages/QrCode.jsx"));
-const PublicProfilePage = lazy(() => import("../features/UserProfile/pages/PublicProfile.jsx"));
+const ProfilePage = lazy(() =>
+  import("../features/UserProfile/pages/Profile.jsx")
+);
+const ProfileEditPage = lazy(() =>
+  import("../features/UserProfile/pages/ProfileEdit.jsx")
+);
+const ShareQRCodePage = lazy(() =>
+  import("../features/UserProfile/pages/QrCode.jsx")
+);
+const PublicProfilePage = lazy(() =>
+  import("../features/UserProfile/pages/PublicProfile.jsx")
+);
 const SettingsPage = lazy(() => import("../pages/Settings/Settings"));
 const LanguagePage = lazy(() => import("../pages/Settings/Language"));
 const PreferencesPage = lazy(() => import("../pages/Settings/Preference"));
 const InfoPage = lazy(() => import("../pages/Settings/Info"));
-const LocationEditPage =lazy(()=> import("../features/UserHome/pages/LocationEditPage.jsx"))
+const LocationEditPage = lazy(() =>
+  import("../features/UserHome/pages/LocationEditPage.jsx")
+);
 
+import ErrorPage from "../pages/Error/ErrorPage.jsx";
 export const appRoutes = (
-  <Route path="" element={<App />}>
+  <Route path="" element={<App />} errorElement={<ErrorPage />}>
     <Route path="register" element={<Register />} />
     <Route path="login" element={<Login />} />
     <Route path="verify" element={<EmailOTPVerification />} />
     <Route path="reset-password" element={<ForgotAndResetPassword />} />
-      <Route path="/user/:pk/:sk" element={<UserProfilePage />} />
-
-
+    <Route path="/user/:pk/:sk" element={<UserProfilePage />} />
+<Route path='/error' element={<ErrorPage/>}/>
     <Route
       path="complete/*"
       element={
@@ -49,11 +65,11 @@ export const appRoutes = (
               <AddDetails />
             </Suspense>
           </WizardProvider>
-          </RequireProfileIncomplete>
+        </RequireProfileIncomplete>
       }
     />
 
-<Route index element={<DefaultHomeRoute />} />
+    <Route index element={<DefaultHomeRoute />} />
 
     <Route path="pricing" element={<PricingPage />} />
 
@@ -66,18 +82,15 @@ export const appRoutes = (
       }
     />
 
-    <Route path="profile/edit-location"
-    
-    element={<Suspense fallback={null}>
+    <Route
+      path="profile/edit-location"
+      element={
+        <Suspense fallback={null}>
+          <LocationEditPage />
+        </Suspense>
+      }
+    />
 
-      <LocationEditPage/>
-    </Suspense>
-
-
-
-    }/>
-
-    
     <Route
       path="language"
       element={
@@ -103,11 +116,7 @@ export const appRoutes = (
       }
     />
 
-   <Route
-  path="home"
-  element={<DefaultHomeRoute />}
-/>
-
+    <Route path="home" element={<DefaultHomeRoute />} />
 
     <Route
       path="matches"
@@ -117,7 +126,6 @@ export const appRoutes = (
         </Suspense>
       }
     />
-
 
     <Route
       path="requests"
@@ -143,7 +151,6 @@ export const appRoutes = (
         </Suspense>
       }
     />
-
 
     <Route
       path="share-qr"
