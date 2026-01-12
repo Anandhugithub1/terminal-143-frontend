@@ -1,52 +1,73 @@
-import { useState, useRef } from 'react';
+import { useState, useRef } from "react"
+import { toast } from "sonner"
 
-const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp"
+]
 
-export function useAvatarUpload(uploadImage, updateProfileData) {
-  const [showUpload, setShowUpload] = useState(false);
-  const galleryRef = useRef(null);
-  const cameraRef = useRef(null);
+export function useAvatarUpload(uploadImage) {
+  const [showUpload, setShowUpload] = useState(false)
+  const [localPreview, setLocalPreview] = useState(null)
 
-  const toggleUpload = () => setShowUpload(prev => !prev);
+  const galleryRef = useRef(null)
+  const cameraRef = useRef(null)
+
+  const toggleUpload = () => setShowUpload(prev => !prev)
 
   const openGallery = () => {
-    galleryRef.current?.click();
-    setShowUpload(false);
-  };
+    galleryRef.current?.click()
+    setShowUpload(false)
+  }
 
   const openCamera = () => {
-    cameraRef.current?.click();
-    setShowUpload(false);
-  };
+    cameraRef.current?.click()
+    setShowUpload(false)
+  }
 
-  const handleFileChange = (e, userType) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+const handleFileChange = async (e) => {
+  const file = e.target.files?.[0]
+  if (!file) return
 
-    //  Validate file type
-    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      alert('Invalid file format. Only JPG, JPEG, PNG, or WEBP images are allowed.');
-      e.target.value = '';
-      return;
-    }
+  e.target.value = ""
 
-    uploadImage(file, userType === 'fm' ? 0 : undefined);
-    e.target.value = '';
-  };
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    toast.error("Invalid image format")
+    return
+  }
+
+  const previewUrl = URL.createObjectURL(file)
+setLocalPreview(previewUrl)
+
+try {
+  await uploadImage(file)
+  toast.success("Profile photo updated")
+} catch {
+  setLocalPreview(null)
+  toast.error("Unable to upload photo. Please try again.")
+} finally {
+  URL.revokeObjectURL(previewUrl)
+}
+
+}
+
 
   const handleRemovePhoto = () => {
-    updateProfileData('photo', '');
-    setShowUpload(false);
-  };
+    setLocalPreview(null)
+    setShowUpload(false)
+  }
 
   return {
     showUpload,
-    toggleUpload, 
+    toggleUpload,
     openGallery,
     openCamera,
     galleryRef,
     cameraRef,
     handleFileChange,
     handleRemovePhoto,
-  };
+    localPreview
+  }
 }

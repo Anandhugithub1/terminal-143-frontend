@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import {
   fetchMyProfile,
@@ -15,8 +14,6 @@ const ALLOWED_IMAGE_TYPES = [
 
 export function useEditableProfile() {
   const queryClient = useQueryClient()
-  const [localAvatar, setLocalAvatar] = useState("")
-  const [isUploading, setIsUploading] = useState(false)
 
   // READ
   const { data: profile, isLoading } = useQuery({
@@ -32,48 +29,89 @@ export function useEditableProfile() {
     }
   })
 
+  /**
+   * Generic profile field update
+   */
   const updateProfileData = async (key, value) => {
     await updateMutation.mutateAsync({ [key]: value })
   }
 
-  // UPLOAD IMAGE (client-side)
-  const uploadImage = async (file, photoIndex = 0) => {
+  /**
+   * Internal helper to upload a photo to S3
+   */
+  const uploadToS3 = async (file) => {
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      alert("Invalid image format")
-      return
+      throw new Error("INVALID_FILE_TYPE")
     }
 
-    setIsUploading(true)
-    const preview = URL.createObjectURL(file)
-    setLocalAvatar(preview)
+    const { presignedUrl, publicUrl } =
+      await getPresignedUrl({ fileType: file.type })
 
-    try {
-      const { presignedUrl, publicUrl } =
-        await getPresignedUrl({ fileType: file.type, photoIndex })
+    await fetch(presignedUrl, {
+      method: "PUT",
+      headers: { "Content-Type": file.type },
+      body: file
+    })
 
-      await fetch(presignedUrl, {
-        method: "PUT",
-        headers: { "Content-Type": file.type },
-        body: file
-      })
+    return publicUrl
+  }
 
-      await updateMutation.mutateAsync({
-        photos: [{ url: publicUrl, isProfile: photoIndex === 0, order: photoIndex }]
-      })
+  /**
+   * Upload PROFILE photo
+   * - Always slot 0
+   */
+  const uploadProfileImage = async (file) => {
+    const publicUrl = await uploadToS3(file)
 
-      queryClient.invalidateQueries(["my-profile"])
-    } finally {
-      setIsUploading(false)
+    await updateMutation.mutateAsync({
+      photos: [
+        {
+          url: publicUrl,
+          isProfile: true,
+          slot: 0,
+          order: 0
+        }
+      ]
+    })
+
+    queryClient.invalidateQueries(["my-profile"])
+  }
+
+  /**
+   * Upload GALLERY image
+   * - slot must be 1–4
+   */
+  const uploadGalleryImage = async (file, slot) => {
+    if (!Number.isInteger(slot) || slot < 1 || slot > 4) {
+      throw new Error("INVALID_GALLERY_SLOT")
     }
+
+    const publicUrl = await uploadToS3(file)
+
+    await updateMutation.mutateAsync({
+      photos: [
+        {
+          url: publicUrl,
+          isProfile: false,
+          slot,
+          order: slot
+        }
+      ]
+    })
+
+    queryClient.invalidateQueries(["my-profile"])
   }
 
   return {
     profile,
     status: isLoading ? "loading" : "succeeded",
-    isUploading,
     isFetching: isLoading,
-    localAvatar,
+
+    // non-photo updates
     updateProfileData,
-    uploadImage
+
+    // photo uploads
+    uploadProfileImage,
+    uploadGalleryImage
   }
 }
