@@ -1,132 +1,160 @@
-import React, { useState, useEffect } from "react";
-import { ChevronLeft, ChevronDownIcon } from "lucide-react";
-import { interestMap } from "../../../Utlis/utlis";
+import React, { useState, useEffect, useMemo } from "react"
+import { ChevronLeft, ChevronDownIcon } from "lucide-react"
+import { interestMap } from "../../../Utlis/utlis"
 
 const LANGUAGES_CDN_URL =
-  "https://d36zx1g74mcorc.cloudfront.net/website_files/languages/languages.json";
+  "https://d36zx1g74mcorc.cloudfront.net/website_files/languages/languages.json"
 
-export default function FieldEditPage({ field, value, onSave, onCancel }) {
-  const [inputValue, setInputValue] = useState(value || "");
-  const [selectedInterests, setSelectedInterests] = useState([]);
-  const [languagesList, setLanguagesList] = useState([]);
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
-  const [openLanguagePicker, setOpenLanguagePicker] = useState(false);
+export default function FieldEditPage({
+  field,
+  value,
+  onSave,
+  onCancel,
+  isSaving
+}) {
+  const [inputValue, setInputValue] = useState(value || "")
+  const [selectedInterests, setSelectedInterests] = useState([])
+  const [languagesList, setLanguagesList] = useState([])
+  const [selectedLanguages, setSelectedLanguages] = useState([])
+  const [openLanguagePicker, setOpenLanguagePicker] = useState(false)
 
-  const allInterests = Object.entries(interestMap).map(([key, value]) => ({
-    key,
-    label: value.label,
-    icon: value.icon,
-  }));
+  const allInterests = useMemo(
+    () =>
+      Object.entries(interestMap).map(([key, value]) => ({
+        key,
+        label: value.label,
+        icon: value.icon
+      })),
+    []
+  )
 
-  // Fetch + normalize languages from CDN
+  /* ---------- Load languages ---------- */
   useEffect(() => {
-    if (field.key !== "languages") return;
+    if (field.key !== "languages") return
 
     fetch(LANGUAGES_CDN_URL)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!Array.isArray(data)) {
-          console.error("Languages JSON is not an array", data);
-          return;
-        }
+      .then(res => res.json())
+      .then(data => {
+        if (!Array.isArray(data)) return
 
-        const normalised = data.map((item, index) => {
-          if (typeof item === "string") {
-            return { value: item, label: item };
-          }
+        const normalized = data
+          .map((item, index) => {
+            if (typeof item === "string") {
+              return { value: item, label: item }
+            }
 
-          const value =
-            item.value ||
-            item.code ||
-            item.shortCode ||
-            item.languageCode ||
-            `lang-${index}`;
-          const label =
-            item.label ||
-            item.name ||
-            item.language ||
-            item.nativeName ||
-            value;
+            const value =
+              item.value ||
+              item.code ||
+              item.shortCode ||
+              item.languageCode ||
+              `lang-${index}`
 
-          return { value, label };
-        });
+            const label =
+              item.label ||
+              item.name ||
+              item.language ||
+              item.nativeName ||
+              value
 
-        normalised.sort((a, b) =>
-          a.label.localeCompare(b.label, undefined, { sensitivity: "base" })
-        );
-
-        setLanguagesList(normalised);
-      })
-      .catch((err) => console.error("Failed to load languages", err));
-  }, [field.key]);
-
-  // Initialise state based on field + value
-  useEffect(() => {
-    if (field.key === "interest") {
-      const updated = allInterests.map((item) => ({
-        ...item,
-        selected: (value || []).includes(item.key),
-      }));
-      setSelectedInterests(updated);
-    } else if (field.key === "languages") {
-      const normalized =
-        Array.isArray(value) && value.length > 0
-          ? value.map((v) => {
-              if (typeof v !== "string") return v;
-              const match =
-                languagesList.find((lang) => lang.value === v) || null;
-              return match || { label: v, value: v };
+            return { value, label }
+          })
+          .sort((a, b) =>
+            a.label.localeCompare(b.label, undefined, {
+              sensitivity: "base"
             })
-          : [];
-      setSelectedLanguages(normalized);
-    } else {
-      setInputValue(value || "");
-    }
-  }, [field, value, languagesList]);
+          )
 
-  const toggleInterest = (key) => {
-    setSelectedInterests((prev) =>
-      prev.map((item) =>
-        item.key === key ? { ...item, selected: !item.selected } : item
+        setLanguagesList(normalized)
+      })
+      .catch(() => {})
+  }, [field.key])
+
+  /* ---------- Init state ---------- */
+ useEffect(() => {
+  if (isSaving) return   // 
+
+  if (field.key === "interest") {
+    setSelectedInterests(
+      allInterests.map(item => ({
+        ...item,
+        selected: (value || []).includes(item.key)
+      }))
+    )
+  } else if (field.key === "languages") {
+    setSelectedLanguages(
+      Array.isArray(value)
+        ? value.map(v => {
+            if (typeof v !== "string") return v
+            return (
+              languagesList.find(l => l.value === v) || {
+                label: v,
+                value: v
+              }
+            )
+          })
+        : []
+    )
+  } else {
+    setInputValue(value || "")
+  }
+}, [field, value, languagesList, allInterests, isSaving])
+
+
+  /* ---------- Helpers ---------- */
+  const toggleInterest = key => {
+    if (isSaving) return
+    setSelectedInterests(prev =>
+      prev.map(item =>
+        item.key === key
+          ? { ...item, selected: !item.selected }
+          : item
       )
-    );
-  };
+    )
+  }
 
   const handleSave = () => {
+    if (isSaving) return
+
     if (field.key === "interest") {
-      const selectedKeys = selectedInterests
-        .filter((item) => item.selected)
-        .map((item) => item.key);
-      onSave(selectedKeys);
+      onSave(
+        selectedInterests
+          .filter(i => i.selected)
+          .map(i => i.key)
+      )
     } else if (field.key === "languages") {
-      const selectedValues = selectedLanguages.map((l) => l.value);
-      onSave("languagesKnown", selectedValues);
+      onSave(
+        "languagesKnown",
+        selectedLanguages.map(l => l.value)
+      )
     } else if (field.key === "age") {
-      // Save as 'dob' instead of 'age'
-      onSave("dob", inputValue.trim());
+      onSave("dob", inputValue.trim())
     } else {
-      onSave(inputValue.trim());
+      onSave(inputValue.trim())
     }
-  };
+  }
 
   const isBioField =
     field.key === "bio" ||
     field.key === "about" ||
-    field.label.toLowerCase().includes("bio");
+    field.label.toLowerCase().includes("bio")
 
-  const isAgeField = field.key === "age";
+  const isAgeField = field.key === "age"
 
+  /* ---------- Render ---------- */
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col">
-      {/* Header with Save and Cancel */}
+      {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
         <div className="flex items-center">
           <button
             onClick={onCancel}
-            className="p-1 rounded-full hover:bg-gray-100 transition"
+            disabled={isSaving}
+            className="p-1 rounded-full hover:bg-gray-100 disabled:opacity-50"
           >
             <ChevronLeft size={22} className="text-gray-700" />
           </button>
+
           <h2 className="text-lg font-semibold text-gray-800 ml-2">
             {isAgeField ? "Edit Date of Birth" : `Edit ${field.label}`}
           </h2>
@@ -134,9 +162,20 @@ export default function FieldEditPage({ field, value, onSave, onCancel }) {
 
         <button
           onClick={handleSave}
-          className="px-4 py-1.5 rounded-lg bg-[#FF3366] text-white text-sm font-medium hover:bg-[#e52b5d] transition"
+          disabled={isSaving}
+          className={`px-4 py-1.5 rounded-lg text-sm font-medium flex items-center justify-center min-w-[72px]
+            ${
+              isSaving
+                ? "bg-pink-300 cursor-not-allowed"
+                : "bg-[#FF3366] text-white hover:bg-[#e52b5d]"
+            }
+          `}
         >
-          Save
+          {isSaving ? (
+            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            "Save"
+          )}
         </button>
       </div>
 
@@ -147,12 +186,15 @@ export default function FieldEditPage({ field, value, onSave, onCancel }) {
             {selectedInterests.map(({ key, label, icon: Icon, selected }) => (
               <button
                 key={key}
+                disabled={isSaving}
                 onClick={() => toggleInterest(key)}
-                className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm border transition ${
-                  selected
-                    ? "bg-pink-100 border-pink-300 text-pink-700"
-                    : "bg-white border-gray-200 text-gray-700 hover:border-[#FF3366]"
-                }`}
+                className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm border transition
+                  ${
+                    selected
+                      ? "bg-pink-100 border-pink-300 text-pink-700"
+                      : "bg-white border-gray-200 text-gray-700 hover:border-[#FF3366]"
+                  }
+                `}
               >
                 <Icon
                   size={16}
@@ -165,34 +207,42 @@ export default function FieldEditPage({ field, value, onSave, onCancel }) {
         ) : field.key === "languages" ? (
           <>
             <button
-              onClick={() => setOpenLanguagePicker((o) => !o)}
-              className="inline-flex w-full justify-between items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm hover:border-[#FF3366] focus:outline-none focus:ring-2 focus:ring-[#FF3366] transition"
+              disabled={isSaving}
+              onClick={() =>
+                setOpenLanguagePicker(prev => !prev)
+              }
+              className="inline-flex w-full justify-between items-center px-4 py-2 bg-white border border-gray-300 rounded-md hover:border-[#FF3366]"
             >
-              <span className="truncate text-gray-800">
+              <span className="truncate">
                 {selectedLanguages.length
-                  ? selectedLanguages.map((l) => l.label).join(", ")
+                  ? selectedLanguages.map(l => l.label).join(", ")
                   : "Select languages..."}
               </span>
-              <ChevronDownIcon className="w-5 h-5 text-gray-500 ml-2 flex-shrink-0" />
+              <ChevronDownIcon className="w-5 h-5 text-gray-500" />
             </button>
 
             {openLanguagePicker && (
-              <div className="mt-3 border border-gray-200 rounded-lg shadow-sm bg-white max-h-60 overflow-y-auto">
-                {languagesList.map((lang) => (
+              <div className="mt-3 border rounded-lg max-h-60 overflow-y-auto">
+                {languagesList.map(lang => (
                   <div
                     key={lang.value}
                     onClick={() =>
-                      setSelectedLanguages((prev) =>
-                        prev.some((l) => l.value === lang.value)
-                          ? prev.filter((l) => l.value !== lang.value)
+                      !isSaving &&
+                      setSelectedLanguages(prev =>
+                        prev.some(l => l.value === lang.value)
+                          ? prev.filter(l => l.value !== lang.value)
                           : [...prev, lang]
                       )
                     }
-                    className={`px-4 py-2 cursor-pointer text-sm ${
-                      selectedLanguages.some((l) => l.value === lang.value)
-                        ? "bg-pink-50 text-pink-700 border-l-2 border-[#FF3366]"
-                        : "hover:bg-gray-50 text-gray-800"
-                    }`}
+                    className={`px-4 py-2 cursor-pointer text-sm
+                      ${
+                        selectedLanguages.some(
+                          l => l.value === lang.value
+                        )
+                          ? "bg-pink-50 text-pink-700 border-l-2 border-[#FF3366]"
+                          : "hover:bg-gray-50"
+                      }
+                    `}
                   >
                     {lang.label}
                   </div>
@@ -202,36 +252,30 @@ export default function FieldEditPage({ field, value, onSave, onCancel }) {
           </>
         ) : isBioField ? (
           <textarea
+            disabled={isSaving}
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Tell something about yourself..."
-            className="w-full border border-gray-300 rounded-lg p-3 
-                       focus:outline-none focus:ring-2 focus:ring-[#FF3366] focus:border-transparent 
-                       resize-none hover:border-[#FF3366]"
+            onChange={e => setInputValue(e.target.value)}
             rows={6}
-            spellCheck={false}
+            className="w-full border rounded-lg p-3 resize-none"
           />
         ) : isAgeField ? (
           <input
+            disabled={isSaving}
             type="date"
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg p-3 
-                       focus:outline-none focus:ring-2 focus:ring-[#FF3366] focus:border-transparent 
-                       hover:border-[#FF3366]"
+            onChange={e => setInputValue(e.target.value)}
+            className="w-full border rounded-lg p-3"
           />
         ) : (
           <input
+            disabled={isSaving}
             type="text"
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder={`Enter your ${field.label.toLowerCase()}`}
-            className="w-full border border-gray-300 rounded-lg p-3 
-                       focus:outline-none focus:ring-2 focus:ring-[#FF3366] focus:border-transparent 
-                       hover:border-[#FF3366]"
+            onChange={e => setInputValue(e.target.value)}
+            className="w-full border rounded-lg p-3"
           />
         )}
       </div>
     </div>
-  );
+  )
 }
