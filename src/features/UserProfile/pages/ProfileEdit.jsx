@@ -5,6 +5,7 @@ import { ChevronLeft } from "lucide-react";
 import "@fontsource-variable/inter";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner"
 
 import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import { interestMap, getProfileFields } from "../../../Utlis/utlis";
@@ -81,12 +82,25 @@ export default function ProfileEditPage() {
   }, [profile]);
 
   // ======== Handlers ========
-  const saveSocialLinks = useCallback(() => {
-    const formattedLinks = Object.entries(socialLinks)
-      .filter(([, value]) => value.trim() !== "")
-      .map(([platform, usernameOrLink]) => ({ platform, usernameOrLink }));
-    updateProfileData("socialMediaLinks", formattedLinks);
-  }, [socialLinks, updateProfileData]);
+ const saveSocialLinks = useCallback(async () => {
+  const formattedLinks = Object.entries(socialLinks)
+    .filter(([, value]) => value.trim() !== "")
+    .map(([platform, usernameOrLink]) => ({ platform, usernameOrLink }))
+
+  try {
+    await updateProfileData("socialMediaLinks", formattedLinks)
+
+    toast.success(
+      t("profileEdit.updated", "Profile updated successfully")
+    )
+  } catch (err) {
+    toast.error(
+      err?.response?.data?.error ||
+        t("profileEdit.updateFailed", "Failed to update profile")
+    )
+  }
+}, [socialLinks, updateProfileData, t])
+
 
   if (
     status === "idle" ||
@@ -256,15 +270,28 @@ export default function ProfileEditPage() {
             activeField.value ||
             (activeField.key === "languages" ? [] : "")
           }
-     onSave={(keyOrValue, maybeValue) => {
+onSave={async (keyOrValue, maybeValue) => {
   const updateKey =
-    typeof maybeValue !== "undefined" ? keyOrValue : activeField.key;
+    typeof maybeValue !== "undefined" ? keyOrValue : activeField.key
   const updateValue =
-    typeof maybeValue !== "undefined" ? maybeValue : keyOrValue;
+    typeof maybeValue !== "undefined" ? maybeValue : keyOrValue
 
-  updateProfileData(updateKey, updateValue);
-  setActiveField(null);
+  try {
+    await updateProfileData(updateKey, updateValue)
+
+    toast.success(
+      t("profileEdit.updated", "Profile updated successfully")
+    )
+
+    setActiveField(null)
+  } catch (err) {
+    toast.error(
+      err?.response?.data?.error ||
+        t("profileEdit.updateFailed", "Failed to update profile")
+    )
+  }
 }}
+
 
           onCancel={() => setActiveField(null)}
         />
