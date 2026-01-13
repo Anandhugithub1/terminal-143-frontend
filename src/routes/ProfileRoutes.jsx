@@ -18,6 +18,11 @@ const UserProfilePage = lazy(() =>
   import("../features/UserHome/pages/UserProfileById.jsx")
 )
 
+const LocationEditPage =lazy(() => 
+import("../features/UserHome/pages/LocationEditPage.jsx")
+)
+
+
 export const ProfileRoutes = (
   <>
     <Route
@@ -46,6 +51,18 @@ export const ProfileRoutes = (
         </Suspense>
       }
     />
+
+
+     <Route path="profile/edit-location"
+        
+        element={<Suspense fallback={null}>
+    
+          <LocationEditPage/>
+        </Suspense>
+    
+    
+    
+        }/>
 
     <Route
       path="profile/:username"
