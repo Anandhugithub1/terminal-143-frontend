@@ -1,29 +1,30 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useCallback, lazy, Suspense } from 'react'
-import { useQuery, useMutation } from '@tanstack/react-query'
-import TopNav from '../../../components/Layout/TopNavigation'
-import BottomNav from '../../../components/Layout/BottomNavigation'
-import ProfileSkeleton from '../components/ProfileSkeleton'
-import { useSendMatchRequest } from '../../../Hooks/sendMatchRequest'
-import placeholderImage from '../../../assets/woman.png'
-import { getSuggestions, postSeen } from '../../../features/Profiles/profilesapi'
-import LocationBar from '../components/Actions/LocationBar'
+import React, { useEffect, useState, useCallback, lazy, Suspense } from "react"
+import { useQuery, useMutation } from "@tanstack/react-query"
+import TopNav from "../../../components/Layout/TopNavigation"
+import BottomNav from "../../../components/Layout/BottomNavigation"
+import ProfileSkeleton from "../components/ProfileSkeleton"
+import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest"
+import placeholderImage from "../../../assets/woman.png"
+import { getSuggestions, postSeen } from "../../../features/Profiles/profilesapi"
+import LocationBar from "../components/Actions/LocationBar"
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
-import { formatLastSeen } from '../../Profiles/utlis'
-import { computeAge } from '../../../Utlis/utlis'
+import { formatLastSeen } from "../../Profiles/utlis"
+import { computeAge } from "../../../Utlis/utlis"
 
-const ProfileCard = lazy(() => import('../components/Cards/ProfileCard'))
-const DetailSection = lazy(() => import('../components/Details/Details'))
-const ActionControls = lazy(() => import('../components/Actions/ActionControls'))
-const AlertMessage = lazy(() => import('../../../components/Ui/Alerts'))
-const SwipeDeck = lazy(() => import('../components/Actions/SwipeDeck'))
+const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"))
+const DetailSection = lazy(() => import("../components/Details/Details"))
+const ActionControls = lazy(() => import("../components/Actions/ActionControls"))
+const AlertMessage = lazy(() => import("../../../components/Ui/Alerts"))
+const SwipeDeck = lazy(() => import("../components/Actions/SwipeDeck"))
 
 export default function UserHomePage() {
   const { data: myProfile } = useMyProfile()
 
   const [idx, setIdx] = useState(0)
   const [direction, setDirection] = useState(0)
-  const [requestError, setRequestError] = useState('')
+  const [requestError, setRequestError] = useState("")
+  const [suggestionError, setSuggestionError] = useState("")
   const [nextBatch, setNextBatch] = useState([])
   const [hasMore, setHasMore] = useState(true)
   const [currentSource, setCurrentSource] = useState(null)
@@ -35,25 +36,24 @@ export default function UserHomePage() {
 
   /* ---------------- Fetch suggestions ---------------- */
 
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    refetch
-  } = useQuery({
-    queryKey: ['profiles'],
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["profiles"],
     queryFn: () => getSuggestions({ limit: 10 }),
     staleTime: 1000 * 30,
+    onError: (err) => {
+      setSuggestionError(
+        err?.response?.status === 500
+          ? "Unexpected error occurred. Please try again."
+          : err?.message || "Something went wrong"
+      )
+    }
   })
 
   const profiles = data?.profiles || []
   const source = data?.source || null
 
   useEffect(() => {
-    if (source) {
-      setCurrentSource(source)
-    }
+    if (source) setCurrentSource(source)
   }, [source])
 
   const { send: sendMatchRequest } = useSendMatchRequest()
@@ -61,7 +61,7 @@ export default function UserHomePage() {
   const seenMutation = useMutation({
     mutationFn: postSeen,
     onError: (err) => {
-      setRequestError(err.response?.data?.error || err.message)
+      setRequestError(err?.response?.data?.error || err.message)
     }
   })
 
@@ -82,7 +82,14 @@ export default function UserHomePage() {
         }
         setNextBatch(nextProfiles)
       })
-      .catch(() => {})
+      .catch((err) => {
+        setSuggestionError(
+          err?.response?.status === 500
+            ? "Unexpected error occurred while loading profiles."
+            : "Failed to load more profiles."
+        )
+        setHasMore(false)
+      })
   }, [idx, profiles.length, nextBatch.length, hasMore])
 
   /* ---------------- Actions ---------------- */
@@ -91,35 +98,29 @@ export default function UserHomePage() {
     setIdx(0)
     setNextBatch([])
     setHasMore(true)
+    setSuggestionError("")
     refetch()
   }, [refetch])
 
   const advance = useCallback(
     (dir) => {
-
       setDirection(dir)
 
       setIdx((prev) => {
         const current = profiles[prev]
+
         if (current) {
-          // Seen tracking (requires source)
           if (currentSource) {
-            
             seenMutation.mutate({
               index: current.suggestionIndex,
-              direction: dir === 1 ? 'r' : 'l',
-              source: currentSource,
+              direction: dir === 1 ? "r" : "l",
+              source: currentSource
             })
           }
 
-          // Match request (does NOT depend on source)
-       if (dir === 1 && current.PK) {
-  console.log(
-    current.PK
-  )
-  sendMatchRequest(current.PK)
-}
-
+          if (dir === 1 && current.PK) {
+            sendMatchRequest(current.PK)
+          }
         }
 
         const next = prev + 1
@@ -141,10 +142,6 @@ export default function UserHomePage() {
     return <ProfileSkeleton />
   }
 
-  if (isError) {
-    return <div className="p-4 text-red-500">{error.message}</div>
-  }
-
   const isEnd = !hasMore || idx >= profiles.length
   const rawProfile = profiles[idx] || {}
 
@@ -153,30 +150,30 @@ export default function UserHomePage() {
   const images = Array.isArray(rawProfile.photos)
     ? rawProfile.photos
         .sort((a, b) => a.order - b.order)
-        .map(p => p.url)
+        .map((p) => p.url)
     : []
 
   const profile = {
-    name: rawProfile.name || 'Unknown',
+    name: rawProfile.name || "Unknown",
     age: computeAge(rawProfile.dob),
-    about: rawProfile.bio || '',
+    about: rawProfile.bio || "",
     gender:
-      rawProfile.gender === 'F'
-        ? 'Female'
-        : rawProfile.gender === 'M'
-        ? 'Male'
+      rawProfile.gender === "F"
+        ? "Female"
+        : rawProfile.gender === "M"
+        ? "Male"
         : rawProfile.gender,
     images,
     location: rawProfile.location
       ? `${rawProfile.location.placeName}, ${rawProfile.location.countryCode}`
-      : '',
+      : "",
     popularity: rawProfile.popularity || 0,
     healthStatus: rawProfile.healthStatus || {
-      status: 'Unknown',
-      lastTestedDate: 'Unknown'
+      status: "Unknown",
+      lastTestedDate: "Unknown"
     },
     lastSeen: formatLastSeen(rawProfile.lastSeen),
-    job: rawProfile.jobTitle || '',
+    job: rawProfile.jobTitle || "",
     languages: rawProfile.languagesKnown?.length
       ? rawProfile.languagesKnown
       : rawProfile.language
@@ -184,7 +181,7 @@ export default function UserHomePage() {
       : [],
     interests: rawProfile.interest || [],
     userId: rawProfile.username,
-    suggestionIndex: rawProfile.suggestionIndex,
+    suggestionIndex: rawProfile.suggestionIndex
   }
 
   /* ---------------- Render ---------------- */
@@ -196,7 +193,7 @@ export default function UserHomePage() {
       <LocationBar
         title={locationTitle}
         subtitle={locationSubtitle}
-        onChange={() => console.log("Change pressed")}
+        onChange={() => {}}
       />
 
       {requestError && (
@@ -206,21 +203,39 @@ export default function UserHomePage() {
               message={requestError}
               type="error"
               isVisible
-              onClose={() => setRequestError('')}
+              onClose={() => setRequestError("")}
             />
           </Suspense>
         </div>
       )}
 
       <div className="relative flex-1">
-        {isEnd ? (
+        {suggestionError ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
+            <h2 className="text-xl font-semibold text-gray-800">
+              Unexpected error
+            </h2>
+
+            <p className="mt-2 text-gray-500 max-w-md">
+              {suggestionError}
+            </p>
+
+            <button
+              onClick={handleRefresh}
+              className="mt-6 px-6 py-2 bg-primary text-white rounded-full shadow"
+            >
+              Try again
+            </button>
+          </div>
+        ) : isEnd ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
             <h2 className="text-xl font-semibold text-gray-800">
               You are all caught up
             </h2>
 
             <p className="mt-2 text-gray-500 max-w-md">
-              You’ve seen all the nearby profiles. Come back later — new faces are always joining.
+              You’ve seen all the nearby profiles. Come back later — new faces
+              are always joining.
             </p>
 
             <button
@@ -232,15 +247,12 @@ export default function UserHomePage() {
           </div>
         ) : (
           <Suspense fallback={<ProfileSkeleton />}>
-          <SwipeDeck
-  idx={idx}
-  direction={direction}
-  profilesLength={profiles.length}
-  onAdvance={(dir) => {
-    advance(dir)
-  }}
->
-
+            <SwipeDeck
+              idx={idx}
+              direction={direction}
+              profilesLength={profiles.length}
+              onAdvance={advance}
+            >
               <div className="relative">
                 <ProfileCard
                   profile={profile}
@@ -248,16 +260,11 @@ export default function UserHomePage() {
                 />
 
                 <div className="flex justify-center mt-2 mb-2">
-             <ActionControls
-  onReject={() => {
-    advance(-1)
-  }}
-  onRefresh={handleRefresh}
-  onLike={() => {
-    advance(1)
-  }}
-/>
-
+                  <ActionControls
+                    onReject={() => advance(-1)}
+                    onRefresh={handleRefresh}
+                    onLike={() => advance(1)}
+                  />
                 </div>
               </div>
 
