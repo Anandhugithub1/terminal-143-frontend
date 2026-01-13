@@ -90,7 +90,8 @@ export default function MatchesPage() {
                   rel="noopener noreferrer"
                 >
                   <img
-                    src={match.photo || match.photos[0]}
+                    src={match.photos?.[0]?.url}
+
                     alt={`${match.name} profile`}
                     className="w-20 h-20 rounded-2xl object-cover"
                     loading="lazy"
