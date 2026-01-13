@@ -5,6 +5,7 @@ import { Button } from "../../shared/Button"
 import "@fontsource-variable/inter"
 import { useTranslation } from "react-i18next"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 import { useMyProfile } from "../../features/UserProfile/Hooks/useMyProfile"
 import { updateMyProfile } from "../../features/UserProfile/api/profile"
@@ -36,16 +37,24 @@ const PreferencesPage = () => {
     }
   }, [profile])
 
-  const mutation = useMutation({
-    mutationFn: updateMyProfile,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-profile"] })
-      navigate(-1)
-    },
-    onError: (err) => {
-      console.error("Failed to update preferences", err)
-    }
-  })
+ const mutation = useMutation({
+  mutationFn: updateMyProfile,
+  onSuccess: () => {
+    toast.success(
+      t("preferencesUpdated", "Preferences updated successfully")
+    )
+
+    queryClient.invalidateQueries({ queryKey: ["my-profile"] })
+    navigate(-1)
+  },
+  onError: (err) => {
+    toast.error(
+      err?.response?.data?.error ||
+        t("preferencesUpdateFailed", "Failed to update preferences")
+    )
+  }
+})
+
 
   const togglePreference = (value) => {
     setSelectedPreferences((prev) => {
