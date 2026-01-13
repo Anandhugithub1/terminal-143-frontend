@@ -16,7 +16,7 @@ import {
 } from '../../utlis'
 import { useTranslation } from 'react-i18next'
 
-const MAX_PREFERENCES = 2
+const MAX_PREFERENCES = 5
 
 const Step1BasicInfo = () => {
   const { formData, setFormData } = useWizard()

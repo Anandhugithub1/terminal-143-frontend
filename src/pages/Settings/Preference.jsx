@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useMyProfile } from "../../features/UserProfile/Hooks/useMyProfile"
 import { updateMyProfile } from "../../features/UserProfile/api/profile"
 
-const MAX_PREFERENCES = 2
+const MAX_PREFERENCES = 5
 
 const PreferencesPage = () => {
   const { t } = useTranslation("settings")
