@@ -23,6 +23,8 @@ import("../features/UserHome/pages/LocationEditPage.jsx")
 )
 
 
+import LocationEditSkeleton from "../features/UserHome/components/LocationEditSkeleton.jsx"
+
 export const ProfileRoutes = (
   <>
     <Route
@@ -55,7 +57,7 @@ export const ProfileRoutes = (
 
      <Route path="profile/edit-location"
         
-        element={<Suspense fallback={null}>
+        element={<Suspense fallback={<LocationEditSkeleton/>}>
     
           <LocationEditPage/>
         </Suspense>
