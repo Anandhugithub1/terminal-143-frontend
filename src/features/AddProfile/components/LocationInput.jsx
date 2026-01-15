@@ -1,31 +1,31 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import {
   Combobox,
   ComboboxInput,
   ComboboxOptions,
-  ComboboxOption
-} from "@headlessui/react"
+  ComboboxOption,
+} from "@headlessui/react";
 
-import { useLocationService } from "../Hooks/useLocationService"
-import { HiOutlineSearch, HiX, HiLocationMarker } from "react-icons/hi"
-import Spinner from "../components/Location/Spinner"
-import IconButton from "./Location/IconButton"
-import { normalizeCountryCode, extractCoords } from "../utlis/geo"
-import { useTranslation } from "react-i18next"
+import { useLocationService } from "../Hooks/useLocationService";
+import { HiOutlineSearch, HiX, HiLocationMarker } from "react-icons/hi";
+import Spinner from "../components/Location/Spinner";
+import IconButton from "./Location/IconButton";
+import { normalizeCountryCode, extractCoords } from "../utlis/geo";
+import { useTranslation } from "react-i18next";
 
-const LISTBOX_ID = "location-listbox"
+const LISTBOX_ID = "location-listbox";
 
 export default function LocationInput({ formData, onSelect }) {
-  const { t } = useTranslation("location")
+  const { t } = useTranslation("location");
 
-  const [query, setQuery] = useState("")
-  const [selected, setSelected] = useState(null)
-  const [error, setError] = useState("")
-  const [touched, setTouched] = useState(false)
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState(null);
+  const [error, setError] = useState("");
+  const [touched, setTouched] = useState(false);
 
-  const inputRef = useRef(null)
-  const debounceRef = useRef(null)
-  const lastPlaceIdRef = useRef(null)
+  const inputRef = useRef(null);
+  const debounceRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   const {
     suggestions = [],
@@ -34,154 +34,165 @@ export default function LocationInput({ formData, onSelect }) {
     searchLocations,
     clearSuggestions,
     getCurrentLocation,
-    getPlaceDetails
-  } = useLocationService()
+    getPlaceDetails,
+  } = useLocationService();
 
   const locale = useMemo(() => {
-    if (typeof navigator === "undefined") return "en"
-    return (navigator.language || "en").split("-")[0]
-  }, [])
+    if (typeof navigator === "undefined") return "en";
+    return (navigator.language || "en").split("-")[0];
+  }, []);
+
+  /* ---------------- sync initial value ---------------- */
 
   useEffect(() => {
-    const loc = formData?.location
+    const loc = formData?.location;
     if (loc?.coordinates?.lat != null && loc?.coordinates?.lon != null) {
-      setQuery(loc.placeName || "")
-      setSelected({ placeName: loc.placeName })
+      setQuery(loc.placeName || "");
+      setSelected({ placeName: loc.placeName });
     }
-  }, [formData?.location])
+  }, [formData?.location]);
+
+  /* ---------------- search ---------------- */
 
   const handleSearch = useCallback(
     (value) => {
-      setQuery(value)
-      setTouched(true)
+      setQuery(value);
+      setTouched(true);
+      setError("");
 
-      // clear any previous error as soon as user types
-      setError("")
+      clearTimeout(debounceRef.current);
 
-      clearTimeout(debounceRef.current)
-
-      const q = value.trim()
+      const q = value.trim();
 
       if (!q) {
-        clearSuggestions()
-        onSelect?.(null)
-        return
+        clearSuggestions();
+        onSelect?.(null);
+        return;
       }
 
       if (q.length < 2) {
-        setError(
-          t("locationMinLength") || "Enter at least 2 characters"
-        )
-        clearSuggestions()
-        return
+        setError(t("locationMinLength") || "Enter at least 2 characters");
+        clearSuggestions();
+        return;
       }
 
       debounceRef.current = setTimeout(async () => {
         try {
-          await searchLocations(q)
-          setError("")
+          await searchLocations(q);
         } catch (err) {
-          if (err?.name === "AbortError") return
-
-          const msg =
-            err?.message ||
-            t("locationSearchFailed") ||
-            "Search failed, please try again"
-
-          setError(msg)
+          setError(
+            err?.message || t("locationSearchFailed") || "Search failed"
+          );
         }
-      }, 250)
+      }, 250);
     },
     [searchLocations, clearSuggestions, onSelect, t]
-  )
+  );
 
   useEffect(() => {
-    return () => clearTimeout(debounceRef.current)
-  }, [])
+    return () => clearTimeout(debounceRef.current);
+  }, []);
 
-const handleSelect = useCallback(
-  (item) => {
-    if (!item) return
+  /* ---------------- select ---------------- */
 
-    const raw = item._raw || item
-    const { lat, lon } = extractCoords(item)
+  const handleSelect = useCallback(
+    (item) => {
+      if (!item) return;
 
-    const base = {
-      lat,
-      lon,
-      placeName:
-        item.placeName ?? item.name ?? raw.placeName ?? "",
-      countryCode: normalizeCountryCode(
-        raw.countryCode || raw.country || ""
-      ),
-      admin1: raw.admin1 || null,
-      h3Index: ""
-    }
+      const raw = item._raw || item;
+      const { lat, lon } = extractCoords(item);
+      const requestId = ++requestIdRef.current;
 
-    onSelect?.(base, null)
-    setSelected(item)
-    setQuery(base.placeName)
-    clearSuggestions()
+      const base = {
+        lat,
+        lon,
+        placeName: item.placeName ?? item.name ?? raw.placeName ?? "",
+        countryCode: normalizeCountryCode(raw.countryCode || raw.country || ""),
+        admin1: raw.admin1 || null,
+        h3Index: "",
+      };
 
-    const placeId = item.placeId || raw.placeId
-    if (!placeId) return
+      // emit base immediately
+      onSelect?.(base, null);
 
-    const enrich = async () => {
-      const details = await getPlaceDetails(placeId)
-      if (!details) return
+      setSelected(item);
+      setQuery(base.placeName);
+      clearSuggestions();
 
-      onSelect?.({
-        lat: details.lat,
-        lon: details.lng,
-        placeName: details.placeName,
-        countryCode: normalizeCountryCode(details.countryCode),
-        admin1: details.admin1 || null,
-        h3Index: details.h3Index
-      })
-    }
+      const placeId = item.placeId || raw.placeId;
+      if (!placeId) return;
 
-    enrich()
-  },
-  [getPlaceDetails, onSelect, clearSuggestions]
-)
+      // cancellation safe details promise
+      const detailsPromise = (async () => {
+        try {
+          const details = await getPlaceDetails(placeId);
+          if (!details) return null;
 
+          // ignore stale results
+          if (requestId !== requestIdRef.current) return null;
+
+          const enriched = {
+            lat: details.lat,
+            lon: details.lng,
+            placeName: details.placeName,
+            countryCode: normalizeCountryCode(details.countryCode),
+            admin1: details.admin1 || null,
+            h3Index: details.h3Index,
+          };
+
+          onSelect?.(enriched);
+          return enriched;
+        } catch (err) {
+          if (err?.name === "AbortError" || err?.code === "ERR_CANCELED") {
+            return null;
+          }
+          throw err;
+        }
+      })();
+
+      // pass safe promise upward
+      onSelect?.(base, detailsPromise);
+    },
+    [getPlaceDetails, onSelect, clearSuggestions]
+  );
+
+  /* ---------------- auto detect ---------------- */
 
   const handleAutoDetect = useCallback(async () => {
-    setError("")
-    setTouched(true)
+    setError("");
+    setTouched(true);
 
     try {
-      const loc = await getCurrentLocation(locale)
-      if (!loc) throw new Error("No location detected")
-      await handleSelect(loc)
+      const loc = await getCurrentLocation(locale);
+      if (!loc) throw new Error("No location detected");
+      handleSelect(loc);
     } catch (err) {
       if (err?.code === "OUT_OF_REGION") {
-        setError(
-          t("locationOutOfRegion") ||
-            "This location is not supported"
-        )
-        setSelected(null)
-        onSelect?.(null)
-        return
+        setError(t("locationOutOfRegion") || "This location is not supported");
+        onSelect?.(null);
+        return;
       }
 
       setError(
-        t("locationDetectionFailed") ||
-          "Unable to detect your location"
-      )
+        t("locationDetectionFailed") || "Unable to detect your location"
+      );
     }
-  }, [getCurrentLocation, locale, handleSelect, t, onSelect])
+  }, [getCurrentLocation, locale, handleSelect, t, onSelect]);
+
+  /* ---------------- clear ---------------- */
 
   const handleClear = useCallback(() => {
-    setQuery("")
-    setSelected(null)
-    setError("")
-    clearSuggestions()
-    onSelect?.(null)
-    inputRef.current?.focus()
-  }, [onSelect, clearSuggestions])
+    setQuery("");
+    setSelected(null);
+    setError("");
+    clearSuggestions();
+    onSelect?.(null);
+    inputRef.current?.focus();
+  }, [onSelect, clearSuggestions]);
 
-  const displayValue = (item) => item?.placeName ?? query
+  const displayValue = (item) => item?.placeName ?? query;
+
+  /* ---------------- render ---------------- */
 
   return (
     <div className="relative space-y-3">
@@ -234,18 +245,14 @@ const handleSelect = useCallback(
                 key={idx}
                 value={item}
                 className={({ active }) =>
-                  `px-4 py-3 cursor-pointer ${
-                    active ? "bg-pink-50" : ""
-                  }`
+                  `px-4 py-3 cursor-pointer ${active ? "bg-pink-50" : ""}`
                 }
               >
                 <div className="font-medium text-sm">
                   {item.placeName || item.name}
                 </div>
                 {item.country && (
-                  <div className="text-xs text-gray-500">
-                    {item.country}
-                  </div>
+                  <div className="text-xs text-gray-500">{item.country}</div>
                 )}
               </ComboboxOption>
             ))}
@@ -259,7 +266,7 @@ const handleSelect = useCallback(
           className="px-4 py-4 rounded-xl border text-sm font-medium"
         >
           {detecting ? (
-            "Detecting…"
+            "Detecting..."
           ) : (
             <>
               <HiLocationMarker className="inline mr-1" />
@@ -269,9 +276,7 @@ const handleSelect = useCallback(
         </button>
       </div>
 
-      {error && (
-        <p className="text-sm text-red-600">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
-  )
+  );
 }

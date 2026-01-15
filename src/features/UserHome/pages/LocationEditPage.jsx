@@ -51,30 +51,56 @@ const handleSave = useCallback(async () => {
     return
   }
 
-  if (detailsPromiseRef.current) {
-    await detailsPromiseRef.current
-  }
-
-  const lat = selectedLoc.lat
-  const lon = selectedLoc.lon
-  const h3 = selectedLoc.h3Index
-
-  if (!lat || !lon || !h3) {
-    toast.error("Location details are still loading. Please wait.")
-    return
-  }
-
-  const location = {
-    coordinates: { lat, lon },
-    placeName: selectedLoc.placeName || "",
-    countryCode: selectedLoc.countryCode || "",
-    admin1: selectedLoc.admin1 || '',
-    h3: { r4: h3 }
-  }
-
   setSaving(true)
-  mutation.mutate({ location })
+
+  try {
+    let finalLoc = selectedLoc
+
+    //  wait for place-details and USE THEM
+  if (detailsPromiseRef.current) {
+  const { promise, loc } = detailsPromiseRef.current
+  const resolved = await promise
+
+  // ignore stale promise
+  if (resolved && loc === selectedLoc) {
+    finalLoc = resolved
+    setSelectedLoc(resolved)
+  }
+}
+
+
+    const lat = finalLoc.lat
+    const lon = finalLoc.lon
+    const h3 = finalLoc.h3Index
+
+    if (!lat || !lon || !h3) {
+      throw new Error("Location details not available")
+    }
+
+    const location = {
+      coordinates: { lat, lon },
+      placeName: finalLoc.placeName || "",
+      countryCode: finalLoc.countryCode || "",
+      admin1: finalLoc.admin1 || "",
+      h3: { r4: h3 }
+    }
+
+    mutation.mutate({ location })
+  } catch (err) {
+    if (
+      err?.name === "AbortError" ||
+      err?.code === "ERR_CANCELED"
+    ) {
+      return
+    }
+
+    toast.error(err?.message || "Failed to update location")
+    setSaving(false)
+  }
 }, [selectedLoc, mutation])
+
+
+
 
 
 
@@ -119,26 +145,31 @@ const handleSave = useCallback(async () => {
 
  <LocationInput
   formData={{ location: initial || {} }}
-  onSelect={async (loc, detailsPromise) => {
-    setSelectedLoc(loc)
-    detailsPromiseRef.current = detailsPromise || null
+onSelect={async (loc, detailsPromise) => {
+  setSelectedLoc(loc)
 
-    if (!detailsPromise) return
+  detailsPromiseRef.current = detailsPromise
+    ? { promise: detailsPromise, loc }
+    : null
 
-    try {
-      await detailsPromise
-    } catch (err) {
-      if (err?.code === "OUT_OF_REGION") {
-        toast.error(
-          "This location is not supported. Please select a South East Asia location."
-        )
-        setSelectedLoc(null)
-        detailsPromiseRef.current = null
-      } else {
-        toast.error("Failed to fetch location details")
-      }
+  if (!detailsPromise) return
+
+  try {
+    await detailsPromise
+  } catch (err) {
+    // only real errors reach here now
+    if (err?.code === "OUT_OF_REGION") {
+      toast.error(
+        "This location is not supported. Please select a South East Asia location."
+      )
+      setSelectedLoc(null)
+      detailsPromiseRef.current = null
+    } else {
+      toast.error("Failed to fetch location details")
     }
-  }}
+  }
+}}
+
 />
 
 

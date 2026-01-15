@@ -62,19 +62,32 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
     retry: false
   })
 
-  const autocompleteMutation = useMutation({
-    mutationFn: async ({ input, signal }) => {
-      const res = await locationAPi.get('/autocomplete', {
+const autocompleteMutation = useMutation({
+  mutationFn: async ({ input, signal }) => {
+    try {
+      const res = await locationAPi.get("/autocomplete", {
         params: { input },
         withCredentials: true,
         signal,
-        headers: { 'Accept-Language': userLang },
+        headers: { "Accept-Language": userLang }
       })
+
       return res?.data || {}
-    },
-    retry: 0,
-    useErrorBoundary: false,
-  })
+    } catch (err) {
+      // tell React Query this is NOT an error
+      if (
+        err?.name === "AbortError" ||
+        err?.code === "ERR_CANCELED"
+      ) {
+        return { predictions: [] }
+      }
+
+      throw err
+    }
+  },
+  retry: false
+})
+
 
   const getPlaceDetails = useCallback(async (placeId) => {
     if (!placeId) return null
@@ -166,76 +179,70 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
     setSuggestions([])
   }, [])
 
-  const searchLocations = useCallback((query) => {
-    const trimmed = (query || "").trim()
+const searchLocations = useCallback((query) => {
+  const trimmed = (query || "").trim()
 
-    return new Promise((resolve, reject) => {
-      if (!trimmed || trimmed.length < 2) {
-        clearSuggestions()
-        resolve()
-        return
-      }
+  return new Promise((resolve, reject) => {
+    if (!trimmed || trimmed.length < 2) {
+      clearSuggestions()
+      resolve()
+      return
+    }
 
-      if (debounceTimerRef.current) {
-        clearTimeout(debounceTimerRef.current)
-      }
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
 
-      debounceTimerRef.current = setTimeout(async () => {
-        setLoading(true)
+    debounceTimerRef.current = setTimeout(async () => {
+      setLoading(true)
 
-        try {
-          if (activeSearchAbortRef.current) {
-            activeSearchAbortRef.current.abort()
-          }
-
-          const controller = new AbortController()
-          activeSearchAbortRef.current = controller
-
-          const data = await autocompleteMutation.mutateAsync({
-            input: trimmed,
-            signal: controller.signal
-          })
-
-          if (
-            data?.message &&
-            (!Array.isArray(data?.predictions) ||
-              data.predictions.length === 0)
-          ) {
-            setSuggestions([])
-            reject(new Error(data.message))
-            return
-          }
-
-          const predictions = Array.isArray(data?.predictions)
-            ? data.predictions
-            : []
-
-          setSuggestions(
-            predictions.map((p, idx) => ({
-              id: p.placeId || `${idx}`,
-              name: p.placeName || "",
-              country: p.country || "",
-              placeId: p.placeId,
-              h3Index: p.h3Index || "",
-              _raw: p
-            }))
-          )
-
-          resolve()
-        } catch (err) {
-          if (err?.name === "AbortError") {
-            resolve()
-            return
-          }
-
-          setSuggestions([])
-          reject(err)
-        } finally {
-          setLoading(false)
+      try {
+        if (activeSearchAbortRef.current) {
+          activeSearchAbortRef.current.abort()
         }
-      }, debounceMs)
-    })
-  }, [autocompleteMutation, debounceMs, clearSuggestions])
+
+        const controller = new AbortController()
+        activeSearchAbortRef.current = controller
+
+        const data = await autocompleteMutation.mutateAsync({
+          input: trimmed,
+          signal: controller.signal
+        })
+
+        const predictions = Array.isArray(data?.predictions)
+          ? data.predictions
+          : []
+
+        setSuggestions(
+          predictions.map((p, idx) => ({
+            id: p.placeId || `${idx}`,
+            name: p.placeName || "",
+            country: p.country || "",
+            placeId: p.placeId,
+            h3Index: p.h3Index || "",
+            _raw: p
+          }))
+        )
+
+        resolve()
+      } catch (err) {
+        if (err?.name === "AbortError") {
+          console.debug("Autocomplete request aborted")
+          resolve()
+          return
+        }
+
+        // real error
+        console.error("Autocomplete failed", err)
+        setSuggestions([])
+        reject(err)
+      } finally {
+        setLoading(false)
+      }
+    }, debounceMs)
+  })
+}, [autocompleteMutation, debounceMs, clearSuggestions])
+
 
   useEffect(() => {
     return () => {
