@@ -26,6 +26,8 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isSuccess && data) {
+          toast.success(t("loginSuccessful"))
+
       if (data.gender) {
         localStorage.setItem('gender', data.gender)
       }
