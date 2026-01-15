@@ -6,6 +6,7 @@ import PasswordInput from "../../../shared/Passinput";
 import { Button } from "../../../shared/Button";
 import { ChevronDown } from "lucide-react";
 import { useRegister } from "../useAuth";
+import { toast } from "sonner"
 
 const RegisterForm = () => {
   const { t, ready } = useTranslation("auth");
@@ -22,6 +23,8 @@ const RegisterForm = () => {
 
   useEffect(() => {
     if (isSuccess) {
+          toast.success(t("registrationSuccessful"))
+
       navigate("/verify", { state: { email: emailPhone } });
     }
   }, [isSuccess, navigate, emailPhone]);
