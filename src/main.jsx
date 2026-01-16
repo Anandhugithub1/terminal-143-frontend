@@ -10,6 +10,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
 } from "react-router-dom";
+import { useAutoReloadOnOnline } from "./shared/hooks/useAutoReloadOnOnline.js";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { appRoutes } from "./routes/AppRoutes.jsx"; // route file
@@ -18,13 +19,24 @@ import { Toaster } from 'sonner';
 
 const router = createBrowserRouter(createRoutesFromElements(appRoutes));
 
+
+function Root() {
+  useAutoReloadOnOnline();
+
+  return (
+    <>
+      <Toaster richColors position="top-center" />
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+    </>
+  );
+}
+
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-        <Toaster richColors position="top-center" />
-        
-        <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+   <Root/>
     </QueryClientProvider>
   </StrictMode>
 );
