@@ -264,13 +264,18 @@ const Step1BasicInfo = () => {
         </div>
       </div>
 
-      <Button
-        onClick={handleNext}
-        disabled={isNextDisabled}
-        className="mt-8 w-full"
-      >
-        {t('continue')}
-      </Button>
+   <Button
+  onClick={handleNext}
+  disabled={isNextDisabled}
+  className={`mt-8 w-full transition-all ${
+    isNextDisabled
+      ? 'bg-gray-300 cursor-not-allowed'
+      : 'bg-pink-500 hover:bg-pink-600 active:scale-95'
+  }`}
+>
+  {t('continue')}
+</Button>
+
     </div>
   )
 }

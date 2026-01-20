@@ -92,20 +92,32 @@ const Photo = () => {
       />
 
       <div className="mt-8 flex gap-4">
-        <Button
-          onClick={() => navigate("/complete/bio")}
-          textColor="black"
-          className="flex-1 py-3 border bg-white"
-        >
-          Back
-        </Button>
+   <Button
+  onClick={() => navigate("/complete/bio")}
+  textColor="black"
+  className="
+    flex-1 py-3 border bg-white
+    transition-all duration-150
+    hover:bg-gray-50
+    active:scale-95
+  "
+>
+  Back
+</Button>
 
-        <Button
-          onClick={() => navigate("/complete/tags")}
-          className="flex-1 py-3"
-        >
-          Next
-        </Button>
+
+  <Button
+  onClick={() => navigate("/complete/tags")}
+  className="
+    flex-1 py-3
+    transition-all duration-150
+    hover:bg-pink-600
+    active:scale-95
+  "
+>
+  Next
+</Button>
+
       </div>
     </div>
   )

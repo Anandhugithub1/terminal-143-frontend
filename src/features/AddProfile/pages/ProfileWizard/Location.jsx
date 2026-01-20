@@ -118,22 +118,33 @@ const Location = () => {
       </section>
 
       <div className="mt-8 flex gap-4">
-        <Button
-          onClick={handleBack}
-          textColor="black"
-          className="flex-1 py-3 border border-gray-200 bg-white"
-          type="button"
-        >
-          {t('back') || 'Back'}
-        </Button>
+    <Button
+  onClick={handleBack}
+  textColor="black"
+  type="button"
+  className="
+    flex-1 py-3 border border-gray-200 bg-white
+    transition-all duration-150
+    hover:bg-gray-50
+    active:scale-95
+  "
+>
+  {t('back') || 'Back'}
+</Button>
 
-        <Button
-          onClick={handleNext}
-          className="flex-1 text-white font-semibold py-4 rounded-3xl transition-all"
-          type="button"
-        >
-          {t('continue') || 'Continue'}
-        </Button>
+<Button
+  onClick={handleNext}
+  type="button"
+  className="
+    flex-1 text-white font-semibold py-4 rounded-3xl
+    transition-all duration-150
+    hover:bg-pink-600
+    active:scale-95
+  "
+>
+  {t('continue') || 'Continue'}
+</Button>
+
       </div>
     </div>
   )

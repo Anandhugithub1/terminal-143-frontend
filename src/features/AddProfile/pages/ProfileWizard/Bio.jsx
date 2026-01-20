@@ -188,25 +188,32 @@ setFormData(p => ({
 
       {/* Navigation */}
       <div className="flex gap-4">
-        <Button
-          onClick={() => navigate("/complete/location")}
-          textColor="black"
-          className="flex-1 py-3 px-6 border border-gray-200 bg-white"
-        >
-          Back
-        </Button>
+       <Button
+  onClick={() => navigate("/complete/location")}
+  textColor="black"
+  className="
+    flex-1 py-3 px-6 border border-gray-200 bg-white
+    transition-all duration-150
+    hover:bg-gray-50
+    active:scale-95
+  "
+>
+  Back
+</Button>
 
-        <Button
-          onClick={handleNext}
-          disabled={!isBioValid}
-          className={`flex-1 py-3 px-6 transition ${
-            !isBioValid
-              ? "opacity-50 cursor-not-allowed"
-              : "cursor-pointer"
-          }`}
-        >
-          Next
-        </Button>
+
+     <Button
+  onClick={handleNext}
+  disabled={!isBioValid}
+  className={`flex-1 py-3 px-6 transition-all duration-150 ${
+    !isBioValid
+      ? "opacity-50 cursor-not-allowed"
+      : "cursor-pointer hover:bg-pink-600 active:scale-95"
+  }`}
+>
+  Next
+</Button>
+
       </div>
     </div>
   );
