@@ -85,14 +85,24 @@ const EmailOTPVerification = () => {
         </form>
 
         <div className="mt-4 text-center">
-          <Button
-            onClick={handleResend}
-            disabled={resendOtp.isPending || !email}
-            type="button"
-            className="text-sm text-pink-600 hover:underline bg-transparent shadow-none"
-          >
-            Resend OTP
-          </Button>
+   <button
+    type="button"
+    onClick={handleResend}
+    disabled={resendOtp.isPending || !email}
+    className="
+      text-sm font-medium
+      text-pink-500
+      hover:text-pink-600
+      hover:underline
+      disabled:text-pink-300
+      disabled:cursor-not-allowed
+      transition-colors
+    "
+  >
+    {resendOtp.isPending ? "Resending..." : "Resend OTP"}
+  </button>
+
+
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-500">
