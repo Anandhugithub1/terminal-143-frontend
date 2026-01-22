@@ -1,27 +1,29 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./App.css";
-import "./i18n/i18n.js";
+import { StrictMode } from "react"
+import { createRoot } from "react-dom/client"
+import "./App.css"
+import "./i18n/i18n.js"
 
-import { QueryClientProvider } from "@tanstack/react-query";
-import { queryClient } from "./shared/lib/client.js";
+import { QueryClientProvider } from "@tanstack/react-query"
+import { queryClient } from "./shared/lib/client.js"
 import {
   createBrowserRouter,
   createRoutesFromElements,
   RouterProvider,
-} from "react-router-dom";
-import { useAutoReloadOnOnline } from "./shared/hooks/useAutoReloadOnOnline.js";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+} from "react-router-dom"
 
-import { appRoutes } from "./routes/AppRoutes.jsx"; // route file
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { appRoutes } from "./routes/AppRoutes.jsx"
+import { Toaster } from "sonner"
 
-import { Toaster } from 'sonner';
+import { useAutoReloadOnOnline } from "./shared/hooks/useAutoReloadOnOnline.js"
+import { setupChunkReload } from "./shared/hooks/chunkReloadHelper.js"
 
-const router = createBrowserRouter(createRoutesFromElements(appRoutes));
+setupChunkReload()
 
+const router = createBrowserRouter(createRoutesFromElements(appRoutes))
 
 function Root() {
-  useAutoReloadOnOnline();
+  useAutoReloadOnOnline()
 
   return (
     <>
@@ -29,14 +31,13 @@ function Root() {
       <RouterProvider router={router} />
       <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
     </>
-  );
+  )
 }
-
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-   <Root/>
+      <Root />
     </QueryClientProvider>
   </StrictMode>
-);
+)
