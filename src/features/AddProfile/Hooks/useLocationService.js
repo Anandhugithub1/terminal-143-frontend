@@ -146,7 +146,8 @@ const autocompleteMutation = useMutation({
         h3Index: data.h3Index || '',
       }
 
-      return buildLocationObject(latitude, longitude, address)
+      return buildLocationObject(data.lat, data.lng, address)
+
     } catch (error) {
       console.error('Location error:', error)
 

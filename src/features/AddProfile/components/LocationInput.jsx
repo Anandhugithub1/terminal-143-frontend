@@ -164,8 +164,17 @@ export default function LocationInput({ formData, onSelect }) {
 
     try {
       const loc = await getCurrentLocation(locale);
+
+handleSelect({
+  lat: loc.coordinates.lat,
+  lon: loc.coordinates.lon,
+  placeName: loc.placeName,
+  countryCode: loc.countryCode,
+  admin1: loc.admin1,
+  h3Index: loc.h3?.r4 || "",
+});
+
       if (!loc) throw new Error("No location detected");
-      handleSelect(loc);
     } catch (err) {
       if (err?.code === "OUT_OF_REGION") {
         setError(t("locationOutOfRegion") || "This location is not supported");
