@@ -94,7 +94,10 @@ const Photo = () => {
         <Button
           onClick={() => navigate("/complete/bio")}
           textColor="black"
-          className="flex-1 py-3 border bg-white transition-all hover:bg-gray-50 active:scale-95"
+          className="flex-1 py-3 px-6 border border-gray-200 bg-white
+    transition-all duration-150
+    hover:bg-gray-50
+    active:scale-95"
         >
           Back
         </Button>

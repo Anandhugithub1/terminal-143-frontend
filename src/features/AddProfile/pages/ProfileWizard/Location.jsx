@@ -74,80 +74,87 @@ const Location = () => {
   const effectiveError = useMemo(() => error, [error])
 
   return (
-    <div className="animate-fade-in max-w-2xl mx-auto">
-      <ProgressBar step={2} totalSteps={5} />
+  <div className="animate-fade-in max-w-xl mx-auto">
+    <ProgressBar step={2} totalSteps={5} />
 
-      <header className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-          {t('locationTitle') || 'Location Details'}
-        </h2>
-        <p className="text-gray-500">
-          {t('locationSubtitle') || 'Tell us about your location preferences'}
-        </p>
-      </header>
+    {/* Title */}
+    <header className="text-center mt-6 mb-10">
+      <h2 className="text-2xl sm:text-3xl font-semibold text-gray-900 mb-2">
+        {t('locationTitle') || 'Location Details'}
+      </h2>
+      <p className="text-gray-500 text-sm sm:text-base">
+        {t('locationSubtitle') || 'Tell us about your location preferences'}
+      </p>
+    </header>
 
-      <section className="space-y-6">
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            {t('yourLocation') || 'Your Location'}
-          </h3>
-
-          <Suspense fallback={null}>
-            <LocationInput
-              formData={{ location }}
-              setFormData={setFormData}
-              t={t}
-              onSelect={setGeo}
-            />
-          </Suspense>
-        </div>
+    {/* Content */}
+    <section className="space-y-8">
+      {/* Location Input */}
+      <div className="bg-white rounded-2xl p-5 sm:p-6 border border-gray-100">
+        <h3 className="text-base font-medium text-gray-800 mb-3">
+          {t('yourLocation') || 'Your Location'}
+        </h3>
 
         <Suspense fallback={null}>
-          <LocationRangeSelector
-            formData={formData}
+          <LocationInput
+            formData={{ location }}
             setFormData={setFormData}
             t={t}
+            onSelect={setGeo}
           />
         </Suspense>
+      </div>
 
-        {effectiveError && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600">{effectiveError}</p>
-          </div>
-        )}
-      </section>
+      {/* Range Selector */}
+      <Suspense fallback={null}>
+        <LocationRangeSelector
+          formData={formData}
+          setFormData={setFormData}
+          t={t}
+        />
+      </Suspense>
 
-      <div className="mt-8 flex gap-4">
-    <Button
-  onClick={handleBack}
-  textColor="black"
-  type="button"
-  className="
-    flex-1 py-3 border border-gray-200 bg-white
+      {/* Error */}
+      {effectiveError && (
+        <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3">
+          <p className="text-red-600 text-sm">{effectiveError}</p>
+        </div>
+      )}
+    </section>
+
+    {/* Actions */}
+    <div className="mt-10 flex gap-4">
+      <Button
+        onClick={handleBack}
+        textColor="black"
+        type="button"
+        className="
+          flex-1 py-3 px-6 border border-gray-200 bg-white
     transition-all duration-150
     hover:bg-gray-50
     active:scale-95
-  "
->
-  {t('back') || 'Back'}
-</Button>
+        "
+      >
+        {t('back') || 'Back'}
+      </Button>
 
-<Button
-  onClick={handleNext}
-  type="button"
-  className="
-    flex-1 text-white font-semibold py-4 rounded-3xl
-    transition-all duration-150
-    hover:bg-pink-600
-    active:scale-95
-  "
->
-  {t('continue') || 'Continue'}
-</Button>
-
-      </div>
+      <Button
+        onClick={handleNext}
+        type="button"
+        className="
+          flex-1 py-3
+          font-semibold
+          transition-all duration-150
+          hover:bg-pink-600
+          active:scale-95
+        "
+      >
+        {t('continue') || 'Continue'}
+      </Button>
     </div>
-  )
+  </div>
+)
+
 }
 
 export default Location
