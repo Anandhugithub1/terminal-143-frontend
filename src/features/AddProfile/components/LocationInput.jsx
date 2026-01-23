@@ -158,35 +158,42 @@ export default function LocationInput({ formData, onSelect }) {
 
   /* ---------------- auto detect ---------------- */
 
-  const handleAutoDetect = useCallback(async () => {
-    setError("");
-    setTouched(true);
+const handleAutoDetect = useCallback(async () => {
+  setError("")
+  setTouched(true)
 
-    try {
-      const loc = await getCurrentLocation(locale);
+  try {
+    const loc = await getCurrentLocation(locale)
+    if (!loc) throw new Error("No location detected")
 
-handleSelect({
-  lat: loc.coordinates.lat,
-  lon: loc.coordinates.lon,
-  placeName: loc.placeName,
-  countryCode: loc.countryCode,
-  admin1: loc.admin1,
-  h3Index: loc.h3?.r4 || "",
-});
-
-      if (!loc) throw new Error("No location detected");
-    } catch (err) {
-      if (err?.code === "OUT_OF_REGION") {
-        setError(t("locationOutOfRegion") || "This location is not supported");
-        onSelect?.(null);
-        return;
-      }
-
-      setError(
-        t("locationDetectionFailed") || "Unable to detect your location"
-      );
+    const finalLoc = {
+      lat: loc.coordinates.lat,
+      lon: loc.coordinates.lon,
+      placeName: loc.placeName,
+      countryCode: loc.countryCode,
+      admin1: loc.admin1,
+      h3Index: loc.h3?.r4 || "",
     }
-  }, [getCurrentLocation, locale, handleSelect, t, onSelect]);
+
+    // emit FINAL resolved location
+    onSelect?.(finalLoc, null)
+
+    setSelected({ placeName: finalLoc.placeName })
+    setQuery(finalLoc.placeName)
+    clearSuggestions()
+  } catch (err) {
+    if (err?.code === "OUT_OF_REGION") {
+      setError(t("locationOutOfRegion") || "This location is not supported")
+      onSelect?.(null)
+      return
+    }
+
+    setError(
+      t("locationDetectionFailed") || "Unable to detect your location"
+    )
+  }
+}, [getCurrentLocation, locale, onSelect, clearSuggestions, t])
+
 
   /* ---------------- clear ---------------- */
 
