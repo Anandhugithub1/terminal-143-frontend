@@ -133,7 +133,7 @@ const RegisterForm = () => {
   </div>
 
   <p className="mt-2 text-xs text-gray-400">
-    {"Available in Thailand, Philippines, Indonesia, Cambodia, Vietnam, and Malaysia."}
+    {"Now available in Thailand, Philippines, Indonesia, Cambodia, Vietnam, Malaysia — and more SEA countries"}
   </p>
 </div>
 
