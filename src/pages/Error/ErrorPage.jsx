@@ -6,6 +6,10 @@ export default function ErrorPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
+    if (error) {
+      console.error("Route error:", error)
+    }
+
     const handleOnline = () => {
       window.location.reload()
     }
@@ -15,16 +19,14 @@ export default function ErrorPage() {
     return () => {
       window.removeEventListener("online", handleOnline)
     }
-  }, [])
+  }, [error])
 
   const isOffline =
     typeof navigator !== "undefined" && !navigator.onLine
 
   const message = isOffline
-    ? "You’re offline. Reconnecting…"
-    : error?.statusText ||
-      error?.message ||
-      "Something went wrong. Please try again."
+    ? "You’re offline. We’ll reconnect automatically."
+    : "Something didn’t load properly. Please try again."
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -36,7 +38,7 @@ export default function ErrorPage() {
         </div>
 
         <h1 className="text-xl font-semibold text-gray-900 mb-2">
-          {isOffline ? "No internet connection" : "Oops! Something went wrong"}
+          {isOffline ? "No internet connection" : "Something went wrong"}
         </h1>
 
         <p className="text-sm text-gray-500 max-w-xs mb-6">
@@ -61,7 +63,6 @@ export default function ErrorPage() {
           </div>
         )}
       </div>
-
     </div>
   )
 }
