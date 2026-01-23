@@ -14,7 +14,8 @@ const getDefaultFormData = () => ({
   profilePhotos: [],
 
   interests: [],
-  languages: [],
+  languagesKnown: [],
+
 
   location: {
     coordinates: {
@@ -34,6 +35,7 @@ const getDefaultFormData = () => ({
     unit: "km"
   }
 })
+
 
 
 export const WizardProvider = ({ children }) => {

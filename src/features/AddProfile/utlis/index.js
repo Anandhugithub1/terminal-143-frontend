@@ -17,7 +17,18 @@ export const PREFERENCES = {
   };    
   
 
-  
+  export const healthDisclosureOptions = [
+  { label: "Sexual Health Condition", value: "SHC" },
+  { label: "Mental Health Condition", value: "MHC" },
+  { label: "ADHD", value: "ADHD" },
+  { label: "Autism", value: "ASD" },
+  { label: "Long-Term Physical Condition", value: "LPC" },
+  { label: "Substance Use Recovery", value: "SUR" },
+  { label: "Accessibility Needs", value: "AN" },
+  { label: "Prefer Not to Say", value: "PNS" },
+  { label: "Happy to Discuss", value: "HTD" }
+]
+
 // Helper to calculate age from date string (YYYY-MM-DD)
 export const calculateAge = (dob) => {
     if (!dob) return 0;

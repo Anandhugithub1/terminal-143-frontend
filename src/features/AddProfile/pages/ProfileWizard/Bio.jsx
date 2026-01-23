@@ -1,81 +1,96 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { useWizard } from "../../contexts/ProfileWizard";
-import { useNavigate } from "react-router-dom";
-import { ProgressBar } from "./Progess";
-import { Button } from "../../../../shared/Button";
-import { statusOptions } from "../../utlis";
-import useLanguages from "../../hooks/useLanguages";
-import LanguagePicker from "../../components/LanguagePicker";
-import { Listbox, Transition } from "@headlessui/react";
+import React, { useState, useEffect, Fragment } from "react"
+import { useWizard } from "../../contexts/ProfileWizard"
+import { useNavigate } from "react-router-dom"
+import { ProgressBar } from "./Progess"
+import { Button } from "../../../../shared/Button"
+import useLanguages from "../../hooks/useLanguages"
+import LanguagePicker from "../../components/LanguagePicker"
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOptions,
+  ListboxOption,
+  Transition
+} from "@headlessui/react"
+import { healthDisclosureOptions } from "../../utlis"
 
 export default function Bio() {
-  const { formData, setFormData } = useWizard();
-  const navigate = useNavigate();
-  const charLimit = 500;
-
-  const healthStatusFromForm = formData.healthStatus || {
-    stdStatus: "",
-    lastTestedDate: "",
-  };
+  const { formData, setFormData } = useWizard()
+  const navigate = useNavigate()
+  const charLimit = 500
 
   const {
     languagesList,
     loading: languagesLoading,
-    error: languagesError,
-  } = useLanguages();
+    error: languagesError
+  } = useLanguages()
 
-  const [selectedLanguages, setSelectedLanguages] = useState([]);
+  const [selectedLanguages, setSelectedLanguages] = useState([])
+
+  /* ---------------- effects ---------------- */
 
   useEffect(() => {
-    if (!languagesList.length) return;
+    if (!languagesList.length) return
     if (
       Array.isArray(formData.languagesKnown) &&
       formData.languagesKnown.length
     ) {
       setSelectedLanguages(
-        languagesList.filter((l) =>
+        languagesList.filter(l =>
           formData.languagesKnown.includes(l.value)
         )
-      );
+      )
     }
-  }, [languagesList]);
+  }, [languagesList, formData.languagesKnown])
+
+  /* ---------------- validation ---------------- */
 
   const isBioValid =
     typeof formData.bio === "string" &&
-    formData.bio.trim().length > 0;
+    formData.bio.trim().length > 0
 
-  const handleNext = () => {
-    if (!isBioValid) return;
-setFormData(p => ({
-  languagesKnown: selectedLanguages.map(l => l.value),
-  healthStatus: { ...healthStatusFromForm }
-}));
+  /* ---------------- health disclosures ---------------- */
+
+const disclosures = Array.isArray(formData.healthDisclosures)
+  ? formData.healthDisclosures
+  : []
 
 
-    navigate("/complete/photo");
-  };
+  const disclosureLabel = value =>
+    healthDisclosureOptions.find(o => o.value === value)?.label
 
-  const selectedStatus = statusOptions.find(
-    (s) => s.value === healthStatusFromForm.stdStatus
-  );
+  /* ---------------- handlers ---------------- */
+
+const handleNext = () => {
+  if (!isBioValid) return
+
+  setFormData({
+    languagesKnown: selectedLanguages.map(l => l.value),
+    healthDisclosures: disclosures
+  })
+
+  navigate("/complete/photo")
+}
+
+
+  /* ---------------- render ---------------- */
 
   return (
     <div className="max-w-xl mx-auto p-4 space-y-8 animate-fade-in">
       <ProgressBar step={3} totalSteps={5} />
 
       {/* Bio */}
-      <div className="space-y-1">
+      <section className="space-y-1">
         <h2 className="text-3xl font-bold text-gray-900">
           Your Story
         </h2>
 
         <textarea
           value={formData.bio || ""}
-          onChange={(e) =>
-         setFormData(p => ({
-  bio: e.target.value.slice(0, charLimit)
-}))
-
+          onChange={e =>
+            setFormData({
+              bio: e.target.value.slice(0, charLimit)
+            })
           }
           placeholder="I'm passionate about..."
           className="w-full p-4 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500 min-h-[160px]"
@@ -91,10 +106,10 @@ setFormData(p => ({
             {formData.bio?.length || 0}/{charLimit}
           </span>
         </div>
-      </div>
+      </section>
 
       {/* Languages */}
-      <div>
+      <section>
         <h3 className="mb-2 font-semibold">
           Languages You Know (optional)
         </h3>
@@ -106,115 +121,137 @@ setFormData(p => ({
           selected={selectedLanguages}
           onChange={setSelectedLanguages}
         />
-      </div>
+      </section>
 
-      {/* STD Status — Headless UI */}
-      <div className="space-y-1">
-        <h3 className="font-semibold">
-          STD Status (optional)
-        </h3>
+      {/* Health Disclosures — SAME LOOK AS LANGUAGE OPTIONS */}
+{/* Health Disclosures — dropdown + selected pills (like LanguagePicker) */}
+<section className="space-y-2">
+  <h3 className="font-semibold text-gray-900">
+    Health Disclosures <span className="text-gray-400">(optional)</span>
+  </h3>
 
-        <Listbox
-          value={healthStatusFromForm.stdStatus}
-          onChange={(value) =>
-           setFormData(p => ({
-  healthStatus: {
-    ...(p.healthStatus || {}),
-    stdStatus: value
-  }
-}))
+  <Listbox
+    value={disclosures}
+    multiple
+    onChange={(values) => {
+      // Prefer Not to Say must be exclusive
+      if (values.includes("PNS")) {
+        setFormData({ healthDisclosures: ["PNS"] })
+        return
+      }
 
+      setFormData({ healthDisclosures: values })
+    }}
+  >
+    <div className="relative">
+      <ListboxButton className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-left text-sm text-gray-700 focus:ring-2 focus:ring-pink-500">
+        <span className="block truncate">
+          {disclosures.length === 0
+            ? "Select if you’d like to share"
+            : disclosures.includes("PNS")
+              ? "Prefer Not to Say"
+              : disclosures
+                  .map(disclosureLabel)
+                  .filter(Boolean)
+                  .join(", ")
           }
-        >
-          <div className="relative mt-1">
-            <Listbox.Button className="w-full p-3 bg-white border border-gray-300 rounded-xl text-left focus:ring-2 focus:ring-pink-500">
-              {selectedStatus?.label || "Prefer not to say"}
-            </Listbox.Button>
+        </span>
+      </ListboxButton>
 
-            <Transition
-              as={Fragment}
-              leave="transition ease-in duration-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
+      <Transition
+        as={Fragment}
+        enter="transition ease-out duration-100"
+        enterFrom="opacity-0 scale-95"
+        enterTo="opacity-100 scale-100"
+        leave="transition ease-in duration-75"
+        leaveFrom="opacity-100 scale-100"
+        leaveTo="opacity-0 scale-95"
+      >
+        <ListboxOptions className="absolute z-20 mt-2 w-full max-h-64 overflow-auto rounded-xl border border-gray-200 bg-white shadow-lg">
+          {healthDisclosureOptions.map(opt => (
+            <ListboxOption
+              key={opt.value}
+              value={opt.value}
+              className={({ active, selected }) =>
+                `
+                  cursor-pointer px-4 py-3 text-sm
+                  flex justify-between items-center
+                  ${active ? "bg-pink-50" : ""}
+                  ${selected ? "text-pink-600 font-medium" : "text-gray-700"}
+                `
+              }
             >
-              <Listbox.Options className="absolute z-10 mt-2 w-full bg-white rounded-xl shadow-lg border border-gray-200">
-                <Listbox.Option
-                  value=""
-                  className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                >
-                  Prefer not to say
-                </Listbox.Option>
+              {({ selected }) => (
+                <>
+                  <span>{opt.label}</span>
+                  {selected && <span>✓</span>}
+                </>
+              )}
+            </ListboxOption>
+          ))}
+        </ListboxOptions>
+      </Transition>
+    </div>
+  </Listbox>
 
-                {statusOptions.map(({ label, value }) => (
-                  <Listbox.Option
-                    key={value}
-                    value={value}
-                    className={({ active }) =>
-                      `cursor-pointer px-4 py-2 ${
-                        active ? "bg-pink-50" : ""
-                      }`
-                    }
-                  >
-                    {label}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
-            </Transition>
-          </div>
-        </Listbox>
-      </div>
+  {/* Selected pills (same UX as LanguagePicker) */}
+  {disclosures.length > 0 && !disclosures.includes("PNS") && (
+    <div className="flex flex-wrap gap-2 mt-2">
+      {disclosures.map(value => {
+        const label = disclosureLabel(value)
+        if (!label) return null
 
-      {/* Last Tested Date */}
-      <div className="space-y-1">
-        <h3 className="font-semibold">
-          Last Tested Date (optional)
-        </h3>
+        return (
+          <span
+            key={value}
+            className="flex items-center gap-1 px-3 py-1 rounded-full text-sm bg-pink-100 text-pink-700"
+          >
+            {label}
+            <button
+              type="button"
+              onClick={() =>
+                setFormData({
+                  healthDisclosures: disclosures.filter(v => v !== value)
+                })
+              }
+              className="ml-1 text-pink-500 hover:text-pink-700"
+              aria-label={`Remove ${label}`}
+            >
+              ×
+            </button>
+          </span>
+        )
+      })}
+    </div>
+  )}
 
-        <input
-          type="date"
-          value={healthStatusFromForm.lastTestedDate}
-          onChange={(e) =>
-          setFormData(p => ({
-  healthStatus: {
-    ...(p.healthStatus || {}),
-    lastTestedDate: e.target.value
-  }
-}))
-
-          }
-          className="w-full p-3 bg-white border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500"
-        />
-      </div>
+  <p className="text-xs text-gray-400">
+    You can select multiple options
+  </p>
+</section>
 
       {/* Navigation */}
       <div className="flex gap-4">
-       <Button
-  onClick={() => navigate("/complete/location")}
-  textColor="black"
-  className="
-    flex-1 py-3 px-6 border border-gray-200 bg-white
-    transition-all duration-150
-    hover:bg-gray-50
-    active:scale-95
-  "
->
-  Back
-</Button>
+        <Button
+          onClick={() => navigate("/complete/location")}
+          textColor="black"
+          className="flex-1 py-3 px-6 border border-gray-200 bg-white hover:bg-gray-50 active:scale-95"
+        >
+          Back
+        </Button>
 
-
-     <Button
-  onClick={handleNext}
-  disabled={!isBioValid}
-  className={`flex-1 py-3 px-6 transition-all duration-150 ${
-    !isBioValid
-      ? "opacity-50 cursor-not-allowed"
-      : "cursor-pointer hover:bg-pink-600 active:scale-95"
-  }`}
->
-  Next
-</Button>
-
+        <Button
+          onClick={handleNext}
+          disabled={!isBioValid}
+          className={`flex-1 py-3 px-6 ${
+            !isBioValid
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-pink-600 active:scale-95"
+          }`}
+        >
+          Next
+        </Button>
       </div>
     </div>
-  );
+  )
 }
