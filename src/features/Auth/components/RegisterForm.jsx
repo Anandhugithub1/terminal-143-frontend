@@ -7,6 +7,7 @@ import { Button } from "../../../shared/Button";
 import { ChevronDown } from "lucide-react";
 import { useRegister } from "../useAuth";
 import { toast } from "sonner"
+import ReactCountryFlag from "react-country-flag";
 
 const RegisterForm = () => {
   const { t, ready } = useTranslation("auth");
@@ -117,6 +118,47 @@ const RegisterForm = () => {
       <Button type="submit" disabled={isPending}>
         {isPending ? t("registering") : t("getStarted")}
       </Button>
+<div className="mt-4 text-center text-sm text-gray-500">
+  <p className="font-medium">
+    { "Our app is available across Southeast Asia"}
+  </p>
+
+  <div className="mt-2 flex justify-center items-center gap-3">
+    <ReactCountryFlag
+      svg
+      countryCode="TH"
+      title="Thailand"
+      style={{ width: "1.6em", height: "1.6em" }}
+    />
+    <ReactCountryFlag
+      svg
+      countryCode="PH"
+      title="Philippines"
+      style={{ width: "1.6em", height: "1.6em" }}
+    />
+    <ReactCountryFlag
+      svg
+      countryCode="VN"
+      title="Vietnam"
+      style={{ width: "1.6em", height: "1.6em" }}
+    />
+    <ReactCountryFlag
+      svg
+      countryCode="KH"
+      title="Cambodia"
+      style={{ width: "1.6em", height: "1.6em" }}
+    />
+
+    <span className="text-gray-400 text-lg">…</span>
+  </div>
+
+  <p className="mt-2 text-xs text-gray-400">
+    {
+      "Available in Thailand, Philippines, Vietnam, Cambodia, and more."}
+  </p>
+</div>
+
+
 
       <div className="mt-6 text-center text-sm text-gray-500">
         {t("alreadyHaveAccount")}{" "}
