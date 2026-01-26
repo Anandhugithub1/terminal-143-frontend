@@ -119,7 +119,8 @@
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={e => handleFileChange(e)}
+              onChange={handleFileChange}
+
             />
             <input
               ref={cameraRef}
@@ -127,7 +128,8 @@
               accept="image/*"
               capture="environment"
               className="hidden"
-              onChange={e => handleFileChange(e)}
+              onChange={handleFileChange}
+
             />
 
             {showUpload && (

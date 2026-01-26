@@ -1,12 +1,5 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { toast } from "sonner"
-
-const ALLOWED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp"
-]
 
 export function useAvatarUpload(uploadImage) {
   const [showUpload, setShowUpload] = useState(false)
@@ -18,46 +11,56 @@ export function useAvatarUpload(uploadImage) {
   const toggleUpload = () => setShowUpload(prev => !prev)
 
   const openGallery = () => {
-    galleryRef.current?.click()
+    galleryRef.current && galleryRef.current.click()
     setShowUpload(false)
   }
 
   const openCamera = () => {
-    cameraRef.current?.click()
+    cameraRef.current && cameraRef.current.click()
     setShowUpload(false)
   }
 
-const handleFileChange = async (e) => {
-  const file = e.target.files?.[0]
-  if (!file) return
+  const handleFileChange = async (e) => {
+    const file = e.target.files && e.target.files[0]
+    if (!file) return
 
-  e.target.value = ""
+    // allow re-selecting same image
+    e.target.value = ""
 
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    toast.error("Invalid image format")
-    return
+    // ✅ iOS-safe check (HEIC etc.)
+    if (!file.type || !file.type.startsWith("image")) {
+      toast.error("Invalid image format")
+      return
+    }
+
+    const previewUrl = URL.createObjectURL(file)
+    setLocalPreview(previewUrl)
+
+    try {
+      await uploadImage(file)
+      toast.success("Profile photo updated")
+    } catch {
+      setLocalPreview(null)
+      toast.error("Unable to upload photo. Please try again.")
+    }
   }
 
-  const previewUrl = URL.createObjectURL(file)
-setLocalPreview(previewUrl)
-
-try {
-  await uploadImage(file)
-  toast.success("Profile photo updated")
-} catch {
-  setLocalPreview(null)
-  toast.error("Unable to upload photo. Please try again.")
-} finally {
-  URL.revokeObjectURL(previewUrl)
-}
-
-}
-
-
   const handleRemovePhoto = () => {
+    if (localPreview) {
+      URL.revokeObjectURL(localPreview)
+    }
     setLocalPreview(null)
     setShowUpload(false)
   }
+
+  // cleanup only when preview actually changes / unmounts
+  useEffect(() => {
+    return () => {
+      if (localPreview) {
+        URL.revokeObjectURL(localPreview)
+      }
+    }
+  }, [localPreview])
 
   return {
     showUpload,
