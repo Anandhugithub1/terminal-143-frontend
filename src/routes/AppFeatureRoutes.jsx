@@ -5,7 +5,7 @@ import DefaultHomeRoute from "./DefaultHomeRoute.jsx"
 
 const MatchesPage = lazy(() => import("../features/UserHome/pages/Matches.jsx"))
 const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx"))
-
+import NotificationsPage from "../features/Notifications/pages/NotificationsPage.jsx"
 export const AppFeatureRoutes = (
   <>
     <Route index element={<DefaultHomeRoute />} />
@@ -27,6 +27,14 @@ export const AppFeatureRoutes = (
           <RequestsPage />
         </Suspense>
       }
+    />
+
+    <Route path="notifications" 
+    
+    element={
+
+      <NotificationsPage/>
+    }
     />
   </>
 )
