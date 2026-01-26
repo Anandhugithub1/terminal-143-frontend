@@ -40,8 +40,15 @@ export function useAvatarUpload(uploadImage) {
       await uploadImage(file)
       toast.success("Profile photo updated")
     } catch {
-      setLocalPreview(null)
-      toast.error("Unable to upload photo. Please try again.")
+    
+  setLocalPreview(null)
+
+  const message =
+    err?.response?.data?.error ||
+    err?.message ||
+    "Unable to upload photo. Please try again."
+
+  toast.error(message)
     }
   }
 
