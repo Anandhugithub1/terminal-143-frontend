@@ -231,7 +231,11 @@ const handleAutoDetect = useCallback(async () => {
 
             <ComboboxInput
               ref={inputRef}
-              className="w-full pl-11 pr-16 py-4 rounded-xl bg-gray-50 border focus:ring-2 focus:ring-pink-500"
+              className="w-full pl-11 pr-16 py-4 rounded-xl bg-gray-50
+  border border-gray-300
+  focus:outline-none
+  focus:border-transparent
+  focus:ring-2 focus:ring-pink-500"
               displayValue={displayValue}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder={t("typeOrSearchLocation") || "Search location"}
