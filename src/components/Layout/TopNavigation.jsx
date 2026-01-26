@@ -7,11 +7,13 @@ const TopNav = () => {
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white">
       <div className="flex items-center space-x-2">
+      <Link to='/'> 
         <img
           src={Logo}
           alt="Logo"
           className="h-13 object-contain"
         />
+      </Link>
       </div>
 
       {/* Right actions */}
