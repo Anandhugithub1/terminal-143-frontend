@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { categories } from "../../utlis";
 import { toast } from "sonner";
 import { normalizeGeoForApi } from "../../utlis/geo";
+import { validateRequiredFields } from "../../utlis/validateRequiredFields";
 import {
   getPresignedUrl,
   completeProfileApi,
@@ -81,10 +82,14 @@ export default function Tags() {
   const handleSubmit = async () => {
     if (submittingRef.current) return;
 
-    if (!hasAtLeastOneInterest) {
-      toast.error("Select at least one interest");
-      return;
-    }
+    const missingFields = validateRequiredFields()
+
+  if (missingFields.length > 0) {
+    toast.error(
+      `Please complete: ${missingFields.join(", ")}`
+    )
+    return
+  }
 
     submittingRef.current = true;
     setIsSubmitting(true);
