@@ -8,7 +8,6 @@ import { categories } from "../../utlis";
 import { toast } from "sonner";
 import { normalizeGeoForApi } from "../../utlis/geo";
 import {calculateAge} from '../../utlis/index'
-import { validateRequiredFields } from "../../utlis/validateRequiredFields";
 import {
   getPresignedUrl,
   completeProfileApi,
