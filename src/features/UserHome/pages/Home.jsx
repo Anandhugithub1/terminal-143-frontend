@@ -11,6 +11,9 @@ import LocationBar from "../components/Actions/LocationBar"
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
 import { formatLastSeen } from "../../Profiles/utlis"
 import { computeAge } from "../../../Utlis/utlis"
+import { useAddToHomeScreen } from "../Hooks/useAddToHomeScreen"
+import AddToHomeBanner from "../components/AddToHomeBanner"
+
 
 const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"))
 const DetailSection = lazy(() => import("../components/Details/Details"))
@@ -28,6 +31,7 @@ export default function UserHomePage() {
   const [nextBatch, setNextBatch] = useState([])
   const [hasMore, setHasMore] = useState(true)
   const [currentSource, setCurrentSource] = useState(null)
+const { canShow, showPrompt, dismiss } = useAddToHomeScreen()
 
   const locationTitle = myProfile?.location?.placeName || "Location"
   const locationSubtitle = myProfile?.location
@@ -277,6 +281,13 @@ export default function UserHomePage() {
       </div>
 
       <BottomNav />
+
+        {canShow && (
+      <AddToHomeBanner
+        onAdd={showPrompt}
+        onClose={dismiss}
+      />
+    )}
     </div>
   )
 }
