@@ -2,6 +2,7 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useMatches } from '../api'
+import { useNavigate } from 'react-router-dom'
 
 import TopNav from '../../../components/Layout/TopNavigation'
 import BottomNav from '../../../components/Layout/BottomNavigation'
@@ -24,6 +25,15 @@ const genderIcon = {
 
 export default function MatchesPage() {
   const { data: matches = [], isLoading, isError } = useMatches()
+const navigate = useNavigate()
+const goToProfile = link => {
+  try {
+    const url = new URL(link)
+    navigate(url.pathname)
+  } catch {
+    navigate(link)
+  }
+}
 
   if (isLoading) {
     return (
@@ -84,28 +94,26 @@ export default function MatchesPage() {
               className="bg-white rounded-3xl p-4 shadow-md border border-gray-100 transition hover:shadow-lg"
             >
               <div className="flex gap-4">
-                <a
-                  href={match.profileLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img
-                    src={match.photos?.[0]?.url}
+             
+               <img
+  src={match.photos?.[0]?.url}
+  alt={`${match.name} profile`}
+  className="w-20 h-20 rounded-2xl object-cover cursor-pointer"
+  loading="lazy"
+  onClick={() => goToProfile(match.profileLink)}
 
-                    alt={`${match.name} profile`}
-                    className="w-20 h-20 rounded-2xl object-cover"
-                    loading="lazy"
-                  />
-                </a>
+  
+/>
+
+                
 
                 <div className="flex-1 flex flex-col justify-between">
                   <div>
-                    <a
-                      href={match.profileLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-lg font-bold text-gray-800 hover:underline"
-                    >
+                   <span
+  onClick={() => goToProfile(match.profileLink)}
+
+  className="text-lg font-bold text-gray-800 hover:underline cursor-pointer"
+></span>
                       {match.name}
                       {match.dob && (
                         <span className="ml-1 text-gray-500 text-sm">
@@ -115,7 +123,7 @@ export default function MatchesPage() {
                           )}`}
                         </span>
                       )}
-                    </a>
+                    <span/>
 
                     <div className="flex items-center text-sm text-gray-500 mt-1">
                       {genderIcon[match.gender] && (
