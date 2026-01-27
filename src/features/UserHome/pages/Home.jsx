@@ -31,8 +31,7 @@ export default function UserHomePage() {
   const [nextBatch, setNextBatch] = useState([])
   const [hasMore, setHasMore] = useState(true)
   const [currentSource, setCurrentSource] = useState(null)
-const { showPrompt, dismiss } = useAddToHomeScreen()
-const canShow = true
+const { canShow, showPrompt, dismiss } = useAddToHomeScreen()
 
   const locationTitle = myProfile?.location?.placeName || "Location"
   const locationSubtitle = myProfile?.location

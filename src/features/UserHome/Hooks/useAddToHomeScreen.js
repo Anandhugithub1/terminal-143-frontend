@@ -14,17 +14,20 @@ export function useAddToHomeScreen() {
   const [deferredPrompt, setDeferredPrompt] = useState(null)
   const [canShow, setCanShow] = useState(false)
 
-  //  DEV ONLY: force banner to show
-  useEffect(() => {
-    setCanShow(true)
-  }, [])
-
   useEffect(() => {
     if (isAppInstalled()) return
 
     const handler = e => {
       e.preventDefault()
+
+      const lastShown = Number(localStorage.getItem(STORAGE_KEY) || 0)
+      const now = Date.now()
+
       setDeferredPrompt(e)
+
+      if (now - lastShown > ONE_MONTH) {
+        setCanShow(true)
+      }
     }
 
     window.addEventListener("beforeinstallprompt", handler)
@@ -36,11 +39,17 @@ export function useAddToHomeScreen() {
 
   const showPrompt = async () => {
     if (!deferredPrompt) return
+
     await deferredPrompt.prompt()
     await deferredPrompt.userChoice
+
+    localStorage.setItem(STORAGE_KEY, Date.now().toString())
+    setCanShow(false)
+    setDeferredPrompt(null)
   }
 
   const dismiss = () => {
+    localStorage.setItem(STORAGE_KEY, Date.now().toString())
     setCanShow(false)
   }
 
@@ -50,4 +59,3 @@ export function useAddToHomeScreen() {
     dismiss
   }
 }
-
