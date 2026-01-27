@@ -295,7 +295,27 @@ const handleAutoDetect = useCallback(async () => {
           )}
         </button>
       </div>
+{formData?.location?.placeName && !error && (
+  <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
+    <p className="text-xs text-gray-500">
+      Selected location
+    </p>
 
+    <div className="flex items-center justify-between mt-1">
+      <p className="text-sm font-medium text-gray-900">
+        {formData.location.placeName}
+      </p>
+
+      <button
+        type="button"
+        onClick={handleClear}
+        className="text-xs text-pink-600 hover:underline"
+      >
+        Clear
+      </button>
+    </div>
+  </div>
+)}
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
   );
