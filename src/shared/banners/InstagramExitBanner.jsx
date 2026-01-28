@@ -9,7 +9,8 @@ export default function InstagramExitBanner() {
     const isInstagram = /Instagram/i.test(navigator.userAgent)
     const isHome =
       location.pathname === "/" ||
-      location.pathname === "/home"
+      location.pathname === "/home" ||
+      location.pathname == "/login" || location.pathname == "/register"
 
     if (isInstagram && isHome) {
       setShow(true)
