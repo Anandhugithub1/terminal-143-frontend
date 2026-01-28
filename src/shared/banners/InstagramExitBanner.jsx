@@ -7,41 +7,45 @@ export default function InstagramExitBanner() {
 
   useEffect(() => {
     const isInstagram = /Instagram/i.test(navigator.userAgent)
-    const isHome =
-      location.pathname === "/" ||
-      location.pathname === "/home" ||
-      location.pathname == "/login" || location.pathname == "/register"
+    const isAllowedRoute = [
+      "/",
+      "/home",
+      "/login",
+      "/register"
+    ].includes(location.pathname)
 
-    if (isInstagram && isHome) {
-      setShow(true)
-    } else {
-      setShow(false)
-    }
+    setShow(isInstagram && isAllowedRoute)
   }, [location.pathname])
 
   if (!show) return null
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 px-4 pt-3">
-      <div className="mx-auto max-w-md rounded-xl border border-border-clr bg-white shadow-md">
-        <div className="flex items-center gap-3 p-4">
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
-            <span className="text-primary text-lg">🌐</span>
+    <>
+      {/* Spacer to push content */}
+      <div className="h-[72px]" />
+
+      {/* Banner */}
+      <div className="fixed inset-x-0 top-0 z-[1000] px-4 pt-3">
+        <div className="mx-auto max-w-md rounded-xl border border-border-clr bg-white shadow-md">
+          <div className="flex items-center gap-3 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+              <span className="text-primary text-lg">🌐</span>
+            </div>
+
+            <p className="flex-1 text-sm font-medium text-gray-900">
+              Open in browser for the best experience
+            </p>
+
+            <button
+              onClick={() => setShow(false)}
+              className="text-gray-400 hover:text-gray-600"
+              aria-label="Close"
+            >
+              ✕
+            </button>
           </div>
-
-          <p className="flex-1 text-sm font-medium text-gray-900">
-            Open in browser for the best experience
-          </p>
-
-          <button
-            onClick={() => setShow(false)}
-            className="text-gray-400 hover:text-gray-600"
-            aria-label="Close"
-          >
-            ✕
-          </button>
         </div>
       </div>
-    </div>
+    </>
   )
 }
