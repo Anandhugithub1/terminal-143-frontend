@@ -2,36 +2,13 @@ import React, { useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 import Skeleton from "react-loading-skeleton"
 import { ArrowLeft, Bell } from "lucide-react"
-
+import { getWelcomeNotification,normalizeNotification } from "../utlis/getWelcomeNotification"
 import { useNotifications } from "../Hooks/useNotifications"
 
-function normalizeNotification(n) {
-  if (n.message) return n
 
-  let message = "You have a new notification"
 
-  switch (n.type) {
-    case "MATCH":
-      message = `${n.fromUsername} matched with you`
-      break
 
-    case "REQUEST_ACCEPTED":
-      message = `${n.fromUsername} accepted your request`
-      break
-
-    case "MESSAGE":
-      message = `New message from ${n.fromUsername}`
-      break
-
-    default:
-      message = n.payload?.message || message
-  }
-
-  return {
-    ...n,
-    message
-  }
-}
+/* ---------------- page ---------------- */
 
 export default function NotificationsPage() {
   const navigate = useNavigate()
@@ -44,8 +21,18 @@ export default function NotificationsPage() {
 
   const notifications = useMemo(() => {
     const raw = data?.pages.flatMap(p => p.items) || []
-    return raw.map(normalizeNotification)
+    const normalized = raw.map(normalizeNotification)
+
+    const welcome = getWelcomeNotification()
+
+    if (welcome) {
+      return [welcome, ...normalized]
+    }
+
+    return normalized
   }, [data])
+
+  /* ---------------- loading ---------------- */
 
   if (isLoading) {
     return (
@@ -74,6 +61,8 @@ export default function NotificationsPage() {
     )
   }
 
+  /* ---------------- error ---------------- */
+
   if (isError) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -81,6 +70,8 @@ export default function NotificationsPage() {
       </div>
     )
   }
+
+  /* ---------------- empty ---------------- */
 
   if (notifications.length === 0) {
     return (
@@ -111,6 +102,8 @@ export default function NotificationsPage() {
     )
   }
 
+  /* ---------------- list ---------------- */
+
   return (
     <div className="min-h-screen bg-white">
       <header className="flex items-center px-4 py-3">
@@ -122,31 +115,35 @@ export default function NotificationsPage() {
         </h1>
       </header>
 
-    <main className="px-4 py-4 space-y-3">
-  {notifications.map(n => (
-    <div
-      key={n.SK}
-      className="flex items-start gap-3 p-4 rounded-xl border border-border-clr bg-white"
-    >
-      {/* Icon */}
-      <div className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center shrink-0">
-        <Bell size={18} className="text-pink-500" />
-      </div>
+      <main className="px-4 py-4 space-y-3">
+        {notifications.map(n => (
+          <div
+            key={n.SK}
+            className="flex items-start gap-3 p-4 rounded-xl border border-border-clr bg-white"
+          >
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                n.type === "WELCOME" ? "bg-blue-50" : "bg-pink-50"
+              }`}
+            >
+              <Bell
+                size={18}
+                className={n.type === "WELCOME" ? "text-blue-500" : "text-pink-500"}
+              />
+            </div>
 
-      {/* Content */}
-      <div className="flex-1">
-        <p className="text-sm font-medium text-gray-900 leading-snug">
-          {n.message}
-        </p>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-gray-900 leading-snug">
+                {n.message}
+              </p>
 
-        <p className="text-xs text-gray-400 mt-1">
-          {new Date(n.createdAt).toLocaleString()}
-        </p>
-      </div>
-    </div>
-  ))}
-</main>
-
+              <p className="text-xs text-gray-400 mt-1">
+                {new Date(n.createdAt).toLocaleString()}
+              </p>
+            </div>
+          </div>
+        ))}
+      </main>
     </div>
   )
 }
