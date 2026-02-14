@@ -6,11 +6,11 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
 
   server: {
-    host: 'local.terminal143.com',
+    host: 'local.passormatch.com',
     strictPort: true,
     https: {
-      key: './certs/local.terminal143.com-key.pem',
-      cert: './certs/local.terminal143.com.pem',
+      key: './certs/local.passormatch.com-key.pem',
+      cert: './certs/local.passormatch.com.pem',
     },
     port: 5173,
   },

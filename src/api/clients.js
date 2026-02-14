@@ -3,11 +3,11 @@ import { createApiClient } from './createApiClient';
 
 const isDev = import.meta.env.VITE_MODE === 'dev';
 
-const userApiBase = isDev ? import.meta.env.VITE_API_USER : 'https://userapi.terminal143.com';
+const userApiBase = isDev ? import.meta.env.VITE_API_USER : 'https://api.passormatch.com/user';
 const matchesApiBase = isDev ? import.meta.env.VITE_API_MATCH : 'https://userapi.terminal143.com/match/v0.2';
 const LocationApiBase = 'https://userapi.terminal143.com/location-service/v0.2'
-const authApiBase = isDev ? import.meta.env.VITE_API_AUTH : 'https://authapi.terminal143.com';
-const suggestionApiBase = "https://userapi.terminal143.com/suggestion/v0.2"
+const authApiBase = isDev ? import.meta.env.VITE_API_AUTH : 'https://api.passormatch.com/auth/v0.2';
+const suggestionApiBase = "https://api.passormatch.com/suggestion/v0.2"
 
 export const userProfilesApi = createApiClient(userApiBase);
 export const matchesApi = createApiClient(matchesApiBase);

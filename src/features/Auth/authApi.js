@@ -50,7 +50,7 @@ export const apiForgotPassword = async ({ email }) => {
 export const signOut = async (action = 'signout') => {
   try {
     const response = await axios.post(
-      'https://authapi.terminal143.com/v0.2/signout',
+      'https://api.passormatch.com/auth/v0.2/signout',
       { action },
       {
         withCredentials: true,
