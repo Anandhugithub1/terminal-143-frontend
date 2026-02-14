@@ -4,7 +4,7 @@ export default function AddToHomeBanner({ onAdd, onClose }) {
       <div className="bg-white rounded-2xl shadow-lg p-4 flex items-center justify-between gap-4">
         <div>
           <p className="font-semibold text-gray-900">
-            Add Terminal 143 to Home Screen
+            Add Match or Pass to Home Screen
           </p>
           <p className="text-sm text-gray-500">
             Faster access and full-screen experience
