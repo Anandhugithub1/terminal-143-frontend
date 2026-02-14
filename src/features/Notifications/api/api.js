@@ -8,7 +8,7 @@ export async function listNotifications({ limit = 10, lastKey }) {
   }
 
   const res = await fetch(
-    `https://userapi.terminal143.com/notifications/list?${params.toString()}`,
+    `https://api.passormatch.com/notifications/list?${params.toString()}`,
     {
       credentials: "include"
     }
