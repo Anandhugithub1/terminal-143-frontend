@@ -22,13 +22,16 @@ const RegisterForm = () => {
 
   const { mutate, isPending, isError, isSuccess, data, error } = useRegister();
 
-  useEffect(() => {
-    if (isSuccess) {
-          toast.success(t("registrationSuccessful"))
+useEffect(() => {
+  if (isSuccess) {
+    toast.success(t("registrationSuccessful"))
 
-      navigate("/verify", { state: { email: emailPhone } });
-    }
-  }, [isSuccess, navigate, emailPhone]);
+    navigate(
+      `/verify?email=${encodeURIComponent(emailPhone)}`
+    )
+  }
+}, [isSuccess, navigate, emailPhone, t])
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
