@@ -240,6 +240,9 @@ const Step1BasicInfo = () => {
             {t('socialLabel')}
           </label>
 
+<p className="text-xs text-gray-500 mb-2">
+  “Your social links stay private and are shared only when there’s a match
+</p>
           <SocialLinkInput
             platforms={SOCIAL_PLATFORMS}
             selectedPlatform={socialPlatform}

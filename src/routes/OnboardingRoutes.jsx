@@ -12,13 +12,11 @@ export const OnboardingRoutes = (
   <Route
     path="complete/*"
     element={
-      <RequireProfileIncomplete>
         <WizardProvider>
           <Suspense fallback={<LoadingSpinner />}>
             <AddDetails />
           </Suspense>
         </WizardProvider>
-      </RequireProfileIncomplete>
     }
   />
 )
