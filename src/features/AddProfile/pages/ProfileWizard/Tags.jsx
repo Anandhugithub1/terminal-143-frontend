@@ -29,24 +29,27 @@ export default function Tags() {
 const validateRequiredFields = () => {
   const missing = []
 
-  // Name
   if (!formData.name?.trim()) {
     missing.push("Name")
   }
 
-  // Bio
   if (!formData.bio?.trim()) {
     missing.push("Bio")
   }
 
-  // DOB (source of truth)
   if (!formData.dob) {
     missing.push("Date of birth")
   } else if (calculateAge(formData.dob) < 18) {
     missing.push("Valid age (18+)")
   }
 
-  // Social links
+  if (
+    !formData.preferences ||
+    formData.preferences.length === 0
+  ) {
+    missing.push("At least one preference")
+  }
+
   if (
     !formData.socialMediaLinks ||
     formData.socialMediaLinks.length === 0
@@ -54,12 +57,10 @@ const validateRequiredFields = () => {
     missing.push("At least one social link")
   }
 
-  // Interests
   if (!hasAtLeastOneInterest) {
     missing.push("At least one interest")
   }
 
-  // Location
   const loc = formData.location
   if (
     !loc ||
@@ -70,8 +71,17 @@ const validateRequiredFields = () => {
     missing.push("Location")
   }
 
+  const files = isSinglePhoto
+    ? [formData.profilePhoto].filter(Boolean)
+    : (formData.profilePhotos || []).filter(Boolean)
+
+  if (!files.length) {
+    missing.push("At least one photo")
+  }
+
   return missing
 }
+
 
 
 
@@ -167,6 +177,8 @@ const validateRequiredFields = () => {
       const payload = {
         ...formData,
         interests: selectedInterests,
+          preferences: formData.preferences,
+
         photos,
         searchRadius: {
           distance: Number(formData.searchRadius?.distance) || 25,

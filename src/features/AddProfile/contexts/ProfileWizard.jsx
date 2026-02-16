@@ -15,7 +15,7 @@ const getDefaultFormData = () => ({
 
   interests: [],
   languagesKnown: [],
-
+ preferences: [],
 
   location: {
     coordinates: {
