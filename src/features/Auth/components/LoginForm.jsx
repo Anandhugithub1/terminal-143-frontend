@@ -12,7 +12,6 @@ const LoginForm = () => {
   const { t } = useTranslation('auth')
   const [emailPhone, setEmailPhone] = useState('')
   const [password, setPassword] = useState('')
-
   const navigate = useNavigate()
 
   const {
@@ -26,7 +25,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (isSuccess && data) {
-          toast.success(t("loginSuccessful"))
+      toast.success(t('loginSuccessful'))
 
       if (data.gender) {
         localStorage.setItem('gender', data.gender)
@@ -38,7 +37,7 @@ const LoginForm = () => {
         navigate('/home')
       }
     }
-  }, [isSuccess, data, navigate])
+  }, [isSuccess, data, navigate, t])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -54,7 +53,9 @@ const LoginForm = () => {
           const apiErr = err?.response?.data
 
           if (apiErr?.notVerified === true) {
-            navigate('/verify', { state: { emailPhone } })
+            navigate(
+              `/verify?email=${encodeURIComponent(emailPhone)}`
+            )
           } else {
             toast.error(
               apiErr?.error ||
@@ -133,14 +134,6 @@ const LoginForm = () => {
           {isPending ? <Loader /> : t('login')}
         </Button>
       </form>
-
-      <div className="mt-6 flex items-center justify-center space-x-2">
-        <div className="flex-1 border-t border-border-clr"></div>
-        <span className="px-4 text-sm text-gray-500">
-          {t('orContinueWith')}
-        </span>
-        <div className="flex-1 border-t border-border-clr"></div>
-      </div>
 
       <p className="mt-6 text-center text-sm text-gray-500">
         {t('noAccount')}{' '}

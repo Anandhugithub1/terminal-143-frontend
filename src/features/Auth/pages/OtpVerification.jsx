@@ -1,49 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { InputField } from '../../../shared/common';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Button } from '../../../shared/Button';
-import { useVerifyOtp, useResendOtp } from '../useAuth';
+import React, { useState, useEffect } from 'react'
+import { InputField } from '../../../shared/common'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Button } from '../../../shared/Button'
+import { useVerifyOtp, useResendOtp } from '../useAuth'
+import { toast } from 'sonner'
 
 const EmailOTPVerification = () => {
-  const [code, setCode] = useState('');
-  const navigate = useNavigate();
-  const location = useLocation();
-  const email = location.state?.email;
+  const [code, setCode] = useState('')
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const email = searchParams.get('email')
 
-  const verifyOtp = useVerifyOtp();
-  const resendOtp = useResendOtp();
-
-  useEffect(() => {
-    console.log('OTP state:', {
-      isLoading: verifyOtp.isPending,
-      isError: verifyOtp.isError,
-      isSuccess: verifyOtp.isSuccess,
-      message: verifyOtp.data?.message,
-    });
-  }, [
-    verifyOtp.isPending,
-    verifyOtp.isError,
-    verifyOtp.isSuccess,
-    verifyOtp.data,
-  ]);
+  const verifyOtp = useVerifyOtp()
+  const resendOtp = useResendOtp()
 
   useEffect(() => {
-    if (verifyOtp.isSuccess) {
-      navigate('/login');
+    if (!email) {
+      navigate('/login')
     }
-  }, [verifyOtp.isSuccess, navigate]);
+  }, [email, navigate])
+
+  useEffect(() => {
+  if (verifyOtp.isSuccess) {
+    toast.success('OTP verified successfully')
+    setTimeout(() => {
+      navigate('/login')
+    }, 1200)
+  }
+}, [verifyOtp.isSuccess, navigate])
 
   const handleVerify = (e) => {
-    e.preventDefault();
-    if (!email) return;
+    e.preventDefault()
+    if (!email || !code) return
 
-    verifyOtp.mutate({ email, code });
-  };
+    verifyOtp.mutate({ email, code })
+  }
 
   const handleResend = () => {
-    if (!email) return;
-    resendOtp.mutate({ email });
-  };
+    if (!email) return
+    resendOtp.mutate({ email })
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
@@ -70,12 +66,6 @@ const EmailOTPVerification = () => {
             </p>
           )}
 
-          {verifyOtp.isSuccess && (
-            <p className="text-green-600 text-sm">
-              {verifyOtp.data?.message}
-            </p>
-          )}
-
           <Button
             type="submit"
             disabled={verifyOtp.isPending || !email}
@@ -85,38 +75,27 @@ const EmailOTPVerification = () => {
         </form>
 
         <div className="mt-4 text-center">
-   <button
-    type="button"
-    onClick={handleResend}
-    disabled={resendOtp.isPending || !email}
-    className="
-      text-sm font-medium
-      text-pink-500
-      hover:text-pink-600
-      hover:underline
-      disabled:text-pink-300
-      disabled:cursor-not-allowed
-      transition-colors
-    "
-  >
-    {resendOtp.isPending ? "Resending..." : "Resend OTP"}
-  </button>
-
-
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendOtp.isPending || !email}
+            className="text-sm font-medium text-pink-500 hover:text-pink-600 hover:underline disabled:text-pink-300 disabled:cursor-not-allowed transition-colors"
+          >
+            {resendOtp.isPending ? 'Resending...' : 'Resend OTP'}
+          </button>
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Already verified?{' '}
           <Link
             to="/login"
-            className="text-pink-600 font-semibold hover:underline"
-          >
+            className="text-pink-600 font-semibold hover:underline">
             Sign in
           </Link>
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default EmailOTPVerification;
+export default EmailOTPVerification
