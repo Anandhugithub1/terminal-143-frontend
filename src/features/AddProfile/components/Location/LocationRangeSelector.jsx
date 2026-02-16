@@ -1,31 +1,47 @@
 import { useState, useCallback, useMemo, useEffect } from "react"
 import { Radio, RadioGroup } from "@headlessui/react"
 
-const STEP = 25
-const MIN_RANGE = 25
-const MAX_RANGE = 100
-const PRESETS = [25, 50, 75, 100]
-const UNITS = ["km", "miles"]
-const MI_IN_KM = 1.609344
+const STEP_KM = 25
+const STEP_MI = 15
 
-const toMiles = (km) => km / MI_IN_KM
-const toKm = (mi) => mi * MI_IN_KM
+const MIN_RANGE_KM = 25
+const MAX_RANGE_KM = 100
+
+const MIN_RANGE_MI = 15
+const MAX_RANGE_MI = 60
+
+const PRESETS_KM = [25, 50, 75, 100]
+const PRESETS_MI = [15, 30, 45, 60]
+
+const UNITS = ["km", "miles"]
 
 const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
   const initialUnit = formData?.searchRadius?.unit || "km"
   const [unit, setUnit] = useState(initialUnit)
 
-  const currentRange = Number(formData?.searchRadius?.distance ?? MIN_RANGE)
+  const presets = unit === "km" ? PRESETS_KM : PRESETS_MI
+  const minRange = unit === "km" ? MIN_RANGE_KM : MIN_RANGE_MI
+  const maxRange = unit === "km" ? MAX_RANGE_KM : MAX_RANGE_MI
+  const step = unit === "km" ? STEP_KM : STEP_MI
 
-  const snapToStep = useCallback((n) => {
-    const num = Number(n)
-    if (Number.isNaN(num)) return MIN_RANGE
+  const currentRange = Number(
+    formData?.searchRadius?.distance ?? minRange
+  )
 
-    const snapped = Math.round(num / STEP) * STEP
-    return Math.min(MAX_RANGE, Math.max(MIN_RANGE, snapped))
-  }, [])
+  const snapToStep = useCallback(
+    (n) => {
+      const num = Number(n)
+      if (Number.isNaN(num)) return minRange
 
-  // Sync local unit if formData changes externally
+      const snapped = presets.reduce((prev, curr) =>
+        Math.abs(curr - num) < Math.abs(prev - num) ? curr : prev
+      )
+
+      return Math.min(maxRange, Math.max(minRange, snapped))
+    },
+    [presets, minRange, maxRange]
+  )
+
   useEffect(() => {
     const externalUnit = formData?.searchRadius?.unit
     if (externalUnit && externalUnit !== unit) {
@@ -37,10 +53,9 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
     (range, u = unit) => {
       const next = snapToStep(range)
 
-     setFormData({
-  searchRadius: { distance: next, unit: u }
-})
-
+      setFormData({
+        searchRadius: { distance: next, unit: u }
+      })
     },
     [setFormData, unit, snapToStep]
   )
@@ -59,26 +74,23 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
     (u) => {
       if (u === unit) return
 
-      let converted = currentRange
-
-      if (unit === "km" && u === "miles") {
-        converted = toMiles(currentRange)
-      } else if (unit === "miles" && u === "km") {
-        converted = toKm(currentRange)
-      }
-
       setUnit(u)
-      updateForm(converted, u)
+
+      const newPresets = u === "km" ? PRESETS_KM : PRESETS_MI
+      updateForm(newPresets[0], u)
     },
-    [unit, currentRange, updateForm]
+    [unit, updateForm]
   )
 
   const rangeLabel = useMemo(() => {
-    if (currentRange <= 25) return t("rangeNearby") || "Nearby"
-    if (currentRange <= 50) return t("rangeCity") || "Within city"
-    if (currentRange <= 75) return t("rangeRegion") || "Regional"
+    if (currentRange <= presets[0])
+      return t("rangeNearby") || "Nearby"
+    if (currentRange <= presets[1])
+      return t("rangeCity") || "Within city"
+    if (currentRange <= presets[2])
+      return t("rangeRegion") || "Regional"
     return t("rangeAnywhere") || "Anywhere"
-  }, [currentRange, t])
+  }, [currentRange, presets, t])
 
   const formatRange = useCallback(
     (val) => `${val} ${unit}`,
@@ -89,7 +101,6 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
 
   return (
     <div className="bg-white/80 backdrop-blur-md p-7 rounded-3xl border border-gray-100 shadow-xl hover:shadow-2xl transition-all duration-300 max-w-md mx-auto">
-      {/* Title */}
       <label className="block mb-6">
         <span className="block text-xl font-extrabold text-gray-900 mb-2">
           {t("distanceRangeTitle") || "Preferred Distance Range"}
@@ -100,7 +111,6 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
         </span>
       </label>
 
-      {/* Presets */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-3">
           <span className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
@@ -114,7 +124,7 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
           as="div"
           className="grid grid-cols-4 gap-3"
         >
-          {PRESETS.map((preset) => (
+          {presets.map((preset) => (
             <Radio
               key={preset}
               value={preset}
@@ -134,11 +144,10 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
         </RadioGroup>
       </div>
 
-      {/* Slider */}
       <div className="space-y-6">
         <div className="relative">
           <div className="flex justify-between text-xs text-gray-500 mb-3 px-1">
-            {PRESETS.map((mark) => (
+            {presets.map((mark) => (
               <span key={mark}>
                 {mark}
                 {unit}
@@ -150,18 +159,18 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
             <div className="absolute top-1/2 left-0 w-full h-2 rounded-full bg-gray-200 -translate-y-1/2" />
             <div
               className="absolute top-1/2 left-0 h-2 rounded-full bg-gradient-to-r from-main-color to-main-color/70 -translate-y-1/2 transition-all duration-300"
-              style={{ width: `${(snappedRange / MAX_RANGE) * 100}%` }}
+              style={{ width: `${(snappedRange / maxRange) * 100}%` }}
             />
 
             <input
               type="range"
-              min={MIN_RANGE}
-              max={MAX_RANGE}
-              step={STEP}
+              min={minRange}
+              max={maxRange}
+              step={step}
               value={snappedRange}
               onChange={handleRangeChange}
-              aria-valuemin={MIN_RANGE}
-              aria-valuemax={MAX_RANGE}
+              aria-valuemin={minRange}
+              aria-valuemax={maxRange}
               aria-valuenow={snappedRange}
               className="w-full appearance-none bg-transparent cursor-pointer relative z-10
                 [&::-webkit-slider-thumb]:appearance-none
@@ -175,7 +184,6 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
           </div>
         </div>
 
-        {/* Current value */}
         <div className="text-center p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100 shadow-inner">
           <div className="text-4xl font-bold text-main-color mb-1">
             {formatRange(snappedRange)}
@@ -186,7 +194,6 @@ const LocationRangeSelector = ({ formData, setFormData, t = (k) => k }) => {
           <div className="w-12 h-1 bg-main-color/40 rounded-full mx-auto mt-3" />
         </div>
 
-        {/* Unit toggle */}
         <div className="flex items-center justify-between pt-5 border-t border-gray-100">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">
