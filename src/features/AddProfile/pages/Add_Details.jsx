@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { LoadingSpinner } from '../../../components/Ui/Spinner';
-
+import NavBar from '../../../components/Layout/Navbar'
 // Lazy load components
 const Step1BasicInfo = lazy(() => import('./ProfileWizard/BasicInfo'));
 const Bio = lazy(() => import('./ProfileWizard/Bio'));
@@ -11,7 +11,10 @@ const Location =lazy(() => import ('./ProfileWizard/Location'));
 
 const AddDetails = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center px-4 py-8">
+  <>
+        <NavBar />
+
+    <div className="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center px-4 py-8">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 sm:p-8 relative">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
@@ -26,6 +29,7 @@ const AddDetails = () => {
         </Suspense>
       </div>
     </div>
+  </>
   );
 };
 
