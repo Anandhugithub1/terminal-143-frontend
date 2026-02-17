@@ -30,6 +30,8 @@ export default function UserHomePage() {
   const [suggestionError, setSuggestionError] = useState("")
   const [nextBatch, setNextBatch] = useState([])
   const [hasMore, setHasMore] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
   const [currentSource, setCurrentSource] = useState(null)
 const { canShow, showPrompt, dismiss } = useAddToHomeScreen()
 
@@ -98,13 +100,22 @@ const { canShow, showPrompt, dismiss } = useAddToHomeScreen()
 
   /* ---------------- Actions ---------------- */
 
-  const handleRefresh = useCallback(() => {
-    setIdx(0)
-    setNextBatch([])
-    setHasMore(true)
-    setSuggestionError("")
-    refetch()
-  }, [refetch])
+const handleRefresh = useCallback(async () => {
+  setIsRefreshing(true)
+
+  setIdx(0)
+  setNextBatch([])
+  setHasMore(true)
+  setSuggestionError("")
+
+  await refetch()
+
+  // keep button in refreshing state for at least 1.5s (optional but nicer UX)
+  setTimeout(() => {
+    setIsRefreshing(false)
+  }, 1500)
+
+}, [refetch])
 
   const advance = useCallback(
     (dir) => {
@@ -243,11 +254,17 @@ const { canShow, showPrompt, dismiss } = useAddToHomeScreen()
             </p>
 
             <button
-              onClick={handleRefresh}
-              className="mt-6 px-6 py-2 bg-primary text-white rounded-full shadow"
-            >
-              Refresh profiles
-            </button>
+  onClick={handleRefresh}
+  disabled={isRefreshing}
+  className={`mt-6 px-6 py-2 rounded-full shadow transition-all duration-200 ${
+    isRefreshing
+      ? "bg-gray-400 text-white cursor-not-allowed"
+      : "bg-primary text-white hover:opacity-90"
+  }`}
+>
+  {isRefreshing ? "Refreshing..." : "Refresh profiles"}
+</button>
+
           </div>
         ) : (
           <Suspense fallback={<ProfileSkeleton />}>
