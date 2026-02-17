@@ -258,7 +258,7 @@ const handleRefresh = useCallback(async () => {
   disabled={isRefreshing}
   className={`mt-6 px-6 py-2 rounded-full shadow transition-all duration-200 ${
     isRefreshing
-      ? "bg-gray-400 text-white cursor-not-allowed"
+      ? "bg-gray-100 text-black cursor-not-allowed"
       : "bg-primary text-white hover:opacity-90"
   }`}
 >
