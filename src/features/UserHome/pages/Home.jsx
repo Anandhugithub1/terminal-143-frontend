@@ -13,7 +13,7 @@ import { formatLastSeen } from "../../Profiles/utlis"
 import { computeAge } from "../../../Utlis/utlis"
 import { useAddToHomeScreen } from "../Hooks/useAddToHomeScreen"
 import AddToHomeBanner from "../components/AddToHomeBanner"
-
+import { getLanguageName } from "../utlis/getLanguageName"
 
 const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"))
 const DetailSection = lazy(() => import("../components/Details/Details"))
@@ -189,11 +189,10 @@ const handleRefresh = useCallback(async () => {
     },
     lastSeen: formatLastSeen(rawProfile.lastSeen),
     job: rawProfile.jobTitle || "",
-    languages: rawProfile.languagesKnown?.length
-      ? rawProfile.languagesKnown
-      : rawProfile.language
-      ? [rawProfile.language]
-      : [],
+  languages: Array.isArray(rawProfile.languagesKnown)
+  ? rawProfile.languagesKnown.map(getLanguageName)
+  : [],
+
     interests: rawProfile.interest || [],
     userId: rawProfile.username,
     suggestionIndex: rawProfile.suggestionIndex
