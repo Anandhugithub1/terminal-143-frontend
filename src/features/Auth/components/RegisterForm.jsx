@@ -60,39 +60,45 @@ useEffect(() => {
         placeholder={t("emailOrPhone")}
       />
 
-      <div>
-        <label
-          htmlFor="gender"
-          className="block text-gray-700 text-sm font-semibold mb-2"
-        >
-          {t("gender")}
-        </label>
+      
 
-        <div className="relative">
-          <select
-            id="gender"
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-3
-                       focus:outline-none focus:ring-2 focus:ring-pink-500
-                       focus:border-transparent transition-all appearance-none
-                       pr-10 bg-white hover:border-gray-400"
-          >
-            <option value="">— {t("select")} —</option>
-            <option value="MALE">{t("male")}</option>
-            <option value="FEMALE">{t("female")}</option>
-            <option value="TO_FEMALE">{t("transFemale")}</option>
-            <option value="TO_MALE">{t("transMale")}</option>
-            <option value="OTHERS">{t("other")}</option>
-          </select>
+<div className="relative">
+  <select
+    id="gender"
+    value={gender}
+    onChange={(e) => setGender(e.target.value)}
+    className="peer w-full border border-gray-300 rounded-lg px-4 pt-5 pb-2
+               focus:outline-none focus:ring-2 focus:ring-pink-500
+               focus:border-transparent transition-all appearance-none
+               pr-10 bg-white hover:border-gray-400"
+  >
+    <option value="" disabled hidden></option>
+    <option value="MALE">{t("male")}</option>
+    <option value="FEMALE">{t("female")}</option>
+    <option value="TO_FEMALE">{t("transFemale")}</option>
+    <option value="TO_MALE">{t("transMale")}</option>
+    <option value="OTHERS">{t("other")}</option>
+  </select>
 
-          <ChevronDown
-            className="absolute right-3 top-1/2 -translate-y-1/2
-                       text-gray-500 pointer-events-none"
-            size={20}
-          />
-        </div>
-      </div>
+  <label
+    htmlFor="gender"
+    className={`absolute left-4 transition-all duration-200
+      ${gender
+        ? "top-2 text-xs text-pink-500"
+        : "top-3 text-sm text-gray-400"}
+    `}
+  >
+    {t("gender")}
+  </label>
+
+  <ChevronDown
+    className="absolute right-3 top-1/2 -translate-y-1/2
+               text-gray-500 pointer-events-none"
+    size={20}
+  />
+</div>
+
+
 
       <PasswordInput
         value={password}
