@@ -216,35 +216,42 @@ export default function ProfileEditPage() {
 
           {/* Social Links */}
           <LazyWrapper fallbackCount={6}>
-            <Section title={t("profileEdit.socialLinks")}>
-              <EditableSocialLinks
-                socialLinks={socialLinks}
-                onChange={(p, v) =>
-                  setSocialLinks((prev) => ({ ...prev, [p]: v }))
-                }
-                platformLabels={Object.fromEntries(
-                  SOCIAL_PLATFORMS.map((p) => [
-                    p.key,
-                    t(`profileEdit.socialLabels.${p.key}`),
-                  ])
-                )}
-                inputPlaceholders={Object.fromEntries(
-                  SOCIAL_PLATFORMS.map((p) => [
-                    p.key,
-                    t(`profileEdit.socialPlaceholders.${p.key}`),
-                  ])
-                )}
-                showMoreLabel={t("profileEdit.showMorePlatforms")}
-              />
+           <Section title={t("profileEdit.socialLinks")}>
 
-              <button
-                onClick={saveSocialLinks}
-                disabled={isSaving}
-                className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 text-sm font-medium"
-              >
-                {t("profileEdit.saveSocialLinks")}
-              </button>
-            </Section>
+  {/* Privacy Info */}
+  <p className="text-xs text-gray-500 mb-3">
+    Your social links stay private and are shared only when there’s a match.
+  </p>
+
+  <EditableSocialLinks
+    socialLinks={socialLinks}
+    onChange={(p, v) =>
+      setSocialLinks((prev) => ({ ...prev, [p]: v }))
+    }
+    platformLabels={Object.fromEntries(
+      SOCIAL_PLATFORMS.map((p) => [
+        p.key,
+        t(`profileEdit.socialLabels.${p.key}`),
+      ])
+    )}
+    inputPlaceholders={Object.fromEntries(
+      SOCIAL_PLATFORMS.map((p) => [
+        p.key,
+        t(`profileEdit.socialPlaceholders.${p.key}`),
+      ])
+    )}
+    showMoreLabel={t("profileEdit.showMorePlatforms")}
+  />
+
+  <button
+    onClick={saveSocialLinks}
+    disabled={isSaving}
+    className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 text-sm font-medium"
+  >
+    {t("profileEdit.saveSocialLinks")}
+  </button>
+</Section>
+
           </LazyWrapper>
         </div>
       </main>
