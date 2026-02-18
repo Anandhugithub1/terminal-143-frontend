@@ -33,8 +33,8 @@ export default function UserHomePage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
 
   const [currentSource, setCurrentSource] = useState(null)
-const { canShow, showPrompt, dismiss } = useAddToHomeScreen()
-
+const { canShow, showPrompt, dismiss, isIOSDevice } =
+  useAddToHomeScreen()
   const locationTitle = myProfile?.location?.placeName || "Location"
   const locationSubtitle = myProfile?.location
     ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
@@ -300,9 +300,10 @@ const handleRefresh = useCallback(async () => {
 
         {canShow && (
       <AddToHomeBanner
-        onAdd={showPrompt}
-        onClose={dismiss}
-      />
+    onAdd={showPrompt}
+    onClose={dismiss}
+    isIOS={isIOSDevice}
+  />
     )}
     </div>
   )
