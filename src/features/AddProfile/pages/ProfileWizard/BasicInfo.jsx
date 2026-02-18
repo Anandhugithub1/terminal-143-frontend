@@ -85,13 +85,16 @@ const Step1BasicInfo = () => {
       return
     }
 
-    if (!hasSocial) {
-      setError(
-        t('socialRequired') ||
-          'Please add at least one social media username or link.'
-      )
-      return
-    }
+   if (
+  !formData?.socialMediaLinks ||
+  formData.socialMediaLinks.length === 0
+) {
+  setError(
+    t('socialRequired') ||
+      'Social media link is required'
+  )
+  return
+}
 
     setError('')
     navigate('/complete/location')
@@ -241,7 +244,7 @@ const Step1BasicInfo = () => {
           </label>
 
 <p className="text-xs text-gray-500 mb-2">
-  “Your social links stay private and are shared only when there’s a match
+  Your social links stay private and are shared only when there’s a match
 </p>
           <SocialLinkInput
             platforms={SOCIAL_PLATFORMS}

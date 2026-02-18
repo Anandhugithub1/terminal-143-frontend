@@ -54,7 +54,7 @@ const validateRequiredFields = () => {
     !formData.socialMediaLinks ||
     formData.socialMediaLinks.length === 0
   ) {
-    missing.push("At least one social link")
+    missing.push("At least one social link is required")
   }
 
   if (!hasAtLeastOneInterest) {
