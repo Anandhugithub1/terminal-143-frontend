@@ -1,12 +1,16 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState, useCallback, lazy, Suspense } from "react"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import React, { useState, useCallback, lazy, Suspense } from "react"
+import { useMutation } from "@tanstack/react-query"
+
 import TopNav from "../../../components/Layout/TopNavigation"
 import BottomNav from "../../../components/Layout/BottomNavigation"
 import ProfileSkeleton from "../components/ProfileSkeleton"
+
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest"
+import { postSeen } from "../../../features/Profiles/profilesapi"
+import { useSuggestions } from "../Hooks/useSuggestions"
+
 import placeholderImage from "../../../assets/woman.png"
-import { getSuggestions, postSeen } from "../../../features/Profiles/profilesapi"
 import LocationBar from "../components/Actions/LocationBar"
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
 import { formatLastSeen } from "../../Profiles/utlis"
@@ -14,6 +18,7 @@ import { computeAge } from "../../../Utlis/utlis"
 import { useAddToHomeScreen } from "../Hooks/useAddToHomeScreen"
 import AddToHomeBanner from "../components/AddToHomeBanner"
 import { getLanguageName } from "../utlis/getLanguageName"
+import ComputingLoading from "../components/Loading/Computing"
 
 const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"))
 const DetailSection = lazy(() => import("../components/Details/Details"))
@@ -24,43 +29,31 @@ const SwipeDeck = lazy(() => import("../components/Actions/SwipeDeck"))
 export default function UserHomePage() {
   const { data: myProfile } = useMyProfile()
 
-  const [idx, setIdx] = useState(0)
+  const {
+    profiles,
+    idx,
+    setIdx,
+    nextBatch,
+    setNextBatch,
+    computing,
+    hadPool,
+    suggestionError,
+    isRefreshing,
+    currentSource,
+    handleRefresh,
+    refetch,isLoading
+  } = useSuggestions()
+
   const [direction, setDirection] = useState(0)
   const [requestError, setRequestError] = useState("")
-  const [suggestionError, setSuggestionError] = useState("")
-  const [nextBatch, setNextBatch] = useState([])
-  const [hasMore, setHasMore] = useState(true)
-  const [isRefreshing, setIsRefreshing] = useState(false)
 
-  const [currentSource, setCurrentSource] = useState(null)
-const { canShow, showPrompt, dismiss, isIOSDevice } =
-  useAddToHomeScreen()
+  const { canShow, showPrompt, dismiss, isIOSDevice } =
+    useAddToHomeScreen()
+
   const locationTitle = myProfile?.location?.placeName || "Location"
   const locationSubtitle = myProfile?.location
     ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
     : ""
-
-  /* ---------------- Fetch suggestions ---------------- */
-
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ["profiles"],
-    queryFn: () => getSuggestions({ limit: 10 }),
-    staleTime: 1000 * 30,
-    onError: (err) => {
-      setSuggestionError(
-        err?.response?.status === 500
-          ? "Unexpected error occurred. Please try again."
-          : err?.message || "Something went wrong"
-      )
-    }
-  })
-
-  const profiles = data?.profiles || []
-  const source = data?.source || null
-
-  useEffect(() => {
-    if (source) setCurrentSource(source)
-  }, [source])
 
   const { send: sendMatchRequest } = useSendMatchRequest()
 
@@ -71,51 +64,7 @@ const { canShow, showPrompt, dismiss, isIOSDevice } =
     }
   })
 
-  /* ---------------- Prefetch trigger ---------------- */
-
-  useEffect(() => {
-    if (!hasMore) return
-    if (profiles.length === 0) return
-    if (profiles.length - idx > 2) return
-    if (nextBatch.length > 0) return
-
-    getSuggestions({ limit: 10 })
-      .then((res) => {
-        const nextProfiles = res?.profiles || []
-        if (nextProfiles.length === 0) {
-          setHasMore(false)
-          return
-        }
-        setNextBatch(nextProfiles)
-      })
-      .catch((err) => {
-        setSuggestionError(
-          err?.response?.status === 500
-            ? "Unexpected error occurred while loading profiles."
-            : "Failed to load more profiles."
-        )
-        setHasMore(false)
-      })
-  }, [idx, profiles.length, nextBatch.length, hasMore])
-
-  /* ---------------- Actions ---------------- */
-
-const handleRefresh = useCallback(async () => {
-  setIsRefreshing(true)
-
-  setIdx(0)
-  setNextBatch([])
-  setHasMore(true)
-  setSuggestionError("")
-
-  await refetch()
-
-  // keep button in refreshing state for at least 1.5s (optional but nicer UX)
-  setTimeout(() => {
-    setIsRefreshing(false)
-  }, 1500)
-
-}, [refetch])
+  /* ---------------- Swipe Logic ---------------- */
 
   const advance = useCallback(
     (dir) => {
@@ -148,19 +97,28 @@ const handleRefresh = useCallback(async () => {
         return next
       })
     },
-    [profiles, currentSource, seenMutation, sendMatchRequest, nextBatch, refetch]
+    [profiles, currentSource, seenMutation, sendMatchRequest, nextBatch, refetch, setIdx, setNextBatch]
   )
 
-  /* ---------------- States ---------------- */
+  /* ---------------- Loading ---------------- */
 
-  if (isLoading && profiles.length === 0) {
+  if (isLoading) {
     return <ProfileSkeleton />
   }
 
-  const isEnd = !hasMore || idx >= profiles.length
+  const isNoPool =
+    !computing &&
+    !hadPool &&
+    profiles.length === 0
+
+  const isEnd =
+    !computing &&
+    hadPool &&
+    profiles.length === 0
+
   const rawProfile = profiles[idx] || {}
 
-  /* ---------------- Profile mapping ---------------- */
+  /* ---------------- Profile Mapping ---------------- */
 
   const images = Array.isArray(rawProfile.photos)
     ? rawProfile.photos
@@ -189,10 +147,9 @@ const handleRefresh = useCallback(async () => {
     },
     lastSeen: formatLastSeen(rawProfile.lastSeen),
     job: rawProfile.jobTitle || "",
-  languages: Array.isArray(rawProfile.languagesKnown)
-  ? rawProfile.languagesKnown.map(getLanguageName)
-  : [],
-
+    languages: Array.isArray(rawProfile.languagesKnown)
+      ? rawProfile.languagesKnown.map(getLanguageName)
+      : [],
     interests: rawProfile.interest || [],
     userId: rawProfile.username,
     suggestionIndex: rawProfile.suggestionIndex
@@ -224,7 +181,10 @@ const handleRefresh = useCallback(async () => {
       )}
 
       <div className="relative flex-1">
-        {suggestionError ? (
+
+        {computing ? (
+          <ComputingLoading />
+        ) : suggestionError ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
             <h2 className="text-xl font-semibold text-gray-800">
               Unexpected error
@@ -241,6 +201,23 @@ const handleRefresh = useCallback(async () => {
               Try again
             </button>
           </div>
+        ) : isNoPool ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
+            <h2 className="text-xl font-semibold text-gray-800">
+              No matches found nearby
+            </h2>
+
+            <p className="mt-2 text-gray-500 max-w-md">
+              Try expanding your search radius or updating your preferences.
+            </p>
+
+            <button
+              onClick={handleRefresh}
+              className="mt-6 px-6 py-2 bg-primary text-white rounded-full shadow"
+            >
+              Refresh
+            </button>
+          </div>
         ) : isEnd ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
             <h2 className="text-xl font-semibold text-gray-800">
@@ -248,22 +225,20 @@ const handleRefresh = useCallback(async () => {
             </h2>
 
             <p className="mt-2 text-gray-500 max-w-md">
-              You’ve seen all the nearby profiles. Come back later — new faces
-              are always joining.
+              You’ve seen all nearby profiles. Come back later.
             </p>
 
             <button
-  onClick={handleRefresh}
-  disabled={isRefreshing}
-  className={`mt-6 px-6 py-2 rounded-full shadow transition-all duration-200 ${
-    isRefreshing
-      ? "bg-gray-100 text-black cursor-not-allowed"
-      : "bg-primary text-white hover:opacity-90"
-  }`}
->
-  {isRefreshing ? "Refreshing..." : "Refresh profiles"}
-</button>
-
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className={`mt-6 px-6 py-2 rounded-full shadow transition-all duration-200 ${
+                isRefreshing
+                  ? "bg-gray-100 text-black cursor-not-allowed"
+                  : "bg-primary text-white hover:opacity-90"
+              }`}
+            >
+              {isRefreshing ? "Refreshing..." : "Refresh profiles"}
+            </button>
           </div>
         ) : (
           <Suspense fallback={<ProfileSkeleton />}>
@@ -298,13 +273,13 @@ const handleRefresh = useCallback(async () => {
 
       <BottomNav />
 
-        {canShow && (
-      <AddToHomeBanner
-    onAdd={showPrompt}
-    onClose={dismiss}
-    isIOS={isIOSDevice}
-  />
-    )}
+      {canShow && (
+        <AddToHomeBanner
+          onAdd={showPrompt}
+          onClose={dismiss}
+          isIOS={isIOSDevice}
+        />
+      )}
     </div>
   )
 }

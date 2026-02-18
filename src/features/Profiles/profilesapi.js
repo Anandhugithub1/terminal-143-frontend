@@ -11,12 +11,14 @@ export const getSuggestions = async ({ limit = 10 }) => {
     withCredentials: true,
   });
 
-  // handler returns { profiles, source }
   return {
     profiles: response.data?.profiles || [],
     source: response.data?.source || null,
+    computing: response.data?.computing ?? false,
+    hadPool: response.data?.hadPool ?? true,
   };
 };
+
 
 
 /**

@@ -5,6 +5,7 @@ import { FiArrowLeft, FiMapPin, FiInfo, FiZap } from "react-icons/fi"
 import { ImSpinner2 } from "react-icons/im"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { lazy, Suspense } from 'react';
+
 const LocationInput = lazy(() =>
   import('../../AddProfile/components/LocationInput')
 );
@@ -30,6 +31,8 @@ const detailsPromiseRef = useRef(null)
     mutationFn: updateMyProfile,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-profile"] })
+          queryClient.invalidateQueries({ queryKey: ["profiles"] })
+
       toast.success("Location updated successfully")
       navigate(-1)
     },
