@@ -228,7 +228,7 @@ export default function UserHomePage() {
               You’ve seen all nearby profiles. Come back later.
             </p>
 
-            <button
+            {/* <button
               onClick={handleRefresh}
               disabled={isRefreshing}
               className={`mt-6 px-6 py-2 rounded-full shadow transition-all duration-200 ${
@@ -238,7 +238,7 @@ export default function UserHomePage() {
               }`}
             >
               {isRefreshing ? "Refreshing..." : "Refresh profiles"}
-            </button>
+            </button> */}
           </div>
         ) : (
           <Suspense fallback={<ProfileSkeleton />}>
