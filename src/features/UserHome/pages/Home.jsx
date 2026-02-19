@@ -50,53 +50,59 @@ export default function UserHomePage() {
 
   const { send: sendMatchRequest } = useSendMatchRequest()
 
-  const seenMutation = useMutation({
-    mutationFn: postSeen,
-    onError: (err) => {
-      setRequestError(err?.response?.data?.error || err.message)
-    }
-  })
+ 
+const seenMutation = useMutation({
+  mutationFn: postSeen,
+  onError: (err) => {
+    console.error("Seen error:", err)
+    setRequestError(
+      err?.response?.data?.error || err.message
+    )
+  }
+})
+
 
   /* ---------------- Swipe Logic ---------------- */
 
   const advance = useCallback(
-    (dir) => {
-      setDirection(dir)
+  (dir) => {
 
-      setIdx((prev) => {
-        const current = profiles[prev]
+    setDirection(dir)
 
-        if (current) {
-          if (currentSource) {
-            seenMutation.mutate({
-              index: current.suggestionIndex,
-              direction: dir === 1 ? "r" : "l",
-              source: currentSource
-            })
-          }
+    setIdx((prev) => {
 
-          if (dir === 1 && current.PK) {
-            sendMatchRequest(current.PK)
-          }
-        }
+      const current = profiles[prev]
 
-        const next = prev + 1
+      if (!current) return prev
 
-        // Prevent overflow
-        if (next >= profiles.length) {
-          return prev
-        }
+      if (currentSource) {
+        seenMutation.mutate({
+          username: current.PK,
+          source: currentSource
+        })
+      }
 
-        // Refetch when 2 left
-        if (profiles.length - next <= 2) {
-          refetch()
-        }
+      if (dir === 1 && current.PK) {
+        sendMatchRequest(current.PK)
+      }
 
-        return next
-      })
-    },
-    [profiles, currentSource, seenMutation, sendMatchRequest, refetch]
-  )
+      const next = prev + 1
+
+      if (next >= profiles.length) {
+        return prev
+      }
+
+      if (profiles.length - next <= 2) {
+        refetch()
+      }
+
+      return next
+    })
+
+  },
+  [profiles, currentSource, seenMutation, sendMatchRequest, refetch]
+)
+
 
   /* ---------------- Loading ---------------- */
 
