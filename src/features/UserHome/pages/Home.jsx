@@ -33,15 +33,13 @@ export default function UserHomePage() {
     profiles,
     idx,
     setIdx,
-    nextBatch,
-    setNextBatch,
     computing,
     hadPool,
     suggestionError,
-    isRefreshing,
     currentSource,
     handleRefresh,
-    refetch,isLoading
+    refetch,
+    isLoading
   } = useSuggestions()
 
   const [direction, setDirection] = useState(0)
@@ -49,11 +47,6 @@ export default function UserHomePage() {
 
   const { canShow, showPrompt, dismiss, isIOSDevice } =
     useAddToHomeScreen()
-
-  const locationTitle = myProfile?.location?.placeName || "Location"
-  const locationSubtitle = myProfile?.location
-    ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
-    : ""
 
   const { send: sendMatchRequest } = useSendMatchRequest()
 
@@ -89,70 +82,76 @@ export default function UserHomePage() {
 
         const next = prev + 1
 
-        if (next >= profiles.length - 1 && nextBatch.length > 0) {
-          setNextBatch([])
+        // Prevent overflow
+        if (next >= profiles.length) {
+          return prev
+        }
+
+        // Refetch when 2 left
+        if (profiles.length - next <= 2) {
           refetch()
         }
 
         return next
       })
     },
-    [profiles, currentSource, seenMutation, sendMatchRequest, nextBatch, refetch, setIdx, setNextBatch]
+    [profiles, currentSource, seenMutation, sendMatchRequest, refetch]
   )
 
   /* ---------------- Loading ---------------- */
 
-  if (isLoading) {
-    return <ProfileSkeleton />
-  }
+  if (isLoading) return <ProfileSkeleton />
 
   const isNoPool =
-    !computing &&
-    !hadPool &&
-    profiles.length === 0
+    !computing && !hadPool && profiles.length === 0
 
   const isEnd =
-    !computing &&
-    hadPool &&
-    profiles.length === 0
+    !computing && hadPool && profiles.length === 0
 
-  const rawProfile = profiles[idx] || {}
+  /* ---------------- Profile Selection ---------------- */
+
+  const rawProfile =
+    idx < profiles.length ? profiles[idx] : null
 
   /* ---------------- Profile Mapping ---------------- */
 
-  const images = Array.isArray(rawProfile.photos)
-    ? rawProfile.photos
-        .sort((a, b) => a.order - b.order)
-        .map((p) => p.url)
-    : []
+  let profile = null
 
-  const profile = {
-    name: rawProfile.name || "Unknown",
-    age: computeAge(rawProfile.dob),
-    about: rawProfile.bio || "",
-    gender:
-      rawProfile.gender === "F"
-        ? "Female"
-        : rawProfile.gender === "M"
-        ? "Male"
-        : rawProfile.gender,
-    images,
-    location: rawProfile.location
-      ? `${rawProfile.location.placeName}, ${rawProfile.location.countryCode}`
-      : "",
-    popularity: rawProfile.popularity || 0,
-    healthStatus: rawProfile.healthStatus || {
-      status: "Unknown",
-      lastTestedDate: "Unknown"
-    },
-    lastSeen: formatLastSeen(rawProfile.lastSeen),
-    job: rawProfile.jobTitle || "",
-    languages: Array.isArray(rawProfile.languagesKnown)
-      ? rawProfile.languagesKnown.map(getLanguageName)
-      : [],
-    interests: rawProfile.interest || [],
-    userId: rawProfile.username,
-    suggestionIndex: rawProfile.suggestionIndex
+  if (rawProfile) {
+    const images = Array.isArray(rawProfile.photos)
+      ? rawProfile.photos
+          .sort((a, b) => a.order - b.order)
+          .map((p) => p.url)
+      : []
+
+    profile = {
+      name: rawProfile.name || "Unknown",
+      age: computeAge(rawProfile.dob),
+      about: rawProfile.bio || "",
+      gender:
+        rawProfile.gender === "F"
+          ? "Female"
+          : rawProfile.gender === "M"
+          ? "Male"
+          : rawProfile.gender,
+      images,
+      location: rawProfile.location
+        ? `${rawProfile.location.placeName}, ${rawProfile.location.countryCode}`
+        : "",
+      popularity: rawProfile.popularity || 0,
+      healthStatus: rawProfile.healthStatus || {
+        status: "Unknown",
+        lastTestedDate: "Unknown"
+      },
+      lastSeen: formatLastSeen(rawProfile.lastSeen),
+      job: rawProfile.jobTitle || "",
+      languages: Array.isArray(rawProfile.languagesKnown)
+        ? rawProfile.languagesKnown.map(getLanguageName)
+        : [],
+      interests: rawProfile.interest || [],
+      userId: rawProfile.username,
+      suggestionIndex: rawProfile.suggestionIndex
+    }
   }
 
   /* ---------------- Render ---------------- */
@@ -162,84 +161,55 @@ export default function UserHomePage() {
       <TopNav />
 
       <LocationBar
-        title={locationTitle}
-        subtitle={locationSubtitle}
+        title={myProfile?.location?.placeName || "Location"}
+        subtitle={
+          myProfile?.location
+            ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
+            : ""
+        }
         onChange={() => {}}
       />
-
-      {requestError && (
-        <div className="px-4 mt-4">
-          <Suspense fallback={<ProfileSkeleton />}>
-            <AlertMessage
-              message={requestError}
-              type="error"
-              isVisible
-              onClose={() => setRequestError("")}
-            />
-          </Suspense>
-        </div>
-      )}
 
       <div className="relative flex-1">
 
         {computing ? (
           <ComputingLoading />
+
         ) : suggestionError ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Unexpected error
-            </h2>
-
-            <p className="mt-2 text-gray-500 max-w-md">
-              {suggestionError}
-            </p>
-
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+            <h2 className="text-xl font-semibold">Unexpected error</h2>
+            <p className="mt-2 text-gray-500">{suggestionError}</p>
             <button
               onClick={handleRefresh}
-              className="mt-6 px-6 py-2 bg-primary text-white rounded-full shadow"
+              className="mt-6 px-6 py-2 bg-primary text-white rounded-full"
             >
               Try again
             </button>
           </div>
+
         ) : isNoPool ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
-            <h2 className="text-xl font-semibold text-gray-800">
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+            <h2 className="text-xl font-semibold">
               No matches found nearby
             </h2>
-
-            <p className="mt-2 text-gray-500 max-w-md">
+            <p className="mt-2 text-gray-500">
               Try expanding your search radius or updating your preferences.
             </p>
-
-            <button
-              onClick={handleRefresh}
-              className="mt-6 px-6 py-2 bg-primary text-white rounded-full shadow"
-            >
-              Refresh
-            </button>
           </div>
+
         ) : isEnd ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 text-center">
-            <h2 className="text-xl font-semibold text-gray-800">
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+            <h2 className="text-xl font-semibold">
               You are all caught up
             </h2>
-
-            <p className="mt-2 text-gray-500 max-w-md">
-              You’ve seen all nearby profiles. Come back later.
+            <p className="mt-2 text-gray-500">
+              You’ve seen all nearby profiles.
             </p>
-
-            {/* <button
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-              className={`mt-6 px-6 py-2 rounded-full shadow transition-all duration-200 ${
-                isRefreshing
-                  ? "bg-gray-100 text-black cursor-not-allowed"
-                  : "bg-primary text-white hover:opacity-90"
-              }`}
-            >
-              {isRefreshing ? "Refreshing..." : "Refresh profiles"}
-            </button> */}
           </div>
+
+        ) : !profile ? (
+          <ProfileSkeleton />
+
         ) : (
           <Suspense fallback={<ProfileSkeleton />}>
             <SwipeDeck
@@ -253,7 +223,6 @@ export default function UserHomePage() {
                   profile={profile}
                   placeholderImage={placeholderImage}
                 />
-
                 <div className="flex justify-center mt-2 mb-2">
                   <ActionControls
                     onReject={() => advance(-1)}
@@ -263,7 +232,7 @@ export default function UserHomePage() {
                 </div>
               </div>
 
-              <div className="mt-16 sm:mt-14 px-4 relative z-10">
+              <div className="mt-16 px-4 relative z-10">
                 <DetailSection profile={profile} />
               </div>
             </SwipeDeck>
