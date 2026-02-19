@@ -5,7 +5,7 @@ export const useSendMatchRequest = () => {
   const mutation = useMutation({
     mutationFn: async ({ recipientId }) => {
       const res = await axios.post(
-        "https://api.matchorpass.com/match/v0.2/request",
+        "https://api.passormatch.com/match/v0.2/request",
         { recipientId },
         { withCredentials: true }
       )
