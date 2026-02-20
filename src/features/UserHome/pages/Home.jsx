@@ -39,7 +39,8 @@ export default function UserHomePage() {
     currentSource,
     handleRefresh,
     refetch,
-    isLoading
+    isLoading,
+    isFetching
   } = useSuggestions()
 
   const [direction, setDirection] = useState(0)
@@ -73,7 +74,10 @@ const seenMutation = useMutation({
 
       const current = profiles[prev]
 
-      if (!current) return prev
+if (!current) {
+  refetch()
+  return prev + 1
+}
 
       if (currentSource) {
         seenMutation.mutate({
@@ -86,15 +90,21 @@ const seenMutation = useMutation({
         sendMatchRequest(current.PK)
       }
 
-      const next = prev + 1
 
-      if (next >= profiles.length) {
-        return prev
-      }
+const next = prev + 1
 
-      if (profiles.length - next <= 2) {
-        refetch()
-      }
+// If we're at end, trigger refetch and allow index to move
+if (next >= profiles.length) {
+  refetch()
+  return next
+}
+
+// Prefetch earlier for smoother UX
+if (profiles.length - next <= 3) {
+  refetch()
+}
+
+
 
       return next
     })
@@ -106,10 +116,14 @@ const seenMutation = useMutation({
 
   /* ---------------- Loading ---------------- */
 
-  if (isLoading) return <ProfileSkeleton />
+
 
   const isNoPool =
     !computing && !hadPool && profiles.length === 0
+const isBuffering =
+  !computing &&
+  profiles.length > 0 &&
+  idx >= profiles.length
 
   const isEnd =
     !computing && hadPool && profiles.length === 0
@@ -162,99 +176,107 @@ const seenMutation = useMutation({
 
   /* ---------------- Render ---------------- */
 
-  return (
-    <div className="relative bg-white min-h-screen pb-20 flex flex-col">
-      <TopNav />
+ return (
+  <div className="relative bg-white min-h-screen pb-20 flex flex-col">
+    <TopNav />
 
-      <LocationBar
-        title={myProfile?.location?.placeName || "Location"}
-        subtitle={
-          myProfile?.location
-            ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
-            : ""
-        }
-        onChange={() => {}}
-      />
+    <LocationBar
+      title={myProfile?.location?.placeName || "Location"}
+      subtitle={
+        myProfile?.location
+          ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
+          : ""
+      }
+      onChange={() => {}}
+    />
 
-      <div className="relative flex-1">
+    <div className="relative flex-1">
 
-        {computing ? (
-          <ComputingLoading />
+      {/* Initial loading (only when no profiles yet) */}
+      {(isLoading || isFetching) && profiles.length === 0 ? (
+        <ProfileSkeleton />
 
-        ) : suggestionError ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-            <h2 className="text-xl font-semibold">Unexpected error</h2>
-            <p className="mt-2 text-gray-500">{suggestionError}</p>
-            <button
-              onClick={handleRefresh}
-              className="mt-6 px-6 py-2 bg-primary text-white rounded-full"
-            >
-              Try again
-            </button>
-          </div>
+      ) : computing ? (
+        <ComputingLoading />
 
-        ) : isNoPool ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-            <h2 className="text-xl font-semibold">
-              No matches found nearby
-            </h2>
-            <p className="mt-2 text-gray-500">
-              Try expanding your search radius or updating your preferences.
-            </p>
-          </div>
+      ) : suggestionError ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <h2 className="text-xl font-semibold">Unexpected error</h2>
+          <p className="mt-2 text-gray-500">{suggestionError}</p>
+          <button
+            onClick={handleRefresh}
+            className="mt-6 px-6 py-2 bg-primary text-white rounded-full"
+          >
+            Try again
+          </button>
+        </div>
 
-        ) : isEnd ? (
-          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-            <h2 className="text-xl font-semibold">
-              You are all caught up
-            </h2>
-            <p className="mt-2 text-gray-500">
-              You’ve seen all nearby profiles.
-            </p>
-          </div>
+      ) : isNoPool ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <h2 className="text-xl font-semibold">
+            No matches found nearby
+          </h2>
+          <p className="mt-2 text-gray-500">
+            Try expanding your search radius or updating your preferences.
+          </p>
+        </div>
 
-        ) : !profile ? (
-          <ProfileSkeleton />
+      ) : isEnd ? (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+          <h2 className="text-xl font-semibold">
+            You are all caught up
+          </h2>
+          <p className="mt-2 text-gray-500">
+            You’ve seen all nearby profiles.
+          </p>
+        </div>
 
-        ) : (
-          <Suspense fallback={<ProfileSkeleton />}>
-            <SwipeDeck
-              idx={idx}
-              direction={direction}
-              profilesLength={profiles.length}
-              onAdvance={advance}
-            >
-              <div className="relative">
-                <ProfileCard
-                  profile={profile}
-                  placeholderImage={placeholderImage}
+      ) : isBuffering ? (
+        <ProfileSkeleton />
+
+      ) : !profile ? (
+        <ProfileSkeleton />
+
+      ) : (
+        <Suspense fallback={<ProfileSkeleton />}>
+          <SwipeDeck
+            idx={idx}
+            direction={direction}
+            profilesLength={profiles.length}
+            onAdvance={advance}
+          >
+            <div className="relative">
+              <ProfileCard
+                profile={profile}
+                placeholderImage={placeholderImage}
+              />
+              <div className="flex justify-center mt-2 mb-2">
+                <ActionControls
+                  onReject={() => advance(-1)}
+                  onRefresh={handleRefresh}
+                  onLike={() => advance(1)}
                 />
-                <div className="flex justify-center mt-2 mb-2">
-                  <ActionControls
-                    onReject={() => advance(-1)}
-                    onRefresh={handleRefresh}
-                    onLike={() => advance(1)}
-                  />
-                </div>
               </div>
+            </div>
 
-              <div className="mt-16 px-4 relative z-10">
-                <DetailSection profile={profile} />
-              </div>
-            </SwipeDeck>
-          </Suspense>
-        )}
-      </div>
-
-      <BottomNav />
-
-      {canShow && (
-        <AddToHomeBanner
-          onAdd={showPrompt}
-          onClose={dismiss}
-          isIOS={isIOSDevice}
-        />
+            <div className="mt-16 px-4 relative z-10">
+              <DetailSection profile={profile} />
+            </div>
+          </SwipeDeck>
+        </Suspense>
       )}
     </div>
-  )
+
+    <BottomNav />
+
+    {canShow && (
+      <AddToHomeBanner
+        onAdd={showPrompt}
+        onClose={dismiss}
+        isIOS={isIOSDevice}
+      />
+    )}
+  </div>
+)
+
 }

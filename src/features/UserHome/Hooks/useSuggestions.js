@@ -10,18 +10,37 @@ export function useSuggestions() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [currentSource, setCurrentSource] = useState(null)
 
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ["profiles"],
-    queryFn: () => getSuggestions({ limit: 10 }),
-    staleTime: 1000 * 30,
-    onError: (err) => {
-      setSuggestionError(
-        err?.response?.status === 500
-          ? "Unexpected error occurred. Please try again."
-          : err?.message || "Something went wrong"
-      )
-    }
-  })
+const {
+  data,
+  isLoading,
+  isFetching,
+  error,
+  refetch
+} = useQuery({
+  queryKey: ["profiles"],
+  queryFn: () => getSuggestions({ limit: 10 }),
+
+  staleTime: 1000 * 30,
+
+  retry: 3,
+
+  retryDelay: (attemptIndex) => {
+    if (attemptIndex < 2) return 1000
+    return 6000
+  },
+
+  refetchOnWindowFocus: false,
+
+  onError: (err) => {
+    setSuggestionError(
+      err?.response?.status === 500
+        ? "Unexpected error occurred. Please try again."
+        : err?.message || "Something went wrong"
+    )
+  }
+})
+
+
 
   const profiles = data?.profiles || []
   const computing = data?.computing || false
@@ -94,6 +113,7 @@ export function useSuggestions() {
     currentSource,
     handleRefresh,
     isLoading,
+    isFetching,
     refetch
   }
 }
