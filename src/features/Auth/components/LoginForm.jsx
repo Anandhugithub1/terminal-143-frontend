@@ -7,6 +7,7 @@ import Loader from '../../../components/Ui/Loading'
 import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import { useLogin } from '../useAuth'
+import {subscribeToPush} from '../utlis/subscribeToPush'
 
 const LoginForm = () => {
   const { t } = useTranslation('auth')
@@ -23,21 +24,29 @@ const LoginForm = () => {
     error
   } = useLogin()
 
-  useEffect(() => {
-    if (isSuccess && data) {
-      toast.success(t('loginSuccessful'))
+ useEffect(() => {
+  if (!isSuccess || !data) return
 
-      if (data.gender) {
-        localStorage.setItem('gender', data.gender)
-      }
+  toast.success(t("loginSuccessful"))
 
-      if (!data.profileCompleted) {
-        navigate('/complete')
-      } else {
-        navigate('/home')
-      }
-    }
-  }, [isSuccess, data, navigate, t])
+  if (data.gender) {
+    localStorage.setItem("gender", data.gender)
+  }
+
+  // Fire and forget (no need to block navigation)
+  setTimeout(() => {
+    subscribeToPush().catch(err =>
+      console.error("Push subscription failed:", err)
+    )
+  }, 3000)
+
+  if (!data.profileCompleted) {
+    navigate("/complete")
+  } else {
+    navigate("/home")
+  }
+
+}, [isSuccess])
 
   const handleSubmit = (e) => {
     e.preventDefault()
