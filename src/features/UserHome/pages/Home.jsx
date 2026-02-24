@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useCallback, lazy, Suspense } from "react"
+import React, { useState, useCallback, lazy, Suspense,useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
 
 import TopNav from "../../../components/Layout/TopNavigation"
@@ -19,7 +19,10 @@ import { useAddToHomeScreen } from "../Hooks/useAddToHomeScreen"
 import AddToHomeBanner from "../components/AddToHomeBanner"
 import { getLanguageName } from "../utlis/getLanguageName"
 import ComputingLoading from "../components/Loading/Computing"
+import { useLocation } from "react-router-dom";
+import { subscribeToPush } from "../utlis/subscribeToPush";
 
+import BravePushHelpModal from "../components/Modals/BravePushHelpModal";
 const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"))
 const DetailSection = lazy(() => import("../components/Details/Details"))
 const ActionControls = lazy(() => import("../components/Actions/ActionControls"))
@@ -42,7 +45,8 @@ export default function UserHomePage() {
     isLoading,
     isFetching
   } = useSuggestions()
-
+const location = useLocation();
+const [showBraveHelp, setShowBraveHelp] = useState(false);
   const [direction, setDirection] = useState(0)
   const [requestError, setRequestError] = useState("")
 
@@ -62,7 +66,39 @@ const seenMutation = useMutation({
   }
 })
 
+useEffect(() => {
+  if (!location.state?.justLoggedIn) return;
 
+  console.log("Push effect triggered");
+
+  const timer = setTimeout(async () => {
+    try {
+      await subscribeToPush();
+      console.log("Push success");
+    } catch (err) {
+      console.log("Caught push error");
+      console.error("Push subscription failed:", err);
+
+      const brave =
+        navigator.brave && navigator.brave.isBrave
+          ? await navigator.brave.isBrave()
+          : false;
+
+      console.log("Is Brave:", brave);
+
+      if (brave) {
+        setShowBraveHelp(true);
+      }
+    }
+
+    // Clear router state AFTER logic
+    window.history.replaceState({}, document.title);
+
+  }, 2000);
+
+  return () => clearTimeout(timer);
+
+}, [location.state?.justLoggedIn]);
   /* ---------------- Swipe Logic ---------------- */
 
   const advance = useCallback(
@@ -276,7 +312,12 @@ const isBuffering =
         isIOS={isIOSDevice}
       />
     )}
+   <BravePushHelpModal
+  open={showBraveHelp}
+  onClose={() => setShowBraveHelp(false)}
+/>
   </div>
+  
 )
 
 }
