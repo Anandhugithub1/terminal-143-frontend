@@ -32,19 +32,23 @@ const SwipeDeck = lazy(() => import("../components/Actions/SwipeDeck"))
 export default function UserHomePage() {
   const { data: myProfile } = useMyProfile()
 
-  const {
-    profiles,
-    idx,
-    setIdx,
-    computing,
-    hadPool,
-    suggestionError,
-    currentSource,
-    handleRefresh,
-    refetch,
-    isLoading,
-    isFetching
-  } = useSuggestions()
+const {
+  profiles,
+  idx,
+  setIdx,
+  computing,
+  hadPool,
+  suggestionError,
+  currentSource,
+  handleRefresh,
+  refetch,
+  isLoading,
+  isFetching,
+  isRefreshing,
+  canRefresh,
+  nextRefreshInSeconds,
+  exhausted
+} = useSuggestions()
 const location = useLocation();
 const [showBraveHelp, setShowBraveHelp] = useState(false);
   const [direction, setDirection] = useState(0)
@@ -162,8 +166,8 @@ const isBuffering =
   profiles.length > 0 &&
   idx >= profiles.length
 
-  const isEnd =
-    !computing && hadPool && profiles.length === 0
+const isEnd =
+  !computing && hadPool && profiles.length === 0 && !exhausted
 
   /* ---------------- Profile Selection ---------------- */
 
@@ -226,6 +230,33 @@ const isBuffering =
       }
       onChange={() => {}}
     />
+
+
+{exhausted && (
+  <div className="flex flex-col items-center mt-3">
+    <div className="text-sm text-gray-500">
+      {/* No new profiles. Showing recycled matches. */}
+    </div>
+
+    {canRefresh ? (
+      <button
+        onClick={handleRefresh}
+        disabled={isRefreshing}
+        className={`mt-3 px-6 py-2 rounded-full shadow-md transition ${
+          isFetching
+            ? "bg-gray-400 text-white"
+            : "bg-primary text-white hover:opacity-90"
+        }`}
+      >
+        {isRefreshing ? "Refreshing..." : "Find New Matches"}
+      </button>
+    ) : nextRefreshInSeconds > 0 ? (
+      <div className="mt-2 text-xs text-gray-400">
+        New refresh available in {Math.ceil(nextRefreshInSeconds)} seconds
+      </div>
+    ) : null}
+  </div>
+)}
 
     <div className="relative flex-1">
 

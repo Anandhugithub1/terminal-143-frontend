@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation } from "@tanstack/react-query"
 import { getSuggestions } from "../../Profiles/profilesapi"
 
 export function useSuggestions() {
@@ -7,52 +7,77 @@ export function useSuggestions() {
   const [nextBatch, setNextBatch] = useState([])
   const [hasMore, setHasMore] = useState(true)
   const [suggestionError, setSuggestionError] = useState("")
-  const [isRefreshing, setIsRefreshing] = useState(false)
   const [currentSource, setCurrentSource] = useState(null)
 
-const {
-  data,
-  isLoading,
-  isFetching,
-  error,
-  refetch
-} = useQuery({
-  queryKey: ["profiles"],
-  queryFn: () => getSuggestions({ limit: 10 }),
+  /* ---------------- NORMAL FETCH ---------------- */
 
-  staleTime: 1000 * 30,
+  const {
+    data,
+    isLoading,
+    isFetching,
+    error,
+    refetch
+  } = useQuery({
+    queryKey: ["profiles"],
+    queryFn: () =>
+      getSuggestions({
+        limit: 10,
+        refreshRequested: false
+      }),
+    staleTime: 1000 * 30,
+    retry: 3,
+    retryDelay: (attemptIndex) =>
+      attemptIndex < 2 ? 1000 : 6000,
+    refetchOnWindowFocus: false,
+    onError: (err) => {
+      setSuggestionError(
+        err?.response?.status === 500
+          ? "Unexpected error occurred. Please try again."
+          : err?.message || "Something went wrong"
+      )
+    }
+  })
 
-  retry: 3,
+  /* ---------------- MANUAL REFRESH ---------------- */
 
-  retryDelay: (attemptIndex) => {
-    if (attemptIndex < 2) return 1000
-    return 6000
-  },
+  const refreshMutation = useMutation({
+    mutationFn: () =>
+      getSuggestions({
+        limit: 10,
+        refreshRequested: true
+      }),
+    onSuccess: () => {
+      setIdx(0)
+      setNextBatch([])
+      setHasMore(true)
+      setSuggestionError("")
+      refetch()
+    }
+  })
 
-  refetchOnWindowFocus: false,
+  const handleRefresh = useCallback(() => {
+    refreshMutation.mutate()
+  }, [refreshMutation])
 
-  onError: (err) => {
-    setSuggestionError(
-      err?.response?.status === 500
-        ? "Unexpected error occurred. Please try again."
-        : err?.message || "Something went wrong"
-    )
-  }
-})
-
-
+  /* ---------------- RESPONSE STATE ---------------- */
 
   const profiles = data?.profiles || []
   const computing = data?.computing || false
   const source = data?.source || null
   const hadPool = data?.hadPool ?? true
+  const exhausted = data?.exhausted ?? false
+  const canRefresh = data?.canRefresh ?? false
+  const nextRefreshInSeconds =
+    data?.nextRefreshInSeconds ?? 0
 
   /* -------- Track source -------- */
+
   useEffect(() => {
     if (source) setCurrentSource(source)
   }, [source])
 
   /* -------- Reset when computing -------- */
+
   useEffect(() => {
     if (computing) {
       setIdx(0)
@@ -62,13 +87,18 @@ const {
   }, [computing])
 
   /* -------- Prefetch logic -------- */
+
   useEffect(() => {
     if (!hasMore) return
     if (profiles.length === 0) return
     if (profiles.length - idx > 2) return
     if (nextBatch.length > 0) return
+    if (exhausted) return
 
-    getSuggestions({ limit: 10 })
+    getSuggestions({
+      limit: 10,
+      refreshRequested: false
+    })
       .then((res) => {
         const nextProfiles = res?.profiles || []
         if (nextProfiles.length === 0) {
@@ -81,23 +111,13 @@ const {
         setSuggestionError("Failed to load more profiles.")
         setHasMore(false)
       })
-  }, [idx, profiles.length, nextBatch.length, hasMore])
-
-  /* -------- Refresh -------- */
-  const handleRefresh = useCallback(async () => {
-    setIsRefreshing(true)
-
-    setIdx(0)
-    setNextBatch([])
-    setHasMore(true)
-    setSuggestionError("")
-
-    await refetch()
-
-    setTimeout(() => {
-      setIsRefreshing(false)
-    }, 1500)
-  }, [refetch])
+  }, [
+    idx,
+    profiles.length,
+    nextBatch.length,
+    hasMore,
+    exhausted
+  ])
 
   return {
     profiles,
@@ -108,12 +128,15 @@ const {
     hasMore,
     computing,
     hadPool,
+    exhausted,
+    canRefresh,
+    nextRefreshInSeconds,
     suggestionError,
-    isRefreshing,
     currentSource,
     handleRefresh,
     isLoading,
     isFetching,
+    isRefreshing: refreshMutation.isLoading,
     refetch
   }
 }

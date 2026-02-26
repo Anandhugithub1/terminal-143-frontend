@@ -5,19 +5,30 @@ import { matchesApi,suggestionApi } from '../../api/clients';
  * Fetches the next batch of suggested profiles.
  * Now only takes a `limit` — the handler uses Redis to page under the hood.
  */
-export const getSuggestions = async ({ limit = 10 }) => {
+export const getSuggestions = async ({
+  limit = 10,
+  refreshRequested = false
+}) => {
   const response = await suggestionApi.get('/user/recommend', {
-    params: { limit },
-    withCredentials: true,
-  });
+    params: {
+      limit,
+      refreshRequested
+    },
+    withCredentials: true
+  })
+
+  const data = response.data || {}
 
   return {
-    profiles: response.data?.profiles || [],
-    source: response.data?.source || null,
-    computing: response.data?.computing ?? false,
-    hadPool: response.data?.hadPool ?? true,
-  };
-};
+    profiles: data.profiles || [],
+    source: data.source || null,
+    computing: data.computing ?? false,
+    hadPool: data.hadPool ?? true,
+    exhausted: data.exhausted ?? false,
+    canRefresh: data.canRefresh ?? false,
+    nextRefreshInSeconds: data.nextRefreshInSeconds ?? 0
+  }
+}
 
 
 
