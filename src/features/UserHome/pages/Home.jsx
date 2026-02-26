@@ -116,11 +116,12 @@ if (!current) {
 }
 
       if (currentSource) {
-        seenMutation.mutate({
-          username: current.PK,
-          source: currentSource
-        })
-      }
+  seenMutation.mutate({
+    username: current.PK,
+    source: currentSource,
+    direction: dir === 1 ? "r" : "l"
+  })
+}
 
       if (dir === 1 && current.PK) {
         sendMatchRequest(current.PK)

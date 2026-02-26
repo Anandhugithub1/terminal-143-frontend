@@ -25,19 +25,20 @@ export const getSuggestions = async ({ limit = 10 }) => {
  * Sends a swipe (seen) action for a profile.
  */
 export async function postSeen({
-  username,   // seen username
+  username,
   source,
+  direction
 }) {
   const response = await suggestionApi.post(
-    '/user/swipe',
+    "/user/swipe",
     {
       username,
       source,
+      direction
     },
     { withCredentials: true }
   )
 
   return response.data
 }
-
 
