@@ -51,7 +51,6 @@ export function useSuggestions() {
       setNextBatch([])
       setHasMore(true)
       setSuggestionError("")
-      refetch()
     }
   })
 

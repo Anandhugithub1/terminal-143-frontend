@@ -232,37 +232,33 @@ const isEnd =
     />
 
 
-{exhausted && (
-  <div className="flex flex-col items-center mt-3">
-    <div className="text-sm text-gray-500">
-      {/* No new profiles. Showing recycled matches. */}
+{exhausted && canRefresh && (
+  <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+    <div className="text-sm text-gray-500 mb-4">
+      You're all caught up. Refresh to discover new profiles.
     </div>
 
-    {canRefresh ? (
-      <button
-        onClick={handleRefresh}
-        disabled={isRefreshing}
-        className={`mt-3 px-6 py-2 rounded-full shadow-md transition ${
-          isFetching
-            ? "bg-gray-400 text-white"
-            : "bg-primary text-white hover:opacity-90"
-        }`}
-      >
-        {isRefreshing ? "Refreshing..." : "Find New Matches"}
-      </button>
-    ) : nextRefreshInSeconds > 0 ? (
-      <div className="mt-2 text-xs text-gray-400">
-        New refresh available in {Math.ceil(nextRefreshInSeconds)} seconds
-      </div>
-    ) : null}
+    <button
+      onClick={handleRefresh}
+      disabled={isRefreshing}
+      className={`px-6 py-2 rounded-full shadow-md transition duration-200 ${
+        isRefreshing
+          ? "bg-primary/70 text-white cursor-wait"
+          : "bg-primary text-white hover:opacity-90 active:scale-95"
+      }`}
+    >
+      {isRefreshing ? "Refreshing..." : "Refresh Profiles"}
+    </button>
   </div>
 )}
 
     <div className="relative flex-1">
 
       {/* Initial loading (only when no profiles yet) */}
-      {(isLoading || isFetching) && profiles.length === 0 ? (
-        <ProfileSkeleton />
+  {(isLoading ) &&
+ profiles.length === 0 &&
+ !exhausted ? (
+  <ProfileSkeleton />
 
       ) : computing ? (
         <ComputingLoading />
@@ -302,8 +298,7 @@ const isEnd =
       ) : isBuffering ? (
         <ProfileSkeleton />
 
-      ) : !profile ? (
-        <ProfileSkeleton />
+      ) :  profiles.length === 0 ?( null
 
       ) : (
         <Suspense fallback={<ProfileSkeleton />}>
