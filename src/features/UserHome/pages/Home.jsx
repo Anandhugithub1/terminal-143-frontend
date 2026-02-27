@@ -30,28 +30,30 @@ const AlertMessage = lazy(() => import("../../../components/Ui/Alerts"))
 const SwipeDeck = lazy(() => import("../components/Actions/SwipeDeck"))
 
 export default function UserHomePage() {
+
   const { data: myProfile } = useMyProfile()
 
-const {
-  profiles,
-  idx,
-  setIdx,
-  computing,
-  hadPool,
-  suggestionError,
-  currentSource,
-  handleRefresh,
-  refetch,
-  isLoading,
-  isFetching,
-  isRefreshing,
-  canRefresh,
-  nextRefreshInSeconds,
-  exhausted,
-  prefetching
-} = useSuggestions()
-const location = useLocation();
-const [showBraveHelp, setShowBraveHelp] = useState(false);
+  const {
+    profiles,
+    idx,
+    setIdx,
+    computing,
+    hadPool,
+    suggestionError,
+    currentSource,
+    handleRefresh,
+    refetch,
+    isLoading,
+    isFetching,
+    isRefreshing,
+    canRefresh,
+    nextRefreshInSeconds,
+    exhausted,
+    prefetching
+  } = useSuggestions()
+
+  const location = useLocation();
+  const [showBraveHelp, setShowBraveHelp] = useState(false);
   const [direction, setDirection] = useState(0)
   const [requestError, setRequestError] = useState("")
 
@@ -60,122 +62,98 @@ const [showBraveHelp, setShowBraveHelp] = useState(false);
 
   const { send: sendMatchRequest } = useSendMatchRequest()
 
- 
-const seenMutation = useMutation({
-  mutationFn: postSeen,
-  onError: (err) => {
-    console.error("Seen error:", err)
-    setRequestError(
-      err?.response?.data?.error || err.message
-    )
-  }
-})
-
-useEffect(() => {
-  if (!location.state?.justLoggedIn) return;
-
-  console.log("Push effect triggered");
-
-  const timer = setTimeout(async () => {
-    try {
-      await subscribeToPush();
-      console.log("Push success");
-    } catch (err) {
-      console.log("Caught push error");
-      console.error("Push subscription failed:", err);
-
-      const brave =
-        navigator.brave && navigator.brave.isBrave
-          ? await navigator.brave.isBrave()
-          : false;
-
-      console.log("Is Brave:", brave);
-
-      if (brave) {
-        setShowBraveHelp(true);
-      }
+  const seenMutation = useMutation({
+    mutationFn: postSeen,
+    onError: (err) => {
+      console.error("Seen error:", err)
+      setRequestError(
+        err?.response?.data?.error || err.message
+      )
     }
+  })
 
-    // Clear router state AFTER logic
-    window.history.replaceState({}, document.title);
+  useEffect(() => {
+    if (!location.state?.justLoggedIn) return;
 
-  }, 2000);
+    const timer = setTimeout(async () => {
+      try {
+        await subscribeToPush();
+      } catch (err) {
+        const brave =
+          navigator.brave && navigator.brave.isBrave
+            ? await navigator.brave.isBrave()
+            : false;
 
-  return () => clearTimeout(timer);
+        if (brave) {
+          setShowBraveHelp(true);
+        }
+      }
 
-}, [location.state?.justLoggedIn]);
-  /* ---------------- Swipe Logic ---------------- */
+      window.history.replaceState({}, document.title);
+
+    }, 2000);
+
+    return () => clearTimeout(timer);
+
+  }, [location.state?.justLoggedIn]);
 
   const advance = useCallback(
-  (dir) => {
+    (dir) => {
 
-    setDirection(dir)
+      setDirection(dir)
 
-    setIdx((prev) => {
+      setIdx((prev) => {
 
-      const current = profiles[prev]
+        const current = profiles[prev]
 
-if (!current) {
-  refetch()
-  return prev + 1
-}
+        if (!current) {
+          refetch()
+          return prev + 1
+        }
 
-      if (currentSource) {
-  seenMutation.mutate({
-    username: current.PK,
-    source: currentSource,
-    direction: dir === 1 ? "r" : "l"
-  })
-}
+        if (currentSource) {
+          seenMutation.mutate({
+            username: current.PK,
+            source: currentSource,
+            direction: dir === 1 ? "r" : "l"
+          })
+        }
 
-      if (dir === 1 && current.PK) {
-        sendMatchRequest(current.PK)
-      }
+        if (dir === 1 && current.PK) {
+          sendMatchRequest(current.PK)
+        }
 
+        const next = prev + 1
 
-const next = prev + 1
+        if (next >= profiles.length) {
+          refetch()
+          return next
+        }
 
-// If we're at end, trigger refetch and allow index to move
-if (next >= profiles.length) {
-  refetch()
-  return next
-}
+        if (profiles.length - next <= 3) {
+          refetch()
+        }
 
-// Prefetch earlier for smoother UX
-if (profiles.length - next <= 3) {
-  refetch()
-}
+        return next
+      })
 
-
-
-      return next
-    })
-
-  },
-  [profiles, currentSource, seenMutation, sendMatchRequest, refetch]
-)
-
-
-  /* ---------------- Loading ---------------- */
-
-
+    },
+    [profiles, currentSource, seenMutation, sendMatchRequest, refetch]
+  )
 
   const isNoPool =
     !computing && !hadPool && profiles.length === 0
-const isBuffering =
-  !computing &&
-  profiles.length > 0 &&
-  (idx >= profiles.length || (prefetching && idx >= profiles.length - 1))
 
-const isEnd =
-  !computing && hadPool && profiles.length === 0 && !exhausted
+  const isBuffering =
+    !computing &&
+    profiles.length > 0 &&
+    (idx >= profiles.length || (prefetching && idx >= profiles.length - 1))
 
-  /* ---------------- Profile Selection ---------------- */
+  const isEnd =
+    !computing && hadPool && profiles.length === 0 && !exhausted
 
   const rawProfile =
     idx < profiles.length ? profiles[idx] : null
-
-  /* ---------------- Profile Mapping ---------------- */
 
   let profile = null
 
@@ -216,136 +194,132 @@ const isEnd =
     }
   }
 
-  /* ---------------- Render ---------------- */
+  return (
+    <div className="relative bg-white min-h-screen pb-20 flex flex-col">
+      <TopNav />
 
- return (
-  <div className="relative bg-white min-h-screen pb-20 flex flex-col">
-    <TopNav />
+      <LocationBar
+        title={myProfile?.location?.placeName || "Location"}
+        subtitle={
+          myProfile?.location
+            ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
+            : ""
+        }
+        onChange={() => {}}
+      />
 
-    <LocationBar
-      title={myProfile?.location?.placeName || "Location"}
-      subtitle={
-        myProfile?.location
-          ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
-          : ""
-      }
-      onChange={() => {}}
-    />
+      {exhausted && canRefresh && (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+          <div className="text-sm text-gray-500 mb-4">
+            You're all caught up. Refresh to discover new profiles.
+          </div>
 
-
-{exhausted && canRefresh && (
-  <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-    <div className="text-sm text-gray-500 mb-4">
-      You're all caught up. Refresh to discover new profiles.
-    </div>
-
-    <button
-      onClick={handleRefresh}
-      disabled={isRefreshing}
-      className={`px-6 py-2 rounded-full shadow-md transition duration-200 ${
-        isRefreshing
-          ? "bg-primary/70 text-white cursor-wait"
-          : "bg-primary text-white hover:opacity-90 active:scale-95"
-      }`}
-    >
-      {isRefreshing ? "Refreshing..." : "Refresh Profiles"}
-    </button>
-  </div>
-)}
-
-    <div className="relative flex-1">
-
-      {/* Initial loading (only when no profiles yet) */}
-  {(isLoading ) &&
- profiles.length === 0 &&
- !exhausted ? (
-  <ProfileSkeleton />
-
-      ) : computing ? (
-        <ComputingLoading />
-
-      ) : suggestionError ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-          <h2 className="text-xl font-semibold">Unexpected error</h2>
-          <p className="mt-2 text-gray-500">{suggestionError}</p>
           <button
             onClick={handleRefresh}
-            className="mt-6 px-6 py-2 bg-primary text-white rounded-full"
+            disabled={isRefreshing}
+            className={`px-6 py-2 rounded-full shadow-md transition duration-200 ${
+              isRefreshing
+                ? "bg-primary/70 text-white cursor-wait"
+                : "bg-primary text-white hover:opacity-90 active:scale-95"
+            }`}
           >
-            Try again
+            {isRefreshing ? "Refreshing..." : "Refresh Profiles"}
           </button>
         </div>
-
-      ) : isNoPool ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-          <h2 className="text-xl font-semibold">
-            No matches found nearby
-          </h2>
-          <p className="mt-2 text-gray-500">
-            Try expanding your search radius or updating your preferences.
-          </p>
-        </div>
-
-      ) : isEnd ? (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-          <h2 className="text-xl font-semibold">
-            You are all caught up
-          </h2>
-          <p className="mt-2 text-gray-500">
-            You’ve seen all nearby profiles.
-          </p>
-        </div>
-
-      ) : isBuffering ? (
-        <ProfileSkeleton />
-
-      ) :  profiles.length === 0 ?( null
-
-      ) : (
-        <Suspense fallback={<ProfileSkeleton />}>
-          <SwipeDeck
-            idx={idx}
-            direction={direction}
-            profilesLength={profiles.length}
-            onAdvance={advance}
-          >
-            <div className="relative">
-              <ProfileCard
-                profile={profile}
-                placeholderImage={placeholderImage}
-              />
-              <div className="flex justify-center mt-2 mb-2">
-                <ActionControls
-                  onReject={() => advance(-1)}
-                  onRefresh={handleRefresh}
-                  onLike={() => advance(1)}
-                />
-              </div>
-            </div>
-
-            <div className="mt-16 px-4 relative z-10">
-              <DetailSection profile={profile} />
-            </div>
-          </SwipeDeck>
-        </Suspense>
       )}
-    </div>
 
-    <BottomNav />
+      <div className="relative flex-1">
 
-    {canShow && (
-      <AddToHomeBanner
-        onAdd={showPrompt}
-        onClose={dismiss}
-        isIOS={isIOSDevice}
+        {(isLoading) &&
+        profiles.length === 0 &&
+        !exhausted ? (
+          <ProfileSkeleton />
+
+        ) : computing ? (
+          <ComputingLoading />
+
+        ) : suggestionError ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+            <h2 className="text-xl font-semibold">Unexpected error</h2>
+            <p className="mt-2 text-gray-500">{suggestionError}</p>
+            <button
+              onClick={handleRefresh}
+              className="mt-6 px-6 py-2 bg-primary text-white rounded-full"
+            >
+              Try again
+            </button>
+          </div>
+
+        ) : isNoPool ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+            <h2 className="text-xl font-semibold">
+              No matches found nearby
+            </h2>
+            <p className="mt-2 text-gray-500">
+              Try expanding your search radius or updating your preferences.
+            </p>
+          </div>
+
+        ) : isEnd ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
+            <h2 className="text-xl font-semibold">
+              You are all caught up
+            </h2>
+            <p className="mt-2 text-gray-500">
+              You’ve seen all nearby profiles.
+            </p>
+          </div>
+
+        ) : isBuffering ? (
+          <ProfileSkeleton />
+
+        ) : profiles.length === 0 || (exhausted && canRefresh) ? (
+          null
+
+        ) : (
+          <Suspense fallback={<ProfileSkeleton />}>
+            <SwipeDeck
+              idx={idx}
+              direction={direction}
+              profilesLength={profiles.length}
+              onAdvance={advance}
+            >
+              <div className="relative">
+                <ProfileCard
+                  profile={profile}
+                  placeholderImage={placeholderImage}
+                />
+                <div className="flex justify-center mt-2 mb-2">
+                  <ActionControls
+                    onReject={() => advance(-1)}
+                    onRefresh={handleRefresh}
+                    onLike={() => advance(1)}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-16 px-4 relative z-10">
+                <DetailSection profile={profile} />
+              </div>
+            </SwipeDeck>
+          </Suspense>
+        )}
+      </div>
+
+      <BottomNav />
+
+      {canShow && (
+        <AddToHomeBanner
+          onAdd={showPrompt}
+          onClose={dismiss}
+          isIOS={isIOSDevice}
+        />
+      )}
+
+      <BravePushHelpModal
+        open={showBraveHelp}
+        onClose={() => setShowBraveHelp(false)}
       />
-    )}
-   <BravePushHelpModal
-  open={showBraveHelp}
-  onClose={() => setShowBraveHelp(false)}
-/>
-  </div>
-  
-)
-
+    </div>
+  )
 }
