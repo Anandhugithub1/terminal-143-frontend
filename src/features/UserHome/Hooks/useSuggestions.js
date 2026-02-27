@@ -1,13 +1,33 @@
 import { useEffect, useState, useCallback } from "react"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getSuggestions } from "../../Profiles/profilesapi"
 
+// Helper function to fetch with retry logic
+const fetchWithRetry = async (fetchFn, maxRetries = 3, baseDelay = 1000) => {
+  let lastError
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fetchFn()
+    } catch (err) {
+      lastError = err
+      if (attempt < maxRetries) {
+        // Exponential backoff: 1s, 1s, 6s
+        const delay = attempt < 2 ? baseDelay : 6000
+        await new Promise(resolve => setTimeout(resolve, delay))
+      }
+    }
+  }
+  throw lastError
+}
+
 export function useSuggestions() {
+  const queryClient = useQueryClient()
   const [idx, setIdx] = useState(0)
-  const [nextBatch, setNextBatch] = useState([])
   const [hasMore, setHasMore] = useState(true)
   const [suggestionError, setSuggestionError] = useState("")
+  const [prefetchError, setPrefetchError] = useState("")
   const [currentSource, setCurrentSource] = useState(null)
+  const [prefetching, setPrefetching] = useState(false)
 
   /* ---------------- NORMAL FETCH ---------------- */
 
@@ -48,9 +68,10 @@ export function useSuggestions() {
       }),
     onSuccess: () => {
       setIdx(0)
-      setNextBatch([])
       setHasMore(true)
       setSuggestionError("")
+      // clear any in-flight prefetch state
+      setPrefetching(false)
     }
   })
 
@@ -80,8 +101,8 @@ export function useSuggestions() {
   useEffect(() => {
     if (computing) {
       setIdx(0)
-      setNextBatch([])
       setHasMore(true)
+      setPrefetching(false)
     }
   }, [computing])
 
@@ -91,39 +112,53 @@ export function useSuggestions() {
     if (!hasMore) return
     if (profiles.length === 0) return
     if (profiles.length - idx > 2) return
-    if (nextBatch.length > 0) return
+    if (prefetching) return
     if (exhausted) return
 
-    getSuggestions({
-      limit: 10,
-      refreshRequested: false
-    })
+    setPrefetching(true)
+    fetchWithRetry(() =>
+      getSuggestions({
+        limit: 10,
+        refreshRequested: false
+      })
+    )
       .then((res) => {
         const nextProfiles = res?.profiles || []
         if (nextProfiles.length === 0) {
           setHasMore(false)
           return
         }
-        setNextBatch(nextProfiles)
+        // merge into existing cache so callers see combined list
+        queryClient.setQueryData(["profiles"], (old) => {
+          if (!old) return res
+          return {
+            ...old,
+            profiles: [...(old.profiles || []), ...nextProfiles]
+          }
+        })
       })
-      .catch(() => {
-        setSuggestionError("Failed to load more profiles.")
-        setHasMore(false)
+      .catch((err) => {
+        // allow retry later without marking "no more"; record for debugging if needed
+        setPrefetchError(
+          err?.message || "Failed to load more profiles."
+        )
+        console.warn("Prefetch error", err)
+      })
+      .finally(() => {
+        setPrefetching(false)
       })
   }, [
     idx,
     profiles.length,
-    nextBatch.length,
     hasMore,
-    exhausted
+    exhausted,
+    queryClient
   ])
 
   return {
     profiles,
     idx,
     setIdx,
-    nextBatch,
-    setNextBatch,
     hasMore,
     computing,
     hadPool,
@@ -136,6 +171,8 @@ export function useSuggestions() {
     isLoading,
     isFetching,
     isRefreshing: refreshMutation.isLoading,
+    prefetching,
+    prefetchError,
     refetch
   }
 }

@@ -47,7 +47,8 @@ const {
   isRefreshing,
   canRefresh,
   nextRefreshInSeconds,
-  exhausted
+  exhausted,
+  prefetching
 } = useSuggestions()
 const location = useLocation();
 const [showBraveHelp, setShowBraveHelp] = useState(false);
@@ -164,7 +165,7 @@ if (profiles.length - next <= 3) {
 const isBuffering =
   !computing &&
   profiles.length > 0 &&
-  idx >= profiles.length
+  (idx >= profiles.length || (prefetching && idx >= profiles.length - 1))
 
 const isEnd =
   !computing && hadPool && profiles.length === 0 && !exhausted
