@@ -33,24 +33,23 @@ export default function UserHomePage() {
 
   const { data: myProfile } = useMyProfile()
 
-  const {
-    profiles,
-    idx,
-    setIdx,
-    computing,
-    hadPool,
-    suggestionError,
-    currentSource,
-    handleRefresh,
-    refetch,
-    isLoading,
-    isFetching,
-    isRefreshing,
-    canRefresh,
-    nextRefreshInSeconds,
-    exhausted,
-    prefetching
-  } = useSuggestions()
+const {
+  profiles,
+  idx,
+  setIdx,
+  computing,
+  hadPool,
+  exhausted,
+  canRefresh,
+  nextRefreshInSeconds,
+  suggestionError,
+  currentSource,
+  handleRefresh,
+  isLoading,
+  isFetching,
+  isRefreshing,
+  refetch
+} = useSuggestions()
 
   const location = useLocation();
   const [showBraveHelp, setShowBraveHelp] = useState(false);

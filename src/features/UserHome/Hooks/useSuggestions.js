@@ -1,31 +1,11 @@
 import { useEffect, useState, useCallback } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getSuggestions } from "../../Profiles/profilesapi"
-import { useRef } from "react"
-// Helper function to fetch with retry logic
-const fetchWithRetry = async (fetchFn, maxRetries = 3, baseDelay = 1000) => {
-  let lastError
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fetchFn()
-    } catch (err) {
-      lastError = err
-      if (attempt < maxRetries) {
-        // Exponential backoff: 1s, 1s, 6s
-        const delay = attempt < 2 ? baseDelay : 6000
-        await new Promise(resolve => setTimeout(resolve, delay))
-      }
-    }
-  }
-  throw lastError
-}
 
 export function useSuggestions() {
   const queryClient = useQueryClient()
   const [idx, setIdx] = useState(0)
-  const [hasMore, setHasMore] = useState(true)
   const [suggestionError, setSuggestionError] = useState("")
-  const [prefetchError, setPrefetchError] = useState("")
   const [currentSource, setCurrentSource] = useState(null)
 
   /* ---------------- NORMAL FETCH ---------------- */
@@ -34,7 +14,6 @@ export function useSuggestions() {
     data,
     isLoading,
     isFetching,
-    error,
     refetch
   } = useQuery({
     queryKey: ["profiles"],
@@ -59,21 +38,18 @@ export function useSuggestions() {
 
   /* ---------------- MANUAL REFRESH ---------------- */
 
-const refreshMutation = useMutation({
-  mutationFn: () =>
-    getSuggestions({
-      limit: 10,
-      refreshRequested: true
-    }),
-  onSuccess: (res) => {
-    queryClient.setQueryData(["profiles"], res)
-
-    setIdx(0)
-    setHasMore(true)
-    setSuggestionError("")
-    setPrefetching(false)
-  }
-})
+  const refreshMutation = useMutation({
+    mutationFn: () =>
+      getSuggestions({
+        limit: 10,
+        refreshRequested: true
+      }),
+    onSuccess: (res) => {
+      queryClient.setQueryData(["profiles"], res)
+      setIdx(0)
+      setSuggestionError("")
+    }
+  })
 
   const handleRefresh = useCallback(() => {
     refreshMutation.mutate()
@@ -101,20 +77,13 @@ const refreshMutation = useMutation({
   useEffect(() => {
     if (computing) {
       setIdx(0)
-      setHasMore(true)
-      setPrefetching(false)
     }
   }, [computing])
-
-
-
-
 
   return {
     profiles,
     idx,
     setIdx,
-    hasMore,
     computing,
     hadPool,
     exhausted,
@@ -126,8 +95,6 @@ const refreshMutation = useMutation({
     isLoading,
     isFetching,
     isRefreshing: refreshMutation.isLoading,
-    
-    prefetchError,
     refetch
   }
 }
