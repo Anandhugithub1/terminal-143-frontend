@@ -60,7 +60,9 @@ useEffect(() => {
         placeholder={t("emailOrPhone")}
       />
 
-      
+      <div className="text-xs text-gray-500">
+  Enter your email or phone number. If using phone, include your country code (e.g. +66812345678).
+</div>
 
 <div className="relative">
   <select

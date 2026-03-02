@@ -40,17 +40,18 @@ const EmailOTPVerification = () => {
     if (!email) return
     resendOtp.mutate({ email })
   }
-
+const isPhone = email && /^\+?\d+$/.test(email);
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-          Verify Your Email
-        </h1>
+       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
+  {isPhone ? "Verify Your Phone Number" : "Verify Your Email"}
+</h1>
 
-        <p className="text-center text-sm text-gray-500 mb-4">
-          OTP sent to <span className="font-semibold">{email}</span>
-        </p>
+<p className="text-center text-sm text-gray-500 mb-4">
+  {isPhone ? "OTP sent to phone number" : "OTP sent to email"}{" "}
+  <span className="font-semibold">{email}</span>
+</p>
 
         <form onSubmit={handleVerify} className="space-y-4">
           <InputField

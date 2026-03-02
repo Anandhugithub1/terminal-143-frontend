@@ -27,18 +27,21 @@ const LoginForm = () => {
       { emailPhone, password },
       {
         onSuccess: (data) => {
-          toast.success(t("loginSuccessful"));
+  toast.success(t("loginSuccessful"));
 
-          if (data.gender) {
-            localStorage.setItem("gender", data.gender);
-          }
+  if (data.gender) {
+    localStorage.setItem("gender", data.gender);
+  }
 
-          if (!data.profileCompleted) {
-            navigate("/complete");
-          } else {
-            navigate("/home", { state: { justLoggedIn: true } });
-          }
-        },
+  // Prevent instant navigation
+  setTimeout(() => {
+    if (data.profileCompleted === true) {
+      navigate("/home", { state: { justLoggedIn: true } });
+    } else {
+      navigate("/complete");
+    }
+  }, 600); // 600ms feels natural, not too fast
+},
 
         onError: (err) => {
           const apiErr = err?.response?.data;
