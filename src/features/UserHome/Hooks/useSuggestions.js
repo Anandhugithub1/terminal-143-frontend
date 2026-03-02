@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getSuggestions } from "../../Profiles/profilesapi"
-
+import { useRef } from "react"
 // Helper function to fetch with retry logic
 const fetchWithRetry = async (fetchFn, maxRetries = 3, baseDelay = 1000) => {
   let lastError
@@ -27,7 +27,6 @@ export function useSuggestions() {
   const [suggestionError, setSuggestionError] = useState("")
   const [prefetchError, setPrefetchError] = useState("")
   const [currentSource, setCurrentSource] = useState(null)
-  const [prefetching, setPrefetching] = useState(false)
 
   /* ---------------- NORMAL FETCH ---------------- */
 
@@ -60,20 +59,21 @@ export function useSuggestions() {
 
   /* ---------------- MANUAL REFRESH ---------------- */
 
-  const refreshMutation = useMutation({
-    mutationFn: () =>
-      getSuggestions({
-        limit: 10,
-        refreshRequested: true
-      }),
-    onSuccess: () => {
-      setIdx(0)
-      setHasMore(true)
-      setSuggestionError("")
-      // clear any in-flight prefetch state
-      setPrefetching(false)
-    }
-  })
+const refreshMutation = useMutation({
+  mutationFn: () =>
+    getSuggestions({
+      limit: 10,
+      refreshRequested: true
+    }),
+  onSuccess: (res) => {
+    queryClient.setQueryData(["profiles"], res)
+
+    setIdx(0)
+    setHasMore(true)
+    setSuggestionError("")
+    setPrefetching(false)
+  }
+})
 
   const handleRefresh = useCallback(() => {
     refreshMutation.mutate()
@@ -106,54 +106,9 @@ export function useSuggestions() {
     }
   }, [computing])
 
-  /* -------- Prefetch logic -------- */
 
-  useEffect(() => {
-    if (!hasMore) return
-    if (profiles.length === 0) return
-    if (profiles.length - idx > 2) return
-    if (prefetching) return
-    if (exhausted) return
 
-    setPrefetching(true)
-    fetchWithRetry(() =>
-      getSuggestions({
-        limit: 10,
-        refreshRequested: false
-      })
-    )
-      .then((res) => {
-        const nextProfiles = res?.profiles || []
-        if (nextProfiles.length === 0) {
-          setHasMore(false)
-          return
-        }
-        // merge into existing cache so callers see combined list
-        queryClient.setQueryData(["profiles"], (old) => {
-          if (!old) return res
-          return {
-            ...old,
-            profiles: [...(old.profiles || []), ...nextProfiles]
-          }
-        })
-      })
-      .catch((err) => {
-        // allow retry later without marking "no more"; record for debugging if needed
-        setPrefetchError(
-          err?.message || "Failed to load more profiles."
-        )
-        console.warn("Prefetch error", err)
-      })
-      .finally(() => {
-        setPrefetching(false)
-      })
-  }, [
-    idx,
-    profiles.length,
-    hasMore,
-    exhausted,
-    queryClient
-  ])
+
 
   return {
     profiles,
@@ -171,7 +126,7 @@ export function useSuggestions() {
     isLoading,
     isFetching,
     isRefreshing: refreshMutation.isLoading,
-    prefetching,
+    
     prefetchError,
     refetch
   }

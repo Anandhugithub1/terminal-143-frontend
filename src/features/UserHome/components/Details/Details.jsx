@@ -7,6 +7,12 @@ import {healthDisclosureOptions} from '../../../AddProfile/utlis/index'
 function DetailSection({ profile }) {
   const { t } = useTranslation("common")
 
+  // protect against being called with null/undefined (caller may render
+  // before data is ready)
+  if (!profile) {
+    return null
+  }
+
   const disclosures =
     Array.isArray(profile.healthDisclosures) && profile.healthDisclosures.length > 0
       ? profile.healthDisclosures

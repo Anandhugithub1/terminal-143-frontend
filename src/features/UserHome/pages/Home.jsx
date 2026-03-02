@@ -73,6 +73,12 @@ export default function UserHomePage() {
   })
 
   useEffect(() => {
+  if (idx >= profiles.length && profiles.length > 0) {
+    setIdx(0)
+  }
+}, [profiles.length])
+
+  useEffect(() => {
     if (!location.state?.justLoggedIn) return;
 
     const timer = setTimeout(async () => {
@@ -97,64 +103,55 @@ export default function UserHomePage() {
 
   }, [location.state?.justLoggedIn]);
 
-  const advance = useCallback(
-    (dir) => {
+const advance = useCallback(
+  (dir) => {
+    setDirection(dir)
 
-      setDirection(dir)
+    const current = profiles[idx]
+    if (!current) return
 
-      setIdx((prev) => {
-
-        const current = profiles[prev]
-
-        if (!current) {
-          refetch()
-          return prev + 1
-        }
-
-        if (currentSource) {
-          seenMutation.mutate({
-            username: current.PK,
-            source: currentSource,
-            direction: dir === 1 ? "r" : "l"
-          })
-        }
-
-        if (dir === 1 && current.PK) {
-          sendMatchRequest(current.PK)
-        }
-
-        const next = prev + 1
-
-        if (next >= profiles.length) {
-          refetch()
-          return next
-        }
-
-        if (profiles.length - next <= 3) {
-          refetch()
-        }
-
-        return next
+    if (currentSource) {
+      seenMutation.mutate({
+        username: current.PK,
+        source: currentSource,
+        direction: dir === 1 ? "r" : "l"
       })
+    }
 
-    },
-    [profiles, currentSource, seenMutation, sendMatchRequest, refetch]
-  )
+    if (dir === 1 && current.PK) {
+      sendMatchRequest(current.PK)
+    }
+
+    const next = idx + 1
+
+    if (next >= profiles.length) {
+      setIdx(0)
+      refetch()
+      return
+    }
+
+    setIdx(next)
+  },
+  [profiles, idx, currentSource, seenMutation, sendMatchRequest, refetch]
+)
 
   const isNoPool =
     !computing && !hadPool && profiles.length === 0
 
-  const isBuffering =
-    !computing &&
-    profiles.length > 0 &&
-    (idx >= profiles.length || (prefetching && idx >= profiles.length - 1))
+const isBuffering = isFetching
 
   const isEnd =
     !computing && hadPool && profiles.length === 0 && !exhausted
 
-  const rawProfile =
-    idx < profiles.length ? profiles[idx] : null
 
+
+const rawProfile =
+  idx < profiles.length
+    ? profiles[idx]
+    : null
+
+
+    
   let profile = null
 
   if (rawProfile) {
@@ -285,10 +282,10 @@ export default function UserHomePage() {
               onAdvance={advance}
             >
               <div className="relative">
-                <ProfileCard
-                  profile={profile}
-                  placeholderImage={placeholderImage}
-                />
+                {profile && (
+  <ProfileCard profile={profile} placeholderImage={placeholderImage} />
+)}
+             
                 <div className="flex justify-center mt-2 mb-2">
                   <ActionControls
                     onReject={() => advance(-1)}
