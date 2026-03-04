@@ -232,17 +232,20 @@ import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "reac
                         )}
 
 <div className="flex gap-3 mt-3">
+
   <button
     disabled={loadingUser === username || feedbackState === "liked"}
     onClick={() => handleFeedback(username, true)}
     className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-150 shadow-md
     ${
       feedbackState === "liked"
-        ? "bg-gradient-to-r from-yellow-400 to-amber-500 text-white shadow-lg scale-105"
+        ? "bg-primary text-white scale-105 shadow-lg"
         : "bg-white text-gray-600 border border-gray-300 hover:bg-yellow-50 hover:border-yellow-300 active:scale-95"
     }`}
   >
-    {feedbackState === "liked" ? <AiFillLike size={20} /> : <AiOutlineLike size={20} />}
+    {feedbackState === "liked"
+      ? <AiFillLike size={20} />
+      : <AiOutlineLike size={20} />}
   </button>
 
   <button
@@ -251,12 +254,15 @@ import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "reac
     className={`flex items-center justify-center w-10 h-10 rounded-full transition-all duration-150 shadow-md
     ${
       feedbackState === "disliked"
-        ? "bg-gradient-to-r from-gray-500 to-gray-700 text-white shadow-lg scale-105"
+        ? "bg-gray-700 text-white scale-105 shadow-lg"
         : "bg-white text-gray-600 border border-gray-300 hover:bg-gray-100 hover:border-gray-400 active:scale-95"
     }`}
   >
-    {feedbackState === "disliked" ? <AiFillDislike size={20} /> : <AiOutlineDislike size={20} />}
+    {feedbackState === "disliked"
+      ? <AiFillDislike size={20} />
+      : <AiOutlineDislike size={20} />}
   </button>
+
 </div>
 
                     </div>
