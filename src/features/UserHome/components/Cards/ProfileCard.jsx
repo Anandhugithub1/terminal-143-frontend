@@ -62,6 +62,7 @@ const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage
         top={top}
         compatibility={compatibility}
         distance={distance}
+        feedback={profile.feedback}
       />
     </div>
   );
@@ -78,10 +79,13 @@ ProfileCard.propTypes = {
     top: PropTypes.string,
     compatibility: PropTypes.number,
     distance: PropTypes.string,
+     feedback: PropTypes.shape({
+    likePercentage: PropTypes.number
+  })
   }).isRequired,
   placeholderImage: PropTypes.string,
-  onMessageClick: PropTypes.func.isRequired,
-  onConnectClick: PropTypes.func.isRequired,
+  onMessageClick: PropTypes.func,
+  onConnectClick: PropTypes.func,
 };
 
 export default memo(ProfileCard);

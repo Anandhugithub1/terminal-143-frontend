@@ -1,81 +1,79 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useCallback, lazy, Suspense,useEffect } from "react"
-import { useMutation } from "@tanstack/react-query"
+import React, { useState, useCallback, lazy, Suspense, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
 
-import TopNav from "../../../components/Layout/TopNavigation"
-import BottomNav from "../../../components/Layout/BottomNavigation"
-import ProfileSkeleton from "../components/ProfileSkeleton"
+import TopNav from "../../../components/Layout/TopNavigation";
+import BottomNav from "../../../components/Layout/BottomNavigation";
+import ProfileSkeleton from "../components/ProfileSkeleton";
 
-import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest"
-import { postSeen } from "../../../features/Profiles/profilesapi"
-import { useSuggestions } from "../Hooks/useSuggestions"
+import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
+import { postSeen } from "../../../features/Profiles/profilesapi";
+import { useSuggestions } from "../Hooks/useSuggestions";
 
-import placeholderImage from "../../../assets/woman.png"
-import LocationBar from "../components/Actions/LocationBar"
-import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
-import { formatLastSeen } from "../../Profiles/utlis"
-import { computeAge } from "../../../Utlis/utlis"
-import { useAddToHomeScreen } from "../Hooks/useAddToHomeScreen"
-import AddToHomeBanner from "../components/AddToHomeBanner"
-import { getLanguageName } from "../utlis/getLanguageName"
-import ComputingLoading from "../components/Loading/Computing"
+import placeholderImage from "../../../assets/woman.png";
+import LocationBar from "../components/Actions/LocationBar";
+import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
+import { formatLastSeen } from "../../Profiles/utlis";
+import { computeAge } from "../../../Utlis/utlis";
+import { useAddToHomeScreen } from "../Hooks/useAddToHomeScreen";
+import AddToHomeBanner from "../components/AddToHomeBanner";
+import { getLanguageName } from "../utlis/getLanguageName";
+import ComputingLoading from "../components/Loading/Computing";
 import { useLocation } from "react-router-dom";
 import { subscribeToPush } from "../utlis/subscribeToPush";
 
 import BravePushHelpModal from "../components/Modals/BravePushHelpModal";
-const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"))
-const DetailSection = lazy(() => import("../components/Details/Details"))
-const ActionControls = lazy(() => import("../components/Actions/ActionControls"))
-const AlertMessage = lazy(() => import("../../../components/Ui/Alerts"))
-const SwipeDeck = lazy(() => import("../components/Actions/SwipeDeck"))
+const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"));
+const DetailSection = lazy(() => import("../components/Details/Details"));
+const ActionControls = lazy(
+  () => import("../components/Actions/ActionControls"),
+);
+const AlertMessage = lazy(() => import("../../../components/Ui/Alerts"));
+const SwipeDeck = lazy(() => import("../components/Actions/SwipeDeck"));
 
 export default function UserHomePage() {
+  const { data: myProfile } = useMyProfile();
 
-  const { data: myProfile } = useMyProfile()
-
-const {
-  profiles,
-  idx,
-  setIdx,
-  computing,
-  hadPool,
-  exhausted,
-  canRefresh,
-  nextRefreshInSeconds,
-  suggestionError,
-  currentSource,
-  handleRefresh,
-  isLoading,
-  isFetching,
-  isRefreshing,
-  refetch
-} = useSuggestions()
+  const {
+    profiles,
+    idx,
+    setIdx,
+    computing,
+    hadPool,
+    exhausted,
+    canRefresh,
+    nextRefreshInSeconds,
+    suggestionError,
+    currentSource,
+    handleRefresh,
+    isLoading,
+    isFetching,
+    isRefreshing,
+    refetch,
+  } = useSuggestions();
 
   const location = useLocation();
   const [showBraveHelp, setShowBraveHelp] = useState(false);
-  const [direction, setDirection] = useState(0)
-  const [requestError, setRequestError] = useState("")
+  const [direction, setDirection] = useState(0);
+  const [requestError, setRequestError] = useState("");
 
-  const { canShow, showPrompt, dismiss, isIOSDevice } =
-    useAddToHomeScreen()
+  const { canShow, showPrompt, dismiss, isIOSDevice } = useAddToHomeScreen();
 
-  const { send: sendMatchRequest } = useSendMatchRequest()
+  const { send: sendMatchRequest } = useSendMatchRequest();
 
   const seenMutation = useMutation({
     mutationFn: postSeen,
     onError: (err) => {
-      console.error("Seen error:", err)
-      setRequestError(
-        err?.response?.data?.error || err.message
-      )
-    }
-  })
+      console.error("Seen error:", err);
+      setRequestError(err?.response?.data?.error || err.message);
+    },
+  });
 
   useEffect(() => {
-  if (idx >= profiles.length && profiles.length > 0) {
-    setIdx(0)
-  }
-}, [profiles.length])
+    if (idx >= profiles.length && profiles.length > 0) {
+      setIdx(0);
+    }
+  }, [profiles.length]);
 
   useEffect(() => {
     if (!location.state?.justLoggedIn) return;
@@ -95,70 +93,57 @@ const {
       }
 
       window.history.replaceState({}, document.title);
-
     }, 2000);
 
     return () => clearTimeout(timer);
-
   }, [location.state?.justLoggedIn]);
 
-const advance = useCallback(
-  (dir) => {
-    setDirection(dir)
+  const advance = useCallback(
+    (dir) => {
+      setDirection(dir);
 
-    const current = profiles[idx]
-    if (!current) return
+      const current = profiles[idx];
+      if (!current) return;
 
-    if (currentSource) {
-      seenMutation.mutate({
-        username: current.PK,
-        source: currentSource,
-        direction: dir === 1 ? "r" : "l"
-      })
-    }
+      if (currentSource) {
+        seenMutation.mutate({
+          username: current.PK,
+          source: currentSource,
+          direction: dir === 1 ? "r" : "l",
+        });
+      }
 
-    if (dir === 1 && current.PK) {
-      sendMatchRequest(current.PK)
-    }
+      if (dir === 1 && current.PK) {
+        sendMatchRequest(current.PK);
+      }
 
-    const next = idx + 1
+      const next = idx + 1;
 
-    if (next >= profiles.length) {
-      setIdx(0)
-      refetch()
-      return
-    }
+      if (next >= profiles.length) {
+        setIdx(0);
+        refetch();
+        return;
+      }
 
-    setIdx(next)
-  },
-  [profiles, idx, currentSource, seenMutation, sendMatchRequest, refetch]
-)
+      setIdx(next);
+    },
+    [profiles, idx, currentSource, seenMutation, sendMatchRequest, refetch],
+  );
 
-  const isNoPool =
-    !computing && !hadPool && profiles.length === 0
+  const isNoPool = !computing && !hadPool && profiles.length === 0;
 
-const isBuffering = isFetching
+  const isBuffering = isFetching;
 
-  const isEnd =
-    !computing && hadPool && profiles.length === 0 && !exhausted
+  const isEnd = !computing && hadPool && profiles.length === 0 && !exhausted;
 
+  const rawProfile = idx < profiles.length ? profiles[idx] : null;
 
-
-const rawProfile =
-  idx < profiles.length
-    ? profiles[idx]
-    : null
-
-
-    
-  let profile = null
+  let profile = null;
 
   if (rawProfile) {
     const images = Array.isArray(rawProfile.photos)
-      ? rawProfile.photos
-          .sort((a, b) => a.order - b.order)
-          .map((p) => p.url)
-      : []
+      ? rawProfile.photos.sort((a, b) => a.order - b.order).map((p) => p.url)
+      : [];
 
     profile = {
       name: rawProfile.name || "Unknown",
@@ -168,8 +153,8 @@ const rawProfile =
         rawProfile.gender === "F"
           ? "Female"
           : rawProfile.gender === "M"
-          ? "Male"
-          : rawProfile.gender,
+            ? "Male"
+            : rawProfile.gender,
       images,
       location: rawProfile.location
         ? `${rawProfile.location.placeName}, ${rawProfile.location.countryCode}`
@@ -177,7 +162,7 @@ const rawProfile =
       popularity: rawProfile.popularity || 0,
       healthStatus: rawProfile.healthStatus || {
         status: "Unknown",
-        lastTestedDate: "Unknown"
+        lastTestedDate: "Unknown",
       },
       lastSeen: formatLastSeen(rawProfile.lastSeen),
       job: rawProfile.jobTitle || "",
@@ -186,8 +171,10 @@ const rawProfile =
         : [],
       interests: rawProfile.interest || [],
       userId: rawProfile.username,
-      suggestionIndex: rawProfile.suggestionIndex
-    }
+      suggestionIndex: rawProfile.suggestionIndex,
+      feedback: rawProfile.feedback || {}
+      
+    };
   }
 
   return (
@@ -225,15 +212,10 @@ const rawProfile =
       )}
 
       <div className="relative flex-1">
-
-        {(isLoading) &&
-        profiles.length === 0 &&
-        !exhausted ? (
+        {isLoading && profiles.length === 0 && !exhausted ? (
           <ProfileSkeleton />
-
         ) : computing ? (
           <ComputingLoading />
-
         ) : suggestionError ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
             <h2 className="text-xl font-semibold">Unexpected error</h2>
@@ -245,34 +227,23 @@ const rawProfile =
               Try again
             </button>
           </div>
-
         ) : isNoPool ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-            <h2 className="text-xl font-semibold">
-              No matches found nearby
-            </h2>
+            <h2 className="text-xl font-semibold">No matches found nearby</h2>
             <p className="mt-2 text-gray-500">
               Try expanding your search radius or updating your preferences.
             </p>
           </div>
-
         ) : isEnd ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-            <h2 className="text-xl font-semibold">
-              You are all caught up
-            </h2>
+            <h2 className="text-xl font-semibold">You are all caught up</h2>
             <p className="mt-2 text-gray-500">
               You’ve seen all nearby profiles.
             </p>
           </div>
-
         ) : isBuffering ? (
           <ProfileSkeleton />
-
-        ) : profiles.length === 0 || (exhausted && canRefresh) ? (
-          null
-
-        ) : (
+        ) : profiles.length === 0 || (exhausted && canRefresh) ? null : (
           <Suspense fallback={<ProfileSkeleton />}>
             <SwipeDeck
               idx={idx}
@@ -282,9 +253,12 @@ const rawProfile =
             >
               <div className="relative">
                 {profile && (
-  <ProfileCard profile={profile} placeholderImage={placeholderImage} />
-)}
-             
+                  <ProfileCard
+                    profile={profile}
+                    placeholderImage={placeholderImage}
+                  />
+                )}
+
                 <div className="flex justify-center mt-2 mb-2">
                   <ActionControls
                     onReject={() => advance(-1)}
@@ -317,5 +291,5 @@ const rawProfile =
         onClose={() => setShowBraveHelp(false)}
       />
     </div>
-  )
+  );
 }

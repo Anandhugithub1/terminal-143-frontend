@@ -1,13 +1,9 @@
-
-import React, { memo, } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { motion } from 'framer-motion';
-import { FiMessageCircle, FiUserPlus } from 'react-icons/fi';
-import { FaStar, FaVenus } from 'react-icons/fa';
-import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { FaVenus } from 'react-icons/fa';
 import { RxHeart } from 'react-icons/rx';
 
-// A simple badge component for profile attributes
+// Badge component
 export const Badge = memo(({ icon, label, iconClass = 'text-gray-800' }) => (
   <span className="flex items-center space-x-1 px-2 py-1 bg-white rounded-full text-xs font-medium">
     {React.cloneElement(icon, { className: iconClass })}
@@ -21,60 +17,62 @@ Badge.propTypes = {
   iconClass: PropTypes.string,
 };
 
-
-
- const ProfileInfo = memo(({
+const ProfileInfo = memo(({
   name,
   age,
   lastSeen,
   about,
   gender,
   distance,
-  // onMessageClick,
-  // onConnectClick,
-}) => (
-  <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-transparent text-white">
-    <div className="flex items-center justify-between">
-      <div>
-        <h2 className="text-xl font-semibold">{name}, {age}</h2>
-        <p className="text-sm opacity-75"> {lastSeen}</p>
+  feedback
+}) => {
+
+  const likePercent = feedback?.likePercentage || 0;
+
+  const feedbackColor =
+    likePercent > 50
+      ? "text-green-600"
+      : "text-orange-500";
+
+  return (
+    <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-transparent text-white">
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold">{name}, {age}</h2>
+          <p className="text-sm opacity-75">{lastSeen}</p>
+        </div>
       </div>
-      <div className="flex space-x-2">
-        {/* <button
-          aria-label="Message"
-          className="p-2 bg-primary rounded-full"
-          onClick={onMessageClick}
-        >
-          <FiMessageCircle size={16} />
-        </button>
-        <button
-          aria-label="Connect"
-          className="p-2 bg-primary rounded-full"
-          onClick={onConnectClick}
-        >
-          <FiUserPlus size={16} />
-        </button> */}
+
+      {/* Badges row */}
+      <div className="flex items-center space-x-2 mt-2">
+
+        <Badge
+          icon={<FaVenus size={12} />}
+          label={gender}
+        />
+
+        {likePercent > 0 && (
+          <Badge
+            icon={<RxHeart size={12} />}
+            label={`${likePercent}%`}
+            iconClass={feedbackColor}
+          />
+        )}
+
       </div>
+
+      {/* {about && (
+        <p className="mt-2 italic text-sm">
+          {about}
+        </p>
+      )} */}
+
     </div>
+  );
+});
 
-    <div className="flex items-center space-x-2 mt-2">
-      <Badge icon={<FaVenus size={12} />} label={gender} />
-    
-    </div>
-    {about && <p className="mt-2 italic text-sm"></p>}
-
-
-    <div className="flex items-center text-sm mt-2">
-  {/* <div className={distance ? "flex items-center" : "flex items-center invisible"}>
-    <HiOutlineLocationMarker className="mr-1" />
-    <span>{distance || "00 km"}</span>
-  </div> */}
-</div>
-
-  </div>
-));
-
-export default ProfileInfo; 
+export default ProfileInfo;
 
 ProfileInfo.propTypes = {
   name: PropTypes.string.isRequired,
@@ -82,9 +80,8 @@ ProfileInfo.propTypes = {
   lastSeen: PropTypes.string.isRequired,
   about: PropTypes.string,
   gender: PropTypes.string.isRequired,
-  top: PropTypes.string,
-  compatibility: PropTypes.number.isRequired,
-  distance: PropTypes.string.isRequired,
-  onMessageClick: PropTypes.func.isRequired,
-  onConnectClick: PropTypes.func.isRequired,
+  distance: PropTypes.string,
+  feedback: PropTypes.shape({
+    likePercentage: PropTypes.number
+  })
 };
