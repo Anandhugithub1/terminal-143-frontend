@@ -32,6 +32,20 @@ export function useMatchRequests() {
   });
 }
 
+
+export function SendProfileFeeback() {
+  return useMutation({
+    mutationFn: async ({ targetUsername, liked }) => {
+      const res = await matchesApi.post(
+        '/feedback',
+        { targetUsername, liked },
+        { withCredentials: true }
+      )
+      return res.data
+    }
+  })
+}
+
 export function useMatchRequestResponse() {
   const queryClient = useQueryClient();
 
