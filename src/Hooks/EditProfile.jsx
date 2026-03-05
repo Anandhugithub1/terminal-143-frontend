@@ -39,13 +39,13 @@ export function useEditableProfile() {
   /**
    * Internal helper to upload a photo to S3
    */
-  const uploadToS3 = async (file) => {
+  const uploadToS3 = async (file, order) => {
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
       throw new Error("INVALID_FILE_TYPE")
     }
 
     const { presignedUrl, publicUrl } =
-      await getPresignedUrl({ fileType: file.type })
+      await getPresignedUrl({ fileType: file.type, photoIndex: order })
 
     await fetch(presignedUrl, {
       method: "PUT",
@@ -57,53 +57,28 @@ export function useEditableProfile() {
   }
 
   /**
-   * Upload PROFILE photo
-   * - Always slot 0
+   * Upload image to specific order slot
    */
-  const uploadProfileImage = async (file) => {
-    const publicUrl = await uploadToS3(file)
+  const uploadImage = async (file, order = 0) => {
+    const publicUrl = await uploadToS3(file, order)
 
-    await updateMutation.mutateAsync({
-      photos: [
-        {
-          url: publicUrl,
-          isProfile: true,
-          slot: 0,
-          order: 0
-        }
-      ]
-    })
-
-    queryClient.invalidateQueries(["my-profile"])
-  }
-
-  /**
-   * Upload GALLERY image
-   * - slot must be 1–4
-   */
-  const uploadGalleryImage = async (file, slot) => {
-    if (!Number.isInteger(slot) || slot < 1 || slot > 4) {
-      throw new Error("INVALID_GALLERY_SLOT")
+    const currentPhotos = profile?.photos || []
+    const newPhoto = {
+      url: publicUrl,
+      isProfile: order === 0,
+      slot: order,
+      order: order
     }
 
-    const publicUrl = await uploadToS3(file)
+    // Remove existing photo with same order, add new one
+    const updatedPhotos = currentPhotos.filter(p => p.order !== order).concat(newPhoto)
 
     await updateMutation.mutateAsync({
-      photos: [
-        {
-          url: publicUrl,
-          isProfile: false,
-          slot,
-          order: slot
-        }
-      ]
+      photos: updatedPhotos
     })
 
     queryClient.invalidateQueries(["my-profile"])
   }
-const uploadImage = async (file) => {
-  return uploadProfileImage(file)
-}
 
   return {
     profile,
@@ -113,9 +88,6 @@ const uploadImage = async (file) => {
     // non-photo updates
     updateProfileData,
     // photo uploads
-    uploadImage,
-
-    uploadProfileImage,
-    uploadGalleryImage
+    uploadImage
   }
 }

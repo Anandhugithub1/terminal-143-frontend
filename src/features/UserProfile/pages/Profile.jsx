@@ -4,8 +4,9 @@
     Edit2,
     Sliders,
     User,
-    Share2
+    Share2,Camera
   } from "lucide-react"
+
   import TopNav from "../../../components/Layout/TopNavigation"
   import BottomNav from "../../../components/Layout/BottomNavigation"
   import Skeleton from "react-loading-skeleton"
@@ -71,12 +72,21 @@
 
     const userName = profile.name
     const userSubText = profile.location?.placeName || ""
-
+const gender = profile.raw?.gender
+const showExtraPhotos = gender === "F" || gender === "TF"
+const otherPhotos = (profile.photos || []).filter(p => p.order !== 0)
    const userPhoto =
   localPreview || profile.profilePhoto || avatarimage
 
 
-
+const menuItems = [
+  { label: "Preferences", icon: <Sliders size={16} />, route: "/preferences" },
+  { label: "Profile Information", icon: <User size={16} />, route: "/edit-profile" },
+  ...(showExtraPhotos
+    ? [{ label: "Photos", icon: <Camera size={16} />, route: "/edit-photos" }]
+    : []),
+  { label: "Share QR Code", icon: <Share2 size={16} />, route: "/share-qr" }
+]
     return (
       <div className="flex flex-col h-screen bg-white font-inter">
         <TopNav title="Back" />
@@ -107,6 +117,7 @@
               {userSubText}
             </p>
 
+
             <div className="mt-3 inline-flex items-center justify-center bg-white px-3 py-1.5 rounded-full text-sm font-medium shadow-sm border border-gray-100">
               <User size={15} className="text-pink-500 mr-1.5" />
               <span className="text-black">
@@ -134,22 +145,18 @@
 
             {showUpload && (
               <div className="absolute top-[13rem] z-50">
-                <UploadOptions
-                  onCamera={openCamera}
-                  onGallery={openGallery}
-                  onRemove={handleRemovePhoto}
-                  onCancel={toggleUpload}
-                />
+             <UploadOptions
+  onCamera={() => openCamera(0)}
+  onGallery={() => openGallery(0)}
+  onRemove={handleRemovePhoto}
+  onCancel={toggleUpload}
+/>
               </div>
             )}
           </div>
 
         <div className="bg-white mt-2 divide-y divide-gray-100">
-    {[
-      { label: "Preferences", icon: <Sliders size={16} />, route: "/preferences" },
-      { label: "Profile Information", icon: <User size={16} />, route: "/edit-profile" },
-      { label: "Share QR Code", icon: <Share2 size={16} />, route: "/share-qr" }
-    ].map((item, index) => (
+    {menuItems.map((item, index) => (
       <button
         key={index}
         onClick={() => navigate(item.route)}

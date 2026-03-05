@@ -22,6 +22,8 @@ const LocationEditPage =lazy(() =>
 import("../features/UserHome/pages/LocationEditPage.jsx")
 )
 
+import EditPhotosPage from "../features/UserProfile/pages/EditPhotosPage.jsx"
+
 
 import LocationEditSkeleton from "../features/UserHome/components/LocationEditSkeleton.jsx"
 
@@ -65,6 +67,7 @@ export const ProfileRoutes = (
     
     
         }/>
+        <Route path="/edit-photos" element={<EditPhotosPage />} />
 
     <Route
       path="profile/:username"
