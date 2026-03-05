@@ -1,7 +1,15 @@
-import React, { memo } from 'react';
-import PropTypes from 'prop-types';
-import { FaVenus } from 'react-icons/fa';
-import { RxHeart } from 'react-icons/rx';
+import React, { memo } from 'react'
+import PropTypes from 'prop-types'
+import { FaVenus } from 'react-icons/fa'
+import { RxHeart } from 'react-icons/rx'
+
+const genderMap = {
+  M: 'Male',
+  F: 'Female',
+  TF: 'To Female',
+  TM: 'To Male',
+  OT: 'Others'
+}
 
 // Badge component
 export const Badge = memo(({ icon, label, iconClass = 'text-gray-800' }) => (
@@ -9,13 +17,13 @@ export const Badge = memo(({ icon, label, iconClass = 'text-gray-800' }) => (
     {React.cloneElement(icon, { className: iconClass })}
     <span className="text-gray-800">{label}</span>
   </span>
-));
+))
 
 Badge.propTypes = {
   icon: PropTypes.element.isRequired,
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  iconClass: PropTypes.string,
-};
+  iconClass: PropTypes.string
+}
 
 const ProfileInfo = memo(({
   name,
@@ -27,12 +35,14 @@ const ProfileInfo = memo(({
   feedback
 }) => {
 
-  const likePercent = feedback?.likePercentage || 0;
+  const likePercent = feedback?.likePercentage || 0
 
   const feedbackColor =
     likePercent > 50
-      ? "text-green-600"
-      : "text-orange-500";
+      ? 'text-green-600'
+      : 'text-orange-500'
+
+  const genderLabel = genderMap[gender] || gender
 
   return (
     <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black via-transparent text-white">
@@ -44,12 +54,11 @@ const ProfileInfo = memo(({
         </div>
       </div>
 
-      {/* Badges row */}
       <div className="flex items-center space-x-2 mt-2">
 
         <Badge
           icon={<FaVenus size={12} />}
-          label={gender}
+          label={genderLabel}
         />
 
         {likePercent > 0 && (
@@ -62,17 +71,11 @@ const ProfileInfo = memo(({
 
       </div>
 
-      {/* {about && (
-        <p className="mt-2 italic text-sm">
-          {about}
-        </p>
-      )} */}
-
     </div>
-  );
-});
+  )
+})
 
-export default ProfileInfo;
+export default ProfileInfo
 
 ProfileInfo.propTypes = {
   name: PropTypes.string.isRequired,
@@ -84,4 +87,4 @@ ProfileInfo.propTypes = {
   feedback: PropTypes.shape({
     likePercentage: PropTypes.number
   })
-};
+}
