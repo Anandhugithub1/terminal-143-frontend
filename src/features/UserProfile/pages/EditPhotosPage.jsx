@@ -39,26 +39,25 @@ const [saving, setSaving] = useState(false)
     galleryRef.current.click()
   }
 
-  const handleFileChange = (e) => {
+const handleFileChange = (e) => {
+  const file = e.target.files?.[0]
+  if (!file || selectedOrder == null) return
 
-    const file = e.target.files[0]
-    if (!file) return
+  e.target.value = "" // important: allow re-selecting same file & avoid stale state
 
-    const preview = URL.createObjectURL(file)
+  const preview = URL.createObjectURL(file)
 
-    setSelectedFile(file)
+  setSelectedFile(file)
 
-    setPreviewMap(prev => ({
-      ...prev,
-      [selectedOrder]: preview
-    }))
-  }
+  setPreviewMap(prev => ({
+    ...prev,
+    [selectedOrder]: preview
+  }))
+}
 const handleSave = async () => {
-
   if (!selectedFile || saving) return
 
   try {
-
     setSaving(true)
 
     await uploadImage(selectedFile, selectedOrder)
@@ -67,29 +66,22 @@ const handleSave = async () => {
 
     setSelectedFile(null)
     setSelectedOrder(null)
+    setPreviewMap({}) // clear previews so UI reflects server data
 
   } catch (err) {
-
     console.error(err)
-
-    toast.error(
-      err?.response?.data?.error ||
-      "Failed to update photo"
-    )
-
+    toast.error(err?.response?.data?.error || "Failed to update photo")
   } finally {
-
     setSaving(false)
-
   }
-
 }
 
   const PhotoCard = ({ order, isAvatar = false }) => {
 
-    const imageUrl =
-      previewMap[order] ||
-      (isAvatar ? profile.profilePhoto : getPhoto(order))
+     const imageUrl =
+    previewMap[order] ??
+    (isAvatar ? profile.profilePhoto : getPhoto(order)) ??
+    null
 
     const hasImage = !!imageUrl
 
@@ -129,22 +121,38 @@ const handleSave = async () => {
     <div className="flex flex-col min-h-screen bg-white">
 
       {/* Header */}
-      <section className="px-5 pt-6 pb-8 border-b border-gray-200">
-        <div className="flex items-center space-x-2">
+<section className="px-5 pt-6 pb-6 border-b border-border-clr">
+  <div className="flex items-center">
 
-          <button
-            onClick={() => navigate(-1)}
-            className="p-1 rounded-full hover:bg-gray-100"
-          >
-            <ChevronLeft size={24} className="text-gray-700" />
-          </button>
+    <button
+      onClick={() => navigate(-1)}
+      className="p-1 rounded-full hover:bg-gray-100"
+    >
+      <ChevronLeft size={24} className="text-gray-700" />
+    </button>
 
-          <h1 className="text-lg font-semibold text-gray-800">
-            Edit Photos
-          </h1>
+    <h1 className="flex-1 text-center text-lg font-semibold text-gray-800">
+      Edit Photos
+    </h1>
 
-        </div>
-      </section>
+    {selectedFile ? (
+      <button
+        onClick={handleSave}
+        disabled={saving}
+        className={`text-sm font-semibold transition
+          ${saving
+            ? "text-gray-400 cursor-not-allowed"
+            : "text-primary"}
+        `}
+      >
+        {saving ? "Saving..." : "Save"}
+      </button>
+    ) : (
+      <div className="w-6" />
+    )}
+
+  </div>
+</section>
 
       <main className="flex-1 px-5 pt-6">
 
@@ -172,21 +180,6 @@ const handleSave = async () => {
 
       </main>
 
- {selectedFile && (
-  <div className="px-5 py-4 border-t border-border-clr bg-white">
-    <button
-      onClick={handleSave}
-      disabled={saving}
-      className={`w-full py-3.5 rounded-full font-semibold shadow-sm transition active:scale-[0.97]
-        ${saving 
-          ? "bg-gray-400 text-white cursor-not-allowed" 
-          : "bg-primary text-white"}
-      `}
-    >
-      {saving ? "Saving..." : "Save Photo"}
-    </button>
-  </div>
-)}
     </div>
   )
 }
