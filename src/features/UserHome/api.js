@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { matchesApi, userProfilesApi,reportApi } from '../../api/clients';
-
+import { toast } from 'sonner';
 /* existing hooks (unchanged) */
 async function fetchMatches() {
   const res = await matchesApi.get('/list', { withCredentials: true });
@@ -106,8 +106,20 @@ export function useUserProfileById(PK, SK, enabled = true) {
 export function useReportUser() {
   return useMutation({
     mutationFn: async ({ reportedUsername, reason }) => {
-      const res = await reportApi.post('/reportUser', { reportedUsername, reason }, { withCredentials: true });
-      return res.data;
+      const res = await reportApi.post(
+        "/reportUser",
+        { reportedUsername, reason },
+        { withCredentials: true }
+      )
+      return res.data
+    },
+
+    onSuccess: () => {
+      toast.success("Report submitted successfully")
+    },
+
+    onError: () => {
+      toast.error("Failed to submit report")
     }
-  });
+  })
 }
