@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import TopNav from "../../../components/Layout/TopNavigation";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import ProfileSkeleton from "../components/ProfileSkeleton";
-
+import { useReportUser } from "../api";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import { postSeen } from "../../../features/Profiles/profilesapi";
 import { useSuggestions } from "../Hooks/useSuggestions";
@@ -30,10 +30,10 @@ const ActionControls = lazy(
 );
 const AlertMessage = lazy(() => import("../../../components/Ui/Alerts"));
 const SwipeDeck = lazy(() => import("../components/Actions/SwipeDeck"));
-
+import ReportUserModal from "../components/Modals/ReportUserModal";
 export default function UserHomePage() {
   const { data: myProfile } = useMyProfile();
-
+const { mutate: reportUser } = useReportUser();
   const {
     profiles,
     idx,
@@ -51,13 +51,24 @@ export default function UserHomePage() {
     isRefreshing,
     refetch,
   } = useSuggestions();
-
+const [showReport, setShowReport] = useState(false);
   const location = useLocation();
   const [showBraveHelp, setShowBraveHelp] = useState(false);
   const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState("");
 
   const { canShow, showPrompt, dismiss, isIOSDevice } = useAddToHomeScreen();
+
+  const handleReportSubmit = ({ reportedUsername, reason }) => {
+  reportUser(
+    { reportedUsername, reason },
+    {
+      onSuccess: () => {
+        setShowReport(false);
+      }
+    }
+  );
+};
 
   const { send: sendMatchRequest } = useSendMatchRequest();
 
@@ -170,7 +181,7 @@ export default function UserHomePage() {
         ? rawProfile.languagesKnown.map(getLanguageName)
         : [],
       interests: rawProfile.interest || [],
-      userId: rawProfile.username,
+      userId: rawProfile.PK,
       suggestionIndex: rawProfile.suggestionIndex,
       feedback: rawProfile.feedback || {}
       
@@ -256,6 +267,7 @@ export default function UserHomePage() {
                   <ProfileCard
                     profile={profile}
                     placeholderImage={placeholderImage}
+                    onReport={()=>setShowReport(true)}
                   />
                 )}
 
@@ -285,6 +297,13 @@ export default function UserHomePage() {
           isIOS={isIOSDevice}
         />
       )}
+
+      <ReportUserModal
+  open={showReport}
+  username={profile?.userId}
+  onClose={() => setShowReport(false)}
+  onSubmit={handleReportSubmit}
+/>
 
       <BravePushHelpModal
         open={showBraveHelp}

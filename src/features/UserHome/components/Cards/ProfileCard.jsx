@@ -2,7 +2,9 @@ import React, { useCallback, useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import PhotoCarousel from '../Actions/Carousel';
 import ProfileInfo from '../Details/ProfileInfo';
-const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage }) => {
+import { ShieldAlert   } from "lucide-react";
+
+const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage,onReport }) => {
   const {
     images = [],
     name,
@@ -29,6 +31,15 @@ const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage
 
   return (
     <div className="mx-5 mt-3 rounded-3xl shadow-lg overflow-hidden relative h-[55vh] sm:h-[60vh] md:h-[65vh]">
+      
+<div className="absolute top-3 right-3 z-20">
+  <button
+    onClick={() => onReport?.()}
+    className="bg-black/40 hover:bg-black/60 text-white rounded-full p-2 backdrop-blur-md transition flex items-center justify-center"
+  >
+    <ShieldAlert   size={18} strokeWidth={2} />
+  </button>
+</div>
       
       {/* Photo Section */}
       <PhotoCarousel
@@ -86,6 +97,7 @@ ProfileCard.propTypes = {
   placeholderImage: PropTypes.string,
   onMessageClick: PropTypes.func,
   onConnectClick: PropTypes.func,
+  onReport: PropTypes.func,
 };
 
 export default memo(ProfileCard);

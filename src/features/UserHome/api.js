@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { matchesApi, userProfilesApi } from '../../api/clients';
+import { matchesApi, userProfilesApi,reportApi } from '../../api/clients';
 
 /* existing hooks (unchanged) */
 async function fetchMatches() {
@@ -100,5 +100,14 @@ export function useUserProfileById(PK, SK, enabled = true) {
     enabled: !!PK && !!SK && enabled,
     retry: 1,
     staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+export function useReportUser() {
+  return useMutation({
+    mutationFn: async ({ reportedUsername, reason }) => {
+      const res = await reportApi.post('/reportUser', { reportedUsername, reason }, { withCredentials: true });
+      return res.data;
+    }
   });
 }
