@@ -6,7 +6,7 @@ const SettingsPage = lazy(() => import("../pages/Settings/Settings"))
 const LanguagePage = lazy(() => import("../pages/Settings/Language"))
 const PreferencesPage = lazy(() => import("../pages/Settings/Preference"))
 const InfoPage = lazy(() => import("../pages/Settings/Info"))
-
+const HelpCenterPage = lazy(() => import("../pages/Settings/HelpCenterPage"))
 export const SettingsRoutes = (
   <>
     {/* Settings hub */}
@@ -43,6 +43,14 @@ export const SettingsRoutes = (
       element={
         <Suspense fallback={<LazyFallback />}>
           <InfoPage />
+        </Suspense>
+      }
+    />
+    <Route
+      path="help-center"
+      element={
+        <Suspense fallback={<LazyFallback />}>
+          <HelpCenterPage />
         </Suspense>
       }
     />
