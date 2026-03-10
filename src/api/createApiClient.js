@@ -10,7 +10,7 @@ export const createApiClient = (baseURL) => {
 
   // Retry failed requests on network errors or 5xx
   axiosRetry(api, {
-    retries: 3,
+    retries: 2,
     retryDelay: axiosRetry.exponentialDelay,
     retryCondition: (error) => {
       return !error.response || error.response.status >= 500;
