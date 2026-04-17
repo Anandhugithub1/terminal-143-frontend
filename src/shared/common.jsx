@@ -2,7 +2,6 @@ import { memo } from 'react';
 import { AiFillHome, AiOutlineSearch, AiOutlineMessage, AiOutlineHeart, AiOutlineUser } from 'react-icons/ai';
 import React, { forwardRef } from 'react';
 
-import { forwardRef } from 'react';
 
 export const InputField = forwardRef(
   (
