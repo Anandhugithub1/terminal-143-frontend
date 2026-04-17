@@ -65,26 +65,54 @@ PassorMatch
   <meta name="google-site-verification" content="GkL-rRaWv_IgyOP-cOaNnyfnD1WA3tKUTIgp3GoeFcY" />
 
   <!-- Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "PassorMatch",
-      "alternateName": ["passormatch", "PassorMatch Dating"],
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
 
-    "url": "https://passormatch.com",
-    "description": "เว็บไซต์หาคู่ไทยที่ปลอดภัยและเชื่อถือได้ พบคนโสดจริงใจ สร้างความสัมพันธ์ที่ยั่งยืน",
-    "inLanguage": ["th", "en"],
-    "areaServed": "TH",
-    "logo": "https://passormatch.com/images/logo.png",
-    "sameAs": [
-      "https://www.facebook.com/passormatch",
-      "https://www.instagram.com/passormatch",
-      "https://twitter.com/passormatch"
-    ]
-  }
-  </script>
+    {
+      "@type": "Organization",
+      "name": "PassorMatch",
+      "url": "https://passormatch.com",
+      "logo": "https://passormatch.com/images/logo.png",
+      "sameAs": [
+        "https://www.facebook.com/passormatch",
+        "https://www.instagram.com/passormatch",
+        "https://twitter.com/passormatch"
+      ]
+    },
 
+    {
+      "@type": "WebSite",
+      "name": "PassorMatch",
+      "url": "https://passormatch.com",
+      "inLanguage": ["th", "en"],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://passormatch.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+
+    {
+      "@type": "WebApplication",
+      "name": "PassorMatch",
+      "url": "https://passormatch.com",
+      "applicationCategory": "DatingApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires JavaScript",
+      "inLanguage": ["th", "en"],
+      "description": "เว็บหาคู่ไทยสำหรับคนโสดจริงจัง พบคนไทยและชาวต่างชาติ สร้างความสัมพันธ์ที่ยั่งยืน ปลอดภัย ใช้งานง่าย",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "THB"
+      }
+    }
+
+  ]
+}
+</script>
 
    <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#ffffff" />
