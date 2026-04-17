@@ -1,7 +1,47 @@
 User-agent: *
 Allow: /
 
-Disallow: /static/
-Disallow: /_next/
-Disallow: /api/
+# OpenAI
+User-agent: GPTBot
+Allow: /
 
+# Google (Search + AI)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Microsoft / Bing (used in Copilot, ChatGPT browsing sometimes)
+User-agent: Bingbot
+Allow: /
+
+# Anthropic (Claude)
+User-agent: ClaudeBot
+Allow: /
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+
+# Apple (Siri / Spotlight)
+User-agent: Applebot
+Allow: /
+
+# Amazon (Alexa)
+User-agent: Amazonbot
+Allow: /
+
+# Common SEO crawlers (optional but useful)
+User-agent: AhrefsBot
+Allow: /
+
+User-agent: SemrushBot
+Allow: /
+
+# Block sensitive areas
+Disallow: /admin/
+Disallow: /private/
+
+# Sitemap
+Sitemap: https://passormatch.com/sitemap.xml
