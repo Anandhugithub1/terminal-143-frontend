@@ -1,6 +1,6 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 
- const PasswordInput = ({
+const PasswordInput = ({
   value,
   onChange,
   placeholder,
@@ -19,13 +19,18 @@ import  { useState } from 'react';
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        aria-label="Password"
+        autoComplete="current-password"
         {...inputProps}
         className="w-full px-4 py-3 rounded-xl border border-border-clr focus:outline-none focus:ring-2 focus:ring-focus focus:border-transparent"
         required
       />
+
       <button
         type="button"
         onClick={toggleVisibility}
+        aria-label={show ? "Hide password" : "Show password"}
+        aria-pressed={show}
         className="absolute inset-y-0 right-0 pr-3 flex items-center"
       >
         {show ? (
@@ -36,6 +41,8 @@ import  { useState } from 'react';
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
+            focusable="false"
           >
             <path
               strokeLinecap="round"
@@ -58,6 +65,8 @@ import  { useState } from 'react';
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
+            focusable="false"
           >
             <path
               strokeLinecap="round"
@@ -77,6 +86,5 @@ import  { useState } from 'react';
     </div>
   );
 };
-
 
 export default PasswordInput;

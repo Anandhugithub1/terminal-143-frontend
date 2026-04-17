@@ -57,12 +57,12 @@ export default function Footer() {
         </div>
 
         {/* SEO internal links (important for your blog strategy) */}
-        <div className="mt-10 text-sm text-gray-400 space-x-4">
+        {/* <div className="mt-10 text-sm text-gray-400 space-x-4">
           <Link to="/thai-dating-culture-guide">Thai Dating Culture</Link>
           <Link to="/best-dating-apps-thailand">Best Dating Apps</Link>
           <Link to="/cost-of-dating-in-thailand">Dating Costs</Link>
           <Link to="/how-to-meet-thai-women">How to Meet Thai Women</Link>
-        </div>
+        </div> */}
 
         <div className="border-t border-gray-800 mt-8 pt-6 text-center text-sm">
           <p>{t('copyright')}</p>
