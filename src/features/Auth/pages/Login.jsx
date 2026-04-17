@@ -7,7 +7,7 @@ const Navbar =lazy(()=>import('../../../components/Layout/Navbar'))
 
 const LoginForm = lazy(() => import('../components/LoginForm'));
 
-export const Login = () => {
+ const Login = () => {
   return (
  <>
 
@@ -55,3 +55,6 @@ const LoginSkeleton = () => {
     </div>
   );
 };
+
+
+export default Login;

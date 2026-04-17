@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+
+:root {
+  font-family: 'Inter Variable', sans-serif;
+}
 body {
   font-family: 'Inter Variable', sans-serif;
 }
+
+
+
 
 @theme {
   --color-primary: #D2449D;
