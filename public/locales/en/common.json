@@ -3,7 +3,10 @@
   "links": {
     "about": "About",
     "pricing": "Pricing",
-    "login": "Sign In"
+    "login": "Sign In",
+    "places": "Places",
+
+     "blog": "Blog"
   },
   "cta": {
     "createProfile": "Create Free Profile",

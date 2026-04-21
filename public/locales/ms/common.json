@@ -3,7 +3,9 @@
     "links": {
       "about": "Tentang Kami",
       "pricing": "Harga",
-      "login": "Log Masuk"
+      "login": "Log Masuk",
+        "blog": "Blog",
+      "places": "Tempat"
     },
     "cta": {
       "createProfile": "Cipta Profil Percuma",

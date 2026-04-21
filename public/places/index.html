@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PassorMatch Places | Meet Singles in Bangkok, Phuket & Pattaya</title>
+  <meta name="description" content="Meet Thai singles in Bangkok, Phuket, and Pattaya. Find the best dating spots, nightlife venues, and connect with verified singles in your city." />
+  <link rel="canonical" href="https://passormatch.com/places/" />
+  
+  <!-- Tailwind + Font Awesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  
+  <style>
+    :root {
+      --primary: #D2449D;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      transition: all 0.2s ease;
+    }
+    .btn-primary:hover {
+      background-color: #b83884;
+      transform: translateY(-2px);
+    }
+    .place-card {
+      transition: all 0.25s ease;
+    }
+    .place-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.12);
+    }
+    .section-padding {
+      padding: 60px 20px;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800">
+
+<!-- HEADER with Home link and Places active -->
+<header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+    <div class="flex items-center gap-6">
+      <a href="/" class="text-xl font-bold text-[#D2449D]">PassorMatch</a>
+      <nav class="hidden md:flex gap-6 text-sm font-medium">
+        <a href="/" class="text-gray-600 hover:text-[#D2449D] transition">Home</a>
+        <a href="/places/" class="text-[#D2449D] border-b-2 border-[#D2449D] pb-1">Places</a>
+        <a href="/blog/" class="text-gray-600 hover:text-[#D2449D] transition">Blog</a>
+        <a href="/dating-guide" class="text-gray-600 hover:text-[#D2449D] transition">Guides</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <a href="/register" class="btn-primary text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md">
+        Join Free <i class="fas fa-arrow-right ml-1 text-xs"></i>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- HERO SECTION - Places focus -->
+<section class="section-padding text-center" style="background: linear-gradient(135deg, #fef5fa 0%, #fff0f7 100%);">
+  <span class="inline-block bg-[#D2449D]/10 text-[#D2449D] text-sm font-semibold px-4 py-1 rounded-full mb-4"><i class="fas fa-heart mr-1"></i> Thailand Dating</span>
+  <h1 class="text-4xl md:text-5xl font-bold text-gray-900">Meet Singles in Thailand's Top Cities</h1>
+  <p class="mt-4 text-gray-600 max-w-2xl mx-auto text-lg">Find verified singles, explore dating hotspots, and make real connections in Bangkok, Phuket, and Pattaya.</p>
+  <div class="mt-6 flex flex-wrap justify-center gap-2 text-sm">
+    <a href="#all-places" class="bg-white px-4 py-2 rounded-full shadow-sm text-[#D2449D] font-medium hover:shadow transition"><i class="fas fa-heart mr-1"></i> Dating Cities</a>
+    <!-- <a href="/blog/category/dating-tips" class="bg-white px-4 py-2 rounded-full shadow-sm text-gray-600 hover:text-[#D2449D] transition"><i class="fas fa-heart-pulse mr-1"></i> Dating Tips</a>
+    <a href="/blog/category/romance" class="bg-white px-4 py-2 rounded-full shadow-sm text-gray-600 hover:text-[#D2449D] transition"><i class="fas fa-champagne-glasses mr-1"></i> Romance Guides</a> -->
+  </div>
+</section>
+
+<!-- FEATURED PLACES GRID (main city cards) -->
+<section id="all-places" class="max-w-7xl mx-auto px-4 py-12">
+  <div class="flex justify-between items-end border-b border-gray-200 pb-4 mb-8">
+    <div>
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Meet Singles in These Cities</h2>
+      <p class="text-gray-500 text-sm mt-1">Find verified singles and connect in Thailand's hottest dating cities</p>
+    </div>
+    <!-- <a href="/places/" class="text-[#D2449D] text-sm font-medium hover:underline">View all →</a> -->
+  </div>
+
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Bangkok Card -->
+    <a href="/places/bangkok-dating.html" class="place-card bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100">
+      <div class="h-48 bg-cover bg-center" style="background-image: url('https://d36zx1g74mcorc.cloudfront.net/websitephotos/bangkok_img.png?w=600&h=400&fit=crop');"></div>
+      <div class="p-5">
+        <div class="flex items-center gap-2 text-sm text-[#D2449D] font-semibold"><i class="fas fa-city"></i> Capital · Vibrant</div>
+        <h3 class="text-xl font-bold mt-1 text-gray-800 group-hover:text-[#D2449D]">Bangkok</h3>
+        <p class="text-gray-500 text-sm mt-2">Vibrant dating scene, rooftop bars, and thousands of verified singles. Thailand's most active dating hub.</p>
+        <div class="mt-3 text-[#D2449D] text-sm font-medium flex items-center gap-1">Explore Bangkok <i class="fas fa-arrow-right text-xs"></i></div>
+      </div>
+    </a>
+
+    <!-- Phuket Card -->
+    <a href="/places/phuket-dating.html" class="place-card bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100">
+      <div class="h-48 bg-cover bg-center" style="background-image: url('https://d36zx1g74mcorc.cloudfront.net/websitephotos/phuket.png?w=600&h=400&fit=crop');"></div>
+      <div class="p-5">
+        <div class="flex items-center gap-2 text-sm text-[#D2449D] font-semibold"><i class="fas fa-umbrella-beach"></i> Island Paradise</div>
+        <h3 class="text-xl font-bold mt-1 text-gray-800">Phuket</h3>
+        <p class="text-gray-500 text-sm mt-2">Beach clubs, resort dating, and holiday romance. Perfect for meeting singles and enjoying island nightlife.</p>
+        <div class="mt-3 text-[#D2449D] text-sm font-medium flex items-center gap-1">Discover Phuket <i class="fas fa-arrow-right text-xs"></i></div>
+      </div>
+    </a>
+
+    <!-- Pattaya Card -->
+    <a href="/places/pattaya-dating.html" class="place-card bg-white rounded-2xl overflow-hidden shadow-md border border-gray-100">
+      <div class="h-48 bg-cover bg-center" style="background-image: url('https://d36zx1g74mcorc.cloudfront.net/websitephotos/pattaya.png?w=600&h=400&fit=crop');"></div>
+      <div class="p-5">
+        <div class="flex items-center gap-2 text-sm text-[#D2449D] font-semibold"><i class="fas fa-ship"></i> Coastal Fun</div>
+        <h3 class="text-xl font-bold mt-1 text-gray-800">Pattaya</h3>
+        <p class="text-gray-500 text-sm mt-2">Beachfront dating, lively nightlife, and a thriving singles community. Where romance meets adventure.</p>
+        <div class="mt-3 text-[#D2449D] text-sm font-medium flex items-center gap-1">See Pattaya <i class="fas fa-arrow-right text-xs"></i></div>
+      </div>
+    </a>
+  </div>
+</section>
+
+
+
+<!-- CTA for PassorMatch -->
+<section class="py-16 px-4 text-center text-white" style="background: linear-gradient(135deg, #D2449D, #ff7ac6);">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="text-3xl font-bold">Ready to Meet Someone Special?</h2>
+    <p class="mt-3 text-white/90">Join PassorMatch to connect with verified singles in Bangkok, Phuket, and Pattaya. Real profiles, real connections.</p>
+    <a href="/register" class="inline-flex items-center gap-2 bg-white text-[#D2449D] px-8 py-3 rounded-full mt-6 font-semibold shadow-lg hover:shadow-xl transition">
+      Join Free <i class="fas fa-heart"></i>
+    </a>
+    <p class="text-white/70 text-xs mt-4">Free registration · Verified profiles · Dating community</p>
+  </div>
+</section>
+
+<!-- FOOTER with links to home, places, blog -->
+<footer class="bg-gray-900 text-gray-400 py-10 px-4">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div>
+      <h3 class="text-white text-xl font-bold mb-3">PassorMatch</h3>
+      <p class="text-sm">Meet verified singles in Thailand's top dating cities. Real connections, real relationships.
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3">Explore</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="/" class="hover:text-white transition">Home</a></li>
+        <li><a href="/places/" class="hover:text-white transition">All Places</a></li>
+        <li><a href="/blog/" class="hover:text-white transition">Blog & Guides</a></li>
+        <li><a href="/register" class="hover:text-white transition">Join Free</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="text-white font-semibold mb-3">Popular Places</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="/places/bangkok-dating.html" class="hover:text-white transition">Bangkok</a></li>
+        <li><a href="/places/phuket-dating.html" class="hover:text-white transition">Phuket</a></li>
+        <li><a href="/places/pattaya-dating.html" class="hover:text-white transition">Pattaya</a></li>
+      </ul>
+    </div>
+    <!-- <div>
+      <h4 class="text-white font-semibold mb-3">Resources</h4>
+      <ul class="space-y-2 text-sm">
+        <li><a href="/blog/thai-culture.html" class="hover:text-white transition">Thai Culture</a></li>
+        <li><a href="/blog/travel-tips.html" class="hover:text-white transition">Travel Tips</a></li>
+        <li><a href="/about" class="hover:text-white transition">About Us</a></li>
+        <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+      </ul>
+    </div> -->
+  </div>
+  <div class="text-center text-xs text-gray-500 mt-8 pt-4 border-t border-gray-800">
+    © 2026 PassorMatch — Thailand Places & Travel Guides. All rights reserved.
+  </div>
+</footer>
+
+</body>
+</html>

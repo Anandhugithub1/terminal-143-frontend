@@ -4,7 +4,9 @@
       "links": {
         "about": "О нас",
         "pricing": "Цены",
-        "login": "Войти"
+        "login": "Войти",
+          "blog": "Блог",
+        "places": "Города"
       },
       "cta": {
         "createProfile": "Создать бесплатный профиль",

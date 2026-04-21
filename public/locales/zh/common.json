@@ -3,7 +3,9 @@
     "links": {
       "about": "关于我们",
       "pricing": "价格",
-      "login": "登录"
+      "login": "登录",
+        "blog": "博客",
+      "places": "地点"
     },
     "cta": {
       "createProfile": "创建免费资料",

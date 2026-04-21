@@ -3,7 +3,9 @@
     "links": {
       "about": "회사 소개",
       "pricing": "요금제",
-      "login": "로그인"
+      "login": "로그인",
+        "blog": "블로그",
+      "places": "장소"
     },
     "cta": {
       "createProfile": "무료 프로필 만들기",
