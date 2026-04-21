@@ -8,9 +8,9 @@ export default function Footer() {
   const { t } = useTranslation('nav')
 
   const sections = [
-    { key: 'company', links: ['about','careers','blog'] },
-    { key: 'legal', links: ['privacy','terms','security'] },
-    { key: 'connect', links: ['contact','faq','press'] },
+    { key: 'company', links: ['blog', 'places'] },
+    // { key: 'legal', links: ['privacy','terms','security'] },
+    // { key: 'connect', links: ['contact','faq','press'] },
   ]
 
   return (
