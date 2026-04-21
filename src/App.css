@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 
-:root {
-  font-family: 'Inter Variable', sans-serif;
-}
 body {
-  font-family: 'Inter Variable', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
+h1, h2, h3, button ,a{
+  font-family: 'Poppins', sans-serif;
+}
 
 
 

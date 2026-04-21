@@ -49,8 +49,8 @@ export default function Footer() {
             <div className="flex items-center gap-2">
           
         
-<a href="/" class="text-2xl font-bold tracking-tight text-[#D2449D]">
-  Pass<span class="text-white">or</span>Match
+<a href="/" className="text-2xl font-bold tracking-tight text-[#D2449D]">
+  <span className="text-white">PassorMatch</span>
 </a>
             </div>
             <p className="text-sm mt-2">{t('tagline')}</p>
