@@ -6,18 +6,19 @@
 
   <!-- SEO -->
   <title>Phuket Dating | Meet Real Singles in Phuket | PassorMatch</title>
-  <meta name="description" content="Meet real singles in Phuket. Join PassorMatch to connect with Thai locals and expats. Safe, verified, and free to start." />
+  <meta name="description" content="Meet real singles in Phuket. Join PassorMatch to connect with verified Thai locals and expats. Safe, trusted, and free to start dating in Thailand's island paradise." />
   <link rel="canonical" href="https://passormatch.com/places/phuket-dating.html" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://passormatch.com/places/phuket-dating.html" />
-  <meta property="og:title" content="Phuket Dating – Meet Real Singles" />
-  <meta property="og:description" content="Find real connections in Phuket with verified singles." />
+  <meta property="og:title" content="Phuket Dating – Meet Real Verified Singles" />
+  <meta property="og:description" content="Find real connections in Phuket with verified singles. Join PassorMatch today." />
   <meta property="og:image" content="https://passormatch.com/images/logo.png" />
 
   <link rel="icon" href="/images/logo.png" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
   <style>
     :root {
@@ -26,148 +27,263 @@
     .btn-primary {
       background-color: var(--color-primary);
       color: white;
-      padding: 12px 24px;
-      border-radius: 8px;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background-color: #b83884;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(210,68,157,0.4);
     }
     .section {
       padding: 60px 20px;
     }
+    .card-hover {
+      transition: all 0.25s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #fef5fa 0%, #fff0f7 100%);
+    }
+    .hero-gradient {
+      background: linear-gradient(135deg, #D2449D, #ff7ac6);
+    }
   </style>
 </head>
 
-<body class="bg-white text-gray-800">
+<body class="bg-white text-gray-800 font-sans antialiased">
 
-<!-- HEADER -->
-<header class="bg-white border-b sticky top-0 z-50">
-  <div class="max-w-7xl mx-auto px-4 flex justify-between h-16 items-center">
-    <span class="text-xl font-bold text-[#D2449D]">PassorMatch</span>
-    <nav class="hidden md:flex gap-6 text-sm text-gray-600">
-      <a href="#how-it-works">How it works</a>
-      <a href="#cities">Cities</a>
-      <a href="#faq">FAQ</a>
+<!-- HEADER (consistent with all pages) -->
+<header class="bg-white/90 backdrop-blur-sm border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
+    <a href="/" class="text-2xl font-bold tracking-tight text-[#D2449D]">Passor<span class="text-gray-800">Match</span></a>
+    <nav class="hidden md:flex gap-6 text-sm font-medium">
+      <a href="/" class="text-gray-600 hover:text-[#D2449D] transition">Home</a>
+      <a href="/places/" class="text-gray-600 hover:text-[#D2449D] transition">Places</a>
+      <a href="/blog/" class="text-gray-600 hover:text-[#D2449D] transition">Blog</a>
+      <a href="/dating-guide" class="text-gray-600 hover:text-[#D2449D] transition">Guide</a>
     </nav>
-    <a href="/register" class="btn-primary">Join Free</a>
+    <a href="/register" class="bg-[#D2449D] text-white px-5 py-2 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition">
+      Join Free <i class="fas fa-arrow-right ml-1 text-xs"></i>
+    </a>
   </div>
 </header>
 
 <!-- HERO -->
-<section class="section text-center text-white" style="background: linear-gradient(135deg, #D2449D, #ff7ac6);">
-  <h1 class="text-4xl md:text-5xl font-bold max-w-3xl mx-auto">
-    Meet Real Singles in Phuket 🇹🇭
-  </h1>
-  <p class="mt-4 max-w-xl mx-auto">
-    Patong · Kata · Karon — thousands of verified Phuket singles are waiting.
-  </p>
-
-  <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-    <a href="/register" class="bg-white text-black px-6 py-3 rounded-full font-semibold">
-      Start Matching →
-    </a>
-    <a href="#how-it-works" class="border border-white px-6 py-3 rounded-full">
-      Learn more
-    </a>
+<section class="section text-center text-white hero-gradient">
+  <div class="max-w-4xl mx-auto">
+    <span class="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-1 rounded-full mb-4"><i class="fas fa-umbrella-beach mr-1"></i> Island Paradise</span>
+    <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold max-w-3xl mx-auto">
+      Meet Real Singles in Phuket 🇹🇭
+    </h1>
+    <p class="mt-4 text-white/90 text-lg max-w-xl mx-auto">
+      Patong · Kata · Karon — thousands of verified Phuket singles are waiting for real connections.
+    </p>
+    <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/register" class="bg-white text-[#D2449D] px-6 py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition">
+        Start Matching <i class="fas fa-heart ml-1"></i>
+      </a>
+      <a href="#how-it-works" class="border border-white px-6 py-3 rounded-full hover:bg-white/10 transition">
+        Learn more
+      </a>
+    </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- HOW IT WORKS (expanded) -->
 <section id="how-it-works" class="section max-w-6xl mx-auto text-center">
-  <h2 class="text-3xl font-bold">How dating in Phuket works</h2>
+  <h2 class="text-3xl font-bold">How Dating in Phuket Works</h2>
+  <p class="mt-3 text-gray-500 max-w-2xl mx-auto">Simple steps to find genuine connections in Thailand's most famous island destination</p>
 
-  <div class="grid md:grid-cols-3 gap-6 mt-10">
-    <div>1️⃣ Create profile</div>
-    <div>2️⃣ Discover matches</div>
-    <div>3️⃣ Start chatting</div>
+  <div class="grid md:grid-cols-3 gap-8 mt-10">
+    <div class="bg-white p-6 rounded-2xl shadow-sm border card-hover">
+      <div class="text-4xl mb-3">1️⃣</div>
+      <h3 class="font-bold text-lg">Create Your Profile</h3>
+      <p class="text-gray-500 text-sm mt-1">Add photos, interests, and what you're looking for in a partner.</p>
+    </div>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border card-hover">
+      <div class="text-4xl mb-3">2️⃣</div>
+      <h3 class="font-bold text-lg">Discover Matches</h3>
+      <p class="text-gray-500 text-sm mt-1">Our algorithm suggests compatible Phuket singles based on your preferences.</p>
+    </div>
+    <div class="bg-white p-6 rounded-2xl shadow-sm border card-hover">
+      <div class="text-4xl mb-3">3️⃣</div>
+      <h3 class="font-bold text-lg">Start Chatting</h3>
+      <p class="text-gray-500 text-sm mt-1">Message, share photos, and plan real dates across Phuket's beautiful beaches.</p>
+    </div>
   </div>
 </section>
 
-<!-- CONTENT -->
+<!-- CONTENT (expanded) -->
 <section class="section max-w-5xl mx-auto">
-  <h2 class="text-2xl font-bold">Dating in Phuket Thailand</h2>
-
-  <p class="mt-4 text-gray-600">
-    Phuket offers a unique dating experience with its mix of beach life, nightlife, and international crowd. Whether you're visiting or living here, meeting new people is easy.
-  </p>
-
-  <p class="mt-4 text-gray-600">
-    PassorMatch helps you connect with verified singles in Phuket — from locals to expats. No fake profiles, just real connections.
-  </p>
+  <div class="grid md:grid-cols-3 gap-8">
+    <div class="md:col-span-2">
+      <h2 class="text-2xl font-bold">Dating in Phuket, Thailand</h2>
+      <p class="mt-4 text-gray-600 leading-relaxed">
+        Phuket offers a unique dating experience with its stunning beaches, vibrant nightlife, and international crowd. From sunset cocktails at beach clubs to romantic dinners overlooking the Andaman Sea, the island provides endless opportunities to meet new people. Whether you're a local, expat, or just visiting, you'll find a diverse community of singles looking for real relationships.
+      </p>
+      <p class="mt-4 text-gray-600 leading-relaxed">
+        PassorMatch helps you connect with <strong>verified singles in Phuket</strong>. No fake profiles, no scams — just genuine connections with Thai locals and expats who share your interests.
+      </p>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="/blog/best-dating-apps-thailand.html" class="text-sm bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-[#D2449D] hover:text-white transition"><i class="fab fa-app-store mr-1"></i> Best Dating Apps</a>
+        <a href="/blog/dating-in-thailand-guide.html" class="text-sm bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-[#D2449D] hover:text-white transition"><i class="fas fa-book-open mr-1"></i> Dating Guide</a>
+        <a href="/blog/how-to-meet-thai-women.html" class="text-sm bg-gray-100 px-3 py-1.5 rounded-full text-gray-700 hover:bg-[#D2449D] hover:text-white transition"><i class="fas fa-user-friends mr-1"></i> Meet Thai Singles</a>
+      </div>
+    </div>
+    <div class="bg-gradient-to-br from-pink-50 to-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+      <div class="flex items-center gap-2 text-[#D2449D] font-semibold text-sm"><i class="fas fa-star"></i> Insider Tip</div>
+      <p class="text-gray-700 text-sm mt-2">For a perfect first date, try a sunset beach club — it's romantic, relaxed, and captures Phuket's island magic.</p>
+      <a href="/blog/red-flags-dating-thailand.html" class="inline-block mt-3 text-[#D2449D] text-sm font-medium hover:underline">Avoid common red flags →</a>
+    </div>
+  </div>
 </section>
 
-<!-- FEATURES -->
+<!-- FEATURES (expanded) -->
 <section class="section bg-gray-50 text-center">
   <h2 class="text-2xl font-bold">Why PassorMatch in Phuket?</h2>
-
   <div class="grid md:grid-cols-3 gap-6 mt-8 max-w-5xl mx-auto">
-    <div>✅ Verified users</div>
-    <div>🌏 Locals & expats</div>
-    <div>🔒 Safe & private</div>
+    <div class="bg-white p-5 rounded-xl shadow-sm"><span class="text-2xl mr-2">✅</span> <strong>Verified users</strong><br><span class="text-sm text-gray-500">ID & photo verification</span></div>
+    <div class="bg-white p-5 rounded-xl shadow-sm"><span class="text-2xl mr-2">🌏</span> <strong>Locals & expats</strong><br><span class="text-sm text-gray-500">Diverse community</span></div>
+    <div class="bg-white p-5 rounded-xl shadow-sm"><span class="text-2xl mr-2">🔒</span> <strong>Safe & private</strong><br><span class="text-sm text-gray-500">Your data is protected</span></div>
   </div>
 </section>
 
-<!-- CITY LINKS -->
-<section id="cities" class="section text-center">
-  <h2 class="text-2xl font-bold">Explore more cities</h2>
+<!-- POPULAR DATING SPOTS IN PHUKET -->
+<section class="max-w-6xl mx-auto px-4 py-12">
+  <h2 class="text-2xl font-bold text-center mb-8">Popular Dating Spots in Phuket</h2>
+  <div class="grid md:grid-cols-3 gap-5">
+    <div class="bg-white rounded-xl p-5 border shadow-sm text-center">
+      <i class="fas fa-sun text-3xl text-[#D2449D]"></i>
+      <h3 class="font-bold mt-2">Beach Clubs</h3>
+      <p class="text-gray-500 text-sm">Café Del Mar, Catch Beach Club — perfect for sunset dates.</p>
+    </div>
+    <div class="bg-white rounded-xl p-5 border shadow-sm text-center">
+      <i class="fas fa-utensils text-3xl text-[#D2449D]"></i>
+      <h3 class="font-bold mt-2">Romantic Dining</h3>
+      <p class="text-gray-500 text-sm">Seafood restaurants along the beach with stunning ocean views.</p>
+    </div>
+    <div class="bg-white rounded-xl p-5 border shadow-sm text-center">
+      <i class="fas fa-hiking text-3xl text-[#D2449D]"></i>
+      <h3 class="font-bold mt-2">Adventure Dates</h3>
+      <p class="text-gray-500 text-sm">Island hopping, snorkeling, or visiting the Big Buddha together.</p>
+    </div>
+  </div>
+</section>
 
+<!-- CITY LINKS (expanded) -->
+<section id="cities" class="section text-center bg-gray-50">
+  <h2 class="text-2xl font-bold">Explore More Dating Cities in Thailand</h2>
   <div class="mt-6 flex flex-wrap justify-center gap-3">
-    <a href="/places/bangkok-dating.html">Bangkok</a>
-    <a href="/places/phuket-dating.html">Phuket</a>
-    <a href="/places/chiang-mai-dating.html">Chiang Mai</a>
-    <a href="/places/pattaya-dating.html">Pattaya</a>
+    <a href="/places/bangkok-dating.html" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-[#D2449D]/10 transition">Bangkok</a>
+    <a href="/places/phuket-dating.html" class="bg-[#D2449D]/10 text-[#D2449D] px-4 py-2 rounded-full font-medium">Phuket</a>
+    <a href="/places/chiang-mai-dating.html" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-[#D2449D]/10 transition">Chiang Mai</a>
+    <a href="/places/pattaya-dating.html" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-[#D2449D]/10 transition">Pattaya</a>
+    <a href="/places/hua-hin-dating.html" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-[#D2449D]/10 transition">Hua Hin</a>
+    <a href="/places/koh-samui-dating.html" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-full hover:bg-[#D2449D]/10 transition">Koh Samui</a>
   </div>
 </section>
 
-<!-- FAQ -->
+<!-- FAQ (expanded) -->
 <section id="faq" class="section max-w-4xl mx-auto">
   <h2 class="text-2xl font-bold text-center">Phuket Dating FAQ</h2>
-
-  <div class="mt-6">
-    <strong>Is Phuket good for dating?</strong>
-    <p class="text-gray-600">Yes, Phuket is popular for dating due to its mix of locals, tourists, and expats.</p>
+  <div class="mt-8 space-y-5">
+    <div class="bg-gray-50 p-5 rounded-xl">
+      <strong class="text-gray-800">Is Phuket good for dating?</strong>
+      <p class="text-gray-600 mt-1">Yes, Phuket is one of Thailand's most popular dating destinations due to its mix of locals, tourists, and expats. The island vibe makes it easy to meet new people.</p>
+    </div>
+    <div class="bg-gray-50 p-5 rounded-xl">
+      <strong class="text-gray-800">Can foreigners date in Phuket?</strong>
+      <p class="text-gray-600 mt-1">Absolutely. Many expats and travelers use PassorMatch to meet Thai singles in Phuket. Respect and genuine interest go a long way.</p>
+    </div>
+    <div class="bg-gray-50 p-5 rounded-xl">
+      <strong class="text-gray-800">Is PassorMatch free?</strong>
+      <p class="text-gray-600 mt-1">Yes, basic membership is free. You can create a profile, browse matches, and send introductory messages at no cost.</p>
+    </div>
+    <div class="bg-gray-50 p-5 rounded-xl">
+      <strong class="text-gray-800">How to stay safe when dating in Phuket?</strong>
+      <p class="text-gray-600 mt-1">Always meet in public places, inform a friend, and use our verified member filter. Read our <a href="/blog/red-flags-dating-thailand.html" class="text-[#D2449D] hover:underline">dating red flags guide</a> for more tips.</p>
+    </div>
   </div>
+</section>
 
-  <div class="mt-4">
-    <strong>Can foreigners date in Phuket?</strong>
-    <p class="text-gray-600">Yes, many foreigners use PassorMatch to meet Thai singles in Phuket.</p>
+<!-- RELATED BLOG POSTS -->
+<section class="max-w-7xl mx-auto px-4 py-8 border-t border-gray-100">
+  <div class="flex justify-between items-end border-b border-gray-200 pb-4 mb-6">
+    <h2 class="text-xl md:text-2xl font-bold text-gray-800"><i class="fas fa-newspaper text-[#D2449D] mr-2"></i> Dating Advice for Phuket</h2>
+    <a href="/blog/" class="text-[#D2449D] text-sm font-medium hover:underline">View all →</a>
+  </div>
+  <div class="grid md:grid-cols-3 gap-5">
+    <a href="/blog/best-dating-apps-thailand.html" class="bg-gray-50 p-4 rounded-xl hover:shadow transition">
+      <i class="fas fa-mobile-alt text-[#D2449D] text-xl"></i>
+      <h3 class="font-bold mt-2">Best Dating Apps in Thailand</h3>
+      <p class="text-gray-500 text-sm">Find which apps work best in Phuket.</p>
+    </a>
+    <a href="/blog/cost-of-dating-in-thailand.html" class="bg-gray-50 p-4 rounded-xl hover:shadow transition">
+      <i class="fas fa-coins text-[#D2449D] text-xl"></i>
+      <h3 class="font-bold mt-2">Cost of Dating in Thailand</h3>
+      <p class="text-gray-500 text-sm">Budget for dates in Phuket.</p>
+    </a>
+    <a href="/blog/thai-dating-culture-guide.html" class="bg-gray-50 p-4 rounded-xl hover:shadow transition">
+      <i class="fas fa-landmark text-[#D2449D] text-xl"></i>
+      <h3 class="font-bold mt-2">Thai Dating Culture</h3>
+      <p class="text-gray-500 text-sm">Understand local dating customs.</p>
+    </a>
   </div>
 </section>
 
 <!-- CTA -->
-<section class="section text-center text-white" style="background: linear-gradient(135deg, #D2449D, #ff7ac6);">
-  <h2 class="text-2xl font-bold">Ready to start dating in Phuket?</h2>
-  <a href="/register" class="btn-primary mt-6 inline-block">Join Now Free</a>
+<section class="section text-center text-white hero-gradient">
+  <div class="max-w-2xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold">Ready to start dating in Phuket?</h2>
+    <p class="mt-2 text-white/90">Join thousands of singles looking for real connections on Thailand's most beautiful island.</p>
+    <a href="/register" class="inline-flex items-center gap-2 bg-white text-[#D2449D] px-8 py-3 rounded-full mt-6 font-semibold shadow-lg hover:shadow-xl transition">
+      Join Now Free <i class="fas fa-arrow-right"></i>
+    </a>
+    <p class="text-white/70 text-xs mt-4">✓ Free registration ✓ Verified profiles ✓ Safe community</p>
+  </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="bg-white border-t py-8 px-4">
-  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-6 text-sm text-gray-600">
-
+<!-- FOOTER (consistent) -->
+<footer class="bg-gray-900 text-gray-400 py-10 px-4">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 text-sm">
     <div>
-      <h4 class="font-bold text-gray-800">PassorMatch</h4>
-      <p class="mt-2">Thailand's trusted dating platform.</p>
+      <h4 class="text-white font-bold mb-2">PassorMatch</h4>
+      <p>Thailand's most trusted dating platform for genuine relationships.</p>
     </div>
-
     <div>
-      <h4 class="font-semibold">Dating by city</h4>
-      <ul class="mt-2 space-y-1">
-        <li><a href="/places/bangkok-dating.html">Bangkok</a></li>
-        <li><a href="/places/phuket-dating.html">Phuket</a></li>
-        <li><a href="/places/chiang-mai-dating.html">Chiang Mai</a></li>
-        <li><a href="/places/pattaya-dating.html">Pattaya</a></li>
+      <h4 class="text-white font-semibold mb-2">Explore</h4>
+      <ul class="space-y-1">
+        <li><a href="/" class="hover:text-white transition">Home</a></li>
+        <li><a href="/places/" class="hover:text-white transition">All Places</a></li>
+        <li><a href="/blog/" class="hover:text-white transition">Blog</a></li>
       </ul>
     </div>
-
     <div>
-      <h4 class="font-semibold">Company</h4>
-      <ul class="mt-2 space-y-1">
-        <li><a href="/about.html">About</a></li>
-        <li><a href="/contact.html">Contact</a></li>
+      <h4 class="text-white font-semibold mb-2">Popular Cities</h4>
+      <ul class="space-y-1">
+        <li><a href="/places/bangkok-dating.html" class="hover:text-white transition">Bangkok</a></li>
+        <li><a href="/places/phuket-dating.html" class="hover:text-white transition">Phuket</a></li>
+        <li><a href="/places/pattaya-dating.html" class="hover:text-white transition">Pattaya</a></li>
       </ul>
     </div>
-
+    <div>
+      <!-- <h4 class="text-white font-semibold mb-2">Company</h4> -->
+      <ul class="space-y-1">
+        <!-- <li><a href="/about" class="hover:text-white transition">About</a></li>
+        <li><a href="/contact" class="hover:text-white transition">Contact</a></li>
+        <li><a href="/privacy" class="hover:text-white transition">Privacy</a></li> -->
+      </ul>
+    </div>
   </div>
-
-  <div class="text-center text-xs mt-6 text-gray-400">
-    © 2026 PassorMatch
+  <div class="text-center text-xs text-gray-500 mt-8 pt-4 border-t border-gray-800">
+    © 2026 PassorMatch — Your trusted guide to dating in Phuket and Thailand.
   </div>
 </footer>
 
