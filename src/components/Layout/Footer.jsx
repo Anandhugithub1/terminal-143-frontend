@@ -47,12 +47,11 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-gradient-to-r from-gradient-primary to-gradient-secondary">
-                <HeartIcon className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-lg font-semibold text-white">
-                {t('brand')}
-              </span>
+          
+        
+<a href="/" class="text-2xl font-bold tracking-tight text-[#D2449D]">
+  Pass<span class="text-white">or</span>Match
+</a>
             </div>
             <p className="text-sm mt-2">{t('tagline')}</p>
           </div>

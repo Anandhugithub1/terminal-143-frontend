@@ -56,12 +56,14 @@ export default function Navbar() {
 
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <div className="bg-gradient-to-r from-gradient-primary to-gradient-secondary p-2 rounded-lg">
+            {/* <div className="bg-gradient-to-r from-gradient-primary to-gradient-secondary p-2 rounded-lg">
               <HeartIcon className="w-6 h-6 text-white" />
-            </div>
-            <span className="ml-3 text-xl font-bold text-gray-900">
+            </div> */}
+                      <a href="/" class="text-2xl font-bold tracking-tight text-[#D2449D]">Pass<span class="text-gray-800">or</span>Match</a>
+
+            {/* <span className="ml-3 text-xl font-bold text-gray-900">
               {t('common:appName')}
-            </span>
+            </span> */}
           </div>
 
           {/* Desktop Links */}
