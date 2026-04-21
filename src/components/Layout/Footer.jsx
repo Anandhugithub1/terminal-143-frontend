@@ -9,9 +9,34 @@ export default function Footer() {
 
   const sections = [
     { key: 'company', links: ['blog', 'places'] },
-    // { key: 'legal', links: ['privacy','terms','security'] },
-    // { key: 'connect', links: ['contact','faq','press'] },
   ]
+
+  // helper function to decide link type
+  const renderLink = (link, label, className) => {
+    // STATIC PAGES → use <a>
+    if (link === 'blog') {
+      return (
+        <a href="/blog" className={className}>
+          {label}
+        </a>
+      )
+    }
+
+    if (link === 'places') {
+      return (
+        <a href="/places" className={className}>
+          {label}
+        </a>
+      )
+    }
+
+    // REACT ROUTES → use <Link>
+    return (
+      <Link to={`/${link}`} className={className}>
+        {label}
+      </Link>
+    )
+  }
 
   return (
     <footer role="contentinfo" className="bg-gray-900 text-gray-300">
@@ -42,12 +67,11 @@ export default function Footer() {
               <ul className="mt-2 space-y-2">
                 {section.links.map(link => (
                   <li key={link}>
-                    <Link
-                      to={`/${link}`}
-                      className="hover:text-indigo-400 transition-transform duration-200 hover:translate-x-1"
-                    >
-                      {t(`links.${link}`)}
-                    </Link>
+                    {renderLink(
+                      link,
+                      t(`links.${link}`),
+                      "hover:text-indigo-400 transition-transform duration-200 hover:translate-x-1"
+                    )}
                   </li>
                 ))}
               </ul>
@@ -55,14 +79,6 @@ export default function Footer() {
           ))}
 
         </div>
-
-        {/* SEO internal links (important for your blog strategy) */}
-        {/* <div className="mt-10 text-sm text-gray-400 space-x-4">
-          <Link to="/thai-dating-culture-guide">Thai Dating Culture</Link>
-          <Link to="/best-dating-apps-thailand">Best Dating Apps</Link>
-          <Link to="/cost-of-dating-in-thailand">Dating Costs</Link>
-          <Link to="/how-to-meet-thai-women">How to Meet Thai Women</Link>
-        </div> */}
 
         <div className="border-t border-gray-800 mt-8 pt-6 text-center text-sm">
           <p>{t('copyright')}</p>
