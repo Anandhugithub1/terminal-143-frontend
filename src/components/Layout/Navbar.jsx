@@ -1,7 +1,7 @@
 // src/components/Layout/Navbar.jsx
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Bars3Icon, XMarkIcon, HeartIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import ReactCountryFlag from 'react-country-flag'
 import { useTranslation } from 'react-i18next'
 
@@ -56,12 +56,9 @@ export default function Navbar() {
 
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <div className="bg-gradient-to-r from-gradient-primary to-gradient-secondary p-2 rounded-lg">
-              <HeartIcon className="w-6 h-6 text-white" />
-            </div>
-            <span className="ml-3 text-xl font-bold text-gray-900">
-              {t('common:appName')}
-            </span>
+       
+                   <a href="/" className="text-2xl font-bold tracking-tight text-[#D2449D]">Pass<span className="text-gray-800">or</span>Match</a>
+
           </div>
 
           {/* Desktop Links + Language */}
