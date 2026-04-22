@@ -8,7 +8,7 @@ export default function Footer() {
   const { t } = useTranslation('nav')
 
   const sections = [
-    { key: 'company', links: ['blog', 'places'] },
+    { key: 'company', links: ['blog', 'places','faq'] },
   ]
 
   // helper function to decide link type
@@ -29,6 +29,16 @@ export default function Footer() {
         </a>
       )
     }
+
+    if (link === 'faq') {
+      return (
+        <a href="/help/faq" className={className}> 
+          {label}
+        </a>
+      )
+    }
+
+
 
     // REACT ROUTES → use <Link>
     return (
