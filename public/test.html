@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloudflare Verification Test</title>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #cbd5f5;
+      margin-bottom: 20px;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .success {
+      color: #22c55e;
+    }
+
+    .error {
+      color: #ef4444;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #7c3aed;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #6d28d9;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Cloudflare Verification Test</h1>
+    <p>Test Turnstile behavior on your device/network</p>
+
+    <form id="testForm">
+      <div 
+        class="cf-turnstile" 
+        data-sitekey="0x4AAAAAAAviTO8Kj1-xIz2i"
+        data-callback="onSuccess"
+        data-error-callback="onError"
+        data-expired-callback="onExpired">
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script>
+    let token = null;
+
+    function onSuccess(t) {
+      token = t;
+      document.getElementById("status").innerHTML =
+        "<span class='success'>Verification successful</span>";
+    }
+
+    function onError() {
+      token = null;
+      document.getElementById("status").innerHTML =
+        "<span class='error'>Verification failed. Try again.</span>";
+    }
+
+    function onExpired() {
+      token = null;
+      document.getElementById("status").innerHTML =
+        "<span class='error'>Session expired. Please retry.</span>";
+    }
+
+    document.getElementById("testForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      if (!token) {
+        document.getElementById("status").innerHTML =
+          "<span class='error'>Please complete verification first</span>";
+        return;
+      }
+
+      document.getElementById("status").innerHTML =
+        "<span class='success'>Form submitted successfully</span>";
+    });
+  </script>
+
+</body>
+</html>
