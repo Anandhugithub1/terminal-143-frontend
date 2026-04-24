@@ -9,6 +9,9 @@ import {
   HelpCircle,
   Info,
   Globe,
+  
+
+  Stars
 } from 'lucide-react';
 import '@fontsource-variable/inter';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
@@ -21,7 +24,7 @@ const SettingsPage = () => {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
-  // ✅ SAME logout behavior, TanStack only
+  //  SAME logout behavior, TanStack only
   const logoutMutation = useMutation({
     mutationFn: () => signOut('signout'),
     onSuccess: () => {
@@ -41,6 +44,7 @@ const SettingsPage = () => {
     { label: t('deleteAccount'), icon: <Trash2 size={20} />, to: '/delete-account' },
     { label: t('helpCentre'), icon: <HelpCircle size={20} />, to: '/help-center' },
     { label: t('aboutApp'), icon: <Info size={20} />, to: '/info' },
+    { label: t('rating'), icon: <Stars size={20} />, to: '/rating' },
   ];
 
   return (
