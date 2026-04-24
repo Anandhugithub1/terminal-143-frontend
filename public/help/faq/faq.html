@@ -2,346 +2,131 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloudflare Verification Test</title>
 
-  <!-- SEO Primary -->
-  <title>Thailand Dating FAQ & App Guide | PassorMatch — Honest Answers</title>
-  <meta name="description" content="Real talk about dating in Thailand + how PassorMatch works. Safety, culture, pricing, meeting Thai singles — answered by real people.">
-  <link rel="canonical" href="https://passormatch.com/help/dating-faq.html"/>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
-  <!-- Tailwind + custom font feel -->
-  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .faq-card {
-      transition: all 0.2s ease;
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
     }
 
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 30px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
 
-      body {
-  font-family: 'Inter', sans-serif !important;
-}
+    h1 {
+      margin-bottom: 10px;
+      font-size: 22px;
+    }
 
-h1, h2, h3, button ,a{
-  font-family: 'Poppins', sans-serif !important;
-}
-    .faq-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.1);
+    p {
+      font-size: 14px;
+      color: #cbd5f5;
+      margin-bottom: 20px;
     }
-    .gradient-hero {
-      background: linear-gradient(135deg, #FFF5F9 0%, #FFEAF1 100%);
+
+    .status {
+      margin-top: 15px;
+      font-size: 14px;
     }
-    .btn-soft {
-      transition: all 0.2s;
+
+    .success {
+      color: #22c55e;
     }
-    .btn-soft:hover {
-      transform: scale(0.98);
-      background-color: #c23d8a;
+
+    .error {
+      color: #ef4444;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #7c3aed;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #6d28d9;
     }
   </style>
-
-  <!-- FAQ SCHEMA (extended with more realistic Qs) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Is PassorMatch free to use?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Absolutely! Signup, profile creation, browsing, and messaging is free. We also have optional premium features for those who want extra visibility."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Are profiles really verified?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Yes — we combine AI checks + optional selfie verification. Verified members get a badge so you know who's genuine."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Is dating in Thailand safe for foreigners?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Totally, as long as you use common sense. Meet in public, tell a friend, and use trusted platforms like PassorMatch. We also share safety tips in-app."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "How do I actually meet Thai singles?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Online via PassorMatch is the easiest way. Offline? Try coffee shops, language exchanges, or local festivals. But most people start online first."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "What’s the dating culture like in Thailand?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Thai dating is warm and respectful. Family matters, patience is valued, and directness is softened with a smile. Take time to understand each other."
-        }
-      }
-    ]
-  }
-  </script>
 </head>
 
-<body class="bg-white text-gray-800 antialiased">
+<body>
 
-  <!-- HEADER (sticky, clean) -->
-  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-100 shadow-sm">
-    <div class="max-w-6xl mx-auto px-5 flex justify-between items-center h-16">
-      <div class="flex items-center gap-1">
-              <a href="/" class="text-2xl font-bold tracking-tight text-[#D2449D]">Pass<span class="text-gray-800">or</span>Match</a>
+  <div class="card">
+    <h1>Cloudflare Verification Test</h1>
+    <p>Test Turnstile behavior on your device/network</p>
 
-        <!-- <span class="text-2xl">💕</span> -->
-      </div>
-      <a href="/register" class="bg-[#D2449D] hover:bg-[#b8387e] text-white px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg btn-soft">
-        Join Free → 
-      </a>
-    </div>
-  </header>
-
-  <main>
-    <!-- HERO (human & friendly) -->
-    <section class="gradient-hero px-5 py-16 md:py-20 text-center border-b border-pink-100">
-      <div class="max-w-3xl mx-auto">
-        <div class="inline-flex items-center gap-2 bg-white/60 backdrop-blur-sm rounded-full px-4 py-1.5 text-sm text-gray-700 border border-pink-200 shadow-sm mb-5">
-          <span></span> <span>Real answers · No fluff</span>
-        </div>
-        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
-           Dating FAQ & App Guide
-        </h1>
-        <p class="text-xl text-gray-600 mt-4 max-w-2xl mx-auto">
-          We've gathered the most honest answers — from <strong class="text-[#D2449D]">how PassorMatch works</strong> to real Thai dating culture.
-        </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-3">
-          <a href="#app-faq" class="bg-white text-gray-800 px-5 py-2.5 rounded-full shadow-sm border border-gray-200 font-medium hover:shadow-md transition">📱 App questions</a>
-          <a href="#thai-dating-faq" class="bg-white text-gray-800 px-5 py-2.5 rounded-full shadow-sm border border-gray-200 font-medium hover:shadow-md transition">🇹🇭 Dating in Thailand</a>
-          <a href="/register" class="bg-[#D2449D] text-white px-5 py-2.5 rounded-full shadow-md font-medium hover:bg-[#b8387e] transition">✨ Meet singles today</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- APP FAQ SECTION (PassorMatch related, human tone) -->
-    <section id="app-faq" class="max-w-6xl mx-auto px-5 py-16 md:py-20">
-      <div class="text-center mb-12">
-        <span class="text-sm font-semibold uppercase tracking-wider text-[#D2449D]/70 bg-pink-50 px-3 py-1 rounded-full">App guide</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-3">How PassorMatch actually works</h2>
-        <p class="text-gray-500 mt-2 max-w-xl mx-auto">No hidden tricks — just real features that help you connect.</p>
+    <form id="testForm">
+      <div 
+        class="cf-turnstile" 
+        data-sitekey="0x4AAAAAAAviTO8Kj1-xIz2i"
+        data-callback="onSuccess"
+        data-error-callback="onError"
+        data-expired-callback="onExpired">
       </div>
 
-      <div class="grid md:grid-cols-2 gap-7">
-        <!-- FAQ card 1 -->
-        <div class="faq-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
-          <div class="flex items-start gap-4">
-            <div class="bg-pink-50 w-10 h-10 rounded-full flex items-center justify-center text-xl flex-shrink-0">💰</div>
-            <div>
-              <h3 class="text-xl font-semibold">Is PassorMatch really free?</h3>
-              <p class="text-gray-600 mt-2 leading-relaxed">Yep! Sign up, create your profile, browse members, and send messages — all free, plenty of people find love without spending a baht. 💖</p>
-            </div>
-          </div>
-        </div>
+      <button type="submit">Submit</button>
+    </form>
 
-        <!-- FAQ card 2 -->
-        <div class="faq-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
-          <div class="flex items-start gap-4">
-            <div class="bg-pink-50 w-10 h-10 rounded-full flex items-center justify-center text-xl flex-shrink-0">✅</div>
-            <div>
-              <h3 class="text-xl font-semibold">Are profiles verified? (no bots, please)</h3>
-              <p class="text-gray-600 mt-2 leading-relaxed">We hate bots too. That's why we added photo verification + AI moderation. Verified members get a blue checkmark. You can filter to see only verified profiles. It’s not 100% perfect, but we remove fake accounts daily. Real people first. 🙌</p>
-            </div>
-          </div>
-        </div>
+    <div id="status" class="status"></div>
+  </div>
 
-        <!-- FAQ card 3 -->
-        <div class="faq-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
-          <div class="flex items-start gap-4">
-            <div class="bg-pink-50 w-10 h-10 rounded-full flex items-center justify-center text-xl flex-shrink-0">❤️</div>
-            <div>
-              <h3 class="text-xl font-semibold">How does matching work?</h3>
-              <p class="text-gray-600 mt-2 leading-relaxed">Simple: you see profiles based on your age, distance, and interests. Swipe right to “heart” someone. If they heart you back → instant match! You can also send a first message with a compliment. No endless waiting. 💬</p>
-            </div>
-          </div>
-        </div>
+  <script>
+    let token = null;
 
-        <!-- FAQ card 4 -->
-        <div class="faq-card bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all">
-          <div class="flex items-start gap-4">
-            <div class="bg-pink-50 w-10 h-10 rounded-full flex items-center justify-center text-xl flex-shrink-0">🔒</div>
-            <div>
-              <h3 class="text-xl font-semibold">Is my data safe?</h3>
-              <p class="text-gray-600 mt-2 leading-relaxed">We  never sell your info. You control who sees your photos. Also, you can hide your profile anytime. Safety first, always. 🛡️</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    function onSuccess(t) {
+      token = t;
+      document.getElementById("status").innerHTML =
+        "<span class='success'>Verification successful</span>";
+    }
 
-    <!-- DATING IN THAILAND FAQ (cultural & human) -->
-    <section id="thai-dating-faq" class="bg-gray-50/60 border-t border-gray-100">
-      <div class="max-w-6xl mx-auto px-5 py-16 md:py-20">
-        <div class="text-center mb-12">
-          <span class="text-sm font-semibold uppercase tracking-wider text-[#D2449D]/70 bg-white px-3 py-1 rounded-full shadow-sm">Culture & tips</span>
-          <h2 class="text-3xl md:text-4xl font-bold mt-3">Dating in Thailand — what nobody tells you</h2>
-          <p class="text-gray-500 mt-2 max-w-2xl mx-auto">Real insights from locals + expats who’ve been there.</p>
-        </div>
+    function onError() {
+      token = null;
+      document.getElementById("status").innerHTML =
+        "<span class='error'>Verification failed. Try again.</span>";
+    }
 
-        <div class="space-y-6">
-          <!-- Safety question - friendly but real -->
-          <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md">
-            <div class="flex flex-wrap gap-3 items-start">
-              <span class="text-3xl">🇹🇭🤝</span>
-              <div class="flex-1">
-                <h3 class="text-xl font-semibold">Is dating in Thailand safe for travelers & expats?</h3>
-                <p class="text-gray-600 mt-2 leading-relaxed">Absolutely — millions of people date safely here every year. Just like anywhere else: meet in public (cafés, malls, markets), tell a friend where you're going, and trust your gut. On PassorMatch, we encourage video chat before the first date. Most people are genuinely looking for connection, but a little caution goes a long way. 😊</p>
-              </div>
-            </div>
-          </div>
+    function onExpired() {
+      token = null;
+      document.getElementById("status").innerHTML =
+        "<span class='error'>Session expired. Please retry.</span>";
+    }
 
-          <!-- city suggestions with internal links -->
-          <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md">
-            <div class="flex flex-wrap gap-3 items-start">
-              <span class="text-3xl">🏙️</span>
-              <div class="flex-1">
-                <h3 class="text-xl font-semibold">Which Thai city is best for dating?</h3>
-                <p class="text-gray-600 mt-2 leading-relaxed">
-                  <span class="font-medium">Bangkok</span> is the most active — endless options. 
-                  <span class="font-medium">Phuket</span> is great for beach vibes and international crowd. 
-                  <!-- <span class="font-medium">Chiang Mai</span> offers a more relaxed, creative scene.  -->
-                  We have dedicated guides: 
-                  <a href="/dating/bangkok-dating.html" class="text-[#D2449D] hover:underline">Bangkok dating</a>, 
-                  <a href="/dating/phuket-dating.html" class="text-[#D2449D] hover:underline">Phuket dating</a> and 
-                  <!-- <a href="/dating/chiang-mai-dating.html" class="text-[#D2449D] hover:underline">Chiang Mai dating</a>. -->
-                </p>
-              </div>
-            </div>
-          </div>
+    document.getElementById("testForm").addEventListener("submit", function(e) {
+      e.preventDefault();
 
-          <!-- culture question -->
-          <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md">
-            <div class="flex flex-wrap gap-3 items-start">
-              <span class="text-3xl">🙏</span>
-              <div class="flex-1">
-                <h3 class="text-xl font-semibold">What’s Thai dating culture really like?</h3>
-                <p class="text-gray-600 mt-2 leading-relaxed">Warm, family-oriented, and full of smiles. 😄 Don’t rush physical intimacy — many Thais prefer to take things slow. Public displays of affection are fine (holding hands), but too much is frowned upon. Also, showing respect to elders and being “jai yen” (cool heart) matters a lot. Learn a few Thai words like “Khob khun” (thank you) — it melts hearts. 💕</p>
-              </div>
-            </div>
-          </div>
+      if (!token) {
+        document.getElementById("status").innerHTML =
+          "<span class='error'>Please complete verification first</span>";
+        return;
+      }
 
-          <!-- meeting singles -->
-          <div class="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm transition-all hover:shadow-md">
-            <div class="flex flex-wrap gap-3 items-start">
-              <span class="text-3xl">💬</span>
-              <div class="flex-1">
-                <h3 class="text-xl font-semibold">How to meet Thai singles (online + offline)?</h3>
-                <p class="text-gray-600 mt-2 leading-relaxed"><span class="font-bold">Online:</span> PassorMatch is the easiest — you filter by city and interests. <span class="font-bold">Offline:</span> try language exchange meetups, fitness classes, night markets, or even volunteering. Thai people are generally friendly, but many are shy to approach foreigners first. A genuine smile and a simple “Sawasdee” works wonders. ✨</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      document.getElementById("status").innerHTML =
+        "<span class='success'>Form submitted successfully</span>";
+    });
+  </script>
 
-    <!-- BLOG / RELATED GUIDES (humanized recommendations) -->
-    <section class="max-w-6xl mx-auto px-5 py-16">
-      <div class="text-center mb-10">
-        <h2 class="text-3xl font-bold">📖 From our dating blog</h2>
-        <p class="text-gray-500 mt-2">Deep dives, real stories, and practical tips.</p>
-      </div>
-      <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <a href="/blog/dating-in-thailand-guide.html" class="group block bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-lg transition-all">
-          <span class="text-3xl">🇹🇭</span>
-          <h3 class="font-bold text-lg mt-3 group-hover:text-[#D2449D] transition">Dating in Thailand Guide</h3>
-          <p class="text-gray-500 text-sm mt-1">Complete beginner's guide — dos & don'ts</p>
-        </a>
-        <a href="/blog/thai-dating-culture-guide.html" class="group block bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-lg transition-all">
-          <span class="text-3xl">🎎</span>
-          <h3 class="font-bold text-lg mt-3 group-hover:text-[#D2449D] transition">Thai Dating Culture</h3>
-          <p class="text-gray-500 text-sm mt-1">Family, respect, and “greng jai” explained</p>
-        </a>
-        <a href="/blog/how-to-meet-thai-women.html" class="group block bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-lg transition-all">
-          <span class="text-3xl">💃</span>
-          <h3 class="font-bold text-lg mt-3 group-hover:text-[#D2449D] transition">How to Meet Thai Women</h3>
-          <p class="text-gray-500 text-sm mt-1">Real advice from local women & success stories</p>
-        </a>
-      </div>
-    </section>
-
-    <!-- SAFETY NOTE & SOCIAL PROOF (human touch) -->
-    <div class="max-w-5xl mx-auto px-5 pb-6">
-      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-6 flex flex-wrap md:flex-nowrap gap-5 items-center justify-between">
-        <div class="flex gap-3 items-start">
-          <span class="text-3xl">🧡</span>
-          <div>
-            <h3 class="font-bold">From our team: date smart, date happy</h3>
-            <p class="text-gray-600 text-sm">We’re real people who built PassorMatch because we believe in authentic connections. If you ever feel unsure, reach out to our support — we reply within hours.</p>
-          </div>
-        </div>
-        <!-- <a href="/safety-tips" class="bg-white border border-amber-300 rounded-full px-5 py-2 text-sm font-medium hover:bg-amber-100 transition whitespace-nowrap">Safety tips →</a> -->
-      </div>
-    </div>
-
-    <!-- FINAL CTA (warm, direct) -->
-    <section class="mx-5 my-12 rounded-3xl bg-gradient-to-r from-[#D2449D] to-[#ff85c1] text-white overflow-hidden shadow-xl">
-      <div class="px-6 py-14 md:py-20 text-center">
-        <span class="text-4xl md:text-5xl mb-3 inline-block">💕</span>
-        <h2 class="text-3xl md:text-4xl font-extrabold">Ready to meet someone amazing?</h2>
-        <p class="text-white/90 text-lg mt-3 max-w-xl mx-auto">Join 15,000+ singles who found friendship, romance, and love on PassorMatch.</p>
-        <div class="mt-8">
-          <a href="/register" class="inline-block bg-white text-[#D2449D] font-bold px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-transform transform hover:scale-105">
-            Create free profile →
-          </a>
-          <p class="text-white/80 text-sm mt-4">No credit card · 2 minutes setup</p>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <!-- FOOTER (clean, helpful links) -->
-  <footer class="bg-white border-t border-gray-100 pt-12 pb-8 px-5">
-    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-      <div>
-        <h4 class="font-bold text-gray-800 flex items-center gap-1"> PassorMatch</h4>
-        <p class="text-gray-500 text-sm mt-2">Honest dating for Thailand.</p>
-      </div>
-      <div>
-        <h5 class="font-semibold text-sm text-gray-800">Dating Cities</h5>
-        <ul class="mt-2 space-y-1 text-sm text-gray-500">
-          <li><a href="/dating/bangkok-dating.html" class="hover:text-[#D2449D]">Bangkok</a></li>
-          <li><a href="/dating/phuket-dating.html" class="hover:text-[#D2449D]">Phuket</a></li>
-          <!-- <li><a href="/dating/chiang-mai-dating.html" class="hover:text-[#D2449D]">Chiang Mai</a></li> -->
-          <li><a href="/dating/pattaya-dating.html" class="hover:text-[#D2449D]">Pattaya</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5 class="font-semibold text-sm text-gray-800">Learn</h5>
-        <ul class="mt-2 space-y-1 text-sm text-gray-500">
-          <li><a href="/blog/dating-in-thailand-guide.html" class="hover:text-[#D2449D]">Dating Guide</a></li>
-          <li><a href="/blog/thai-dating-culture-guide.html" class="hover:text-[#D2449D]">Culture Guide</a></li>
-          <li><a href="/safety" class="hover:text-[#D2449D]">Safety Center</a></li>
-        </ul>
-      </div>
-      <!-- <div>
-        <h5 class="font-semibold text-sm text-gray-800">Support</h5>
-        <ul class="mt-2 space-y-1 text-sm text-gray-500">
-          <li><a href="/contact" class="hover:text-[#D2449D]">Contact us</a></li>
-          <li><a href="/privacy" class="hover:text-[#D2449D]">Privacy</a></li>
-          <li><a href="/terms" class="hover:text-[#D2449D]">Terms</a></li>
-        </ul>
-      </div> -->
-    </div>
-    <div class="max-w-6xl mx-auto mt-10 pt-6 border-t border-gray-100 text-center text-gray-400 text-xs">
-      © 2026 PassorMatch — Made with 💕 for real connections in Thailand.
-    </div>
-  </footer>
-
-  <!-- small interactive note (optional but adds human feel) -->
 </body>
 </html>

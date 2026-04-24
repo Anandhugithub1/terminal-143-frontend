@@ -31,13 +31,6 @@ export default function Footer() {
       )
     }
 
-    if (link === 'faq') {
-      return (
-        <a href="/faq" className={className}> 
-          {label}
-        </a>
-      )
-    }
 
 
 
