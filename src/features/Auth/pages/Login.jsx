@@ -1,18 +1,23 @@
 import React, { Suspense, lazy } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-
+import { useNavigate } from 'react-router-dom';
 const Footer = lazy(() =>import('../../../components/Layout/Footer'))
 const Navbar =lazy(()=>import('../../../components/Layout/Navbar'))
 
 const LoginForm = lazy(() => import('../components/LoginForm'));
-
+import ReviewsSection from "../../../pages/Global/components/Review";
+import { demoReviews } from '../../../pages/Global/Review';
  const Login = () => {
+
+  const navigate = useNavigate();
   return (
  <>
 
  <Suspense fallback={null}>
  <Navbar/>
+
+
 
  </Suspense>
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-pink-100 via-pink-50 to-purple-200">
@@ -23,8 +28,13 @@ const LoginForm = lazy(() => import('../components/LoginForm'));
             <LoginForm />
           </Suspense>
         </div>
+        
       </div>
 
+<ReviewsSection
+  reviews={demoReviews.slice(0, 3)}
+  onMoreClick={() => navigate("/reviews")}
+/>
 <Suspense fallback={null}>
       <Footer />
 

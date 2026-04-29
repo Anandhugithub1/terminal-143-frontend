@@ -7,6 +7,7 @@ import Loader from "../../../components/Ui/Loading";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useLogin } from "../useAuth";
+import ReviewsSection from "../../../pages/Global/components/Review";
 
 const LoginForm = () => {
   const { t } = useTranslation("auth");
@@ -138,6 +139,8 @@ const LoginForm = () => {
           {t("register")}
         </Link>
       </p>
+
+      
     </>
   );
 };
