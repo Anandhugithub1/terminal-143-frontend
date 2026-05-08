@@ -1,7 +1,7 @@
 import { test } from '@playwright/test'
 
 test('manual login and save session', async ({ page }) => {
-  await page.goto('https://terminal143.com/login')
+  await page.goto('https://local.passormatch.com:5173/login')
 
   // Pause so YOU can login manually
   await page.pause()
