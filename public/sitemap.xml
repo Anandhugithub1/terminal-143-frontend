@@ -1,25 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+  <!-- Homepage -->
   <url>
     <loc>https://passormatch.com/</loc>
-    <lastmod>2026-04-17</lastmod>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
+  <!-- Core Pages -->
   <url>
-    <loc>https://passormatch.com/info</loc>
-    <lastmod>2026-04-17</lastmod>
+    <loc>https://passormatch.com/places</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/faq</loc>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://passormatch.com/help-center</loc>
-    <lastmod>2026-04-17</lastmod>
+    <loc>https://passormatch.com/privacy</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/terms</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+
+  <!-- Location Pages -->
+  <url>
+    <loc>https://passormatch.com/places/bangkok-dating.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/places/phuket-dating.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/places/pattaya-dating.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Blog Posts -->
+  <url>
+    <loc>https://passormatch.com/blog/best-dating-apps-thailand.html</loc>
+    <lastmod>2026-05-20</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/bangkok-dating-guide.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/phuket-dating-guide.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/pattaya-dating-guide.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/thai-dating-culture-guide.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/dating-in-thailand-guide.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/red-flags-dating-thailand.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/cost-of-dating-in-thailand.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/dating-thai-women-real-experiences.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/how-to-meet-thai-women.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/marrying-thai-woman-real-experience.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://passormatch.com/blog/thai-dating-culture.html</loc>
+    <lastmod>2026-05-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 
 </urlset>
