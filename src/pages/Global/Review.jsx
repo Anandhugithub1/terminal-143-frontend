@@ -19,7 +19,7 @@ export const demoReviews = [
     city: "Manchester",
     country: "United Kingdom",
     timeAgo: "1 week ago",
-    profilePhoto: "https://d36zx1g74mcorc.cloudfront.net/websitephotos/reviews/philip.png"
+    profilePhoto: "https://d36zx1g74mcorc.cloudfront.net/websitephotos/reviews/philip-s.png"
   },
   {
     reviewId: "3",
@@ -29,7 +29,7 @@ export const demoReviews = [
     city: "Toronto",
     country: "Canada",
     timeAgo: "5 days ago",
-    profilePhoto: "https://d36zx1g74mcorc.cloudfront.net/websitephotos/reviews/john.png"
+    profilePhoto: "https://d36zx1g74mcorc.cloudfront.net/websitephotos/reviews/johns.png"
   },
   {
     reviewId: "4",
@@ -39,7 +39,7 @@ export const demoReviews = [
     city: "Sydney",
     country: "Australia",
     timeAgo: "2 days ago",
-    profilePhoto: "https://d36zx1g74mcorc.cloudfront.net/websitephotos/reviews/tom%20david.png"
+    profilePhoto: "https://d36zx1g74mcorc.cloudfront.net/websitephotos/reviews/tom_david.jpeg"
   },
   {
     reviewId: "5",
