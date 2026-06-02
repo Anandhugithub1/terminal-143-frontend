@@ -21,8 +21,6 @@ h1, h2, h3, button ,a{
   --color-gradient-secondary:#D2449D;
   --color-text-sec:#1F2937 
   --animate-fade-in-down: fade-in-down 0.5s ease-out;
-
-
 }
 @keyframes fade-in-down {
   from {

@@ -3,6 +3,7 @@ import { ProfileRoutes } from './ProfileRoutes.jsx';
 import {OnboardingRoutes} from './OnboardingRoutes.jsx'
 import {SettingsRoutes} from './SettingsRoutes.jsx'
 import ErrorPage from "../pages/Error/ErrorPage.jsx";
+import {CircleRoutes} from './CircleRoutes.jsx'
 import {AppFeatureRoutes} from './AppFeatureRoutes.jsx'
 import { Route } from 'react-router-dom';
 import App from "../App.jsx";
@@ -22,7 +23,7 @@ export const appRoutes = (
     {ProfileRoutes}
     {SettingsRoutes}
     {AppFeatureRoutes}
-
+    {CircleRoutes}
     <Route
       path="privacy"
       element={
