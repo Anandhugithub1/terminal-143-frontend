@@ -13,9 +13,10 @@ import {
   Plus,
   MapPin,
 } from "lucide-react";
-
+import {useState} from "react"; 
 
 import BottomNav from '../../../components/Layout/BottomNavigation'
+import Sidebar from '../components/circles/Sidebar'
 const myCircles = [
   {
     name: "Running",
@@ -92,15 +93,23 @@ const feed = [
 ];
 
 export default function CirclesHomePage() {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
+            <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-5 py-4">
+         <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-5 py-4">
         <div className="flex items-center justify-between">
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <button 
+            onClick={() => setIsSidebarOpen(true)}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
             <Menu className="w-6 h-6 text-gray-600" />
           </button>
 
+          {/* Rest of your header remains the same */}
           <div className="text-center">
             <h1 className="text-2xl font-bold text-text-sec">Circles</h1>
             <p className="text-xs text-gray-500 mt-0.5">
@@ -276,26 +285,7 @@ export default function CirclesHomePage() {
 
       {/* Bottom Navigation */}
       <BottomNav />
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg border-t border-border-clr px-6 py-2">
-        <div className="flex items-center justify-around max-w-md mx-auto">
-          <button className="flex flex-col items-center gap-1 py-2 px-4 text-primary">
-            <Home className="w-5 h-5" />
-            <span className="text-xs font-medium">Home</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 py-2 px-4 text-gray-500 hover:text-primary transition-colors">
-            <Circle className="w-5 h-5" />
-            <span className="text-xs font-medium">Circles</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 py-2 px-4 text-gray-500 hover:text-primary transition-colors">
-            <Users className="w-5 h-5" />
-            <span className="text-xs font-medium">Matches</span>
-          </button>
-          <button className="flex flex-col items-center gap-1 py-2 px-4 text-gray-500 hover:text-primary transition-colors">
-            <UserCheck className="w-5 h-5" />
-            <span className="text-xs font-medium">Profile</span>
-          </button>
-        </div>
-      </div>
+    
     </div>
   );
 }
