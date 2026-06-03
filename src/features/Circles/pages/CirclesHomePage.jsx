@@ -1,24 +1,24 @@
+// Updated CirclesHomePage.jsx with navigation
 import {
   Menu,
   Search,
   Bell,
-  Home,
-  Circle,
-  Users,
-  UserCheck,
   Heart,
   MessageCircle,
   X,
   MoreVertical,
   Plus,
-  MapPin,
 } from "lucide-react";
-import {useState} from "react"; 
+import { useState } from "react";
 
-import BottomNav from '../../../components/Layout/BottomNavigation'
-import Sidebar from '../components/circles/Sidebar'
+import BottomNav from "../../../components/Layout/BottomNavigation";
+import Sidebar from "../components/circles/Sidebar";
+import CreateCircleModal from "../components/circles/CreateCircleModal";
+import CommentSection from "../components/comments/CommentSection";
+import CircleDetailPage from "./CircleDetailsPage"; // New import for circle detail page
 const myCircles = [
   {
+    id: 1,
     name: "Running",
     members: 124,
     image:
@@ -26,6 +26,7 @@ const myCircles = [
     bgColor: "bg-rose-50",
   },
   {
+    id: 2,
     name: "Language Exchange",
     members: 86,
     image:
@@ -33,6 +34,7 @@ const myCircles = [
     bgColor: "bg-blue-50",
   },
   {
+    id: 3,
     name: "Gaming",
     members: 210,
     image:
@@ -40,6 +42,7 @@ const myCircles = [
     bgColor: "bg-purple-50",
   },
   {
+    id: 4,
     name: "Photography",
     members: 64,
     image:
@@ -47,6 +50,7 @@ const myCircles = [
     bgColor: "bg-green-50",
   },
   {
+    id: 5,
     name: "Music",
     members: 51,
     image:
@@ -56,6 +60,7 @@ const myCircles = [
 ];
 
 const feed = [
+  // ... your feed data remains the same
   {
     id: 1,
     name: "Alex",
@@ -93,23 +98,47 @@ const feed = [
 ];
 
 export default function CirclesHomePage() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [commentPost, setCommentPost] = useState(null);
+  
+  // State for circle detail navigation
+  const [selectedCircle, setSelectedCircle] = useState(null);
+
+  // If a circle is selected, show the detail page
+  if (selectedCircle) {
+    return (
+      <CircleDetailPage 
+        circleId={selectedCircle.id}
+        circleData={selectedCircle}
+        onBack={() => setSelectedCircle(null)} 
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
-            <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+      <CreateCircleModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+      />
+      <CommentSection
+        isOpen={!!commentPost}
+        onClose={() => setCommentPost(null)}
+        post={commentPost}
+      />
 
       {/* Header */}
-         <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-5 py-4">
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-5 py-4">
         <div className="flex items-center justify-between">
-          <button 
+          <button
             onClick={() => setIsSidebarOpen(true)}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <Menu className="w-6 h-6 text-gray-600" />
           </button>
 
-          {/* Rest of your header remains the same */}
           <div className="text-center">
             <h1 className="text-2xl font-bold text-text-sec">Circles</h1>
             <p className="text-xs text-gray-500 mt-0.5">
@@ -142,6 +171,7 @@ export default function CirclesHomePage() {
                 <div
                   key={index}
                   className="flex-shrink-0 w-24 text-center cursor-pointer"
+                  onClick={() => setSelectedCircle(circle)} // Navigate to circle detail
                 >
                   <div
                     className={`${circle.bgColor} rounded-2xl p-3 transition-all hover:scale-105 hover:shadow-md`}
@@ -162,7 +192,10 @@ export default function CirclesHomePage() {
               ))}
 
               {/* Create Circle Card */}
-              <div className="flex-shrink-0 w-24 text-center cursor-pointer">
+              <div
+                className="flex-shrink-0 w-24 text-center cursor-pointer"
+                onClick={() => setIsCreateModalOpen(true)}
+              >
                 <div className="bg-gray-50 rounded-2xl p-3 transition-all hover:scale-105 hover:shadow-md border-2 border-dashed border-gray-200 h-full flex flex-col items-center">
                   <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
                     <Plus className="w-7 h-7 text-gray-500" />
@@ -258,7 +291,7 @@ export default function CirclesHomePage() {
                   </div>
                 </div>
 
-                {/* Action Buttons - New order: Pass, Comment, Match */}
+                {/* Action Buttons */}
                 <div className="p-4 pt-2 border-t border-border-clr mt-2">
                   <div className="grid grid-cols-3 gap-2">
                     <button className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors">
@@ -266,7 +299,10 @@ export default function CirclesHomePage() {
                       Pass
                     </button>
 
-                    <button className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors">
+                    <button
+                      onClick={() => setCommentPost(post)}
+                      className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors"
+                    >
                       <MessageCircle className="w-4 h-4" />
                       Comment
                     </button>
@@ -285,7 +321,6 @@ export default function CirclesHomePage() {
 
       {/* Bottom Navigation */}
       <BottomNav />
-    
     </div>
   );
 }
