@@ -1,4 +1,4 @@
-// pages/circles/[id].jsx or components/circles/CircleDetailPage.jsx
+// Updated CircleDetailPage.jsx with CreatePostModal integration
 import {
   ArrowLeft,
   Search,
@@ -21,8 +21,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import BottomNav from "../../../components/Layout/BottomNavigation";
-
-
+import CreatePostModal from '../components/posts/CreatePostModal'
 // Demo circle data
 const circleData = {
   id: 1,
@@ -100,7 +99,7 @@ const events = [
 ];
 
 // Demo posts
-const posts = [
+const initialPosts = [
   {
     id: 1,
     author: {
@@ -113,6 +112,7 @@ const posts = [
     likes: 45,
     comments: 12,
     isLiked: false,
+    tags: ["Morning Run", "Achievement"],
   },
   {
     id: 2,
@@ -126,13 +126,19 @@ const posts = [
     likes: 32,
     comments: 18,
     isLiked: true,
+    tags: ["Event", "Sunday Run"],
   },
 ];
 
-export default function CircleDetailPage() {
+export default function CircleDetailPage({ circleId, circleData: passedData, onBack }) {
   const [activeTab, setActiveTab] = useState("posts");
   const [isJoined, setIsJoined] = useState(true);
   const [likedPosts, setLikedPosts] = useState(new Set([2]));
+  const [posts, setPosts] = useState(initialPosts);
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+
+  // Use passed data or demo data
+  const data = passedData || circleData;
 
   const tabs = [
     { id: "posts", label: "Posts", icon: Grid3X3 },
@@ -151,13 +157,39 @@ export default function CircleDetailPage() {
     setLikedPosts(newLiked);
   };
 
+  const handleCreatePost = (postData) => {
+    const newPost = {
+      id: posts.length + 1,
+      author: {
+        name: "You",
+        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
+      },
+      content: postData.content,
+      image: postData.images[0] || null,
+      time: "Just now",
+      likes: 0,
+      comments: 0,
+      isLiked: false,
+      tags: postData.tags,
+    };
+    setPosts([newPost, ...posts]);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
+      {/* Create Post Modal */}
+      <CreatePostModal
+        isOpen={isCreatePostModalOpen}
+        onClose={() => setIsCreatePostModalOpen(false)}
+        onSubmit={handleCreatePost}
+        circleName={data.name}
+      />
+
       {/* Cover Image */}
       <div className="relative h-48 sm:h-64 bg-gradient-to-br from-rose-400 to-orange-400">
         <img
-          src={circleData.coverImage}
-          alt={circleData.name}
+          src={data.coverImage}
+          alt={data.name}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -165,7 +197,10 @@ export default function CircleDetailPage() {
         {/* Header Actions */}
         <div className="absolute top-0 left-0 right-0 p-4">
           <div className="flex items-center justify-between">
-            <button className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors">
+            <button 
+              onClick={onBack}
+              className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
+            >
               <ArrowLeft className="w-5 h-5 text-white" />
             </button>
             <div className="flex items-center gap-2">
@@ -184,16 +219,16 @@ export default function CircleDetailPage() {
           <div className="flex items-end justify-between">
             <div>
               <h1 className="text-2xl font-bold text-white mb-1">
-                {circleData.name}
+                {data.name}
               </h1>
               <div className="flex items-center gap-3 text-white/90 text-sm">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  <span>{circleData.members} members</span>
+                  <span>{data.members} members</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full" />
-                  <span>{circleData.onlineMembers} online</span>
+                  <span>{data.onlineMembers} online</span>
                 </div>
               </div>
             </div>
@@ -230,10 +265,10 @@ export default function CircleDetailPage() {
         <div className="bg-white rounded-2xl shadow-sm p-4 mb-4">
           <h2 className="text-lg font-bold text-gray-800 mb-2">About</h2>
           <p className="text-gray-600 text-sm leading-relaxed mb-3">
-            {circleData.description}
+            {data.description}
           </p>
           <div className="flex flex-wrap gap-2">
-            {circleData.tags.map((tag) => (
+            {data.tags.map((tag) => (
               <span
                 key={tag}
                 className="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-xs font-medium"
@@ -244,7 +279,7 @@ export default function CircleDetailPage() {
           </div>
           <div className="mt-3 flex items-center gap-1 text-sm text-gray-500">
             <Calendar className="w-4 h-4" />
-            <span>Created {circleData.createdDate}</span>
+            <span>Created {data.createdDate}</span>
           </div>
         </div>
 
@@ -252,7 +287,7 @@ export default function CircleDetailPage() {
         <div className="bg-white rounded-2xl shadow-sm p-4 mb-4">
           <h2 className="text-lg font-bold text-gray-800 mb-3">Circle Rules</h2>
           <div className="space-y-2">
-            {circleData.rules.map((rule, index) => (
+            {data.rules.map((rule, index) => (
               <div key={index} className="flex items-start gap-2">
                 <span className="text-primary font-bold mt-0.5">{index + 1}.</span>
                 <p className="text-gray-600 text-sm">{rule}</p>
@@ -295,10 +330,16 @@ export default function CircleDetailPage() {
                     alt="Your avatar"
                     className="w-10 h-10 rounded-full object-cover"
                   />
-                  <button className="flex-1 text-left px-4 py-2 bg-white rounded-full text-gray-400 text-sm hover:bg-gray-100 transition-colors">
+                  <button 
+                    onClick={() => setIsCreatePostModalOpen(true)}
+                    className="flex-1 text-left px-4 py-2 bg-white rounded-full text-gray-400 text-sm hover:bg-gray-100 transition-colors"
+                  >
                     Share your running experience...
                   </button>
-                  <button className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                  <button 
+                    onClick={() => setIsCreatePostModalOpen(true)}
+                    className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                  >
                     <Camera className="w-5 h-5 text-gray-400" />
                   </button>
                 </div>
@@ -332,6 +373,19 @@ export default function CircleDetailPage() {
                         alt="Post image"
                         className="w-full h-48 object-cover rounded-lg mb-3"
                       />
+                    )}
+
+                    {post.tags && post.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {post.tags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="px-3 py-1 bg-white text-primary rounded-full text-xs font-medium"
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
                     )}
 
                     <div className="flex items-center gap-4">
@@ -459,7 +513,7 @@ export default function CircleDetailPage() {
                 </div>
 
                 <button className="w-full mt-3 p-3 text-primary font-semibold hover:bg-gray-50 rounded-xl transition-colors">
-                  View All {circleData.members} Members
+                  View All {data.members} Members
                 </button>
               </div>
             )}
