@@ -12,10 +12,13 @@ import {
   Loader2,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { suggestedTags, visibilityOptions, activityTypes } from "../../constants/postOptions";
 import { MAX_MEDIA_ITEMS, MAX_VIDEO_DURATION_SEC } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
+import LocationInput from "../../../AddProfile/components/LocationInput";
+import { createPost } from "../../api/postsApi";
+import { getPresignedUrl } from "../../api/imageupload";
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
   const [postContent, setPostContent] = useState("");
@@ -35,6 +38,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
 
   const videoRef = useRef(null);
   const [playingVideo, setPlayingVideo] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { media, addFiles, removeMedia, reset: resetMedia, isValidating } = useMediaAttachments();
 
   const handleAddTag = (tag) => {
@@ -60,6 +64,38 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
     e.target.value = "";
   };
 
+  const handleLocationSelect = useCallback((loc, detailsPromise) => {
+    if (!loc) {
+      setLocation({
+        coordinates: { lat: null, lon: null },
+        placeName: "",
+        countryCode: "",
+        admin1: "",
+        h3: { r4: "" },
+      });
+      return;
+    }
+
+    setLocation({
+      coordinates: { lat: loc.lat, lon: loc.lon },
+      placeName: loc.placeName,
+      countryCode: loc.countryCode,
+      admin1: loc.admin1,
+      h3: { r4: loc.h3Index || "" },
+    });
+
+    detailsPromise?.then((enriched) => {
+      if (!enriched) return;
+      setLocation({
+        coordinates: { lat: enriched.lat, lon: enriched.lon },
+        placeName: enriched.placeName,
+        countryCode: enriched.countryCode,
+        admin1: enriched.admin1,
+        h3: { r4: enriched.h3Index || "" },
+      });
+    });
+  }, []);
+
   const handleRemoveMedia = (id) => {
     if (playingVideo === id) setPlayingVideo(null);
     removeMedia(id);
@@ -83,49 +119,72 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   };
 
   // Handle submit
-  const handleSubmit = () => {
-    const postData = {
-      circleId: circleId || "demo-circle-id",
-      authorId: authorData?.id || "demo-user-id",
-      authorName: authorData?.name || "Your Name",
-      authorImage: authorData?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
-      authorGenderGroup: authorData?.genderGroup || "OT",
-      authorPreferenceGroups: authorData?.preferenceGroups || [],
-      body: postContent,
-      media: media.map(({ url, type, durationSec, compressed, file }) => ({
-        url,
-        type,
-        durationSec,
-        compressed,
-        file,
-      })),
-      visibility,
-      activityType,
-      location: showLocationInput ? location : undefined,
-      createdAtEpoch: Math.floor(Date.now() / 1000),
-      tags: selectedTags,
-    };
-
-    // Call onSubmit prop if provided
-    if (onSubmit) {
-      onSubmit(postData);
+  const handleSubmit = async () => {
+    if ((!postContent.trim() && media.length === 0) || isValidating || isSubmitting) {
+      return;
     }
 
-    // Reset form
-    setPostContent("");
-    setSelectedTags([]);
-    resetMedia();
-    setVisibility("all");
-    setActivityType("");
-    setShowLocationInput(false);
-    setLocation({
-      coordinates: { lat: null, lon: null },
-      placeName: "",
-      countryCode: "",
-      admin1: "",
-      h3: { r4: "" }
-    });
-    onClose();
+    setIsSubmitting(true);
+
+    try {
+      const postId = crypto.randomUUID();
+
+      const uploadedMedia = await Promise.all(
+        media.map(async (item, index) => {
+          const { presignedUrl, publicUrl } = await getPresignedUrl({
+            fileType: item.file.type,
+            kind: "postMedia",
+            circleName,
+            postId,
+            mediaIndex: index,
+          });
+
+          await fetch(presignedUrl, {
+            method: "PUT",
+            headers: { "Content-Type": item.file.type },
+            body: item.file,
+          });
+
+          return { type: item.type, url: publicUrl };
+        })
+      );
+
+      const payload = {
+        content: postContent,
+        media: uploadedMedia,
+        visibility,
+        tags: selectedTags,
+        activityType: activityType || undefined,
+        location: showLocationInput ? location : undefined,
+      };
+
+      const res = await createPost(circleId, payload);
+
+      if (onSubmit) {
+        onSubmit(res.data);
+      }
+
+      // Reset form
+      setPostContent("");
+      setSelectedTags([]);
+      resetMedia();
+      setVisibility("all");
+      setActivityType("");
+      setShowLocationInput(false);
+      setLocation({
+        coordinates: { lat: null, lon: null },
+        placeName: "",
+        countryCode: "",
+        admin1: "",
+        h3: { r4: "" }
+      });
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert(err?.response?.data?.error || "Failed to create post");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -370,7 +429,12 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
               {/* Location Toggle */}
               <div>
                 <button
-                  onClick={() => setShowLocationInput(!showLocationInput)}
+                  onClick={() => {
+                    if (showLocationInput) {
+                      handleLocationSelect(null);
+                    }
+                    setShowLocationInput(!showLocationInput);
+                  }}
                   className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors"
                 >
                   <MapPin className="w-4 h-4" />
@@ -380,26 +444,15 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 <AnimatePresence initial={false}>
                   {showLocationInput && (
                     <motion.div
-                      className="mt-2 space-y-2 overflow-hidden"
+                      className="mt-2 overflow-hidden"
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <input
-                        type="text"
-                        value={location.placeName}
-                        onChange={(e) => setLocation({ ...location, placeName: e.target.value })}
-                        placeholder="Place name (e.g., Benjakitti Park)"
-                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary"
-                      />
-                      <input
-                        type="text"
-                        value={location.countryCode}
-                        onChange={(e) => setLocation({ ...location, countryCode: e.target.value })}
-                        placeholder="Country code (e.g., TH)"
-                        maxLength={2}
-                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary"
+                      <LocationInput
+                        formData={{ location }}
+                        onSelect={handleLocationSelect}
                       />
                     </motion.div>
                   )}
@@ -538,15 +591,19 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={(!postContent.trim() && media.length === 0) || isValidating}
+                  disabled={(!postContent.trim() && media.length === 0) || isValidating || isSubmitting}
                   className={`flex-1 px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
-                    (postContent.trim() || media.length > 0) && !isValidating
+                    (postContent.trim() || media.length > 0) && !isValidating && !isSubmitting
                       ? "bg-primary text-white hover:shadow-lg"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   }`}
                 >
-                  <Send className="w-4 h-4" />
-                  Post
+                  {isSubmitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
+                  {isSubmitting ? "Posting..." : "Post"}
                 </button>
               </div>
             </div>

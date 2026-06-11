@@ -18,14 +18,27 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import CreatePostModal from "../components/post/CreatePostModal";
 import { useCircle } from "../hooks/useCircles";
+import { usePosts } from "../hooks/usePosts";
+import { queryKeys } from "../queries/queryKeys";
 import {
   members,
   events,
-  initialPosts,
 } from "../constants/circleDetailsData";
+
+const formatPostTime = (epochMillis) => {
+  if (!epochMillis) return "";
+
+  const diffSec = Math.max(0, (Date.now() - epochMillis) / 1000);
+
+  if (diffSec < 60) return "Just now";
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+  return `${Math.floor(diffSec / 86400)}d ago`;
+};
 
 export default function CircleDetailsPage() {
   const { circleId } = useParams();
@@ -34,14 +47,17 @@ export default function CircleDetailsPage() {
 
   const [activeTab, setActiveTab] = useState("posts");
   const [isJoined, setIsJoined] = useState(true);
-  const [likedPosts, setLikedPosts] = useState(new Set([2]));
-  const [posts, setPosts] = useState(initialPosts);
+  const [likedPosts, setLikedPosts] = useState(new Set());
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
 
+  const queryClient = useQueryClient();
+
   const { data: fetchedCircle, isLoading } = useCircle(circleId);
+  const { data: postsData, isLoading: isLoadingPosts } = usePosts(circleId);
 
   // Prefer freshly fetched circle data, fall back to data passed via navigation state
   const data = fetchedCircle || location.state?.circleData;
+  const posts = postsData?.items || [];
 
   if (isLoading && !data) {
     return (
@@ -76,22 +92,10 @@ export default function CircleDetailsPage() {
     setLikedPosts(newLiked);
   };
 
-  const handleCreatePost = (postData) => {
-    const newPost = {
-      id: posts.length + 1,
-      author: {
-        name: "You",
-        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
-      },
-      content: postData.content,
-      image: postData.images?.[0] || null,
-      time: "Just now",
-      likes: 0,
-      comments: 0,
-      isLiked: false,
-      tags: postData.tags,
-    };
-    setPosts([newPost, ...posts]);
+  const handlePostCreated = () => {
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.posts(circleId),
+    });
   };
 
   return (
@@ -100,7 +104,7 @@ export default function CircleDetailsPage() {
       <CreatePostModal
         isOpen={isCreatePostModalOpen}
         onClose={() => setIsCreatePostModalOpen(false)}
-        onSubmit={handleCreatePost}
+        onSubmit={handlePostCreated}
         circleName={data.name}
         circleId={circleId}
       />
@@ -275,20 +279,28 @@ export default function CircleDetailsPage() {
                   </button>
                 </div>
 
+                {isLoadingPosts && (
+                  <p className="text-sm text-gray-400 text-center py-4">Loading posts...</p>
+                )}
+
+                {!isLoadingPosts && posts.length === 0 && (
+                  <p className="text-sm text-gray-400 text-center py-4">No posts yet. Be the first to post!</p>
+                )}
+
                 {posts.map((post) => (
-                  <div key={post.id} className="bg-gray-50 rounded-xl p-4">
+                  <div key={post.postId} className="bg-gray-50 rounded-xl p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <img
-                          src={post.author.avatar}
-                          alt={post.author.name}
+                          src={post.authorImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"}
+                          alt={post.authorName || "User"}
                           className="w-10 h-10 rounded-full object-cover"
                         />
                         <div>
                           <h4 className="font-semibold text-gray-800">
-                            {post.author.name}
+                            {post.authorName || "Anonymous"}
                           </h4>
-                          <p className="text-xs text-gray-500">{post.time}</p>
+                          <p className="text-xs text-gray-500">{formatPostTime(post.createdAtEpoch)}</p>
                         </div>
                       </div>
                       <button className="p-1 hover:bg-gray-200 rounded-full transition-colors">
@@ -296,11 +308,11 @@ export default function CircleDetailsPage() {
                       </button>
                     </div>
 
-                    <p className="text-gray-700 text-sm mb-3">{post.content}</p>
+                    <p className="text-gray-700 text-sm mb-3">{post.body}</p>
 
-                    {post.image && (
+                    {post.media?.[0]?.url && (
                       <img
-                        src={post.image}
+                        src={post.media[0].url}
                         alt="Post image"
                         className="w-full h-48 object-cover rounded-lg mb-3"
                       />
@@ -321,21 +333,21 @@ export default function CircleDetailsPage() {
 
                     <div className="flex items-center gap-4">
                       <button
-                        onClick={() => toggleLike(post.id)}
+                        onClick={() => toggleLike(post.postId)}
                         className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-rose-500 transition-colors"
                       >
                         <Heart
                           className={`w-4 h-4 ${
-                            likedPosts.has(post.id)
+                            likedPosts.has(post.postId)
                               ? "fill-rose-500 text-rose-500"
                               : ""
                           }`}
                         />
-                        {post.likes + (likedPosts.has(post.id) ? 1 : 0)}
+                        {(post.likes ?? 0) + (likedPosts.has(post.postId) ? 1 : 0)}
                       </button>
                       <button className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-500 transition-colors">
                         <MessageCircle className="w-4 h-4" />
-                        {post.comments}
+                        {post.commentCount ?? 0}
                       </button>
                       <button className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-500 transition-colors ml-auto">
                         <Share2 className="w-4 h-4" />
