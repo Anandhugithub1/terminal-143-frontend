@@ -21,6 +21,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import CreatePostModal from "../components/post/CreatePostModal";
+import PostCard from "../components/post/PostCard";
 import { useCircle } from "../hooks/useCircles";
 import { usePosts } from "../hooks/usePosts";
 import { queryKeys } from "../queries/queryKeys";
@@ -288,73 +289,45 @@ export default function CircleDetailsPage() {
                 )}
 
                 {posts.map((post) => (
-                  <div key={post.postId} className="bg-gray-50 rounded-xl p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={post.authorImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"}
-                          alt={post.authorName || "User"}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <div>
-                          <h4 className="font-semibold text-gray-800">
-                            {post.authorName || "Anonymous"}
-                          </h4>
-                          <p className="text-xs text-gray-500">{formatPostTime(post.createdAtEpoch)}</p>
-                        </div>
-                      </div>
-                      <button className="p-1 hover:bg-gray-200 rounded-full transition-colors">
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
-                      </button>
-                    </div>
-
-                    <p className="text-gray-700 text-sm mb-3">{post.body}</p>
-
-                    {post.media?.[0]?.url && (
-                      <img
-                        src={post.media[0].url}
-                        alt="Post image"
-                        className="w-full h-48 object-cover rounded-lg mb-3"
-                      />
-                    )}
-
-                    {post.tags && post.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-3">
-                        {post.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-3 py-1 bg-white text-primary rounded-full text-xs font-medium"
-                          >
-                            #{tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-4">
-                      <button
-                        onClick={() => toggleLike(post.postId)}
-                        className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-rose-500 transition-colors"
-                      >
-                        <Heart
-                          className={`w-4 h-4 ${
-                            likedPosts.has(post.postId)
-                              ? "fill-rose-500 text-rose-500"
-                              : ""
-                          }`}
-                        />
-                        {(post.likes ?? 0) + (likedPosts.has(post.postId) ? 1 : 0)}
-                      </button>
-                      <button className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-500 transition-colors">
-                        <MessageCircle className="w-4 h-4" />
-                        {post.commentCount ?? 0}
-                      </button>
-                      <button className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-500 transition-colors ml-auto">
-                        <Share2 className="w-4 h-4" />
-                        Share
-                      </button>
-                    </div>
-                  </div>
+                  <PostCard
+                    key={post.postId}
+                    variant="circle"
+                    avatar={post.authorImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"}
+                    name={post.authorName || "Anonymous"}
+                    meta={
+                      <p className="text-xs text-gray-500">{formatPostTime(post.createdAtEpoch)}</p>
+                    }
+                    body={post.body}
+                    image={post.media?.[0]?.url}
+                    tags={post.tags || []}
+                    actionsWrapperClassName="flex items-center gap-4"
+                    actions={[
+                      {
+                        key: "like",
+                        icon: Heart,
+                        label: (post.likes ?? 0) + (likedPosts.has(post.postId) ? 1 : 0),
+                        onClick: () => toggleLike(post.postId),
+                        iconClassName: `w-4 h-4 ${
+                          likedPosts.has(post.postId) ? "fill-rose-500 text-rose-500" : ""
+                        }`,
+                        className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-rose-500 transition-colors",
+                      },
+                      {
+                        key: "comment",
+                        icon: MessageCircle,
+                        label: post.commentCount ?? 0,
+                        iconClassName: "w-4 h-4",
+                        className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-500 transition-colors",
+                      },
+                      {
+                        key: "share",
+                        icon: Share2,
+                        label: "Share",
+                        iconClassName: "w-4 h-4",
+                        className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-500 transition-colors ml-auto",
+                      },
+                    ]}
+                  />
                 ))}
               </div>
             )}
