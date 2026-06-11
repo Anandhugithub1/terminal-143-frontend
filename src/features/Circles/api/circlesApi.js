@@ -1,6 +1,6 @@
 import api from './axios'
 const BASE =
-'https://api.passormatch.com/circles';
+'https://api.passormatch.com/circles/';
 
 export const createCircle =
 payload =>

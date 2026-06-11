@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 
 import {
+  useRef,
   useState
 } from "react";
 
@@ -16,6 +17,17 @@ import {
 import {
   useCreateCircle
 } from "../../hooks/useCircles";
+
+import {
+  getPresignedUrl
+} from "../../api/imageupload";
+
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp"
+];
 
 export default function CreateCircleModal({
   isOpen,
@@ -48,8 +60,97 @@ export default function CreateCircleModal({
     "public"
   );
 
+  const [
+    coverFile,
+    setCoverFile
+  ] = useState(null);
+
+  const [
+    coverPreview,
+    setCoverPreview
+  ] = useState("");
+
+  const [
+    isUploadingImage,
+    setIsUploadingImage
+  ] = useState(false);
+
+  const fileInputRef =
+    useRef(null);
+
   const createCircleMutation =
     useCreateCircle();
+
+  const handleImageChange =
+    e => {
+      const file =
+        e.target.files?.[0];
+
+      if (!file) return;
+
+      if (
+        !ALLOWED_IMAGE_TYPES.includes(
+          file.type
+        )
+      ) {
+        alert(
+          "Please select a JPG, PNG, or WEBP image"
+        );
+        return;
+      }
+
+      if (
+        file.size >
+        5 * 1024 * 1024
+      ) {
+        alert(
+          "Image must be under 5MB"
+        );
+        return;
+      }
+
+      setCoverFile(
+        file
+      );
+      setCoverPreview(
+        URL.createObjectURL(
+          file
+        )
+      );
+    };
+
+  const uploadCoverPhoto =
+    async () => {
+      const {
+        presignedUrl,
+        publicUrl
+      } =
+        await getPresignedUrl(
+          {
+            fileType:
+              coverFile.type,
+            kind:
+              "circleCover",
+            circleName:
+              circleName.trim()
+          }
+        );
+
+      await fetch(
+        presignedUrl,
+        {
+          method:
+            "PUT",
+          headers: {
+            "Content-Type":
+              coverFile.type
+          },
+          body: coverFile
+        }
+      );
+
+      return publicUrl;
+    };
 
   const handleCreateCircle =
     async () => {
@@ -81,6 +182,26 @@ export default function CreateCircleModal({
           return;
         }
 
+        let coverPhoto =
+          "";
+
+        if (
+          coverFile
+        ) {
+          setIsUploadingImage(
+            true
+          );
+
+          try {
+            coverPhoto =
+              await uploadCoverPhoto();
+          } finally {
+            setIsUploadingImage(
+              false
+            );
+          }
+        }
+
         const payload =
           {
             name:
@@ -103,8 +224,7 @@ export default function CreateCircleModal({
                   ]
                 : [],
 
-            coverPhoto:
-              "",
+            coverPhoto,
           };
 
         await createCircleMutation.mutateAsync(
@@ -129,6 +249,13 @@ export default function CreateCircleModal({
 
         setPrivacy(
           "public"
+        );
+
+        setCoverFile(
+          null
+        );
+        setCoverPreview(
+          ""
         );
 
         onClose();
@@ -201,28 +328,55 @@ export default function CreateCircleModal({
               Image
             </label>
 
-            <div className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl hover:border-primary transition-colors cursor-pointer bg-gray-50">
-              <div className="text-center">
-                <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+            <input
+              ref={
+                fileInputRef
+              }
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              onChange={
+                handleImageChange
+              }
+              className="hidden"
+            />
 
-                <p className="text-sm text-gray-500">
-                  <span className="text-primary font-semibold">
-                    Click
-                    to
-                    upload
-                  </span>{" "}
-                  or drag
-                  and
-                  drop
-                </p>
+            <div
+              onClick={() =>
+                fileInputRef.current?.click()
+              }
+              className="flex items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl hover:border-primary transition-colors cursor-pointer bg-gray-50 overflow-hidden"
+            >
+              {coverPreview ? (
+                <img
+                  src={
+                    coverPreview
+                  }
+                  alt="Circle cover preview"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="text-center">
+                  <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
 
-                <p className="text-xs text-gray-400">
-                  PNG,
-                  JPG
-                  up to
-                  5MB
-                </p>
-              </div>
+                  <p className="text-sm text-gray-500">
+                    <span className="text-primary font-semibold">
+                      Click
+                      to
+                      upload
+                    </span>{" "}
+                    or drag
+                    and
+                    drop
+                  </p>
+
+                  <p className="text-xs text-gray-400">
+                    PNG,
+                    JPG
+                    up to
+                    5MB
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
@@ -426,11 +580,14 @@ export default function CreateCircleModal({
                 handleCreateCircle
               }
               disabled={
-                createCircleMutation.isPending
+                createCircleMutation.isPending ||
+                isUploadingImage
               }
               className="flex-1 px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50"
             >
-              {createCircleMutation.isPending
+              {isUploadingImage
+                ? "Uploading image..."
+                : createCircleMutation.isPending
                 ? "Creating..."
                 : "Create Circle"}
             </button>
