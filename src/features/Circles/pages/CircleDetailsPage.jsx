@@ -22,6 +22,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import CreatePostModal from "../components/post/CreatePostModal";
 import PostCard from "../components/post/PostCard";
+import CommentSection from "../components/comment/CommentSection";
 import { useCircle } from "../hooks/useCircles";
 import { usePosts } from "../hooks/usePosts";
 import { queryKeys } from "../queries/queryKeys";
@@ -50,6 +51,7 @@ export default function CircleDetailsPage() {
   const [isJoined, setIsJoined] = useState(true);
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+  const [commentPost, setCommentPost] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -108,6 +110,13 @@ export default function CircleDetailsPage() {
         onSubmit={handlePostCreated}
         circleName={data.name}
         circleId={circleId}
+      />
+
+      {/* Comment Sheet */}
+      <CommentSection
+        isOpen={!!commentPost}
+        onClose={() => setCommentPost(null)}
+        post={commentPost}
       />
 
       {/* Cover Image */}
@@ -316,6 +325,7 @@ export default function CircleDetailsPage() {
                         key: "comment",
                         icon: MessageCircle,
                         label: post.commentCount ?? 0,
+                        onClick: () => setCommentPost(post),
                         iconClassName: "w-4 h-4",
                         className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-500 transition-colors",
                       },

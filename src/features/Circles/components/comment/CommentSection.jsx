@@ -1,31 +1,46 @@
 import { useState } from "react";
-import { Heart, MoreVertical, Send } from "lucide-react";
-import { demoComments } from "../../constants/demoComments";
+import { Send } from "lucide-react";
+import { useComments, useCreateComment } from "../../hooks/useComments";
+import CommentCard from "./CommentCard";
+
+const DEFAULT_AVATAR =
+  "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop";
+
+const COMMENT_MAX_LENGTH = 500;
+
+const formatCommentTime = (epochMillis) => {
+  if (!epochMillis) return "";
+
+  const diffSec = Math.max(0, (Date.now() - epochMillis) / 1000);
+
+  if (diffSec < 60) return "Just now";
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+  return `${Math.floor(diffSec / 86400)}d ago`;
+};
 
 export default function CommentSection({ isOpen, onClose, post }) {
   const [newComment, setNewComment] = useState("");
-  const [comments, setComments] = useState(demoComments);
+
+  const postId = post?.postId;
+  const { data: commentsData, isLoading } = useComments(postId);
+  const createCommentMutation = useCreateComment(postId);
+
+  const comments = commentsData?.items || commentsData?.comments || [];
 
   if (!isOpen) return null;
 
   const handleSubmitComment = (e) => {
     e.preventDefault();
-    if (!newComment.trim()) return;
+    const content = newComment.trim();
+    if (!content || content.length > COMMENT_MAX_LENGTH || !postId || createCommentMutation.isPending) return;
 
-    const comment = {
-      id: Date.now(),
-      user: {
-        name: "You",
-        avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
-      },
-      text: newComment,
-      time: "Just now",
-      likes: 0,
-      replies: []
-    };
-
-    setComments([comment, ...comments]);
-    setNewComment("");
+    createCommentMutation.mutate(
+      { content },
+      {
+        onSuccess: () => setNewComment(""),
+      }
+    );
   };
 
   return (
@@ -42,7 +57,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
         <div className="flex-shrink-0 p-4 border-b border-gray-100 flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold text-gray-800">Comments</h3>
-            {post && (
+            {post?.title && (
               <p className="text-xs text-gray-500 mt-0.5">{post.title}</p>
             )}
           </div>
@@ -58,71 +73,23 @@ export default function CommentSection({ isOpen, onClose, post }) {
 
         {/* Comments List */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {comments.map((comment) => (
-            <div key={comment.id} className="space-y-3">
-              {/* Main Comment */}
-              <div className="flex gap-3">
-                <img
-                  src={comment.user.avatar}
-                  alt={comment.user.name}
-                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="bg-gray-50 rounded-2xl p-3">
-                    <div className="flex items-center justify-between mb-1">
-                      <h4 className="font-semibold text-gray-800 text-sm">
-                        {comment.user.name}
-                      </h4>
-                      <button className="p-1 hover:bg-gray-200 rounded-full transition-colors">
-                        <MoreVertical className="w-4 h-4 text-gray-400" />
-                      </button>
-                    </div>
-                    <p className="text-gray-600 text-sm">{comment.text}</p>
-                  </div>
-                  <div className="flex items-center gap-4 mt-1.5 px-2">
-                    <span className="text-xs text-gray-400">{comment.time}</span>
-                    <button className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors">
-                      <Heart className="w-3.5 h-3.5" />
-                      {comment.likes}
-                    </button>
-                    <button className="text-xs text-gray-400 hover:text-gray-600 transition-colors font-semibold">
-                      Reply
-                    </button>
-                  </div>
+          {isLoading && (
+            <p className="text-sm text-gray-400 text-center py-4">Loading comments...</p>
+          )}
 
-                  {/* Replies */}
-                  {comment.replies?.map((reply) => (
-                    <div key={reply.id} className="ml-4 mt-2 flex gap-3">
-                      <img
-                        src={reply.user.avatar}
-                        alt={reply.user.name}
-                        className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="bg-gray-50 rounded-2xl p-3">
-                          <div className="flex items-center justify-between mb-1">
-                            <h4 className="font-semibold text-gray-800 text-sm">
-                              {reply.user.name}
-                            </h4>
-                            <button className="p-1 hover:bg-gray-200 rounded-full transition-colors">
-                              <MoreVertical className="w-3.5 h-3.5 text-gray-400" />
-                            </button>
-                          </div>
-                          <p className="text-gray-600 text-sm">{reply.text}</p>
-                        </div>
-                        <div className="flex items-center gap-4 mt-1.5 px-2">
-                          <span className="text-xs text-gray-400">{reply.time}</span>
-                          <button className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors">
-                            <Heart className="w-3.5 h-3.5" />
-                            {reply.likes}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+          {!isLoading && comments.length === 0 && (
+            <p className="text-sm text-gray-400 text-center py-4">No comments yet. Be the first to comment!</p>
+          )}
+
+          {comments.map((comment) => (
+            <CommentCard
+              key={comment.commentId || comment.id}
+              avatar={comment.author?.avatar || comment.avatar || DEFAULT_AVATAR}
+              name={comment.author?.name || comment.userName || comment.name || "Anonymous"}
+              text={comment.content || comment.text || comment.body}
+              time={formatCommentTime(comment.createdAtEpoch)}
+              likes={comment.likes ?? 0}
+            />
           ))}
         </div>
 
@@ -130,7 +97,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
         <div className="flex-shrink-0 p-4 border-t border-gray-100">
           <form onSubmit={handleSubmitComment} className="flex items-center gap-3">
             <img
-              src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"
+              src={DEFAULT_AVATAR}
               alt="Your avatar"
               className="w-8 h-8 rounded-full object-cover flex-shrink-0"
             />
@@ -138,19 +105,25 @@ export default function CommentSection({ isOpen, onClose, post }) {
               <input
                 type="text"
                 value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
+                onChange={(e) => setNewComment(e.target.value.slice(0, COMMENT_MAX_LENGTH))}
                 placeholder="Write a comment..."
+                maxLength={COMMENT_MAX_LENGTH}
                 className="w-full pl-4 pr-12 py-2.5 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
               />
               <button
                 type="submit"
-                disabled={!newComment.trim()}
+                disabled={!newComment.trim() || createCommentMutation.isPending}
                 className="absolute right-1.5 top-1/2 -translate-y-1/2 p-1.5 bg-primary text-white rounded-full hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Send className="w-4 h-4" />
               </button>
             </div>
           </form>
+          {newComment.length > COMMENT_MAX_LENGTH * 0.9 && (
+            <p className="text-xs text-gray-400 text-right mt-1">
+              {newComment.length}/{COMMENT_MAX_LENGTH}
+            </p>
+          )}
         </div>
       </div>
     </div>
