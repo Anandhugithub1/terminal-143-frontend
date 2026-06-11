@@ -15,14 +15,24 @@ import BottomNav from "../../../components/Layout/BottomNavigation";
 import Sidebar from "../components/layout/Sidebar";
 import CreateCircleModal from "../components/circle/CreateCircleModal";
 import CommentSection from "../components/comment/CommentSection";
-import { myCircles } from "../constants/demoCircles";
+import { useCircles } from "../hooks/useCircles";
 import { feed } from "../constants/demoFeed";
+
+const CIRCLE_BG_COLORS = [
+  "bg-rose-50",
+  "bg-blue-50",
+  "bg-purple-50",
+  "bg-green-50",
+  "bg-orange-50",
+];
 
 export default function CirclesHomePage() {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [commentPost, setCommentPost] = useState(null);
+  const { data: circlesData, isLoading: isLoadingCircles } = useCircles();
+  const myCircles = circlesData?.circles || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
@@ -75,25 +85,37 @@ export default function CirclesHomePage() {
 
           <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
             <div className="flex gap-4" style={{ minWidth: "min-content" }}>
-              {myCircles.map((circle) => (
+              {isLoadingCircles && (
+                <p className="text-sm text-gray-400 py-4">Loading circles...</p>
+              )}
+
+              {myCircles.map((circle, index) => (
                 <div
-                  key={circle.id}
+                  key={circle.circleId}
                   className="flex-shrink-0 w-24 text-center cursor-pointer"
-                  onClick={() => navigate(`/circles/${circle.id}`, { state: { circleData: circle } })}
+                  onClick={() => navigate(`/circles/${circle.circleId}`, { state: { circleData: circle } })}
                 >
                   <div
-                    className={`${circle.bgColor} rounded-2xl p-3 transition-all hover:scale-105 hover:shadow-md`}
+                    className={`${CIRCLE_BG_COLORS[index % CIRCLE_BG_COLORS.length]} rounded-2xl p-3 transition-all hover:scale-105 hover:shadow-md`}
                   >
-                    <img
-                      src={circle.image}
-                      alt={circle.name}
-                      className="w-16 h-16 rounded-full object-cover mx-auto shadow-sm"
-                    />
+                    {circle.coverPhoto ? (
+                      <img
+                        src={circle.coverPhoto}
+                        alt={circle.name}
+                        className="w-16 h-16 rounded-full object-cover mx-auto shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mx-auto shadow-sm">
+                        <span className="text-lg font-bold text-text-sec">
+                          {circle.name?.[0]?.toUpperCase()}
+                        </span>
+                      </div>
+                    )}
                     <h3 className="font-semibold text-text-sec mt-2 text-sm truncate">
                       {circle.name}
                     </h3>
-                    <p className="text-xs text-gray-500 mt-0.5">
-                      {circle.members} members
+                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                      {circle.category}
                     </p>
                   </div>
                 </div>
