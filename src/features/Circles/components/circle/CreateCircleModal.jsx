@@ -119,25 +119,25 @@ export default function CreateCircleModal({
       );
     };
 
-  const uploadCoverPhoto =
+ const uploadCoverPhoto =
   async () => {
 
-   const {
-  data: {
-    presignedUrl,
-    publicUrl
-  }
-} =
-  await getPresignedUrl(
-    {
-      fileType:
-        coverFile.type,
-      kind:
-        'circleCover',
-      circleName:
-        circleName.trim()
-    }
-  );
+    const {
+      data: {
+        presignedUrl,
+        publicUrl
+      }
+    } =
+      await getPresignedUrl(
+        {
+          fileType:
+            coverFile.type,
+          kind:
+            'circleCover',
+          circleName:
+            circleName.trim()
+        }
+      );
 
     console.log(
       'PRESIGNED URL',
@@ -147,20 +147,6 @@ export default function CreateCircleModal({
     console.log(
       'COVER FILE',
       coverFile
-    );
-
-    const imageResponse =
-      await fetch(
-        coverFile.uri
-      );
-
-    const blob =
-      await imageResponse
-        .blob();
-
-    console.log(
-      'BLOB SIZE',
-      blob.size
     );
 
     const uploadRes =
@@ -176,7 +162,7 @@ export default function CreateCircleModal({
           },
 
           body:
-            blob
+            coverFile
         }
       );
 
@@ -185,22 +171,9 @@ export default function CreateCircleModal({
       uploadRes.status
     );
 
-    console.log(
-      'UPLOAD OK',
-      uploadRes.ok
-    );
-
     if (
       !uploadRes.ok
     ) {
-      const text =
-        await uploadRes.text();
-
-      console.log(
-        'UPLOAD ERROR',
-        text
-      );
-
       throw new Error(
         'Upload failed'
       );
