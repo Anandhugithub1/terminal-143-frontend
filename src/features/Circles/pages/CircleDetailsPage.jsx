@@ -1,4 +1,3 @@
-// Updated CircleDetailPage.jsx with CreatePostModal integration
 import {
   ArrowLeft,
   Search,
@@ -7,138 +6,40 @@ import {
   Users,
   Calendar,
   MessageCircle,
-  Image,
   MapPin,
   Heart,
   Share2,
   Settings,
   Plus,
   Grid3X3,
-  List,
   Clock,
   ChevronRight,
   Camera,
 } from "lucide-react";
 import { useState } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import BottomNav from "../../../components/Layout/BottomNavigation";
-import CreatePostModal from '../components/posts/CreatePostModal'
-// Demo circle data
-const circleData = {
-  id: 1,
-  name: "Running Club Bangkok",
-  description: "A community of running enthusiasts in Bangkok. From beginners to marathon runners, everyone is welcome! 🏃‍♂️🏃‍♀️",
-  members: 124,
-  onlineMembers: 23,
-  location: "Bangkok, Thailand",
-  image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&h=300&fit=crop",
-  coverImage: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&h=400&fit=crop",
-  bgColor: "bg-rose-50",
-  category: "Sports & Fitness",
-  createdDate: "January 2024",
-  tags: ["Running", "Fitness", "Marathon", "Outdoor", "Health"],
-  rules: [
-    "Be respectful to all members",
-    "No spam or self-promotion",
-    "Share your running achievements",
-    "Keep conversations on topic",
-  ],
-};
+import CreatePostModal from "../components/post/CreatePostModal";
+import {
+  circleData as demoCircleData,
+  members,
+  events,
+  initialPosts,
+} from "../constants/circleDetailsData";
 
-// Demo members
-const members = [
-  {
-    id: 1,
-    name: "Sarah Chen",
-    role: "Admin",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-    isOnline: true,
-  },
-  {
-    id: 2,
-    name: "Mike Johnson",
-    role: "Moderator",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-    isOnline: true,
-  },
-  {
-    id: 3,
-    name: "Emma Wilson",
-    role: "Member",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
-    isOnline: false,
-  },
-  {
-    id: 4,
-    name: "James Brown",
-    role: "Member",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
-    isOnline: true,
-  },
-];
+export default function CircleDetailsPage() {
+  const { circleId } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-// Demo events
-const events = [
-  {
-    id: 1,
-    title: "Sunday Morning Run",
-    date: "Sunday, Jan 15",
-    time: "7:00 AM",
-    location: "Benjakitti Park",
-    attendees: 23,
-    image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=200&fit=crop",
-  },
-  {
-    id: 2,
-    title: "Marathon Training Session",
-    date: "Wednesday, Jan 18",
-    time: "6:00 PM",
-    location: "Lumpini Park",
-    attendees: 15,
-    image: "https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=400&h=200&fit=crop",
-  },
-];
-
-// Demo posts
-const initialPosts = [
-  {
-    id: 1,
-    author: {
-      name: "Mike Johnson",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
-    },
-    content: "Great morning run today! Completed 10KM in 55 minutes. The weather was perfect! 🏃‍♂️",
-    image: "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=600&h=400&fit=crop",
-    time: "2 hours ago",
-    likes: 45,
-    comments: 12,
-    isLiked: false,
-    tags: ["Morning Run", "Achievement"],
-  },
-  {
-    id: 2,
-    author: {
-      name: "Sarah Chen",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
-    },
-    content: "Who's joining the Sunday run? We're planning a new route through the park. Drop a comment if you're coming! 🏃‍♀️",
-    image: null,
-    time: "5 hours ago",
-    likes: 32,
-    comments: 18,
-    isLiked: true,
-    tags: ["Event", "Sunday Run"],
-  },
-];
-
-export default function CircleDetailPage({ circleId, circleData: passedData, onBack }) {
   const [activeTab, setActiveTab] = useState("posts");
   const [isJoined, setIsJoined] = useState(true);
   const [likedPosts, setLikedPosts] = useState(new Set([2]));
   const [posts, setPosts] = useState(initialPosts);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
 
-  // Use passed data or demo data
-  const data = passedData || circleData;
+  // Use circle data passed via navigation state, falling back to demo data
+  const data = location.state?.circleData || { ...demoCircleData, id: circleId };
 
   const tabs = [
     { id: "posts", label: "Posts", icon: Grid3X3 },
@@ -165,7 +66,7 @@ export default function CircleDetailPage({ circleId, circleData: passedData, onB
         avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
       },
       content: postData.content,
-      image: postData.images[0] || null,
+      image: postData.images?.[0] || null,
       time: "Just now",
       likes: 0,
       comments: 0,
@@ -183,6 +84,7 @@ export default function CircleDetailPage({ circleId, circleData: passedData, onB
         onClose={() => setIsCreatePostModalOpen(false)}
         onSubmit={handleCreatePost}
         circleName={data.name}
+        circleId={circleId}
       />
 
       {/* Cover Image */}
@@ -197,8 +99,8 @@ export default function CircleDetailPage({ circleId, circleData: passedData, onB
         {/* Header Actions */}
         <div className="absolute top-0 left-0 right-0 p-4">
           <div className="flex items-center justify-between">
-            <button 
-              onClick={onBack}
+            <button
+              onClick={() => navigate(-1)}
               className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
             >
               <ArrowLeft className="w-5 h-5 text-white" />
@@ -254,7 +156,10 @@ export default function CircleDetailPage({ circleId, circleData: passedData, onB
                 </button>
               </>
             ) : (
-              <button className="flex-1 bg-primary text-white rounded-xl py-3 font-semibold hover:shadow-lg transition-all">
+              <button
+                onClick={() => setIsJoined(true)}
+                className="flex-1 bg-primary text-white rounded-xl py-3 font-semibold hover:shadow-lg transition-all"
+              >
                 Join Circle
               </button>
             )}
@@ -330,13 +235,13 @@ export default function CircleDetailPage({ circleId, circleData: passedData, onB
                     alt="Your avatar"
                     className="w-10 h-10 rounded-full object-cover"
                   />
-                  <button 
+                  <button
                     onClick={() => setIsCreatePostModalOpen(true)}
                     className="flex-1 text-left px-4 py-2 bg-white rounded-full text-gray-400 text-sm hover:bg-gray-100 transition-colors"
                   >
                     Share your running experience...
                   </button>
-                  <button 
+                  <button
                     onClick={() => setIsCreatePostModalOpen(true)}
                     className="p-2 hover:bg-gray-200 rounded-full transition-colors"
                   >

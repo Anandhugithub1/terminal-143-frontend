@@ -10,13 +10,9 @@ const OnboardingPage = lazy(() =>
   import("../features/Circles/pages/OnboardingPage.jsx")
 )
 
-// const CircleDetailsPage = lazy(() =>
-//   import("../features/Circles/pages/CircleDetailsPage.jsx")
-// )
-
-// const CreateCirclePage = lazy(() =>
-//   import("../features/Circles/pages/CreateCirclePage.jsx")
-// )
+const CircleDetailsPage = lazy(() =>
+  import("../features/Circles/pages/CircleDetailsPage.jsx")
+)
 
 export const CircleRoutes = (
   <>
@@ -28,33 +24,21 @@ export const CircleRoutes = (
         </Suspense>
       }
     />
-<Route 
+    <Route
       path="circles/onboarding"
       element={
-        <Suspense fallback={<LoadingSpinner />}>    
+        <Suspense fallback={<LoadingSpinner />}>
           <OnboardingPage />
         </Suspense>
       }
     />
-
-
-{/* 
     <Route
-      path="circles/create"
-      element={
-        <Suspense fallback={<LoadingSpinner />}>
-          <CreateCirclePage />
-        </Suspense>
-      }
-    /> */}
-
-    {/* <Route
       path="circles/:circleId"
       element={
         <Suspense fallback={<LoadingSpinner />}>
           <CircleDetailsPage />
         </Suspense>
       }
-    /> */}
+    />
   </>
 )

@@ -1,6 +1,6 @@
-// components/circles/CreateCircleModal.jsx
 import { X, Upload, Users, MapPin } from "lucide-react";
 import { useState } from "react";
+import { circleCategories } from "../../constants/circleCategories";
 
 export default function CreateCircleModal({ isOpen, onClose }) {
   const [circleName, setCircleName] = useState("");
@@ -10,25 +10,14 @@ export default function CreateCircleModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const categories = [
-    "Sports & Fitness",
-    "Learning & Education",
-    "Arts & Culture",
-    "Music & Entertainment",
-    "Food & Dining",
-    "Travel & Adventure",
-    "Technology",
-    "Games & Gaming",
-  ];
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Overlay */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal */}
       <div className="relative bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
         {/* Header */}
@@ -104,7 +93,7 @@ export default function CreateCircleModal({ isOpen, onClose }) {
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white"
             >
               <option value="">Select a category</option>
-              {categories.map((cat) => (
+              {circleCategories.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>

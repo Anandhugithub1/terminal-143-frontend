@@ -1,22 +1,17 @@
-// components/circles/CreatePostModal.jsx
 import {
   X,
   Image,
   MapPin,
-  Users,
   Send,
   Smile,
   Hash,
-  Calendar,
   Video,
   Play,
   Pause,
   Clock,
-  Globe,
-  Lock,
-  Eye,
 } from "lucide-react";
 import { useState, useRef } from "react";
+import { suggestedTags, visibilityOptions, activityTypes } from "../../constants/postOptions";
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
   const [postContent, setPostContent] = useState("");
@@ -34,38 +29,10 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
     admin1: "",
     h3: { r4: "" }
   });
-  
+
   const videoRef = useRef(null);
   const [playingVideo, setPlayingVideo] = useState(null);
   const [uploadingMedia, setUploadingMedia] = useState(false);
-
-  const suggestedTags = [
-    "Morning Run",
-    "Marathon",
-    "Tips",
-    "Question",
-    "Achievement",
-    "Event",
-    "Motivation",
-    "Gear",
-  ];
-
-  const visibilityOptions = [
-    { value: "all", label: "Everyone", icon: Globe, description: "Visible to everyone" },
-    { value: "members", label: "Members Only", icon: Users, description: "Only circle members" },
-    { value: "admins", label: "Admins Only", icon: Lock, description: "Only circle admins" },
-  ];
-
-  const activityTypes = [
-    "Running",
-    "Walking",
-    "Cycling",
-    "Hiking",
-    "Gym Workout",
-    "Yoga",
-    "Swimming",
-    "Other",
-  ];
 
   if (!isOpen) return null;
 
@@ -90,12 +57,12 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   // Handle media upload (image/video)
   const handleMediaUpload = (e) => {
     const files = Array.from(e.target.files);
-    
+
     files.forEach((file) => {
       // Check file type
       const isImage = file.type.startsWith("image/");
       const isVideo = file.type.startsWith("video/");
-      
+
       if (!isImage && !isVideo) {
         alert("Only image and video files are allowed");
         return;
@@ -112,7 +79,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       // Create object URL for preview
       const url = URL.createObjectURL(file);
       const type = isImage ? "image" : "video";
-      
+
       const newMedia = {
         url,
         type,
@@ -196,7 +163,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
     };
 
     console.log("Creating post:", postData);
-    
+
     // Call onSubmit prop if provided
     if (onSubmit) {
       onSubmit(postData);
@@ -284,7 +251,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Add Photos & Videos <span className="text-gray-400 font-normal">(Max 5, videos ≤ 60s)</span>
             </label>
-            
+
             {/* Media Preview Grid */}
             {media.length > 0 && (
               <div className="grid grid-cols-3 gap-2 mb-3">
@@ -324,7 +291,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                         )}
                       </div>
                     )}
-                    
+
                     {/* Remove button */}
                     <button
                       onClick={() => handleRemoveMedia(index)}
@@ -361,7 +328,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                     <span className="text-xs text-gray-500">Add Photos</span>
                   </div>
                 </label>
-                
+
                 <label className="flex-1 cursor-pointer">
                   <input
                     type="file"
@@ -438,7 +405,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
               <MapPin className="w-4 h-4" />
               {showLocationInput ? "Remove Location" : "Add Location"}
             </button>
-            
+
             {showLocationInput && (
               <div className="mt-2 space-y-2">
                 <input
@@ -465,7 +432,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               Tags
             </label>
-            
+
             {/* Selected Tags */}
             {selectedTags.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-3">
@@ -566,7 +533,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                   className="hidden"
                 />
               </label>
-              <button 
+              <button
                 onClick={() => setShowLocationInput(!showLocationInput)}
                 className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
               >

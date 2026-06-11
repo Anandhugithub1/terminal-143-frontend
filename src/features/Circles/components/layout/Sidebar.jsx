@@ -1,4 +1,3 @@
-// components/Layout/Sidebar.jsx
 import {
   X,
   Home,
@@ -10,16 +9,14 @@ import {
   LogOut,
   Bell,
   MessageCircle,
-  UserPlus,
   Calendar,
-  Award,
   Shield,
   HelpCircle,
   Star,
   TrendingUp,
   Clock,
   MapPin,
-  ChevronRight  // Add this import
+  ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
 
