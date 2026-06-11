@@ -120,37 +120,94 @@ export default function CreateCircleModal({
     };
 
   const uploadCoverPhoto =
-    async () => {
-      const {
-        presignedUrl,
-        publicUrl
-      } =
-        await getPresignedUrl(
-          {
-            fileType:
-              coverFile.type,
-            kind:
-              "circleCover",
-            circleName:
-              circleName.trim()
-          }
-        );
+  async () => {
 
+   const {
+  data: {
+    presignedUrl,
+    publicUrl
+  }
+} =
+  await getPresignedUrl(
+    {
+      fileType:
+        coverFile.type,
+      kind:
+        'circleCover',
+      circleName:
+        circleName.trim()
+    }
+  );
+
+    console.log(
+      'PRESIGNED URL',
+      presignedUrl
+    );
+
+    console.log(
+      'COVER FILE',
+      coverFile
+    );
+
+    const imageResponse =
+      await fetch(
+        coverFile.uri
+      );
+
+    const blob =
+      await imageResponse
+        .blob();
+
+    console.log(
+      'BLOB SIZE',
+      blob.size
+    );
+
+    const uploadRes =
       await fetch(
         presignedUrl,
         {
           method:
-            "PUT",
+            'PUT',
+
           headers: {
-            "Content-Type":
+            'Content-Type':
               coverFile.type
           },
-          body: coverFile
+
+          body:
+            blob
         }
       );
 
-      return publicUrl;
-    };
+    console.log(
+      'UPLOAD STATUS',
+      uploadRes.status
+    );
+
+    console.log(
+      'UPLOAD OK',
+      uploadRes.ok
+    );
+
+    if (
+      !uploadRes.ok
+    ) {
+      const text =
+        await uploadRes.text();
+
+      console.log(
+        'UPLOAD ERROR',
+        text
+      );
+
+      throw new Error(
+        'Upload failed'
+      );
+    }
+
+    return publicUrl;
+  };
 
   const handleCreateCircle =
     async () => {
