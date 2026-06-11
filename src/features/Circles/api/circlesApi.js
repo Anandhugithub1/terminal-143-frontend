@@ -18,7 +18,7 @@ export const listUserCircles =
 export const getCircle =
 circleId =>
   api.get(
-    `${BASE}/${circleId}`
+    `${BASE}${circleId}`
   );
 
 export const updateCircle =
@@ -27,6 +27,6 @@ export const updateCircle =
   payload
 ) =>
   api.patch(
-    `${BASE}/${circleId}`,
+    `${BASE}${circleId}`,
     payload
   );

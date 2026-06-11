@@ -6,7 +6,8 @@ import {
 
 import {
   listUserCircles,
-  createCircle
+  createCircle,
+  getCircle
 } from '../api/circlesApi';
 
 import {
@@ -25,6 +26,31 @@ export function useCircles() {
 
         return res.data;
       },
+
+    staleTime:
+      1000 * 60 * 5,
+  });
+}
+
+export function useCircle(circleId) {
+  return useQuery({
+    queryKey:
+      queryKeys.circle(
+        circleId
+      ),
+
+    queryFn:
+      async () => {
+        const res =
+          await getCircle(
+            circleId
+          );
+
+        return res.data;
+      },
+
+    enabled:
+      !!circleId,
 
     staleTime:
       1000 * 60 * 5,

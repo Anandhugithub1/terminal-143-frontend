@@ -20,8 +20,8 @@ import { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import CreatePostModal from "../components/post/CreatePostModal";
+import { useCircle } from "../hooks/useCircles";
 import {
-  circleData as demoCircleData,
   members,
   events,
   initialPosts,
@@ -38,8 +38,26 @@ export default function CircleDetailsPage() {
   const [posts, setPosts] = useState(initialPosts);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
 
-  // Use circle data passed via navigation state, falling back to demo data
-  const data = location.state?.circleData || { ...demoCircleData, id: circleId };
+  const { data: fetchedCircle, isLoading } = useCircle(circleId);
+
+  // Prefer freshly fetched circle data, fall back to data passed via navigation state
+  const data = fetchedCircle || location.state?.circleData;
+
+  if (isLoading && !data) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-400 text-sm">Loading circle...</p>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-400 text-sm">Circle not found</p>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: "posts", label: "Posts", icon: Grid3X3 },
@@ -89,11 +107,13 @@ export default function CircleDetailsPage() {
 
       {/* Cover Image */}
       <div className="relative h-48 sm:h-64 bg-gradient-to-br from-rose-400 to-orange-400">
-        <img
-          src={data.coverImage}
-          alt={data.name}
-          className="w-full h-full object-cover"
-        />
+        {data.coverPhoto && (
+          <img
+            src={data.coverPhoto}
+            alt={data.name}
+            className="w-full h-full object-cover"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
         {/* Header Actions */}
@@ -126,11 +146,11 @@ export default function CircleDetailsPage() {
               <div className="flex items-center gap-3 text-white/90 text-sm">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
-                  <span>{data.members} members</span>
+                  <span>{data.members ?? 0} members</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 bg-green-400 rounded-full" />
-                  <span>{data.onlineMembers} online</span>
+                  <span>{data.onlineMembers ?? 0} online</span>
                 </div>
               </div>
             </div>
@@ -172,34 +192,40 @@ export default function CircleDetailsPage() {
           <p className="text-gray-600 text-sm leading-relaxed mb-3">
             {data.description}
           </p>
-          <div className="flex flex-wrap gap-2">
-            {data.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-xs font-medium"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          <div className="mt-3 flex items-center gap-1 text-sm text-gray-500">
-            <Calendar className="w-4 h-4" />
-            <span>Created {data.createdDate}</span>
-          </div>
+          {data.tags?.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {data.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1 bg-rose-50 text-rose-600 rounded-full text-xs font-medium"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+          {data.createdDate && (
+            <div className="mt-3 flex items-center gap-1 text-sm text-gray-500">
+              <Calendar className="w-4 h-4" />
+              <span>Created {data.createdDate}</span>
+            </div>
+          )}
         </div>
 
         {/* Rules Section */}
-        <div className="bg-white rounded-2xl shadow-sm p-4 mb-4">
-          <h2 className="text-lg font-bold text-gray-800 mb-3">Circle Rules</h2>
-          <div className="space-y-2">
-            {data.rules.map((rule, index) => (
-              <div key={index} className="flex items-start gap-2">
-                <span className="text-primary font-bold mt-0.5">{index + 1}.</span>
-                <p className="text-gray-600 text-sm">{rule}</p>
-              </div>
-            ))}
+        {data.rules?.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-sm p-4 mb-4">
+            <h2 className="text-lg font-bold text-gray-800 mb-3">Circle Rules</h2>
+            <div className="space-y-2">
+              {data.rules.map((rule, index) => (
+                <div key={index} className="flex items-start gap-2">
+                  <span className="text-primary font-bold mt-0.5">{index + 1}.</span>
+                  <p className="text-gray-600 text-sm">{rule}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Tabs Navigation */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-4">
@@ -418,7 +444,7 @@ export default function CircleDetailsPage() {
                 </div>
 
                 <button className="w-full mt-3 p-3 text-primary font-semibold hover:bg-gray-50 rounded-xl transition-colors">
-                  View All {data.members} Members
+                  View All {data.members ?? 0} Members
                 </button>
               </div>
             )}
