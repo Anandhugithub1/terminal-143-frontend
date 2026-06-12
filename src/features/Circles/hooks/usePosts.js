@@ -8,7 +8,8 @@ from
 
 import {
   listPosts,
-  createPost
+  createPost,
+  getPost
 }
 from
 '../api/postsApi';
@@ -41,6 +42,37 @@ usePosts(
 
     enabled:
       !!circleId
+  });
+}
+
+export function
+usePost(
+  circleId,
+  postId,
+  createdAtEpoch
+) {
+  return useQuery({
+    queryKey:
+      queryKeys.post(
+        circleId,
+        postId,
+        createdAtEpoch
+      ),
+
+    queryFn:
+      async () => {
+        const res =
+          await getPost(
+            circleId,
+            createdAtEpoch,
+            postId
+          );
+
+        return res.data;
+      },
+
+    enabled:
+      !!circleId && !!postId && !!createdAtEpoch
   });
 }
 

@@ -25,6 +25,7 @@ import PostCard from "../components/post/PostCard";
 import CommentSection from "../components/comment/CommentSection";
 import { useCircle } from "../hooks/useCircles";
 import { usePosts } from "../hooks/usePosts";
+import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { queryKeys } from "../queries/queryKeys";
 import {
@@ -86,6 +87,31 @@ export default function CircleDetailsPage() {
     { id: "members", label: "Members", icon: Users },
     { id: "chat", label: "Chat", icon: MessageCircle },
   ];
+
+  const handleSharePost = async (post) => {
+    try {
+      const { data: postDetail } = await getPost(circleId, post.createdAtEpoch, post.postId);
+
+      const shareUrl = `${window.location.origin}/circles/${circleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`;
+      const shareData = {
+        title: postDetail?.authorName ? `${postDetail.authorName}'s post` : "Circle post",
+        text: postDetail?.content || post.content || "",
+        url: shareUrl,
+      };
+
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        alert("Post link copied to clipboard");
+      }
+    } catch (err) {
+      if (err?.name !== "AbortError") {
+        console.error(err);
+        alert("Failed to share post");
+      }
+    }
+  };
 
   const toggleLike = (postId) => {
     const newLiked = new Set(likedPosts);
@@ -307,7 +333,16 @@ export default function CircleDetailsPage() {
                     avatar={post.authorImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"}
                     name={post.authorName || "Anonymous"}
                     meta={
-                      <p className="text-xs text-gray-500">{formatPostTime(post.createdAtEpoch)}</p>
+                      <p className="text-xs text-gray-500">
+                        {formatPostTime(post.createdAtEpoch)}
+                        {post.location?.placeName && (
+                          <>
+                            {" "}
+                            • {post.location.placeName}
+                            {post.location.countryCode ? `, ${post.location.countryCode}` : ""}
+                          </>
+                        )}
+                      </p>
                     }
                     body={post.content}
                     media={post.media}
@@ -336,6 +371,7 @@ export default function CircleDetailsPage() {
                         key: "share",
                         icon: Share2,
                         label: "Share",
+                        onClick: () => handleSharePost(post),
                         iconClassName: "w-4 h-4",
                         className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-500 transition-colors ml-auto",
                       },

@@ -22,11 +22,33 @@ circleId =>
 export const getPost =
 (
   circleId,
-  postId
-) =>
-  api.get(
-    `${BASE}/${circleId}/posts/${postId}`
+  createdAtEpoch,
+  postId,
+  projection = null
+) => {
+  if (!circleId) {
+    throw new Error('circleId required');
+  }
+
+  if (!createdAtEpoch) {
+    throw new Error('createdAtEpoch required');
+  }
+
+  if (!postId) {
+    throw new Error('postId required');
+  }
+
+  const params = { createdAtEpoch };
+
+  if (projection) {
+    params.projection = projection;
+  }
+
+  return api.get(
+    `${BASE}/${circleId}/posts/${postId}`,
+    { params }
   );
+};
 
 export const updatePost =
 (

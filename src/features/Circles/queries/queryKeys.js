@@ -19,11 +19,13 @@ export const queryKeys =
   post:
     (
       circleId,
-      postId
+      postId,
+      createdAtEpoch
     ) => [
       'post',
       circleId,
-      postId
+      postId,
+      createdAtEpoch
     ],
 
   comments:
