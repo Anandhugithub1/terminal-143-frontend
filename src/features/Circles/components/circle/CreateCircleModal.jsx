@@ -1,13 +1,13 @@
 import {
   X,
   Upload,
-  Users,
-  MapPin
+  Users
 } from "lucide-react";
 
 import {
   useRef,
-  useState
+  useState,
+  useCallback
 } from "react";
 
 import {
@@ -21,6 +21,8 @@ import {
 import {
   getPresignedUrl
 } from "../../api/imageupload";
+
+import LocationInput from "../../../AddProfile/components/LocationInput";
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -51,7 +53,13 @@ export default function CreateCircleModal({
   const [
     location,
     setLocation
-  ] = useState("");
+  ] = useState({
+    coordinates: { lat: null, lon: null },
+    placeName: "",
+    countryCode: "",
+    admin1: "",
+    h3: { r4: "" }
+  });
 
   const [
     privacy,
@@ -118,6 +126,38 @@ export default function CreateCircleModal({
         )
       );
     };
+
+  const handleLocationSelect = useCallback((loc, detailsPromise) => {
+    if (!loc) {
+      setLocation({
+        coordinates: { lat: null, lon: null },
+        placeName: "",
+        countryCode: "",
+        admin1: "",
+        h3: { r4: "" },
+      });
+      return;
+    }
+
+    setLocation({
+      coordinates: { lat: loc.lat, lon: loc.lon },
+      placeName: loc.placeName,
+      countryCode: loc.countryCode,
+      admin1: loc.admin1,
+      h3: { r4: loc.h3Index || "" },
+    });
+
+    detailsPromise?.then((enriched) => {
+      if (!enriched) return;
+      setLocation({
+        coordinates: { lat: enriched.lat, lon: enriched.lon },
+        placeName: enriched.placeName,
+        countryCode: enriched.countryCode,
+        admin1: enriched.admin1,
+        h3: { r4: enriched.h3Index || "" },
+      });
+    });
+  }, []);
 
  const uploadCoverPhoto =
   async () => {
@@ -246,13 +286,16 @@ export default function CreateCircleModal({
               privacy,
 
             tags:
-              location.trim()
+              location.placeName
                 ? [
                     location
+                      .placeName
                       .trim()
                       .toLowerCase(),
                   ]
                 : [],
+
+            location,
 
             coverPhoto,
           };
@@ -273,9 +316,7 @@ export default function CreateCircleModal({
           ""
         );
 
-        setLocation(
-          ""
-        );
+        handleLocationSelect(null);
 
         setPrivacy(
           "public"
@@ -312,7 +353,7 @@ export default function CreateCircleModal({
     return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
       {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -322,7 +363,7 @@ export default function CreateCircleModal({
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
+      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
         {/* Header */}
         <div className="sticky top-0 bg-white p-6 pb-4 border-b border-gray-100 rounded-t-2xl">
           <div className="flex items-center justify-between">
@@ -504,31 +545,10 @@ export default function CreateCircleModal({
           </div>
 
           {/* Location */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Location
-            </label>
-
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-
-              <input
-                type="text"
-                value={
-                  location
-                }
-                onChange={e =>
-                  setLocation(
-                    e
-                      .target
-                      .value
-                  )
-                }
-                placeholder="Optional"
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-              />
-            </div>
-          </div>
+          <LocationInput
+            formData={{ location }}
+            onSelect={handleLocationSelect}
+          />
 
           {/* Privacy */}
           <div>
@@ -594,7 +614,7 @@ export default function CreateCircleModal({
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-white p-6 pt-4 border-t border-gray-100 rounded-b-2xl">
+        <div className="sticky bottom-0 bg-white p-6 pt-4 border-t border-gray-100 rounded-b-none sm:rounded-b-2xl">
           <div className="flex gap-3">
             <button
               onClick={

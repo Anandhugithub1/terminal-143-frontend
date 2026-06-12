@@ -178,6 +178,7 @@ export default function CirclesHomePage() {
                   </div>
                 }
                 image={post.image}
+                media={post.media}
                 heading={post.title}
                 body={post.body}
                 tags={post.tags}

@@ -310,7 +310,7 @@ export default function CircleDetailsPage() {
                       <p className="text-xs text-gray-500">{formatPostTime(post.createdAtEpoch)}</p>
                     }
                     body={post.content}
-                    image={post.media?.[0]?.url}
+                    media={post.media}
                     tags={post.tags || []}
                     actionsWrapperClassName="flex items-center gap-4"
                     actions={[

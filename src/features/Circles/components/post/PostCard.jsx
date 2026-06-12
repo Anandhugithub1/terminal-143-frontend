@@ -1,4 +1,5 @@
 import { MoreVertical } from "lucide-react";
+import PostMedia from "./PostMedia";
 
 // Shared post card used by the Circles feed (match-style posts) and the
 // circle details "Posts" tab (community posts). The two layouts differ
@@ -15,6 +16,7 @@ export default function PostCard({
   heading,
   body,
   image,
+  media = [],
   tags = [],
   actions = [],
   actionsWrapperClassName = "",
@@ -110,16 +112,17 @@ export default function PostCard({
         )}
       </div>
 
-      {/* Image */}
-      {image && (
+      {/* Media */}
+      {(media?.[0]?.url || image) && (
         <div className={isFeed ? "px-4 pb-2" : "mb-3"}>
-          <img
-            src={image}
+          <PostMedia
+            media={media}
+            image={image}
             alt={heading || name}
             className={
               isFeed
-                ? "w-full h-48 object-cover rounded-xl mt-2"
-                : "w-full h-48 object-cover rounded-lg"
+                ? "w-full h-56 sm:h-72 md:h-96 object-cover rounded-xl mt-2"
+                : "w-full h-56 sm:h-72 md:h-96 object-cover rounded-lg"
             }
           />
         </div>
