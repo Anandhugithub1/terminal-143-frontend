@@ -94,13 +94,13 @@ export default function PostDetailsPage() {
           body={post.content}
           media={post.media}
           tags={post.tags || []}
-          actionsWrapperClassName="flex items-center gap-4"
+          onShare={handleShare}
+          onReport={() => alert("Post reported")}
+          actionsWrapperClassName="grid grid-cols-3 gap-2"
           actions={buildPostActions({
-            post,
             isLiked,
             onToggleLike: () => setIsLiked((l) => !l),
             onComment: () => setShowComments(true),
-            onShare: handleShare,
           })}
         />
       </div>

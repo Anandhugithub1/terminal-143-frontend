@@ -1,5 +1,7 @@
-import { MoreVertical } from "lucide-react";
+import { useState } from "react";
+import { Flag, MoreVertical, Share2 } from "lucide-react";
 import PostMedia from "./PostMedia";
+import BottomSheetModal from "../common/BottomSheetModal";
 
 // Shared post card used by the Circles feed (match-style posts) and the
 // circle details "Posts" tab (community posts). The two layouts differ
@@ -12,7 +14,8 @@ export default function PostCard({
   statusDot = false,
   badge,
   meta,
-  onMore,
+  onShare,
+  onReport,
   heading,
   body,
   image,
@@ -22,6 +25,7 @@ export default function PostCard({
   actionsWrapperClassName = "",
 }) {
   const isFeed = variant === "feed";
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <div
@@ -68,7 +72,7 @@ export default function PostCard({
           </div>
 
           <button
-            onClick={onMore}
+            onClick={() => setIsMenuOpen(true)}
             className="p-1 hover:bg-gray-100 rounded-full transition-colors"
           >
             <MoreVertical className={isFeed ? "w-5 h-5 text-gray-500" : "w-4 h-4 text-gray-400"} />
@@ -141,6 +145,34 @@ export default function PostCard({
           </div>
         </div>
       )}
+
+      {/* More Menu */}
+      <BottomSheetModal
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        panelClassName="rounded-t-2xl sm:rounded-2xl sm:max-w-sm overflow-hidden"
+      >
+        <button
+          onClick={() => {
+            setIsMenuOpen(false);
+            onShare?.();
+          }}
+          className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          <Share2 className="w-5 h-5 text-gray-500" />
+          Share
+        </button>
+        <button
+          onClick={() => {
+            setIsMenuOpen(false);
+            onReport?.();
+          }}
+          className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
+        >
+          <Flag className="w-5 h-5" />
+          Report Post
+        </button>
+      </BottomSheetModal>
     </div>
   );
 }

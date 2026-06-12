@@ -276,13 +276,13 @@ export default function CircleDetailsPage() {
                 body={post.content}
                 media={post.media}
                 tags={post.tags || []}
-                actionsWrapperClassName="flex items-center gap-4"
+                onShare={() => handleSharePost(post)}
+                onReport={() => alert("Post reported")}
+                actionsWrapperClassName="grid grid-cols-3 gap-2"
                 actions={buildPostActions({
-                  post,
                   isLiked: likedPosts.has(post.postId),
                   onToggleLike: () => toggleLike(post.postId),
                   onComment: () => setCommentPost(post),
-                  onShare: () => handleSharePost(post),
                 })}
               />
             ))}
