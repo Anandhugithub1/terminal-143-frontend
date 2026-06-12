@@ -37,14 +37,14 @@ export const ProfileAvatar = ({
     {/*  Restrict to only standard image formats */}
     <input
       type="file"
-      accept="image/jpeg,image/jpg,image/png,image/webp"
+      accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif"
       ref={galleryRef}
       onChange={handleFileChange}
       className="hidden"
     />
     <input
       type="file"
-      accept="image/jpeg,image/jpg,image/png,image/webp"
+      accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif"
       capture="environment"
       ref={cameraRef}
       onChange={handleFileChange}

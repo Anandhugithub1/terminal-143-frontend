@@ -3,14 +3,13 @@ import { toast } from "sonner";
 import {
   ALLOWED_IMAGE_TYPES,
   ALLOWED_VIDEO_TYPES,
-  IMAGE_CONVERT_QUALITY,
   MAX_IMAGE_SIZE_MB,
   MAX_MEDIA_ITEMS,
   MAX_VIDEO_DURATION_SEC,
   MAX_VIDEO_SIZE_MB,
-  NORMALIZED_IMAGE_EXT,
   NORMALIZED_IMAGE_TYPE,
 } from "../constants/mediaConfig";
+import { convertImageToWebp } from "../../../utils/imageConversion";
 
 let nextId = 0;
 const createId = () => `media-${Date.now()}-${nextId++}`;
@@ -22,70 +21,6 @@ const readVideoDuration = (url) =>
     video.onloadedmetadata = () => resolve(Math.round(video.duration));
     video.onerror = () => reject(new Error("Could not read video metadata"));
     video.src = url;
-  });
-
-// canvas.toBlob("image/webp") silently falls back to PNG on browsers that
-// can't encode WebP (e.g. iOS Safari < 14). Detect that once up front so we
-// can fall back to JPEG instead of mislabeling PNG bytes as WebP.
-let webpEncodeSupport = null;
-const supportsWebpEncoding = () => {
-  if (webpEncodeSupport === null) {
-    const canvas = document.createElement("canvas");
-    canvas.width = 1;
-    canvas.height = 1;
-    webpEncodeSupport = canvas.toDataURL("image/webp").startsWith("data:image/webp");
-  }
-  return webpEncodeSupport;
-};
-
-// Re-encodes an image file to NORMALIZED_IMAGE_TYPE (WebP), or JPEG on
-// devices that can't encode WebP, via canvas so every browser/device ends up
-// with a consistent, widely-decodable format. Formats the browser itself
-// can't decode (e.g. HEIC on non-Safari) fail at img.onerror.
-const convertImageToWebp = (file) =>
-  new Promise((resolve, reject) => {
-    const objectUrl = URL.createObjectURL(file);
-    const img = new Image();
-
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-
-      const ctx = canvas.getContext("2d");
-      // Fill white first: source formats with transparency (PNG/HEIC) would
-      // otherwise turn black when encoded to JPEG, which has no alpha channel.
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-
-      const useWebp = supportsWebpEncoding();
-      const outputType = useWebp ? NORMALIZED_IMAGE_TYPE : "image/jpeg";
-      const outputExt = useWebp ? NORMALIZED_IMAGE_EXT : "jpg";
-
-      canvas.toBlob(
-        (blob) => {
-          URL.revokeObjectURL(objectUrl);
-
-          if (!blob) {
-            reject(new Error("Image conversion failed"));
-            return;
-          }
-
-          const newName = file.name.replace(/\.[^.]+$/, "") + `.${outputExt}`;
-          resolve(new File([blob], newName, { type: outputType }));
-        },
-        outputType,
-        IMAGE_CONVERT_QUALITY
-      );
-    };
-
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      reject(new Error("Could not decode image"));
-    };
-
-    img.src = objectUrl;
   });
 
 // Manages selection, validation and lifecycle of post media attachments

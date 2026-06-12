@@ -23,12 +23,15 @@ import {
 } from "../../api/imageupload";
 
 import LocationInput from "../../../AddProfile/components/LocationInput";
+import { ensureNormalizedImage } from "../../../../utils/imageConversion";
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
   "image/png",
-  "image/webp"
+  "image/webp",
+  "image/heic",
+  "image/heif"
 ];
 
 export default function CreateCircleModal({
@@ -162,6 +165,11 @@ export default function CreateCircleModal({
  const uploadCoverPhoto =
   async () => {
 
+    const uploadFile =
+      await ensureNormalizedImage(
+        coverFile
+      );
+
     const {
       data: {
         presignedUrl,
@@ -171,7 +179,7 @@ export default function CreateCircleModal({
       await getPresignedUrl(
         {
           fileType:
-            coverFile.type,
+            uploadFile.type,
           kind:
             'circleCover',
           circleName:
@@ -186,7 +194,7 @@ export default function CreateCircleModal({
 
     console.log(
       'COVER FILE',
-      coverFile
+      uploadFile
     );
 
     const uploadRes =
@@ -198,11 +206,11 @@ export default function CreateCircleModal({
 
           headers: {
             'Content-Type':
-              coverFile.type
+              uploadFile.type
           },
 
           body:
-            coverFile
+            uploadFile
         }
       );
 
@@ -404,7 +412,7 @@ export default function CreateCircleModal({
                 fileInputRef
               }
               type="file"
-              accept="image/jpeg,image/jpg,image/png,image/webp"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif"
               onChange={
                 handleImageChange
               }

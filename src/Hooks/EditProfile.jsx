@@ -4,12 +4,15 @@ import {
   updateMyProfile,
   getPresignedUrl
 } from "../features/UserProfile/api/profile"
+import { ensureNormalizedImage } from "../utils/imageConversion"
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
   "image/jpg",
   "image/png",
-  "image/webp"
+  "image/webp",
+  "image/heic",
+  "image/heif"
 ]
 
 export function useEditableProfile() {
@@ -44,13 +47,15 @@ export function useEditableProfile() {
       throw new Error("INVALID_FILE_TYPE")
     }
 
+    const uploadFile = await ensureNormalizedImage(file)
+
     const { presignedUrl, publicUrl } =
-      await getPresignedUrl({ fileType: file.type, photoIndex: order })
+      await getPresignedUrl({ fileType: uploadFile.type, photoIndex: order })
 
     await fetch(presignedUrl, {
       method: "PUT",
-      headers: { "Content-Type": file.type },
-      body: file
+      headers: { "Content-Type": uploadFile.type },
+      body: uploadFile
     })
 
     return publicUrl

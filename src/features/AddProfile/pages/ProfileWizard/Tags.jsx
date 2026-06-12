@@ -13,6 +13,7 @@ import {
   completeProfileApi,
 } from "../../../UserProfile/api/profile";
 import { Checkbox } from "@headlessui/react";
+import { ensureNormalizedImage } from "../../../../utils/imageConversion";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM"];
 
@@ -125,14 +126,16 @@ const validateRequiredFields = () => {
   });
 
   const uploadSinglePhoto = async (file) => {
+    const uploadFile = await ensureNormalizedImage(file);
+
     const { presignedUrl, publicUrl } = await getPresignedUrl({
-      fileType: file.type,
+      fileType: uploadFile.type,
     });
 
     await fetch(presignedUrl, {
       method: "PUT",
-      headers: { "Content-Type": file.type },
-      body: file,
+      headers: { "Content-Type": uploadFile.type },
+      body: uploadFile,
     });
 
     return publicUrl;
