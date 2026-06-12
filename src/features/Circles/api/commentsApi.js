@@ -20,8 +20,10 @@ postId =>
   );
 
 export const replytoComment =
-
-postId =>
+(
+  postId,
+  payload
+) =>
   api.post(
     `${BASE}/posts/${postId}/comments/reply`,
     payload

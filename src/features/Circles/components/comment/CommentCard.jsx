@@ -12,6 +12,8 @@ export default function CommentCard({
   onLike,
   onReply,
   isReply = false,
+  replySlot,
+  replies = [],
 }) {
   return (
     <div className={`flex gap-3 ${isReply ? "ml-4 mt-2" : ""}`}>
@@ -48,6 +50,20 @@ export default function CommentCard({
             </button>
           )}
         </div>
+
+        {replySlot}
+
+        {replies.map((reply) => (
+          <CommentCard
+            key={reply.commentId || reply.id}
+            isReply
+            avatar={reply.avatar}
+            name={reply.name}
+            text={reply.text}
+            time={reply.time}
+            likes={reply.likes}
+          />
+        ))}
       </div>
     </div>
   );

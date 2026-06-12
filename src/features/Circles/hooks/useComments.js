@@ -8,7 +8,8 @@ from
 
 import {
   listComments,
-  createComment
+  createComment,
+  replytoComment
 }
 from
 '../api/commentsApi';
@@ -55,6 +56,35 @@ useCreateComment(
     mutationFn:
       payload =>
         createComment(
+          postId,
+          payload
+        ),
+
+    onSuccess:
+      () => {
+        queryClient.invalidateQueries(
+          {
+            queryKey:
+              queryKeys.comments(
+                postId
+              )
+          }
+        );
+      }
+  });
+}
+
+export function
+useReplyToComment(
+  postId
+) {
+  const queryClient =
+    useQueryClient();
+
+  return useMutation({
+    mutationFn:
+      payload =>
+        replytoComment(
           postId,
           payload
         ),

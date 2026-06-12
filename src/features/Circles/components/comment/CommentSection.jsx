@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
-import { useComments, useCreateComment } from "../../hooks/useComments";
+import { useComments, useCreateComment, useReplyToComment } from "../../hooks/useComments";
+import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 import CommentCard from "./CommentCard";
 
 const DEFAULT_AVATAR =
@@ -21,10 +22,17 @@ const formatCommentTime = (epochMillis) => {
 
 export default function CommentSection({ isOpen, onClose, post }) {
   const [newComment, setNewComment] = useState("");
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyText, setReplyText] = useState("");
 
   const postId = post?.postId;
   const { data: commentsData, isLoading } = useComments(postId);
   const createCommentMutation = useCreateComment(postId);
+  const replyCommentMutation = useReplyToComment(postId);
+
+  // Cached profile (5 min staleTime) — avoids refetching just to know the
+  // current user's username for the "can reply to own comment" check.
+  const { data: myProfile } = useMyProfile();
 
   const comments = commentsData?.items || commentsData?.comments || [];
 
@@ -43,6 +51,27 @@ export default function CommentSection({ isOpen, onClose, post }) {
       },
       {
         onSuccess: () => setNewComment(""),
+      }
+    );
+  };
+
+  const handleSubmitReply = (e, comment) => {
+    e.preventDefault();
+    const content = replyText.trim();
+    if (!content || content.length > COMMENT_MAX_LENGTH || !postId || replyCommentMutation.isPending) return;
+
+    replyCommentMutation.mutate(
+      {
+        content,
+        circleId: post.circleId,
+        createdAtEpoch: String(post.createdAtEpoch),
+        parentCommentId: comment.commentId || comment.id,
+      },
+      {
+        onSuccess: () => {
+          setReplyText("");
+          setReplyingTo(null);
+        },
       }
     );
   };
@@ -85,16 +114,57 @@ export default function CommentSection({ isOpen, onClose, post }) {
             <p className="text-sm text-gray-400 text-center py-4">No comments yet. Be the first to comment!</p>
           )}
 
-          {comments.map((comment) => (
-            <CommentCard
-              key={comment.commentId || comment.id}
-              avatar={comment.author?.avatar || comment.avatar || DEFAULT_AVATAR}
-              name={comment.author?.name || comment.userName || comment.name || "Anonymous"}
-              text={comment.content || comment.text || comment.body}
-              time={formatCommentTime(comment.createdAtEpoch)}
-              likes={comment.likes ?? 0}
-            />
-          ))}
+          {comments.map((comment) => {
+            const commentAuthor = comment.authorName || comment.author?.name || comment.userName || comment.name;
+            const canReply = !!myProfile?.username && commentAuthor === myProfile.username;
+            const commentKey = comment.commentId || comment.id;
+            const isReplying = replyingTo === commentKey;
+
+            return (
+              <CommentCard
+                key={commentKey}
+                avatar={comment.authorImage || comment.author?.avatar || comment.avatar || DEFAULT_AVATAR}
+                name={commentAuthor || "Anonymous"}
+                text={comment.content || comment.text || comment.body}
+                time={formatCommentTime(comment.createdAtEpoch)}
+                likes={comment.likes ?? 0}
+                onReply={canReply ? () => setReplyingTo(isReplying ? null : commentKey) : undefined}
+                replies={(comment.replies || []).map((reply) => ({
+                  commentId: reply.commentId || reply.id,
+                  avatar: reply.authorImage || reply.author?.avatar || reply.avatar || DEFAULT_AVATAR,
+                  name: reply.authorName || reply.author?.name || reply.userName || reply.name || "Anonymous",
+                  text: reply.content || reply.text || reply.body,
+                  time: formatCommentTime(reply.createdAtEpoch),
+                  likes: reply.likes ?? 0,
+                }))}
+                replySlot={
+                  isReplying && (
+                    <form
+                      onSubmit={(e) => handleSubmitReply(e, comment)}
+                      className="mt-2 flex items-center gap-2 px-2"
+                    >
+                      <input
+                        type="text"
+                        autoFocus
+                        value={replyText}
+                        onChange={(e) => setReplyText(e.target.value.slice(0, COMMENT_MAX_LENGTH))}
+                        placeholder="Write a reply..."
+                        maxLength={COMMENT_MAX_LENGTH}
+                        className="flex-1 px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      />
+                      <button
+                        type="submit"
+                        disabled={!replyText.trim() || replyCommentMutation.isPending}
+                        className="p-1.5 bg-primary text-white rounded-full hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Send className="w-3.5 h-3.5" />
+                      </button>
+                    </form>
+                  )
+                }
+              />
+            );
+          })}
         </div>
 
         {/* Comment Input */}

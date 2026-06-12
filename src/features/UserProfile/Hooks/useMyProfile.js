@@ -15,6 +15,7 @@ export const mapProfile = (data) => {
     null
 
   return {
+    username: data?.PK || "",
     name: data?.name || "User",
     dob: data?.dob || null,
     gender: data?.gender || null,
