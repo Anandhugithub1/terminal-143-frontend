@@ -158,6 +158,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
         tags: selectedTags,
         activityType: activityType || undefined,
         location: showLocationInput ? location : undefined,
+        authorImage: authorData?.avatar || "",
       };
 
       const res = await createPost(circleId, payload);

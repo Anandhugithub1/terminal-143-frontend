@@ -16,6 +16,8 @@ import CreateCircleModal from "../components/circle/CreateCircleModal";
 import CommentSection from "../components/comment/CommentSection";
 import PostCard from "../components/post/PostCard";
 import { useCircles } from "../hooks/useCircles";
+import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
+import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { feed } from "../constants/demoFeed";
 
 const CIRCLE_BG_COLORS = [
@@ -33,6 +35,9 @@ export default function CirclesHomePage() {
   const [commentPost, setCommentPost] = useState(null);
   const { data: circlesData, isLoading: isLoadingCircles } = useCircles();
   const myCircles = circlesData?.circles || [];
+
+  const { data: myProfile } = useMyProfile();
+  const myCoords = myProfile?.location?.coordinates;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
@@ -143,7 +148,13 @@ export default function CirclesHomePage() {
         {/* Feed Section */}
         <section>
           <div className="space-y-5">
-            {feed.map((post) => (
+            {feed.map((post) => {
+              const distance =
+                myCoords && post.location?.coordinates
+                  ? formatDistance(haversineDistanceKm(myCoords, post.location.coordinates))
+                  : post.distance;
+
+              return (
               <PostCard
                 key={post.id}
                 variant="feed"
@@ -161,9 +172,9 @@ export default function CirclesHomePage() {
                 meta={
                   <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
                     <span className="text-sm">🇹🇭</span>
-                    <span>{post.location}</span>
+                    <span>{post.location?.placeName || post.location}</span>
                     <span>•</span>
-                    <span>{post.distance}</span>
+                    <span>{distance}</span>
                   </div>
                 }
                 image={post.image}
@@ -199,7 +210,8 @@ export default function CirclesHomePage() {
                   },
                 ]}
               />
-            ))}
+              );
+            })}
           </div>
         </section>
       </div>

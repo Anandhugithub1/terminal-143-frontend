@@ -25,6 +25,7 @@ import PostCard from "../components/post/PostCard";
 import CommentSection from "../components/comment/CommentSection";
 import { useCircle } from "../hooks/useCircles";
 import { usePosts } from "../hooks/usePosts";
+import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { queryKeys } from "../queries/queryKeys";
 import {
   members,
@@ -57,6 +58,7 @@ export default function CircleDetailsPage() {
 
   const { data: fetchedCircle, isLoading } = useCircle(circleId);
   const { data: postsData, isLoading: isLoadingPosts } = usePosts(circleId);
+  const { data: myProfile } = useMyProfile();
 
   // Prefer freshly fetched circle data, fall back to data passed via navigation state
   const data = fetchedCircle || location.state?.circleData;
@@ -110,6 +112,7 @@ export default function CircleDetailsPage() {
         onSubmit={handlePostCreated}
         circleName={data.name}
         circleId={circleId}
+        authorData={{ name: myProfile?.name, avatar: myProfile?.profilePhoto }}
       />
 
       {/* Comment Sheet */}

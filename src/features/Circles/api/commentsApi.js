@@ -18,3 +18,11 @@ postId =>
   api.get(
     `${BASE}/posts/${postId}/comments`
   );
+
+export const replytoComment =
+
+postId =>
+  api.post(
+    `${BASE}/posts/${postId}/comments/reply`,
+    payload
+  );
