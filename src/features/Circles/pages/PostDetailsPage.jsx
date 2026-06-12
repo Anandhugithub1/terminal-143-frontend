@@ -6,6 +6,7 @@ import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import PostCard from "../components/post/PostCard";
 import CommentSection from "../components/comment/CommentSection";
 import { usePost } from "../hooks/usePosts";
+import { useCircle } from "../hooks/useCircles";
 
 const DEFAULT_AVATAR =
   "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop";
@@ -31,6 +32,7 @@ export default function PostDetailsPage() {
   const [showComments, setShowComments] = useState(false);
 
   const { data: post, isLoading } = usePost(circleId, postId, createdAtEpoch);
+  const { data: circle } = useCircle(circleId);
 
   const handleShare = async () => {
     const shareUrl = window.location.href;
@@ -90,7 +92,20 @@ export default function PostDetailsPage() {
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
-          <h1 className="text-lg font-bold text-gray-800">Post</h1>
+          <div>
+            <h1 className="text-lg font-bold text-gray-800">Post</h1>
+            {circle?.name && (
+              <p className="text-xs text-gray-500">
+                in{" "}
+                <button
+                  onClick={() => navigate(`/circles/${circleId}`)}
+                  className="font-semibold text-primary hover:underline"
+                >
+                  {circle.name}
+                </button>
+              </p>
+            )}
+          </div>
         </div>
       </div>
 

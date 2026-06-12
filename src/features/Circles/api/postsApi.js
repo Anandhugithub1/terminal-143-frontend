@@ -38,7 +38,7 @@ export const getPost =
     throw new Error('postId required');
   }
 
-  const params = { createdAtEpoch };
+  const params = { postedAt: createdAtEpoch };
 
   if (projection) {
     params.projection = projection;
