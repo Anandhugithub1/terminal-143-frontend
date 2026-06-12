@@ -131,7 +131,9 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
 
       const uploadedMedia = await Promise.all(
         media.map(async (item, index) => {
-          const { presignedUrl, publicUrl } = await getPresignedUrl({
+          const {
+            data: { presignedUrl, publicUrl },
+          } = await getPresignedUrl({
             fileType: item.file.type,
             kind: "postMedia",
             circleName,

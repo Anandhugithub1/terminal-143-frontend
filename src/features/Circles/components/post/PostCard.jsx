@@ -74,21 +74,6 @@ export default function PostCard({
         </div>
       </div>
 
-      {/* Image */}
-      {image && (
-        <div className={isFeed ? "px-4 pb-2" : "mb-3"}>
-          <img
-            src={image}
-            alt={heading || name}
-            className={
-              isFeed
-                ? "w-full h-48 object-cover rounded-xl mt-2"
-                : "w-full h-48 object-cover rounded-lg"
-            }
-          />
-        </div>
-      )}
-
       {/* Content */}
       <div className={isFeed ? "px-4 pb-2" : ""}>
         {heading && (
@@ -124,6 +109,21 @@ export default function PostCard({
           </div>
         )}
       </div>
+
+      {/* Image */}
+      {image && (
+        <div className={isFeed ? "px-4 pb-2" : "mb-3"}>
+          <img
+            src={image}
+            alt={heading || name}
+            className={
+              isFeed
+                ? "w-full h-48 object-cover rounded-xl mt-2"
+                : "w-full h-48 object-cover rounded-lg"
+            }
+          />
+        </div>
+      )}
 
       {/* Actions */}
       {actions.length > 0 && (

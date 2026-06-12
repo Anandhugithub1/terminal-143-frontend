@@ -36,7 +36,11 @@ export default function CommentSection({ isOpen, onClose, post }) {
     if (!content || content.length > COMMENT_MAX_LENGTH || !postId || createCommentMutation.isPending) return;
 
     createCommentMutation.mutate(
-      { content },
+      {
+        content,
+        circleId: post.circleId,
+        createdAtEpoch: String(post.createdAtEpoch),
+      },
       {
         onSuccess: () => setNewComment(""),
       }
