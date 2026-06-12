@@ -94,14 +94,14 @@ export default function PostDetailsPage() {
           </button>
           <div>
             <h1 className="text-lg font-bold text-gray-800">Post</h1>
-            {circle?.name && (
+            {(post.circleName || circle?.name) && (
               <p className="text-xs text-gray-500">
                 in{" "}
                 <button
                   onClick={() => navigate(`/circles/${circleId}`)}
                   className="font-semibold text-primary hover:underline"
                 >
-                  {circle.name}
+                  {post.circleName || circle?.name}
                 </button>
               </p>
             )}
