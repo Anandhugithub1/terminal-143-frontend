@@ -19,6 +19,7 @@ import { useCircles } from "../hooks/useCircles";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { feed } from "../constants/demoFeed";
+import { CircleChipSkeleton } from "../components/common/Skeletons";
 
 const CIRCLE_BG_COLORS = [
   "bg-rose-50",
@@ -91,7 +92,11 @@ export default function CirclesHomePage() {
           <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
             <div className="flex gap-4" style={{ minWidth: "min-content" }}>
               {isLoadingCircles && (
-                <p className="text-sm text-gray-400 py-4">Loading circles...</p>
+                <>
+                  <CircleChipSkeleton />
+                  <CircleChipSkeleton />
+                  <CircleChipSkeleton />
+                </>
               )}
 
               {myCircles.map((circle, index) => (

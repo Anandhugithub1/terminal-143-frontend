@@ -23,6 +23,7 @@ import { queryKeys } from "../queries/queryKeys";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
+import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
 
 export default function CircleDetailsPage() {
   const { circleId } = useParams();
@@ -45,11 +46,7 @@ export default function CircleDetailsPage() {
   const posts = postsData?.items || [];
 
   if (isLoading && !data) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-400 text-sm">Loading circle...</p>
-      </div>
-    );
+    return <CircleHeaderSkeleton />;
   }
 
   if (!data) {
@@ -260,7 +257,10 @@ export default function CircleDetailsPage() {
             </div>
 
             {isLoadingPosts && (
-              <p className="text-sm text-gray-400 text-center py-4">Loading posts...</p>
+              <>
+                <PostCardSkeleton />
+                <PostCardSkeleton />
+              </>
             )}
 
             {!isLoadingPosts && posts.length === 0 && (

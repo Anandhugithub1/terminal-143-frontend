@@ -5,6 +5,7 @@ import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 import CommentCard from "./CommentCard";
 import BottomSheetModal from "../common/BottomSheetModal";
 import { DEFAULT_AVATAR, formatPostTime as formatCommentTime } from "../../utils/postDisplay";
+import { CommentSkeleton } from "../common/Skeletons";
 
 const COMMENT_MAX_LENGTH = 500;
 
@@ -91,7 +92,11 @@ export default function CommentSection({ isOpen, onClose, post }) {
         {/* Comments List */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {isLoading && (
-            <p className="text-sm text-gray-400 text-center py-4">Loading comments...</p>
+            <>
+              <CommentSkeleton />
+              <CommentSkeleton />
+              <CommentSkeleton />
+            </>
           )}
 
           {!isLoading && comments.length === 0 && (
