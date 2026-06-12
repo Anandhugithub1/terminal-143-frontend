@@ -19,6 +19,7 @@ import { useMediaAttachments } from "../../hooks/useMediaAttachments";
 import LocationInput from "../../../AddProfile/components/LocationInput";
 import { createPost } from "../../api/postsApi";
 import { getPresignedUrl } from "../../api/imageupload";
+import BottomSheetModal from "../common/BottomSheetModal";
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
   const [postContent, setPostContent] = useState("");
@@ -192,28 +193,13 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
-          {/* Overlay */}
-          <motion.div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={onClose}
-          />
-
-          {/* Modal */}
-          <motion.div
-            className="relative bg-white w-full max-w-lg rounded-t-2xl sm:rounded-2xl shadow-xl flex flex-col h-[100dvh] sm:h-auto sm:max-h-[90vh]"
-            initial={{ opacity: 0, y: 40, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 40, scale: 0.98 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            {/* Header */}
+    <BottomSheetModal
+      isOpen={isOpen}
+      onClose={onClose}
+      animated
+      panelClassName="max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col h-[100dvh] sm:h-auto sm:max-h-[90vh]"
+    >
+      {/* Header */}
             <div className="flex-shrink-0 p-4 border-b border-gray-100 flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-bold text-gray-800">Create Post</h3>
@@ -613,9 +599,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 </button>
               </div>
             </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+    </BottomSheetModal>
   );
 }

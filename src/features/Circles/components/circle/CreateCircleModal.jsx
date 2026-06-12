@@ -24,6 +24,7 @@ import {
 
 import LocationInput from "../../../AddProfile/components/LocationInput";
 import { ensureNormalizedImage } from "../../../../utils/imageConversion";
+import BottomSheetModal from "../common/BottomSheetModal";
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -361,17 +362,11 @@ export default function CreateCircleModal({
     return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
-      {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={
-          onClose
-        }
-      />
-
-      {/* Modal */}
-      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[90vh] overflow-y-auto shadow-xl">
+    <BottomSheetModal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="rounded-t-2xl sm:rounded-2xl sm:max-w-md max-h-[90vh] overflow-y-auto"
+    >
         {/* Header */}
         <div className="sticky top-0 bg-white p-6 pb-4 border-b border-gray-100 rounded-t-2xl">
           <div className="flex items-center justify-between">
@@ -651,7 +646,6 @@ export default function CreateCircleModal({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+    </BottomSheetModal>
   );
 }

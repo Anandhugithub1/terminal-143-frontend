@@ -7,8 +7,6 @@ import {
   Calendar,
   MessageCircle,
   MapPin,
-  Heart,
-  Share2,
   Settings,
   Plus,
   Grid3X3,
@@ -22,27 +20,20 @@ import { useQueryClient } from "@tanstack/react-query";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import CreatePostModal from "../components/post/CreatePostModal";
 import PostCard from "../components/post/PostCard";
+import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import { useCircle } from "../hooks/useCircles";
 import { usePosts } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { queryKeys } from "../queries/queryKeys";
+import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { buildPostActions } from "../utils/postActions";
+import { shareLink } from "../utils/share";
 import {
   members,
   events,
 } from "../constants/circleDetailsData";
-
-const formatPostTime = (epochMillis) => {
-  if (!epochMillis) return "";
-
-  const diffSec = Math.max(0, (Date.now() - epochMillis) / 1000);
-
-  if (diffSec < 60) return "Just now";
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
-  return `${Math.floor(diffSec / 86400)}d ago`;
-};
 
 export default function CircleDetailsPage() {
   const { circleId } = useParams();
@@ -93,23 +84,15 @@ export default function CircleDetailsPage() {
       const { data: postDetail } = await getPost(circleId, post.createdAtEpoch, post.postId);
 
       const shareUrl = `${window.location.origin}/circles/${circleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`;
-      const shareData = {
+
+      await shareLink({
         title: postDetail?.authorName ? `${postDetail.authorName}'s post` : "Circle post",
         text: postDetail?.content || post.content || "",
         url: shareUrl,
-      };
-
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(shareUrl);
-        alert("Post link copied to clipboard");
-      }
+      });
     } catch (err) {
-      if (err?.name !== "AbortError") {
-        console.error(err);
-        alert("Failed to share post");
-      }
+      console.error(err);
+      alert("Failed to share post");
     }
   };
 
@@ -330,52 +313,20 @@ export default function CircleDetailsPage() {
                   <PostCard
                     key={post.postId}
                     variant="circle"
-                    avatar={post.authorImage || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"}
+                    avatar={post.authorImage || DEFAULT_AVATAR}
                     name={post.authorName || "Anonymous"}
-                    meta={
-                      <p className="text-xs text-gray-500">
-                        {formatPostTime(post.createdAtEpoch)}
-                        {post.location?.placeName && (
-                          <>
-                            {" "}
-                            • {post.location.placeName}
-                            {post.location.countryCode ? `, ${post.location.countryCode}` : ""}
-                          </>
-                        )}
-                      </p>
-                    }
+                    meta={<PostMeta post={post} />}
                     body={post.content}
                     media={post.media}
                     tags={post.tags || []}
                     actionsWrapperClassName="flex items-center gap-4"
-                    actions={[
-                      {
-                        key: "like",
-                        icon: Heart,
-                        label: (post.likes ?? 0) + (likedPosts.has(post.postId) ? 1 : 0),
-                        onClick: () => toggleLike(post.postId),
-                        iconClassName: `w-4 h-4 ${
-                          likedPosts.has(post.postId) ? "fill-rose-500 text-rose-500" : ""
-                        }`,
-                        className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-rose-500 transition-colors",
-                      },
-                      {
-                        key: "comment",
-                        icon: MessageCircle,
-                        label: post.commentCount ?? 0,
-                        onClick: () => setCommentPost(post),
-                        iconClassName: "w-4 h-4",
-                        className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-500 transition-colors",
-                      },
-                      {
-                        key: "share",
-                        icon: Share2,
-                        label: "Share",
-                        onClick: () => handleSharePost(post),
-                        iconClassName: "w-4 h-4",
-                        className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-500 transition-colors ml-auto",
-                      },
-                    ]}
+                    actions={buildPostActions({
+                      post,
+                      isLiked: likedPosts.has(post.postId),
+                      onToggleLike: () => toggleLike(post.postId),
+                      onComment: () => setCommentPost(post),
+                      onShare: () => handleSharePost(post),
+                    })}
                   />
                 ))}
               </div>

@@ -3,22 +3,10 @@ import { Send } from "lucide-react";
 import { useComments, useCreateComment, useReplyToComment } from "../../hooks/useComments";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 import CommentCard from "./CommentCard";
-
-const DEFAULT_AVATAR =
-  "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop";
+import BottomSheetModal from "../common/BottomSheetModal";
+import { DEFAULT_AVATAR, formatPostTime as formatCommentTime } from "../../utils/postDisplay";
 
 const COMMENT_MAX_LENGTH = 500;
-
-const formatCommentTime = (epochMillis) => {
-  if (!epochMillis) return "";
-
-  const diffSec = Math.max(0, (Date.now() - epochMillis) / 1000);
-
-  if (diffSec < 60) return "Just now";
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
-  return `${Math.floor(diffSec / 86400)}d ago`;
-};
 
 export default function CommentSection({ isOpen, onClose, post }) {
   const [newComment, setNewComment] = useState("");
@@ -77,15 +65,11 @@ export default function CommentSection({ isOpen, onClose, post }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
-      {/* Overlay */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Comment Sheet */}
-      <div className="relative bg-white w-full max-w-lg h-[80vh] sm:h-[70vh] sm:rounded-2xl shadow-xl flex flex-col">
+    <BottomSheetModal
+      isOpen={isOpen}
+      onClose={onClose}
+      panelClassName="max-w-lg h-[80vh] sm:h-[70vh] sm:rounded-2xl flex flex-col"
+    >
         {/* Header */}
         <div className="flex-shrink-0 p-4 border-b border-gray-100 flex items-center justify-between">
           <div>
@@ -199,7 +183,6 @@ export default function CommentSection({ isOpen, onClose, post }) {
             </p>
           )}
         </div>
-      </div>
-    </div>
+    </BottomSheetModal>
   );
 }

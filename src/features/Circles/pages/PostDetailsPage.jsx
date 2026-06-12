@@ -1,26 +1,16 @@
-import { ArrowLeft, Heart, MessageCircle, Share2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import PostCard from "../components/post/PostCard";
+import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import { usePost } from "../hooks/usePosts";
 import { useCircle } from "../hooks/useCircles";
-
-const DEFAULT_AVATAR =
-  "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop";
-
-const formatPostTime = (epochMillis) => {
-  if (!epochMillis) return "";
-
-  const diffSec = Math.max(0, (Date.now() - epochMillis) / 1000);
-
-  if (diffSec < 60) return "Just now";
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
-  return `${Math.floor(diffSec / 86400)}d ago`;
-};
+import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { buildPostActions } from "../utils/postActions";
+import { shareLink } from "../utils/share";
 
 export default function PostDetailsPage() {
   const { circleId, postId } = useParams();
@@ -34,27 +24,12 @@ export default function PostDetailsPage() {
   const { data: post, isLoading } = usePost(circleId, postId, createdAtEpoch);
   const { data: circle } = useCircle(circleId);
 
-  const handleShare = async () => {
-    const shareUrl = window.location.href;
-    const shareData = {
+  const handleShare = () =>
+    shareLink({
       title: post?.authorName ? `${post.authorName}'s post` : "Circle post",
       text: post?.content || "",
-      url: shareUrl,
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-      } else {
-        await navigator.clipboard.writeText(shareUrl);
-        alert("Post link copied to clipboard");
-      }
-    } catch (err) {
-      if (err?.name !== "AbortError") {
-        console.error(err);
-      }
-    }
-  };
+      url: window.location.href,
+    });
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -115,48 +90,18 @@ export default function PostDetailsPage() {
           variant="circle"
           avatar={post.authorImage || DEFAULT_AVATAR}
           name={post.authorName || "Anonymous"}
-          meta={
-            <p className="text-xs text-gray-500">
-              {formatPostTime(post.createdAtEpoch)}
-              {post.location?.placeName && (
-                <>
-                  {" "}
-                  • {post.location.placeName}
-                  {post.location.countryCode ? `, ${post.location.countryCode}` : ""}
-                </>
-              )}
-            </p>
-          }
+          meta={<PostMeta post={post} />}
           body={post.content}
           media={post.media}
           tags={post.tags || []}
           actionsWrapperClassName="flex items-center gap-4"
-          actions={[
-            {
-              key: "like",
-              icon: Heart,
-              label: (post.likes ?? 0) + (isLiked ? 1 : 0),
-              onClick: () => setIsLiked((l) => !l),
-              iconClassName: `w-4 h-4 ${isLiked ? "fill-rose-500 text-rose-500" : ""}`,
-              className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-rose-500 transition-colors",
-            },
-            {
-              key: "comment",
-              icon: MessageCircle,
-              label: post.commentCount ?? 0,
-              onClick: () => setShowComments(true),
-              iconClassName: "w-4 h-4",
-              className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-500 transition-colors",
-            },
-            {
-              key: "share",
-              icon: Share2,
-              label: "Share",
-              onClick: handleShare,
-              iconClassName: "w-4 h-4",
-              className: "flex items-center gap-1.5 text-sm text-gray-500 hover:text-green-500 transition-colors ml-auto",
-            },
-          ]}
+          actions={buildPostActions({
+            post,
+            isLiked,
+            onToggleLike: () => setIsLiked((l) => !l),
+            onComment: () => setShowComments(true),
+            onShare: handleShare,
+          })}
         />
       </div>
 
