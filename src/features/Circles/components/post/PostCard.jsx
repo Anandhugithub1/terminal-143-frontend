@@ -43,6 +43,8 @@ export default function PostCard({
               <img
                 src={avatar}
                 alt={name}
+                loading="lazy"
+                decoding="async"
                 className={
                   isFeed
                     ? "w-12 h-12 rounded-full object-cover shadow-md"

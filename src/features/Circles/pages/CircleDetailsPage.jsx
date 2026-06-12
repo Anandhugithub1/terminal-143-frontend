@@ -118,6 +118,7 @@ export default function CircleDetailsPage() {
           <img
             src={data.coverPhoto}
             alt={data.name}
+            decoding="async"
             className="w-full h-full object-cover"
           />
         )}

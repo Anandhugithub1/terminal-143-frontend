@@ -41,7 +41,10 @@ usePosts(
       },
 
     enabled:
-      !!circleId
+      !!circleId,
+
+    staleTime:
+      1000 * 30
   });
 }
 
@@ -72,7 +75,10 @@ usePost(
       },
 
     enabled:
-      !!circleId && !!postId && !!createdAtEpoch
+      !!circleId && !!postId && !!createdAtEpoch,
+
+    staleTime:
+      1000 * 30
   });
 }
 

@@ -188,16 +188,6 @@ export default function CreateCircleModal({
         }
       );
 
-    console.log(
-      'PRESIGNED URL',
-      presignedUrl
-    );
-
-    console.log(
-      'COVER FILE',
-      uploadFile
-    );
-
     const uploadRes =
       await fetch(
         presignedUrl,
@@ -214,11 +204,6 @@ export default function CreateCircleModal({
             uploadFile
         }
       );
-
-    console.log(
-      'UPLOAD STATUS',
-      uploadRes.status
-    );
 
     if (
       !uploadRes.ok

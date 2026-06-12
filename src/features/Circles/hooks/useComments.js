@@ -41,7 +41,10 @@ useComments(
       },
 
     enabled:
-      !!postId
+      !!postId,
+
+    staleTime:
+      1000 * 15
   });
 }
 

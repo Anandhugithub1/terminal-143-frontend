@@ -53,7 +53,6 @@ export default function OnboardingPage({ onComplete, onBack }) {
 
   const handleComplete = () => {
     if (selectedCircles.length >= 3) {
-      console.log("Selected circles:", selectedCirclesData);
       if (onComplete) onComplete(selectedCirclesData);
     }
   };

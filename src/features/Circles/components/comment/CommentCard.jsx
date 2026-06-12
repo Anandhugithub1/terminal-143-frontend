@@ -20,6 +20,8 @@ export default function CommentCard({
       <img
         src={avatar}
         alt={name}
+        loading="lazy"
+        decoding="async"
         className={`${isReply ? "w-8 h-8" : "w-10 h-10"} rounded-full object-cover flex-shrink-0`}
       />
       <div className="flex-1 min-w-0">

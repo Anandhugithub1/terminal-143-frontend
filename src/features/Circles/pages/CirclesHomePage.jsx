@@ -107,6 +107,8 @@ export default function CirclesHomePage() {
                       <img
                         src={circle.coverPhoto}
                         alt={circle.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-16 h-16 rounded-full object-cover mx-auto shadow-sm"
                       />
                     ) : (
