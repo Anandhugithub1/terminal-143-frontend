@@ -9,9 +9,13 @@ import {
   Heart,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
+import { useJoinCircle } from "../hooks/useMembership";
 
 export default function OnboardingPage({ onComplete, onBack }) {
+  const navigate = useNavigate();
+  const { mutateAsync: joinCircle, isPending: isJoining } = useJoinCircle();
   const [selectedCircles, setSelectedCircles] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -60,9 +64,17 @@ export default function OnboardingPage({ onComplete, onBack }) {
     }
   };
 
-  const handleComplete = () => {
-    if (selectedCircles.length >= 3) {
-      if (onComplete) onComplete(selectedCirclesData);
+  const handleComplete = async () => {
+    if (selectedCircles.length < 3) return;
+
+    await Promise.allSettled(
+      selectedCirclesData.map((circle) => joinCircle(circle.circleId))
+    );
+
+    if (onComplete) {
+      onComplete(selectedCirclesData);
+    } else {
+      navigate("/circles");
     }
   };
 
@@ -73,7 +85,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
         <div className="max-w-3xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <button
-              onClick={step === 2 ? () => setStep(1) : onBack}
+              onClick={step === 2 ? () => setStep(1) : (onBack || (() => navigate(-1)))}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors active:bg-gray-200 min-h-[44px] min-w-[44px] flex items-center justify-center"
               aria-label="Go back"
             >
@@ -353,14 +365,20 @@ export default function OnboardingPage({ onComplete, onBack }) {
             <div className="space-y-3">
               <button
                 onClick={handleComplete}
-                disabled={selectedCircles.length < 3}
+                disabled={selectedCircles.length < 3 || isJoining}
                 className={`w-full py-4 rounded-xl font-bold text-lg transition-all active:scale-[0.98] ${
-                  selectedCircles.length >= 3 ? "bg-primary text-white hover:shadow-xl" : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  selectedCircles.length >= 3 && !isJoining ? "bg-primary text-white hover:shadow-xl" : "bg-gray-200 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                Join {selectedCircles.length} Circle{selectedCircles.length !== 1 ? 's' : ''} & Start Connecting
+                {isJoining
+                  ? "Joining..."
+                  : `Join ${selectedCircles.length} Circle${selectedCircles.length !== 1 ? 's' : ''} & Start Connecting`}
               </button>
-              <button onClick={() => setStep(1)} className="w-full py-3 text-gray-600 font-medium hover:text-primary transition-colors active:bg-gray-100 rounded-xl">
+              <button
+                onClick={() => setStep(1)}
+                disabled={isJoining}
+                className="w-full py-3 text-gray-600 font-medium hover:text-primary transition-colors active:bg-gray-100 rounded-xl disabled:opacity-50"
+              >
                 Add More Circles
               </button>
             </div>

@@ -18,6 +18,7 @@ export const availableCircles = onboardingCirclesData.circles
     const meta = categoryMeta[circle.category] ?? categoryMeta.fitness;
     return {
       id: index + 1,
+      circleId: circle.circleId,
       name: circle.name,
       description: circle.description,
       image: circle.coverPhoto,

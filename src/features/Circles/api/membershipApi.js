@@ -1,5 +1,4 @@
-import api
-from '@/api/axios';
+import api from './axios'
 
 const BASE =
 'https://api.passormatch.com/circles';

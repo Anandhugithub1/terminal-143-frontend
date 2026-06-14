@@ -2,6 +2,7 @@
   "circles": [
     {
       "name": "Coffee & Chemistry",
+      "circleId": "ccca42d8-e1cb-42dc-85bc-d0dbba14ca6a",
       "description": "For people who enjoy meaningful conversations over coffee and meeting new people with real spark.",
       "category": "dating",
       "visibility": "public",
@@ -16,6 +17,7 @@
     },
     {
       "name": "Wander Together",
+      "circleId": "998f5126-12e3-4bad-8d01-7182dc0cb559",
       "description": "A community for solo travelers and adventure seekers who'd love to find their next travel buddy or partner.",
       "category": "travel",
       "visibility": "public",
@@ -30,6 +32,7 @@
     },
     {
       "name": "Table for Two (or More)",
+      "circleId": "98210a10-ac8f-41f7-b12a-b34528d3e990",
       "description": "Food lovers who explore restaurants, cook together, and believe the best connections happen around a shared meal.",
       "category": "food",
       "visibility": "public",
@@ -45,6 +48,7 @@
     },
     {
       "name": "Sunrise Runners Club",
+      "circleId": "f2cb936c-a663-41d2-8cf6-c748c4c9797e",
       "description": "Early risers who run, jog, or walk and love the energy of morning fitness with good company.",
       "category": "fitness",
       "visibility": "public",
@@ -60,6 +64,7 @@
     },
     {
       "name": "Dog Park Dates",
+      "circleId": "95c6db34-c1b1-4d25-a038-fb4d363db1a3",
       "description": "Dog owners and lovers connecting over their furry companions — because dogs are the best icebreakers.",
       "category": "dating",
       "visibility": "public",
@@ -75,6 +80,7 @@
     },
     {
       "name": "Page Turners",
+      "circleId": "0d153bc9-7da9-4a3d-9bd5-87bcf1a86b92",
       "description": "A book community where readers connect, share recommendations, and maybe find someone who's read all the same books.",
       "category": "books",
       "visibility": "public",
@@ -90,6 +96,7 @@
     },
     {
       "name": "Screen & Scene",
+      "circleId": "a4523c59-318e-413d-adb2-bdc2c1c9ed25",
       "description": "Film buffs and casual watchers sharing reviews, planning movie nights, and debating the classics.",
       "category": "movies",
       "visibility": "public",
@@ -105,6 +112,7 @@
     },
     {
       "name": "Passport & Plates",
+      "circleId": "53708ddc-f910-4c33-8644-548baa85610e",
       "description": "Foodies who travel for the food — sharing destination dining guides, local eats, and culinary adventures.",
       "category": "food",
       "visibility": "public",
@@ -120,6 +128,7 @@
     },
     {
       "name": "Lift & Link",
+      "circleId": "882db162-0813-42a0-94da-78c34252c4c3",
       "description": "Gym-goers and fitness enthusiasts connecting over training goals, gym tips, and maybe more.",
       "category": "fitness",
       "visibility": "public",
@@ -135,6 +144,7 @@
     },
     {
       "name": "Mindful Mornings",
+      "circleId": "6a9433bd-45a2-4d88-82ad-5f6c5045a0a9",
       "description": "People building intentional morning routines — yoga, meditation, journaling, and sharing what helps them show up better.",
       "category": "fitness",
       "visibility": "public",
@@ -150,6 +160,7 @@
     },
     {
       "name": "Slow Travel Society",
+      "circleId": "65804ab2-ca18-4e87-82e9-bbea37d59509",
       "description": "For travelers who prefer depth over distance — staying longer, living like locals, and actually getting to know a place.",
       "category": "travel",
       "visibility": "public",
@@ -165,6 +176,7 @@
     },
     {
       "name": "First Dates, Real Talk",
+      "circleId": "8d1fb826-e4ae-4ada-a08f-65a7ba43112d",
       "description": "An honest space for navigating modern dating — the good, the awkward, and everything in between.",
       "category": "dating",
       "visibility": "public",
@@ -180,6 +192,7 @@
     },
     {
       "name": "Ferment & Feast",
+      "circleId": "cdbb981d-04d2-43ad-8394-9991dda048a0",
       "description": "Home cooks and food geeks obsessed with fermentation, sourdough, hot sauce, and anything cultured or cured.",
       "category": "food",
       "visibility": "public",
@@ -195,6 +208,7 @@
     },
     {
       "name": "Trailheads & Heartbeats",
+      "circleId": "1d1742e5-23e9-4482-8c33-ce02821d0fd1",
       "description": "Hikers and outdoor lovers exploring trails, sharing routes, and finding connection in the great outdoors.",
       "category": "fitness",
       "visibility": "public",
@@ -210,6 +224,7 @@
     },
     {
       "name": "The Unread List",
+      "circleId": "9bd4866a-bf2e-4dc6-9e95-cf2fb6e75d8b",
       "description": "For people with towering to-be-read piles who want company while tackling them — themed reads, challenges, and recommendations.",
       "category": "books",
       "visibility": "private",
@@ -225,6 +240,7 @@
     },
     {
       "name": "Arthouse & After",
+      "circleId": "31bb0365-c193-46f4-8ca4-ab7d35cce086",
       "description": "A film circle for the cinephile crowd — festival films, foreign cinema, and the conversations that happen after the credits roll.",
       "category": "movies",
       "visibility": "private",
@@ -240,6 +256,7 @@
     },
     {
       "name": "Locals Who Wander",
+      "circleId": "7a9a1350-ecbb-4d4a-a031-80eaa919d64a",
       "description": "City dwellers who treat their own neighborhood like a travel destination — discovering hidden spots and sharing what makes home worth exploring.",
       "category": "travel",
       "visibility": "public",
@@ -255,6 +272,7 @@
     },
     {
       "name": "Beyond the Algorithm",
+      "circleId": "00f172e3-44ed-43a6-8b85-6935b26b2c89",
       "description": "Dating without the swipe fatigue — a space for meeting people through shared interests and honest conversations instead of profile optimization.",
       "category": "dating",
       "visibility": "public",
@@ -270,6 +288,7 @@
     },
     {
       "name": "Genre Benders",
+      "circleId": "0d545fdb-6bfb-443e-af2b-732167b29f4f",
       "description": "Readers who cross genres freely — literary fiction, horror, sci-fi, romance — and love comparing notes across all of them.",
       "category": "books",
       "visibility": "public",
@@ -286,6 +305,7 @@
     },
     {
       "name": "Night Owls Cinema",
+      "circleId": "be25996d-35c5-472d-9fe0-b22cc12a73ab",
       "description": "Late-night film lovers who meet for screenings, classics, and midnight movie conversations that go on way too long.",
       "category": "movies",
       "visibility": "public",
