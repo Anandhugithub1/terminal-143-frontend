@@ -16,6 +16,16 @@ export default function OnboardingPage({ onComplete, onBack }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [step, setStep] = useState(1);
+  const [imageErrors, setImageErrors] = useState(new Set());
+
+  const handleImageError = (circleId) => {
+    setImageErrors((prev) => new Set(prev).add(circleId));
+  };
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("All");
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -92,7 +102,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
               <span className="text-sm font-medium text-gray-600">
                 {step === 1 ? "Select your interests" : "Confirm your choices"}
               </span>
-              <span className="text-sm font-medium text-primary">
+              <span className="text-sm font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
                 {selectedCircles.length} selected
               </span>
             </div>
@@ -111,6 +121,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
       </div>
 
       <div className="max-w-3xl mx-auto px-4 py-6">
+        <div key={step} className="animate-fadeIn">
         {step === 1 ? (
           <>
             <div className="text-center mb-8">
@@ -140,8 +151,17 @@ export default function OnboardingPage({ onComplete, onBack }) {
                 placeholder="Search activities..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base"
+                className="w-full pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4 text-gray-400" />
+                </button>
+              )}
             </div>
 
             <div className="overflow-x-auto mb-6 pb-2 -mx-1 px-1 scrollbar-hide">
@@ -170,10 +190,10 @@ export default function OnboardingPage({ onComplete, onBack }) {
                   <button
                     key={circle.id}
                     onClick={() => toggleCircle(circle.id)}
-                    className={`relative text-left p-3 rounded-2xl transition-all active:scale-[0.98] ${
+                    className={`relative text-left p-3 rounded-2xl transition-all hover:shadow-md active:scale-[0.98] ${
                       isSelected
                         ? "bg-primary text-white shadow-lg ring-2 ring-primary ring-offset-2"
-                        : `${circle.bgColor} hover:shadow-md`
+                        : `${circle.bgColor}`
                     }`}
                   >
                     {isSelected && (
@@ -184,12 +204,24 @@ export default function OnboardingPage({ onComplete, onBack }) {
                     <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 ${isSelected ? "bg-white/20" : circle.iconBg}`}>
                       <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${isSelected ? "text-white" : circle.iconColor}`} />
                     </div>
-                    <img
-                      src={circle.image}
-                      alt={circle.name}
-                      className={`w-full h-28 sm:h-32 object-cover rounded-xl mb-3 ${isSelected ? "opacity-90" : ""}`}
-                      loading="lazy"
-                    />
+                    <div className="relative mb-3">
+                      {imageErrors.has(circle.id) ? (
+                        <div className={`w-full h-28 sm:h-32 rounded-xl flex items-center justify-center ${isSelected ? "bg-white/10" : circle.iconBg}`}>
+                          <Icon className={`w-8 h-8 ${isSelected ? "text-white" : circle.iconColor}`} />
+                        </div>
+                      ) : (
+                        <img
+                          src={circle.image}
+                          alt={circle.name}
+                          className={`w-full h-28 sm:h-32 object-cover rounded-xl ${isSelected ? "opacity-90" : ""}`}
+                          loading="lazy"
+                          onError={() => handleImageError(circle.id)}
+                        />
+                      )}
+                      <span className={`absolute bottom-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full backdrop-blur-sm ${isSelected ? "bg-white/20 text-white" : "bg-black/40 text-white"}`}>
+                        {circle.category}
+                      </span>
+                    </div>
                     <div>
                       <h3 className={`font-bold text-sm mb-1 line-clamp-1 ${isSelected ? "text-white" : "text-gray-800"}`}>
                         {circle.name}
@@ -217,7 +249,13 @@ export default function OnboardingPage({ onComplete, onBack }) {
               <div className="text-center py-12">
                 <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">No circles found</h3>
-                <p className="text-gray-500">Try adjusting your search or filters</p>
+                <p className="text-gray-500 mb-4">Try adjusting your search or filters</p>
+                <button
+                  onClick={clearFilters}
+                  className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:shadow-md transition-all active:scale-95"
+                >
+                  Clear filters
+                </button>
               </div>
             )}
             <div className="h-28 sm:h-32" />
@@ -295,6 +333,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
             <div className="h-40 sm:h-44" />
           </>
         )}
+        </div>
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 p-4 shadow-lg safe-bottom">
@@ -334,6 +373,11 @@ export default function OnboardingPage({ onComplete, onBack }) {
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .safe-top { padding-top: env(safe-area-inset-top); }
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeIn 0.35s ease-out; }
       `}</style>
     </div>
   );
