@@ -4,7 +4,6 @@ import {
   Search,
   Check,
   Sparkles,
-  Users,
   X,
   Calendar,
   Heart,
@@ -198,11 +197,15 @@ export default function OnboardingPage({ onComplete, onBack }) {
                       <p className={`text-xs line-clamp-2 mb-2 ${isSelected ? "text-white/80" : "text-gray-600"}`}>
                         {circle.description}
                       </p>
-                      <div className="flex items-center gap-1">
-                        <Users className={`w-3 h-3 flex-shrink-0 ${isSelected ? "text-white/80" : "text-gray-400"}`} />
-                        <span className={`text-xs ${isSelected ? "text-white/80" : "text-gray-500"}`}>
-                          {circle.members} members
-                        </span>
+                      <div className="flex items-center gap-1 flex-wrap">
+                        {circle.tags.slice(0, 2).map((tag) => (
+                          <span
+                            key={tag}
+                            className={`text-xs px-2 py-0.5 rounded-full ${isSelected ? "bg-white/20 text-white" : "bg-white text-gray-500"}`}
+                          >
+                            #{tag}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </button>
@@ -246,9 +249,12 @@ export default function OnboardingPage({ onComplete, onBack }) {
                     <div className="flex-1 min-w-0">
                       <h4 className="font-bold text-gray-800 text-sm sm:text-base">{circle.name}</h4>
                       <p className="text-xs sm:text-sm text-gray-500 truncate">{circle.description}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Users className="w-3 h-3 text-gray-400" />
-                        <span className="text-xs text-gray-500">{circle.members} members</span>
+                      <div className="flex items-center gap-2 mt-1 flex-wrap">
+                        {circle.tags.slice(0, 3).map((tag) => (
+                          <span key={tag} className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                            #{tag}
+                          </span>
+                        ))}
                       </div>
                     </div>
                     <button

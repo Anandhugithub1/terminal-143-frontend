@@ -1,0 +1,303 @@
+{
+  "circles": [
+    {
+      "name": "Coffee & Chemistry",
+      "description": "For people who enjoy meaningful conversations over coffee and meeting new people with real spark.",
+      "category": "dating",
+      "visibility": "public",
+      "tags": [
+        "dating",
+        "coffee",
+        "conversations",
+        "meetups"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80",
+      "ownerId": "alexmorgan_"
+    },
+    {
+      "name": "Wander Together",
+      "description": "A community for solo travelers and adventure seekers who'd love to find their next travel buddy or partner.",
+      "category": "travel",
+      "visibility": "public",
+      "tags": [
+        "travel",
+        "adventure",
+        "solo-travel",
+        "wanderlust"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1488085061387-422e29b40080?w=800&q=80",
+      "ownerId": "farah.away"
+    },
+    {
+      "name": "Table for Two (or More)",
+      "description": "Food lovers who explore restaurants, cook together, and believe the best connections happen around a shared meal.",
+      "category": "food",
+      "visibility": "public",
+      "tags": [
+        "food",
+        "dining",
+        "restaurants",
+        "cooking",
+        "dates"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
+      "ownerId": "jaden.reads"
+    },
+    {
+      "name": "Sunrise Runners Club",
+      "description": "Early risers who run, jog, or walk and love the energy of morning fitness with good company.",
+      "category": "fitness",
+      "visibility": "public",
+      "tags": [
+        "running",
+        "fitness",
+        "morning",
+        "wellness",
+        "outdoors"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&q=80",
+      "ownerId": "carlosv07"
+    },
+    {
+      "name": "Dog Park Dates",
+      "description": "Dog owners and lovers connecting over their furry companions — because dogs are the best icebreakers.",
+      "category": "dating",
+      "visibility": "public",
+      "tags": [
+        "dating",
+        "dogs",
+        "pets",
+        "outdoors",
+        "meetups"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80",
+      "ownerId": "irene.jpeg"
+    },
+    {
+      "name": "Page Turners",
+      "description": "A book community where readers connect, share recommendations, and maybe find someone who's read all the same books.",
+      "category": "books",
+      "visibility": "public",
+      "tags": [
+        "books",
+        "reading",
+        "book-club",
+        "literature",
+        "fiction"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80",
+      "ownerId": "bri.writes"
+    },
+    {
+      "name": "Screen & Scene",
+      "description": "Film buffs and casual watchers sharing reviews, planning movie nights, and debating the classics.",
+      "category": "movies",
+      "visibility": "public",
+      "tags": [
+        "movies",
+        "film",
+        "cinema",
+        "reviews",
+        "movie-nights"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=800&q=80",
+      "ownerId": "evanthefilm"
+    },
+    {
+      "name": "Passport & Plates",
+      "description": "Foodies who travel for the food — sharing destination dining guides, local eats, and culinary adventures.",
+      "category": "food",
+      "visibility": "public",
+      "tags": [
+        "food",
+        "travel",
+        "culinary",
+        "street-food",
+        "restaurants"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
+      "ownerId": "gracefully.g"
+    },
+    {
+      "name": "Lift & Link",
+      "description": "Gym-goers and fitness enthusiasts connecting over training goals, gym tips, and maybe more.",
+      "category": "fitness",
+      "visibility": "public",
+      "tags": [
+        "fitness",
+        "gym",
+        "weightlifting",
+        "wellness",
+        "accountability"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+      "ownerId": "hxssan"
+    },
+    {
+      "name": "Mindful Mornings",
+      "description": "People building intentional morning routines — yoga, meditation, journaling, and sharing what helps them show up better.",
+      "category": "fitness",
+      "visibility": "public",
+      "tags": [
+        "wellness",
+        "mindfulness",
+        "yoga",
+        "meditation",
+        "morning-routine"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80",
+      "ownerId": "farah.away"
+    },
+    {
+      "name": "Slow Travel Society",
+      "description": "For travelers who prefer depth over distance — staying longer, living like locals, and actually getting to know a place.",
+      "category": "travel",
+      "visibility": "public",
+      "tags": [
+        "travel",
+        "slow-travel",
+        "digital-nomad",
+        "culture",
+        "immersion"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=800&q=80",
+      "ownerId": "irene.jpeg"
+    },
+    {
+      "name": "First Dates, Real Talk",
+      "description": "An honest space for navigating modern dating — the good, the awkward, and everything in between.",
+      "category": "dating",
+      "visibility": "public",
+      "tags": [
+        "dating",
+        "relationships",
+        "advice",
+        "singles",
+        "modern-dating"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1529543544282-ea669407fca3?w=800&q=80",
+      "ownerId": "carlosv07"
+    },
+    {
+      "name": "Ferment & Feast",
+      "description": "Home cooks and food geeks obsessed with fermentation, sourdough, hot sauce, and anything cultured or cured.",
+      "category": "food",
+      "visibility": "public",
+      "tags": [
+        "food",
+        "fermentation",
+        "sourdough",
+        "homebrewing",
+        "cooking"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=800&q=80",
+      "ownerId": "gracefully.g"
+    },
+    {
+      "name": "Trailheads & Heartbeats",
+      "description": "Hikers and outdoor lovers exploring trails, sharing routes, and finding connection in the great outdoors.",
+      "category": "fitness",
+      "visibility": "public",
+      "tags": [
+        "hiking",
+        "outdoors",
+        "trails",
+        "nature",
+        "fitness"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+      "ownerId": "evanthefilm"
+    },
+    {
+      "name": "The Unread List",
+      "description": "For people with towering to-be-read piles who want company while tackling them — themed reads, challenges, and recommendations.",
+      "category": "books",
+      "visibility": "private",
+      "tags": [
+        "books",
+        "TBR",
+        "reading-challenge",
+        "fiction",
+        "nonfiction"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80",
+      "ownerId": "hxssan"
+    },
+    {
+      "name": "Arthouse & After",
+      "description": "A film circle for the cinephile crowd — festival films, foreign cinema, and the conversations that happen after the credits roll.",
+      "category": "movies",
+      "visibility": "private",
+      "tags": [
+        "movies",
+        "arthouse",
+        "foreign-film",
+        "cinema",
+        "film-theory"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800&q=80",
+      "ownerId": "dana.explores"
+    },
+    {
+      "name": "Locals Who Wander",
+      "description": "City dwellers who treat their own neighborhood like a travel destination — discovering hidden spots and sharing what makes home worth exploring.",
+      "category": "travel",
+      "visibility": "public",
+      "tags": [
+        "travel",
+        "local",
+        "city-exploration",
+        "hidden-gems",
+        "culture"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80",
+      "ownerId": "alexmorgan_"
+    },
+    {
+      "name": "Beyond the Algorithm",
+      "description": "Dating without the swipe fatigue — a space for meeting people through shared interests and honest conversations instead of profile optimization.",
+      "category": "dating",
+      "visibility": "public",
+      "tags": [
+        "dating",
+        "relationships",
+        "intentional",
+        "slow-dating",
+        "connection"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&q=80",
+      "ownerId": "gracefully.g"
+    },
+    {
+      "name": "Genre Benders",
+      "description": "Readers who cross genres freely — literary fiction, horror, sci-fi, romance — and love comparing notes across all of them.",
+      "category": "books",
+      "visibility": "public",
+      "tags": [
+        "books",
+        "genre",
+        "fiction",
+        "sci-fi",
+        "horror",
+        "romance"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80",
+      "ownerId": "jaden.reads"
+    },
+    {
+      "name": "Night Owls Cinema",
+      "description": "Late-night film lovers who meet for screenings, classics, and midnight movie conversations that go on way too long.",
+      "category": "movies",
+      "visibility": "public",
+      "tags": [
+        "movies",
+        "late-night",
+        "screenings",
+        "classics",
+        "cult-films"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
+      "ownerId": "hxssan"
+    }
+  ]
+}
