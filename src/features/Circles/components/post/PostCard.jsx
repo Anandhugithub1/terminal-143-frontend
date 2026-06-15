@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Flag, MoreVertical, Share2 } from "lucide-react";
+import { ChevronRight, Flag, MoreVertical, Share2 } from "lucide-react";
 import PostMedia from "./PostMedia";
 import BottomSheetModal from "../common/BottomSheetModal";
 
@@ -17,6 +17,7 @@ export default function PostCard({
   onShare,
   onReport,
   heading,
+  onHeadingClick,
   body,
   image,
   media = [],
@@ -85,7 +86,17 @@ export default function PostCard({
       {/* Content */}
       <div className={isFeed ? "px-4 pb-2" : ""}>
         {heading && (
-          <h4 className="text-lg font-bold text-text-sec mb-1">{heading}</h4>
+          onHeadingClick ? (
+            <button
+              onClick={onHeadingClick}
+              className="inline-flex items-center gap-0.5 text-lg font-bold text-text-sec mb-1 active:opacity-60 transition-opacity"
+            >
+              {heading}
+              <ChevronRight className="w-4 h-4 text-gray-400" />
+            </button>
+          ) : (
+            <h4 className="text-lg font-bold text-text-sec mb-1">{heading}</h4>
+          )
         )}
 
         {body && (

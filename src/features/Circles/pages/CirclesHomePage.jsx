@@ -216,6 +216,11 @@ export default function CirclesHomePage() {
                       </div>
                     }
                     heading={post.circleName}
+                    onHeadingClick={
+                      post.circleId
+                        ? () => navigate(`/circles/${post.circleId}`)
+                        : undefined
+                    }
                     media={post.media}
                     body={post.content}
                     tags={post.tags || []}
