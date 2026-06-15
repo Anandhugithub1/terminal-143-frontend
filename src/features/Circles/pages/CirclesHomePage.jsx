@@ -5,8 +5,9 @@ import {
   Plus,
 } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
+import { LoadingSpinner } from "../../../components/Ui/Spinner.jsx";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import Sidebar from "../components/layout/Sidebar";
 import CreateCircleModal from "../components/circle/CreateCircleModal";
@@ -21,7 +22,7 @@ import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { buildPostActions } from "../utils/postActions";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
-import { CircleChipSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
+import { PostCardSkeleton } from "../components/common/Skeletons";
 
 const CIRCLE_BG_COLORS = [
   "bg-rose-50",
@@ -46,6 +47,14 @@ export default function CirclesHomePage() {
   const myCoords = myProfile?.location?.coordinates;
 
   const markPostSeen = useSeenTracker();
+
+  if (isLoadingCircles) {
+    return <LoadingSpinner />;
+  }
+
+  if (myCircles.length === 0) {
+    return <Navigate to="/circles/onboarding" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
@@ -98,14 +107,6 @@ export default function CirclesHomePage() {
 
           <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
             <div className="flex gap-4" style={{ minWidth: "min-content" }}>
-              {isLoadingCircles && (
-                <>
-                  <CircleChipSkeleton />
-                  <CircleChipSkeleton />
-                  <CircleChipSkeleton />
-                </>
-              )}
-
               {myCircles.map((circle, index) => (
                 <div
                   key={circle.circleId}
