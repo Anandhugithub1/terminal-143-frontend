@@ -286,6 +286,11 @@ export default function CircleDetailsPage() {
                   tags={post.tags || []}
                   onShare={() => handleSharePost(post)}
                   onReport={() => alert("Post reported")}
+                  onAuthorClick={
+                    post.authorId
+                      ? () => navigate(`/profile/${post.authorId}`)
+                      : undefined
+                  }
                   actionsWrapperClassName={canMatch ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                   actions={buildPostActions({
                     isLiked: likedPosts.has(post.postId),

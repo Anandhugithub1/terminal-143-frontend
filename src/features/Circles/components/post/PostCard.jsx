@@ -18,6 +18,7 @@ export default function PostCard({
   onReport,
   heading,
   onHeadingClick,
+  onAuthorClick,
   body,
   image,
   media = [],
@@ -39,7 +40,10 @@ export default function PostCard({
       {/* Header */}
       <div className={isFeed ? "p-4 pb-2" : "mb-3"}>
         <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
+          <div
+            className={`flex items-center gap-3 ${onAuthorClick ? "active:opacity-60 transition-opacity cursor-pointer" : ""}`}
+            onClick={onAuthorClick}
+          >
             <div className="relative">
               <img
                 src={avatar}

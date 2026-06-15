@@ -221,6 +221,11 @@ export default function CirclesHomePage() {
                         ? () => navigate(`/circles/${post.circleId}`)
                         : undefined
                     }
+                    onAuthorClick={
+                      post.authorId
+                        ? () => navigate(`/profile/${post.authorId}`)
+                        : undefined
+                    }
                     media={post.media}
                     body={post.content}
                     tags={post.tags || []}
