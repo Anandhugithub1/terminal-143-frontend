@@ -1,0 +1,180 @@
+import { ArrowLeft, Search, X, Compass } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
+import BottomNav from "../../../components/Layout/BottomNavigation";
+import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
+import { useCircles } from "../hooks/useCircles";
+import { useJoinCircle } from "../hooks/useMembership";
+import { queryKeys } from "../queries/queryKeys";
+
+export default function DiscoverCirclesPage() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data: circlesData } = useCircles();
+  const { mutate: joinCircle } = useJoinCircle();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [joiningId, setJoiningId] = useState(null);
+  const [imageErrors, setImageErrors] = useState(new Set());
+
+  const joinedCircleIds = new Set((circlesData?.circles || []).map((circle) => circle.circleId));
+  const discoverableCircles = availableCircles.filter((circle) => !joinedCircleIds.has(circle.circleId));
+
+  const filteredCircles = discoverableCircles.filter((circle) => {
+    const matchesSearch =
+      circle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      circle.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || circle.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
+  const handleImageError = (circleId) => {
+    setImageErrors((prev) => new Set(prev).add(circleId));
+  };
+
+  const clearFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("All");
+  };
+
+  const handleJoin = (circle) => {
+    setJoiningId(circle.circleId);
+    joinCircle(circle.circleId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: queryKeys.circles });
+      },
+      onSettled: () => setJoiningId(null),
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
+      {/* Header */}
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-4 py-3">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-600" />
+          </button>
+          <h1 className="text-lg font-bold text-text-sec">Discover Circles</h1>
+        </div>
+      </div>
+
+      <div className="max-w-3xl mx-auto px-3 pt-4 space-y-4">
+        {discoverableCircles.length === 0 ? (
+          <div className="flex flex-col items-center justify-center text-center py-16 px-4">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+              <Compass className="w-8 h-8 text-primary" />
+            </div>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">You're in every circle!</h2>
+            <p className="text-gray-500 text-sm">
+              You've already joined all the circles we have to offer right now.
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search circles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4 text-gray-400" />
+                </button>
+              )}
+            </div>
+
+            {/* Categories */}
+            <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
+              <div className="flex gap-2 min-w-min">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                      selectedCategory === category
+                        ? "bg-primary text-white shadow-md"
+                        : "bg-white text-gray-600 border border-gray-200 active:bg-gray-100"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Circles Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {filteredCircles.map((circle) => {
+                const Icon = circle.icon;
+                const isJoining = joiningId === circle.circleId;
+                return (
+                  <div key={circle.id} className={`${circle.bgColor} rounded-2xl p-3`}>
+                    <div className="relative mb-3">
+                      {imageErrors.has(circle.id) ? (
+                        <div className={`w-full h-24 rounded-xl flex items-center justify-center ${circle.iconBg}`}>
+                          <Icon className={`w-8 h-8 ${circle.iconColor}`} />
+                        </div>
+                      ) : (
+                        <img
+                          src={circle.image}
+                          alt={circle.name}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-24 object-cover rounded-xl"
+                          onError={() => handleImageError(circle.id)}
+                        />
+                      )}
+                      <span className="absolute bottom-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-black/40 text-white backdrop-blur-sm">
+                        {circle.category}
+                      </span>
+                    </div>
+                    <h3 className="font-bold text-sm text-gray-800 mb-1 line-clamp-1">{circle.name}</h3>
+                    <p className="text-xs text-gray-600 line-clamp-2 mb-3">{circle.description}</p>
+                    <button
+                      onClick={() => handleJoin(circle)}
+                      disabled={isJoining}
+                      className="w-full py-2 bg-primary text-white rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60"
+                    >
+                      {isJoining ? "Joining..." : "Join Circle"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+
+            {filteredCircles.length === 0 && (
+              <div className="text-center py-12">
+                <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">No circles found</h3>
+                <p className="text-gray-500 mb-4">Try adjusting your search or filters</p>
+                <button
+                  onClick={clearFilters}
+                  className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium active:scale-95 transition-transform"
+                >
+                  Clear filters
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      <BottomNav />
+    </div>
+  );
+}

@@ -10,6 +10,10 @@ const OnboardingPage = lazy(() =>
   import("../features/Circles/pages/OnboardingPage.jsx")
 )
 
+const DiscoverCirclesPage = lazy(() =>
+  import("../features/Circles/pages/DiscoverCirclesPage.jsx")
+)
+
 const CircleDetailsPage = lazy(() =>
   import("../features/Circles/pages/CircleDetailsPage.jsx")
 )
@@ -33,6 +37,14 @@ export const CircleRoutes = (
       element={
         <Suspense fallback={<LoadingSpinner />}>
           <OnboardingPage />
+        </Suspense>
+      }
+    />
+    <Route
+      path="circles/discover"
+      element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <DiscoverCirclesPage />
         </Suspense>
       }
     />

@@ -2,6 +2,7 @@ import {
   Menu,
   Bell,
   Plus,
+  Compass,
 } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -136,6 +137,22 @@ export default function CirclesHomePage() {
                   </div>
                 </div>
               ))}
+
+              {/* Discover More Circles Card */}
+              <div
+                className="flex-shrink-0 w-20 text-center cursor-pointer active:scale-95 transition-transform"
+                onClick={() => navigate("/circles/discover")}
+              >
+                <div className="bg-gray-50 rounded-2xl p-2.5 transition-all hover:shadow-md border-2 border-dashed border-gray-200 h-full flex flex-col items-center">
+                  <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center">
+                    <Compass className="w-6 h-6 text-gray-500" />
+                  </div>
+                  <h3 className="font-semibold text-text-sec mt-2 text-xs">
+                    Discover
+                  </h3>
+                  <p className="text-[11px] text-gray-500 mt-0.5">Circles</p>
+                </div>
+              </div>
 
               {/* Create Circle Card */}
               <div
