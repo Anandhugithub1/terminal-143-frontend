@@ -2,7 +2,7 @@
   "circles": [
     {
       "name": "Vinyl & Vibes",
-      "circleId": "10da7549-023b-4158-8917-210c2e51a006",
+      "circleId": "967dd471-b238-49f7-b7ee-430277f76b11",
       "description": "Music lovers who collect vinyl, swap playlists, and bond over shared taste in sound.",
       "category": "music",
       "visibility": "public",
@@ -18,7 +18,7 @@
     },
     {
       "name": "Wander Together",
-      "circleId": "f9e1c955-6497-45cc-9477-e5304bb0c5bb",
+      "circleId": "8493cda7-9f76-4ebc-b339-bebe15496cfc",
       "description": "A community for solo travelers and adventure seekers who'd love to find their next travel buddy or partner.",
       "category": "travel",
       "visibility": "public",
@@ -33,7 +33,7 @@
     },
     {
       "name": "Arthouse & After",
-      "circleId": "4c192c0f-ea94-43ba-8b7f-e1140cf3e16d",
+      "circleId": "206ee00d-0517-4036-bf1b-67df96998aed",
       "description": "A film circle for the cinephile crowd — festival films, foreign cinema, and the conversations that happen after the credits roll.",
       "category": "movies",
       "visibility": "private",
@@ -49,7 +49,7 @@
     },
     {
       "name": "Sunrise Runners Club",
-      "circleId": "b9dd0c5d-fd5b-4f60-8c1b-70f11fe42384",
+      "circleId": "96aea22a-5c80-4ee6-9391-01c5ab59bb83",
       "description": "Early risers who run, jog, or walk and love the energy of morning fitness with good company.",
       "category": "fitness",
       "visibility": "public",
@@ -65,7 +65,7 @@
     },
     {
       "name": "Table for Two (or More)",
-      "circleId": "6dd514cd-bd30-48c4-86ed-c16e8b81e5d2",
+      "circleId": "b440802e-eebc-46f3-9fd3-baec9f99b5d5",
       "description": "Food lovers who explore restaurants, cook together, and believe the best connections happen around a shared meal.",
       "category": "food",
       "visibility": "public",
@@ -81,7 +81,7 @@
     },
     {
       "name": "Trailheads & Heartbeats",
-      "circleId": "e5d5de65-77b9-4c0b-af30-87010741e5fd",
+      "circleId": "e28bd9f0-b927-4f5e-86d3-420960aaae0c",
       "description": "Hikers and outdoor lovers exploring trails, sharing routes, and finding connection in the great outdoors.",
       "category": "fitness",
       "visibility": "public",
@@ -97,7 +97,7 @@
     },
     {
       "name": "Passport & Plates",
-      "circleId": "43898365-4af9-4a80-8f62-04c2c4b59d90",
+      "circleId": "885835ec-ab66-4656-b148-5fb2bdf6faf3",
       "description": "Foodies who travel for the food — sharing destination dining guides, local eats, and culinary adventures.",
       "category": "food",
       "visibility": "public",
@@ -113,7 +113,7 @@
     },
     {
       "name": "Page Turners",
-      "circleId": "aa27e374-c1f0-4384-b158-dd11807da7b4",
+      "circleId": "4d340751-66ad-45a9-b72a-2823df2e67df",
       "description": "A book community where readers connect, share recommendations, and maybe find someone who's read all the same books.",
       "category": "books",
       "visibility": "public",
@@ -129,7 +129,7 @@
     },
     {
       "name": "Mindful Mornings",
-      "circleId": "45f2fb99-e9d4-427a-a2ad-08eae86381fa",
+      "circleId": "a762825e-3a46-492e-9bf5-b3450f701a55",
       "description": "People building intentional morning routines — yoga, meditation, journaling, and sharing what helps them show up better.",
       "category": "fitness",
       "visibility": "public",
@@ -145,7 +145,7 @@
     },
     {
       "name": "Sketch & Sip",
-      "circleId": "ba8f2b3b-1653-4751-959a-bfd7e95719d0",
+      "circleId": "f84e689a-a69a-4dcf-96aa-1410489b9681",
       "description": "Creative souls who unwind with sketchbooks, casual drawing sessions, and good drinks.",
       "category": "arts",
       "visibility": "public",
@@ -161,7 +161,7 @@
     },
     {
       "name": "Locals Who Wander",
-      "circleId": "6db4b485-c69e-4692-bfad-684cf78c1f04",
+      "circleId": "1af43dd3-c118-44cf-9b15-9f4066d0aac8",
       "description": "City dwellers who treat their own neighborhood like a travel destination — discovering hidden spots and sharing what makes home worth exploring.",
       "category": "travel",
       "visibility": "public",
@@ -177,7 +177,7 @@
     },
     {
       "name": "Beyond the Algorithm",
-      "circleId": "3527945a-2ed5-41cf-a5bb-58ee2f8dd451",
+      "circleId": "7f47d315-a5c0-4431-b67c-6da633b770f6",
       "description": "Dating without the swipe fatigue — a space for meeting people through shared interests and honest conversations instead of profile optimization.",
       "category": "dating",
       "visibility": "public",
@@ -193,7 +193,7 @@
     },
     {
       "name": "Dog Park Dates",
-      "circleId": "658d31d4-68c1-49b6-9ae6-269363ee442a",
+      "circleId": "7c22f8d8-0ec9-450f-930b-377de0c7fb7a",
       "description": "Dog owners and lovers connecting over their furry companions — because dogs are the best icebreakers.",
       "category": "dating",
       "visibility": "public",
@@ -209,7 +209,7 @@
     },
     {
       "name": "Lift & Link",
-      "circleId": "181d585a-2e44-460d-b49e-cf19d76cee79",
+      "circleId": "de7be266-2c2a-43ab-8a15-4d7785ab8c9e",
       "description": "Gym-goers and fitness enthusiasts connecting over training goals, gym tips, and maybe more.",
       "category": "fitness",
       "visibility": "public",
@@ -225,7 +225,7 @@
     },
     {
       "name": "Camera Roll Chronicles",
-      "circleId": "91c1acae-970a-4caa-9b91-dea7486d8462",
+      "circleId": "7a1ee90f-7fce-40eb-a6b9-8873340be88e",
       "description": "Photographers and phone-camera enthusiasts swapping shots, editing tips, and golden-hour meetups.",
       "category": "photography",
       "visibility": "public",
@@ -241,7 +241,7 @@
     },
     {
       "name": "Night Owls Cinema",
-      "circleId": "b7a9848c-ed9d-4f26-b557-941e927dcba1",
+      "circleId": "1082e707-580c-4d6e-9133-71edb2f68fe6",
       "description": "Late-night film lovers who meet for screenings, classics, and midnight movie conversations that go on way too long.",
       "category": "movies",
       "visibility": "public",
@@ -257,7 +257,7 @@
     },
     {
       "name": "Ink & Intentions",
-      "circleId": "bddce480-d775-4daf-bea0-ea006afd9f7f",
+      "circleId": "862287be-9228-49f3-97cc-0821fad4b232",
       "description": "Journaling enthusiasts sharing layouts, prompts, and reflection routines that turn pen-and-paper time into a daily ritual.",
       "category": "writing",
       "visibility": "public",
@@ -273,7 +273,7 @@
     },
     {
       "name": "Slow Travel Society",
-      "circleId": "397df46c-2326-486e-8a7d-f5e8c9c9b012",
+      "circleId": "a782200d-b9cc-4e37-845d-69627c4f895b",
       "description": "For travelers who prefer depth over distance — staying longer, living like locals, and actually getting to know a place.",
       "category": "travel",
       "visibility": "public",
@@ -289,7 +289,7 @@
     },
     {
       "name": "Screen & Scene",
-      "circleId": "12e8d5b3-9f06-4ad0-84cd-235d46c62849",
+      "circleId": "21af0d32-8ee2-40f5-bd42-c1b3de0fc11e",
       "description": "Film buffs and casual watchers sharing reviews, planning movie nights, and debating the classics.",
       "category": "movies",
       "visibility": "public",
@@ -305,7 +305,7 @@
     },
     {
       "name": "Ferment & Feast",
-      "circleId": "eeea37db-4d0f-4944-8aa1-f7e88eaa5305",
+      "circleId": "083c3bba-83d3-4de8-b16e-ef4fddfe3e75",
       "description": "Home cooks and food geeks obsessed with fermentation, sourdough, hot sauce, and anything cultured or cured.",
       "category": "food",
       "visibility": "public",
@@ -321,7 +321,7 @@
     },
     {
       "name": "First Dates, Real Talk",
-      "circleId": "17057f00-1f0b-4b14-a8b7-e8afe472e93c",
+      "circleId": "7d711265-4d65-4fe8-a53b-f6bf6f76ab49",
       "description": "An honest space for navigating modern dating — the good, the awkward, and everything in between.",
       "category": "dating",
       "visibility": "public",
@@ -337,7 +337,7 @@
     },
     {
       "name": "The Unread List",
-      "circleId": "fb61474e-57b2-4854-8ba4-eb269a6f987a",
+      "circleId": "a6b4c0c3-3850-458f-ab93-17413127d56d",
       "description": "For people with towering to-be-read piles who want company while tackling them — themed reads, challenges, and recommendations.",
       "category": "books",
       "visibility": "private",
@@ -353,7 +353,7 @@
     },
     {
       "name": "Genre Benders",
-      "circleId": "fb1ec03a-35ed-4b2d-b1b6-bdbdaad89865",
+      "circleId": "8bd78606-fa8c-48b2-b832-27b682779c80",
       "description": "Readers who cross genres freely — literary fiction, horror, sci-fi, romance — and love comparing notes across all of them.",
       "category": "books",
       "visibility": "public",
@@ -370,7 +370,7 @@
     },
     {
       "name": "Coffee & Chemistry",
-      "circleId": "408981ab-c0f0-43e0-a733-c44963370f2d",
+      "circleId": "64fe37d9-5af9-4c59-a7de-5c17c0371071",
       "description": "For people who enjoy meaningful conversations over coffee and meeting new people with real spark.",
       "category": "dating",
       "visibility": "public",
