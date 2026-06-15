@@ -1,6 +1,5 @@
 import {
   ArrowLeft,
-  Search,
   MoreVertical,
   Users,
   Calendar,
@@ -57,6 +56,14 @@ export default function CircleDetailsPage() {
     );
   }
 
+  const handleShareCircle = async () => {
+    await shareLink({
+      title: data.name,
+      text: data.description || "",
+      url: `${window.location.origin}/circles/${circleId}`,
+    });
+  };
+
   const handleSharePost = async (post) => {
     try {
       const { data: postDetail } = await getPost(circleId, post.createdAtEpoch, post.postId);
@@ -110,7 +117,7 @@ export default function CircleDetailsPage() {
       />
 
       {/* Cover Image */}
-      <div className="relative h-48 sm:h-64 bg-gradient-to-br from-rose-400 to-orange-400">
+      <div className="relative h-40 sm:h-64 bg-gradient-to-br from-rose-400 to-orange-400">
         {data.coverPhoto && (
           <img
             src={data.coverPhoto}
@@ -122,68 +129,65 @@ export default function CircleDetailsPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
 
         {/* Header Actions */}
-        <div className="absolute top-0 left-0 right-0 p-4">
+        <div className="absolute top-0 left-0 right-0 p-3">
           <div className="flex items-center justify-between">
             <button
               onClick={() => navigate(-1)}
-              className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors"
+              className="p-2 bg-white/20 backdrop-blur-sm rounded-full active:bg-white/30 transition-colors"
             >
               <ArrowLeft className="w-5 h-5 text-white" />
             </button>
-            <div className="flex items-center gap-2">
-              <button className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors">
-                <Search className="w-5 h-5 text-white" />
-              </button>
-              <button className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors">
-                <MoreVertical className="w-5 h-5 text-white" />
-              </button>
-            </div>
+            <button className="p-2 bg-white/20 backdrop-blur-sm rounded-full active:bg-white/30 transition-colors">
+              <MoreVertical className="w-5 h-5 text-white" />
+            </button>
           </div>
         </div>
 
         {/* Circle Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <div className="flex items-end justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-white mb-1">
-                {data.name}
-              </h1>
-              <div className="flex items-center gap-3 text-white/90 text-sm">
-                <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" />
-                  <span>{data.members ?? 0} members</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-green-400 rounded-full" />
-                  <span>{data.onlineMembers ?? 0} online</span>
-                </div>
-              </div>
+        <div className="absolute bottom-0 left-0 right-0 p-3">
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-1 truncate">
+            {data.name}
+          </h1>
+          <div className="flex items-center gap-3 text-white/90 text-xs sm:text-sm">
+            <div className="flex items-center gap-1">
+              <Users className="w-4 h-4" />
+              <span>{data.members ?? 0} members</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-400 rounded-full" />
+              <span>{data.onlineMembers ?? 0} online</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-3xl mx-auto px-4 -mt-6 relative z-10">
+      <div className="max-w-3xl mx-auto px-3 -mt-5 relative z-10 space-y-3">
         {/* Action Buttons */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 mb-4">
-          <div className="flex gap-3">
+        <div className="bg-white rounded-2xl shadow-lg p-3">
+          <div className="flex gap-2">
             {isJoined ? (
               <>
-                <button className="flex-1 bg-primary text-white rounded-xl py-2.5 font-semibold hover:shadow-lg transition-all">
+                <button
+                  onClick={handleShareCircle}
+                  className="flex-1 bg-primary text-white rounded-xl py-2.5 text-sm font-semibold active:scale-95 transition-transform"
+                >
                   Share
                 </button>
-                <button className="flex-1 bg-gray-100 text-gray-700 rounded-xl py-2.5 font-semibold hover:bg-gray-200 transition-colors">
-                  Invite Friends
+                <button
+                  onClick={handleShareCircle}
+                  className="flex-1 bg-gray-100 text-gray-700 rounded-xl py-2.5 text-sm font-semibold active:scale-95 transition-transform"
+                >
+                  Invite
                 </button>
-                <button className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors">
+                <button className="w-11 h-11 flex-shrink-0 flex items-center justify-center bg-gray-100 rounded-xl active:scale-95 transition-transform">
                   <Settings className="w-5 h-5 text-gray-600" />
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setIsJoined(true)}
-                className="flex-1 bg-primary text-white rounded-xl py-3 font-semibold hover:shadow-lg transition-all"
+                className="flex-1 bg-primary text-white rounded-xl py-3 font-semibold active:scale-95 transition-transform"
               >
                 Join Circle
               </button>
@@ -192,8 +196,8 @@ export default function CircleDetailsPage() {
         </div>
 
         {/* About Section */}
-        <div className="bg-white rounded-2xl shadow-sm p-4 mb-4">
-          <h2 className="text-lg font-bold text-gray-800 mb-2">About</h2>
+        <div className="bg-white rounded-2xl shadow-sm p-3">
+          <h2 className="text-base font-bold text-gray-800 mb-2">About</h2>
           <p className="text-gray-600 text-sm leading-relaxed mb-3">
             {data.description}
           </p>
@@ -219,8 +223,8 @@ export default function CircleDetailsPage() {
 
         {/* Rules Section */}
         {data.rules?.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm p-4 mb-4">
-            <h2 className="text-lg font-bold text-gray-800 mb-3">Circle Rules</h2>
+          <div className="bg-white rounded-2xl shadow-sm p-3">
+            <h2 className="text-base font-bold text-gray-800 mb-3">Circle Rules</h2>
             <div className="space-y-2">
               {data.rules.map((rule, index) => (
                 <div key={index} className="flex items-start gap-2">
@@ -233,24 +237,24 @@ export default function CircleDetailsPage() {
         )}
 
         {/* Posts */}
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-4">
-          <div className="p-4 space-y-4">
+        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div className="p-3 space-y-3">
             {/* Create Post */}
-            <div className="flex gap-3 p-3 bg-gray-50 rounded-xl">
+            <div className="flex gap-2 p-2 bg-gray-50 rounded-xl">
               <img
                 src={myProfile?.profilePhoto || DEFAULT_AVATAR}
                 alt="Your avatar"
-                className="w-10 h-10 rounded-full object-cover"
+                className="w-9 h-9 rounded-full object-cover"
               />
               <button
                 onClick={() => setIsCreatePostModalOpen(true)}
-                className="flex-1 text-left px-4 py-2 bg-white rounded-full text-gray-400 text-sm hover:bg-gray-100 transition-colors"
+                className="flex-1 text-left px-4 py-2 bg-white rounded-full text-gray-400 text-sm active:bg-gray-100 transition-colors"
               >
-                Share your running experience...
+                Share something with the circle...
               </button>
               <button
                 onClick={() => setIsCreatePostModalOpen(true)}
-                className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+                className="p-2 active:bg-gray-200 rounded-full transition-colors"
               >
                 <Camera className="w-5 h-5 text-gray-400" />
               </button>
