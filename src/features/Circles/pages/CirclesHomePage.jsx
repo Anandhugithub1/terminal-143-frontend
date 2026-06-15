@@ -38,7 +38,7 @@ export default function CirclesHomePage() {
   const myCircles = circlesData?.circles || [];
 
   const { data: feedData, isLoading: isLoadingFeed } = useFeed();
-  const feed = feedData?.items || [];
+  const feed = feedData?.posts || [];
 
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;
@@ -194,6 +194,7 @@ export default function CirclesHomePage() {
                       )}
                     </div>
                   }
+                  heading={post.circleName}
                   media={post.media}
                   body={post.content}
                   tags={post.tags || []}
