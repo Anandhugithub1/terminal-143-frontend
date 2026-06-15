@@ -238,7 +238,7 @@ export default function CircleDetailsPage() {
             {/* Create Post */}
             <div className="flex gap-3 p-3 bg-gray-50 rounded-xl">
               <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"
+                src={myProfile?.profilePhoto || DEFAULT_AVATAR}
                 alt="Your avatar"
                 className="w-10 h-10 rounded-full object-cover"
               />

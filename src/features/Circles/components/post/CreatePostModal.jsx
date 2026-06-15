@@ -19,6 +19,7 @@ import { useMediaAttachments } from "../../hooks/useMediaAttachments";
 import LocationInput from "../../../AddProfile/components/LocationInput";
 import { createPost } from "../../api/postsApi";
 import { getPresignedUrl } from "../../api/imageupload";
+import { DEFAULT_AVATAR } from "../../utils/postDisplay";
 import BottomSheetModal from "../common/BottomSheetModal";
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
@@ -218,7 +219,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
               {/* User Info */}
               <div className="flex items-center gap-3">
                 <img
-                  src={authorData?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"}
+                  src={authorData?.avatar || DEFAULT_AVATAR}
                   alt={authorData?.name || "Your avatar"}
                   className="w-10 h-10 rounded-full object-cover"
                 />

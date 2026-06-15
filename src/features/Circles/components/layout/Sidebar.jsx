@@ -19,9 +19,12 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
+import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
+import { DEFAULT_AVATAR } from "../../utils/postDisplay";
 
 export default function Sidebar({ isOpen, onClose }) {
   const [activeTab, setActiveTab] = useState("home");
+  const { data: myProfile } = useMyProfile();
 
   const menuItems = [
     { id: "home", label: "Home", icon: Home, color: "text-gray-600" },
@@ -83,7 +86,7 @@ export default function Sidebar({ isOpen, onClose }) {
           <div className="flex items-center gap-3">
             <div className="relative">
               <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop"
+                src={myProfile?.profilePhoto || DEFAULT_AVATAR}
                 alt="User"
                 className="w-14 h-14 rounded-full object-cover shadow-md"
               />

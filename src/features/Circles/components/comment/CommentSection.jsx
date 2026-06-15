@@ -160,7 +160,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
         <div className="flex-shrink-0 p-4 border-t border-gray-100">
           <form onSubmit={handleSubmitComment} className="flex items-center gap-3">
             <img
-              src={DEFAULT_AVATAR}
+              src={myProfile?.profilePhoto || DEFAULT_AVATAR}
               alt="Your avatar"
               className="w-8 h-8 rounded-full object-cover flex-shrink-0"
             />
