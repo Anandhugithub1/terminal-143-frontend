@@ -8,6 +8,7 @@ import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 
 import { LoadingSpinner } from "../../../components/Ui/Spinner.jsx";
+import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import Sidebar from "../components/layout/Sidebar";
 import CreateCircleModal from "../components/circle/CreateCircleModal";
@@ -47,6 +48,7 @@ export default function CirclesHomePage() {
   const myCoords = myProfile?.location?.coordinates;
 
   const markPostSeen = useSeenTracker();
+  const { send: sendMatchRequest } = useSendMatchRequest();
 
   if (isLoadingCircles) {
     return <LoadingSpinner />;
@@ -206,6 +208,8 @@ export default function CirclesHomePage() {
                     actionsWrapperClassName="grid grid-cols-3 gap-2"
                     actions={buildPostActions({
                       onComment: () => setCommentPost(post),
+                      onToggleLike: () => sendMatchRequest(post.authorId),
+                      onPass: () => markPostSeen(post.postId),
                     })}
                   />
                 </PostSeenObserver>
