@@ -23,13 +23,13 @@ export function useSeenTracker() {
   }, [markFeedSeen]);
 
   const markSeen = useCallback(
-    (postId) => {
+    (postId, { immediate = false } = {}) => {
       if (!postId || sentRef.current.has(postId) || pendingRef.current.has(postId)) return;
 
       sentRef.current.add(postId);
       pendingRef.current.add(postId);
 
-      if (pendingRef.current.size >= BATCH_SIZE) {
+      if (immediate || pendingRef.current.size >= BATCH_SIZE) {
         flush();
       }
     },

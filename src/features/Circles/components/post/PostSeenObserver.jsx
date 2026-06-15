@@ -7,6 +7,8 @@ export default function PostSeenObserver({ postId, onSeen, children }) {
   const containerRef = useRef(null);
   const timerRef = useRef(null);
   const seenRef = useRef(false);
+  const onSeenRef = useRef(onSeen);
+  onSeenRef.current = onSeen;
 
   useEffect(() => {
     const el = containerRef.current;
@@ -18,7 +20,7 @@ export default function PostSeenObserver({ postId, onSeen, children }) {
           if (!timerRef.current) {
             timerRef.current = setTimeout(() => {
               seenRef.current = true;
-              onSeen(postId);
+              onSeenRef.current(postId);
               observer.disconnect();
             }, DWELL_TIME);
           }
@@ -36,7 +38,7 @@ export default function PostSeenObserver({ postId, onSeen, children }) {
       observer.disconnect();
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [postId, onSeen]);
+  }, [postId]);
 
   return <div ref={containerRef}>{children}</div>;
 }

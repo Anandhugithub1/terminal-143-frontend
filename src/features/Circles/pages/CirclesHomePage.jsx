@@ -172,14 +172,17 @@ export default function CirclesHomePage() {
               </p>
             )}
 
-            {feed.map((post) => {
+            {feed.map((post, index) => {
               const distance =
                 myCoords && post.location?.coordinates
                   ? formatDistance(haversineDistanceKm(myCoords, post.location.coordinates))
                   : null;
 
+              const isLastPost = index === feed.length - 1;
+              const onSeen = (postId) => markPostSeen(postId, { immediate: isLastPost });
+
               return (
-                <PostSeenObserver key={post.postId} postId={post.postId} onSeen={markPostSeen}>
+                <PostSeenObserver key={post.postId} postId={post.postId} onSeen={onSeen}>
                   <PostCard
                     variant="feed"
                     avatar={post.authorImage || DEFAULT_AVATAR}
@@ -203,7 +206,7 @@ export default function CirclesHomePage() {
                     actions={buildPostActions({
                       onComment: () => setCommentPost(post),
                       onToggleLike: () => sendMatchRequest(post.authorId),
-                      onPass: () => markPostSeen(post.postId),
+                      onPass: () => markPostSeen(post.postId, { immediate: isLastPost }),
                     })}
                   />
                 </PostSeenObserver>
