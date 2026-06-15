@@ -15,10 +15,35 @@ from
 '../api/postsApi';
 
 import {
+  getFeed
+}
+from
+'../api/feedApi';
+
+import {
   queryKeys
 }
 from
 '../queries/queryKeys';
+
+export function
+useFeed() {
+  return useQuery({
+    queryKey:
+      queryKeys.feed,
+
+    queryFn:
+      async () => {
+        const res =
+          await getFeed();
+
+        return res.data;
+      },
+
+    staleTime:
+      1000 * 30
+  });
+}
 
 export function
 usePosts(

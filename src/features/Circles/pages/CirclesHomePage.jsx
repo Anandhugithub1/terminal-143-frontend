@@ -2,9 +2,6 @@ import {
   Menu,
   Search,
   Bell,
-  Heart,
-  MessageCircle,
-  X,
   Plus,
 } from "lucide-react";
 import { useState } from "react";
@@ -15,11 +12,14 @@ import Sidebar from "../components/layout/Sidebar";
 import CreateCircleModal from "../components/circle/CreateCircleModal";
 import CommentSection from "../components/comment/CommentSection";
 import PostCard from "../components/post/PostCard";
+import PostMeta from "../components/post/PostMeta";
 import { useCircles } from "../hooks/useCircles";
+import { useFeed } from "../hooks/usePosts";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
-import { feed } from "../constants/demoFeed";
-import { CircleChipSkeleton } from "../components/common/Skeletons";
+import { buildPostActions } from "../utils/postActions";
+import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { CircleChipSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
 
 const CIRCLE_BG_COLORS = [
   "bg-rose-50",
@@ -36,6 +36,9 @@ export default function CirclesHomePage() {
   const [commentPost, setCommentPost] = useState(null);
   const { data: circlesData, isLoading: isLoadingCircles } = useCircles();
   const myCircles = circlesData?.circles || [];
+
+  const { data: feedData, isLoading: isLoadingFeed } = useFeed();
+  const feed = feedData?.items || [];
 
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;
@@ -155,69 +158,50 @@ export default function CirclesHomePage() {
         {/* Feed Section */}
         <section>
           <div className="space-y-5">
+            {isLoadingFeed && (
+              <>
+                <PostCardSkeleton variant="feed" />
+                <PostCardSkeleton variant="feed" />
+              </>
+            )}
+
+            {!isLoadingFeed && feed.length === 0 && (
+              <p className="text-sm text-gray-400 text-center py-8">
+                No posts yet. Join a circle to see posts here!
+              </p>
+            )}
+
             {feed.map((post) => {
               const distance =
                 myCoords && post.location?.coordinates
                   ? formatDistance(haversineDistanceKm(myCoords, post.location.coordinates))
-                  : post.distance;
+                  : null;
 
               return (
-              <PostCard
-                key={post.id}
-                variant="feed"
-                avatar={post.avatar}
-                name={`${post.name}, ${post.age}`}
-                statusDot={post.isOnline}
-                badge={
-                  <div className="flex items-center gap-1 bg-primary/10 px-2 py-0.5 rounded-full">
-                    <Heart className="w-3 h-3 text-primary fill-primary" />
-                    <span className="text-xs font-semibold text-primary">
-                      {post.liked}% liked
-                    </span>
-                  </div>
-                }
-                meta={
-                  <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
-                    <span className="text-sm">🇹🇭</span>
-                    <span>{post.location?.placeName || post.location}</span>
-                    <span>•</span>
-                    <span>{distance}</span>
-                  </div>
-                }
-                image={post.image}
-                media={post.media}
-                heading={post.title}
-                body={post.body}
-                tags={post.tags}
-                actionsWrapperClassName="grid grid-cols-3 gap-2"
-                actions={[
-                  {
-                    key: "pass",
-                    icon: X,
-                    label: "Pass",
-                    iconClassName: "w-4 h-4",
-                    className:
-                      "flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors",
-                  },
-                  {
-                    key: "comment",
-                    icon: MessageCircle,
-                    label: "Comment",
-                    iconClassName: "w-4 h-4",
-                    onClick: () => setCommentPost(post),
-                    className:
-                      "flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors",
-                  },
-                  {
-                    key: "match",
-                    icon: Heart,
-                    label: "Match",
-                    iconClassName: "w-4 h-4 group-hover:fill-white transition-colors",
-                    className:
-                      "group flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm hover:shadow-lg transition-all hover:scale-105",
-                  },
-                ]}
-              />
+                <PostCard
+                  key={post.postId}
+                  variant="feed"
+                  avatar={post.authorImage || DEFAULT_AVATAR}
+                  name={post.authorName || "Anonymous"}
+                  meta={
+                    <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
+                      <PostMeta post={post} />
+                      {distance && (
+                        <>
+                          <span>•</span>
+                          <span>{distance}</span>
+                        </>
+                      )}
+                    </div>
+                  }
+                  media={post.media}
+                  body={post.content}
+                  tags={post.tags || []}
+                  actionsWrapperClassName="grid grid-cols-3 gap-2"
+                  actions={buildPostActions({
+                    onComment: () => setCommentPost(post),
+                  })}
+                />
               );
             })}
           </div>
