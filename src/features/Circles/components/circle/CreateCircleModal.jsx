@@ -1,7 +1,6 @@
 import {
   X,
-  Upload,
-  Users
+  Upload
 } from "lucide-react";
 
 import {
@@ -64,13 +63,6 @@ export default function CreateCircleModal({
     admin1: "",
     h3: { r4: "" }
   });
-
-  const [
-    privacy,
-    setPrivacy
-  ] = useState(
-    "public"
-  );
 
   const [
     coverFile,
@@ -277,7 +269,7 @@ export default function CreateCircleModal({
             category,
 
             visibility:
-              privacy,
+              "public",
 
             tags:
               location.placeName
@@ -311,10 +303,6 @@ export default function CreateCircleModal({
         );
 
         handleLocationSelect(null);
-
-        setPrivacy(
-          "public"
-        );
 
         setCoverFile(
           null
@@ -537,68 +525,6 @@ export default function CreateCircleModal({
             formData={{ location }}
             onSelect={handleLocationSelect}
           />
-
-          {/* Privacy */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Privacy
-            </label>
-
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() =>
-                  setPrivacy(
-                    "public"
-                  )
-                }
-                className={`p-4 border-2 rounded-xl text-left transition-all ${
-                  privacy ===
-                  "public"
-                    ? "border-primary bg-primary/5"
-                    : "border-gray-200"
-                }`}
-              >
-                <Users className="w-5 h-5 mb-2 text-primary" />
-
-                <h3 className="font-semibold text-gray-800">
-                  Public
-                </h3>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  Anyone
-                  can
-                  join
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() =>
-                  setPrivacy(
-                    "private"
-                  )
-                }
-                className={`p-4 border-2 rounded-xl text-left transition-all ${
-                  privacy ===
-                  "private"
-                    ? "border-primary bg-primary/5"
-                    : "border-gray-200"
-                }`}
-              >
-                <Users className="w-5 h-5 mb-2 text-gray-400" />
-
-                <h3 className="font-semibold text-gray-800">
-                  Private
-                </h3>
-
-                <p className="text-xs text-gray-500 mt-1">
-                  Invite
-                  only
-                </p>
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Footer */}

@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useRef, useCallback } from "react";
-import { suggestedTags, visibilityOptions, activityTypes } from "../../constants/postOptions";
+import { suggestedTags, activityTypes } from "../../constants/postOptions";
 import { MAX_MEDIA_ITEMS, MAX_VIDEO_DURATION_SEC } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
 import LocationInput from "../../../AddProfile/components/LocationInput";
@@ -26,7 +26,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   const [selectedTags, setSelectedTags] = useState([]);
   const [showTagInput, setShowTagInput] = useState(false);
   const [tagInput, setTagInput] = useState("");
-  const [visibility, setVisibility] = useState("all");
   const [activityType, setActivityType] = useState("");
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [location, setLocation] = useState({
@@ -155,7 +154,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       const payload = {
         content: postContent,
         media: uploadedMedia,
-        visibility,
+        visibility: "all",
         tags: selectedTags,
         activityType: activityType || undefined,
         location: showLocationInput ? location : undefined,
@@ -173,7 +172,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       setPostContent("");
       setSelectedTags([]);
       resetMedia();
-      setVisibility("all");
       setActivityType("");
       setShowLocationInput(false);
       setLocation({
@@ -386,34 +384,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                     </option>
                   ))}
                 </select>
-              </div>
-
-              {/* Visibility */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Visibility
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {visibilityOptions.map((option) => {
-                    const Icon = option.icon;
-                    return (
-                      <button
-                        key={option.value}
-                        onClick={() => setVisibility(option.value)}
-                        className={`p-3 rounded-xl border-2 text-center transition-all ${
-                          visibility === option.value
-                            ? "border-primary bg-primary/5"
-                            : "border-gray-200 hover:border-gray-300"
-                        }`}
-                      >
-                        <Icon className={`w-5 h-5 mx-auto mb-1 ${
-                          visibility === option.value ? "text-primary" : "text-gray-400"
-                        }`} />
-                        <span className="text-xs font-medium block">{option.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
               </div>
 
               {/* Location Toggle */}
