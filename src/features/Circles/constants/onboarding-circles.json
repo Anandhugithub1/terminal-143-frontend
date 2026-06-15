@@ -1,23 +1,24 @@
 {
   "circles": [
     {
-      "name": "Coffee & Chemistry",
-      "circleId": "ccca42d8-e1cb-42dc-85bc-d0dbba14ca6a",
-      "description": "For people who enjoy meaningful conversations over coffee and meeting new people with real spark.",
-      "category": "dating",
+      "name": "Vinyl & Vibes",
+      "circleId": "10da7549-023b-4158-8917-210c2e51a006",
+      "description": "Music lovers who collect vinyl, swap playlists, and bond over shared taste in sound.",
+      "category": "music",
       "visibility": "public",
       "tags": [
-        "dating",
-        "coffee",
-        "conversations",
-        "meetups"
+        "music",
+        "vinyl",
+        "playlists",
+        "concerts",
+        "indie"
       ],
-      "coverPhoto": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80",
-      "ownerId": "alexmorgan_"
+      "coverPhoto": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80",
+      "ownerId": "milo.spins"
     },
     {
       "name": "Wander Together",
-      "circleId": "998f5126-12e3-4bad-8d01-7182dc0cb559",
+      "circleId": "f9e1c955-6497-45cc-9477-e5304bb0c5bb",
       "description": "A community for solo travelers and adventure seekers who'd love to find their next travel buddy or partner.",
       "category": "travel",
       "visibility": "public",
@@ -31,216 +32,8 @@
       "ownerId": "farah.away"
     },
     {
-      "name": "Table for Two (or More)",
-      "circleId": "98210a10-ac8f-41f7-b12a-b34528d3e990",
-      "description": "Food lovers who explore restaurants, cook together, and believe the best connections happen around a shared meal.",
-      "category": "food",
-      "visibility": "public",
-      "tags": [
-        "food",
-        "dining",
-        "restaurants",
-        "cooking",
-        "dates"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
-      "ownerId": "jaden.reads"
-    },
-    {
-      "name": "Sunrise Runners Club",
-      "circleId": "f2cb936c-a663-41d2-8cf6-c748c4c9797e",
-      "description": "Early risers who run, jog, or walk and love the energy of morning fitness with good company.",
-      "category": "fitness",
-      "visibility": "public",
-      "tags": [
-        "running",
-        "fitness",
-        "morning",
-        "wellness",
-        "outdoors"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&q=80",
-      "ownerId": "carlosv07"
-    },
-    {
-      "name": "Dog Park Dates",
-      "circleId": "95c6db34-c1b1-4d25-a038-fb4d363db1a3",
-      "description": "Dog owners and lovers connecting over their furry companions — because dogs are the best icebreakers.",
-      "category": "dating",
-      "visibility": "public",
-      "tags": [
-        "dating",
-        "dogs",
-        "pets",
-        "outdoors",
-        "meetups"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80",
-      "ownerId": "irene.jpeg"
-    },
-    {
-      "name": "Page Turners",
-      "circleId": "0d153bc9-7da9-4a3d-9bd5-87bcf1a86b92",
-      "description": "A book community where readers connect, share recommendations, and maybe find someone who's read all the same books.",
-      "category": "books",
-      "visibility": "public",
-      "tags": [
-        "books",
-        "reading",
-        "book-club",
-        "literature",
-        "fiction"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80",
-      "ownerId": "bri.writes"
-    },
-    {
-      "name": "Screen & Scene",
-      "circleId": "a4523c59-318e-413d-adb2-bdc2c1c9ed25",
-      "description": "Film buffs and casual watchers sharing reviews, planning movie nights, and debating the classics.",
-      "category": "movies",
-      "visibility": "public",
-      "tags": [
-        "movies",
-        "film",
-        "cinema",
-        "reviews",
-        "movie-nights"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=800&q=80",
-      "ownerId": "evanthefilm"
-    },
-    {
-      "name": "Passport & Plates",
-      "circleId": "53708ddc-f910-4c33-8644-548baa85610e",
-      "description": "Foodies who travel for the food — sharing destination dining guides, local eats, and culinary adventures.",
-      "category": "food",
-      "visibility": "public",
-      "tags": [
-        "food",
-        "travel",
-        "culinary",
-        "street-food",
-        "restaurants"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
-      "ownerId": "gracefully.g"
-    },
-    {
-      "name": "Lift & Link",
-      "circleId": "882db162-0813-42a0-94da-78c34252c4c3",
-      "description": "Gym-goers and fitness enthusiasts connecting over training goals, gym tips, and maybe more.",
-      "category": "fitness",
-      "visibility": "public",
-      "tags": [
-        "fitness",
-        "gym",
-        "weightlifting",
-        "wellness",
-        "accountability"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
-      "ownerId": "hxssan"
-    },
-    {
-      "name": "Mindful Mornings",
-      "circleId": "6a9433bd-45a2-4d88-82ad-5f6c5045a0a9",
-      "description": "People building intentional morning routines — yoga, meditation, journaling, and sharing what helps them show up better.",
-      "category": "fitness",
-      "visibility": "public",
-      "tags": [
-        "wellness",
-        "mindfulness",
-        "yoga",
-        "meditation",
-        "morning-routine"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80",
-      "ownerId": "farah.away"
-    },
-    {
-      "name": "Slow Travel Society",
-      "circleId": "65804ab2-ca18-4e87-82e9-bbea37d59509",
-      "description": "For travelers who prefer depth over distance — staying longer, living like locals, and actually getting to know a place.",
-      "category": "travel",
-      "visibility": "public",
-      "tags": [
-        "travel",
-        "slow-travel",
-        "digital-nomad",
-        "culture",
-        "immersion"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=800&q=80",
-      "ownerId": "irene.jpeg"
-    },
-    {
-      "name": "First Dates, Real Talk",
-      "circleId": "8d1fb826-e4ae-4ada-a08f-65a7ba43112d",
-      "description": "An honest space for navigating modern dating — the good, the awkward, and everything in between.",
-      "category": "dating",
-      "visibility": "public",
-      "tags": [
-        "dating",
-        "relationships",
-        "advice",
-        "singles",
-        "modern-dating"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1529543544282-ea669407fca3?w=800&q=80",
-      "ownerId": "carlosv07"
-    },
-    {
-      "name": "Ferment & Feast",
-      "circleId": "cdbb981d-04d2-43ad-8394-9991dda048a0",
-      "description": "Home cooks and food geeks obsessed with fermentation, sourdough, hot sauce, and anything cultured or cured.",
-      "category": "food",
-      "visibility": "public",
-      "tags": [
-        "food",
-        "fermentation",
-        "sourdough",
-        "homebrewing",
-        "cooking"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=800&q=80",
-      "ownerId": "gracefully.g"
-    },
-    {
-      "name": "Trailheads & Heartbeats",
-      "circleId": "1d1742e5-23e9-4482-8c33-ce02821d0fd1",
-      "description": "Hikers and outdoor lovers exploring trails, sharing routes, and finding connection in the great outdoors.",
-      "category": "fitness",
-      "visibility": "public",
-      "tags": [
-        "hiking",
-        "outdoors",
-        "trails",
-        "nature",
-        "fitness"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
-      "ownerId": "evanthefilm"
-    },
-    {
-      "name": "The Unread List",
-      "circleId": "9bd4866a-bf2e-4dc6-9e95-cf2fb6e75d8b",
-      "description": "For people with towering to-be-read piles who want company while tackling them — themed reads, challenges, and recommendations.",
-      "category": "books",
-      "visibility": "private",
-      "tags": [
-        "books",
-        "TBR",
-        "reading-challenge",
-        "fiction",
-        "nonfiction"
-      ],
-      "coverPhoto": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80",
-      "ownerId": "hxssan"
-    },
-    {
       "name": "Arthouse & After",
-      "circleId": "31bb0365-c193-46f4-8ca4-ab7d35cce086",
+      "circleId": "4c192c0f-ea94-43ba-8b7f-e1140cf3e16d",
       "description": "A film circle for the cinephile crowd — festival films, foreign cinema, and the conversations that happen after the credits roll.",
       "category": "movies",
       "visibility": "private",
@@ -255,8 +48,120 @@
       "ownerId": "dana.explores"
     },
     {
+      "name": "Sunrise Runners Club",
+      "circleId": "b9dd0c5d-fd5b-4f60-8c1b-70f11fe42384",
+      "description": "Early risers who run, jog, or walk and love the energy of morning fitness with good company.",
+      "category": "fitness",
+      "visibility": "public",
+      "tags": [
+        "running",
+        "fitness",
+        "morning",
+        "wellness",
+        "outdoors"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&q=80",
+      "ownerId": "carlosv07"
+    },
+    {
+      "name": "Table for Two (or More)",
+      "circleId": "6dd514cd-bd30-48c4-86ed-c16e8b81e5d2",
+      "description": "Food lovers who explore restaurants, cook together, and believe the best connections happen around a shared meal.",
+      "category": "food",
+      "visibility": "public",
+      "tags": [
+        "food",
+        "dining",
+        "restaurants",
+        "cooking",
+        "dates"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80",
+      "ownerId": "jaden.reads"
+    },
+    {
+      "name": "Trailheads & Heartbeats",
+      "circleId": "e5d5de65-77b9-4c0b-af30-87010741e5fd",
+      "description": "Hikers and outdoor lovers exploring trails, sharing routes, and finding connection in the great outdoors.",
+      "category": "fitness",
+      "visibility": "public",
+      "tags": [
+        "hiking",
+        "outdoors",
+        "trails",
+        "nature",
+        "fitness"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+      "ownerId": "evanthefilm"
+    },
+    {
+      "name": "Passport & Plates",
+      "circleId": "43898365-4af9-4a80-8f62-04c2c4b59d90",
+      "description": "Foodies who travel for the food — sharing destination dining guides, local eats, and culinary adventures.",
+      "category": "food",
+      "visibility": "public",
+      "tags": [
+        "food",
+        "travel",
+        "culinary",
+        "street-food",
+        "restaurants"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80",
+      "ownerId": "gracefully.g"
+    },
+    {
+      "name": "Page Turners",
+      "circleId": "aa27e374-c1f0-4384-b158-dd11807da7b4",
+      "description": "A book community where readers connect, share recommendations, and maybe find someone who's read all the same books.",
+      "category": "books",
+      "visibility": "public",
+      "tags": [
+        "books",
+        "reading",
+        "book-club",
+        "literature",
+        "fiction"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80",
+      "ownerId": "bri.writes"
+    },
+    {
+      "name": "Mindful Mornings",
+      "circleId": "45f2fb99-e9d4-427a-a2ad-08eae86381fa",
+      "description": "People building intentional morning routines — yoga, meditation, journaling, and sharing what helps them show up better.",
+      "category": "fitness",
+      "visibility": "public",
+      "tags": [
+        "wellness",
+        "mindfulness",
+        "yoga",
+        "meditation",
+        "morning-routine"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=80",
+      "ownerId": "farah.away"
+    },
+    {
+      "name": "Sketch & Sip",
+      "circleId": "ba8f2b3b-1653-4751-959a-bfd7e95719d0",
+      "description": "Creative souls who unwind with sketchbooks, casual drawing sessions, and good drinks.",
+      "category": "arts",
+      "visibility": "public",
+      "tags": [
+        "art",
+        "sketching",
+        "creativity",
+        "drinks",
+        "social"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80",
+      "ownerId": "tasha.draws"
+    },
+    {
       "name": "Locals Who Wander",
-      "circleId": "7a9a1350-ecbb-4d4a-a031-80eaa919d64a",
+      "circleId": "6db4b485-c69e-4692-bfad-684cf78c1f04",
       "description": "City dwellers who treat their own neighborhood like a travel destination — discovering hidden spots and sharing what makes home worth exploring.",
       "category": "travel",
       "visibility": "public",
@@ -272,7 +177,7 @@
     },
     {
       "name": "Beyond the Algorithm",
-      "circleId": "00f172e3-44ed-43a6-8b85-6935b26b2c89",
+      "circleId": "3527945a-2ed5-41cf-a5bb-58ee2f8dd451",
       "description": "Dating without the swipe fatigue — a space for meeting people through shared interests and honest conversations instead of profile optimization.",
       "category": "dating",
       "visibility": "public",
@@ -287,8 +192,168 @@
       "ownerId": "gracefully.g"
     },
     {
+      "name": "Dog Park Dates",
+      "circleId": "658d31d4-68c1-49b6-9ae6-269363ee442a",
+      "description": "Dog owners and lovers connecting over their furry companions — because dogs are the best icebreakers.",
+      "category": "dating",
+      "visibility": "public",
+      "tags": [
+        "dating",
+        "dogs",
+        "pets",
+        "outdoors",
+        "meetups"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&q=80",
+      "ownerId": "irene.jpeg"
+    },
+    {
+      "name": "Lift & Link",
+      "circleId": "181d585a-2e44-460d-b49e-cf19d76cee79",
+      "description": "Gym-goers and fitness enthusiasts connecting over training goals, gym tips, and maybe more.",
+      "category": "fitness",
+      "visibility": "public",
+      "tags": [
+        "fitness",
+        "gym",
+        "weightlifting",
+        "wellness",
+        "accountability"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80",
+      "ownerId": "hxssan"
+    },
+    {
+      "name": "Camera Roll Chronicles",
+      "circleId": "91c1acae-970a-4caa-9b91-dea7486d8462",
+      "description": "Photographers and phone-camera enthusiasts swapping shots, editing tips, and golden-hour meetups.",
+      "category": "photography",
+      "visibility": "public",
+      "tags": [
+        "photography",
+        "creative",
+        "golden-hour",
+        "editing",
+        "meetups"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1495707902641-75cac588d2e9?w=800&q=80",
+      "ownerId": "dana.explores"
+    },
+    {
+      "name": "Night Owls Cinema",
+      "circleId": "b7a9848c-ed9d-4f26-b557-941e927dcba1",
+      "description": "Late-night film lovers who meet for screenings, classics, and midnight movie conversations that go on way too long.",
+      "category": "movies",
+      "visibility": "public",
+      "tags": [
+        "movies",
+        "late-night",
+        "screenings",
+        "classics",
+        "cult-films"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
+      "ownerId": "hxssan"
+    },
+    {
+      "name": "Ink & Intentions",
+      "circleId": "bddce480-d775-4daf-bea0-ea006afd9f7f",
+      "description": "Journaling enthusiasts sharing layouts, prompts, and reflection routines that turn pen-and-paper time into a daily ritual.",
+      "category": "writing",
+      "visibility": "public",
+      "tags": [
+        "journaling",
+        "writing",
+        "reflection",
+        "creativity",
+        "mindfulness"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1517842645767-c639042777db?w=800&q=80",
+      "ownerId": "bri.writes"
+    },
+    {
+      "name": "Slow Travel Society",
+      "circleId": "397df46c-2326-486e-8a7d-f5e8c9c9b012",
+      "description": "For travelers who prefer depth over distance — staying longer, living like locals, and actually getting to know a place.",
+      "category": "travel",
+      "visibility": "public",
+      "tags": [
+        "travel",
+        "slow-travel",
+        "digital-nomad",
+        "culture",
+        "immersion"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=800&q=80",
+      "ownerId": "irene.jpeg"
+    },
+    {
+      "name": "Screen & Scene",
+      "circleId": "12e8d5b3-9f06-4ad0-84cd-235d46c62849",
+      "description": "Film buffs and casual watchers sharing reviews, planning movie nights, and debating the classics.",
+      "category": "movies",
+      "visibility": "public",
+      "tags": [
+        "movies",
+        "film",
+        "cinema",
+        "reviews",
+        "movie-nights"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?w=800&q=80",
+      "ownerId": "evanthefilm"
+    },
+    {
+      "name": "Ferment & Feast",
+      "circleId": "eeea37db-4d0f-4944-8aa1-f7e88eaa5305",
+      "description": "Home cooks and food geeks obsessed with fermentation, sourdough, hot sauce, and anything cultured or cured.",
+      "category": "food",
+      "visibility": "public",
+      "tags": [
+        "food",
+        "fermentation",
+        "sourdough",
+        "homebrewing",
+        "cooking"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1586444248902-2f64eddc13df?w=800&q=80",
+      "ownerId": "gracefully.g"
+    },
+    {
+      "name": "First Dates, Real Talk",
+      "circleId": "17057f00-1f0b-4b14-a8b7-e8afe472e93c",
+      "description": "An honest space for navigating modern dating — the good, the awkward, and everything in between.",
+      "category": "dating",
+      "visibility": "public",
+      "tags": [
+        "dating",
+        "relationships",
+        "advice",
+        "singles",
+        "modern-dating"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1529543544282-ea669407fca3?w=800&q=80",
+      "ownerId": "carlosv07"
+    },
+    {
+      "name": "The Unread List",
+      "circleId": "fb61474e-57b2-4854-8ba4-eb269a6f987a",
+      "description": "For people with towering to-be-read piles who want company while tackling them — themed reads, challenges, and recommendations.",
+      "category": "books",
+      "visibility": "private",
+      "tags": [
+        "books",
+        "TBR",
+        "reading-challenge",
+        "fiction",
+        "nonfiction"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80",
+      "ownerId": "hxssan"
+    },
+    {
       "name": "Genre Benders",
-      "circleId": "0d545fdb-6bfb-443e-af2b-732167b29f4f",
+      "circleId": "fb1ec03a-35ed-4b2d-b1b6-bdbdaad89865",
       "description": "Readers who cross genres freely — literary fiction, horror, sci-fi, romance — and love comparing notes across all of them.",
       "category": "books",
       "visibility": "public",
@@ -304,20 +369,19 @@
       "ownerId": "jaden.reads"
     },
     {
-      "name": "Night Owls Cinema",
-      "circleId": "be25996d-35c5-472d-9fe0-b22cc12a73ab",
-      "description": "Late-night film lovers who meet for screenings, classics, and midnight movie conversations that go on way too long.",
-      "category": "movies",
+      "name": "Coffee & Chemistry",
+      "circleId": "408981ab-c0f0-43e0-a733-c44963370f2d",
+      "description": "For people who enjoy meaningful conversations over coffee and meeting new people with real spark.",
+      "category": "dating",
       "visibility": "public",
       "tags": [
-        "movies",
-        "late-night",
-        "screenings",
-        "classics",
-        "cult-films"
+        "dating",
+        "coffee",
+        "conversations",
+        "meetups"
       ],
-      "coverPhoto": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
-      "ownerId": "hxssan"
+      "coverPhoto": "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=80",
+      "ownerId": "alexmorgan_"
     }
   ]
 }

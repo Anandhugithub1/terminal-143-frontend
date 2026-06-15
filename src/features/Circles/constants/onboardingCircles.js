@@ -1,4 +1,4 @@
-import { Heart, Plane, Utensils, Dumbbell, BookOpen, Film } from "lucide-react";
+import { Heart, Plane, Utensils, Dumbbell, BookOpen, Film, Music, Palette, Camera, PenTool } from "lucide-react";
 import onboardingCirclesData from "./onboarding-circles.json";
 
 // Activity-based communities shown during circle onboarding, sourced from
@@ -10,6 +10,10 @@ const categoryMeta = {
   fitness: { label: "Fitness", icon: Dumbbell, bgColor: "bg-emerald-50", iconBg: "bg-emerald-100", iconColor: "text-emerald-600" },
   books: { label: "Books", icon: BookOpen, bgColor: "bg-purple-50", iconBg: "bg-purple-100", iconColor: "text-purple-600" },
   movies: { label: "Movies", icon: Film, bgColor: "bg-amber-50", iconBg: "bg-amber-100", iconColor: "text-amber-600" },
+  music: { label: "Music", icon: Music, bgColor: "bg-indigo-50", iconBg: "bg-indigo-100", iconColor: "text-indigo-600" },
+  arts: { label: "Arts", icon: Palette, bgColor: "bg-rose-50", iconBg: "bg-rose-100", iconColor: "text-rose-600" },
+  photography: { label: "Photography", icon: Camera, bgColor: "bg-slate-50", iconBg: "bg-slate-100", iconColor: "text-slate-600" },
+  writing: { label: "Writing", icon: PenTool, bgColor: "bg-teal-50", iconBg: "bg-teal-100", iconColor: "text-teal-600" },
 };
 
 export const availableCircles = onboardingCirclesData.circles
