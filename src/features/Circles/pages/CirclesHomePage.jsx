@@ -1,6 +1,5 @@
 import {
   Menu,
-  Search,
   Bell,
   Plus,
 } from "lucide-react";
@@ -72,51 +71,46 @@ export default function CirclesHomePage() {
       />
 
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-5 py-4">
-        <div className="flex items-center justify-between">
+      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-4 py-3">
+        <div className="flex items-center justify-between gap-2">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2"
           >
             <Menu className="w-6 h-6 text-gray-600" />
           </button>
 
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-text-sec">Circles</h1>
-            <p className="text-xs text-gray-500 mt-0.5">
+          <div className="text-center flex-1 min-w-0">
+            <h1 className="text-xl font-bold text-text-sec">Circles</h1>
+            <p className="text-xs text-gray-500 mt-0.5 truncate">
               Find people, share interests, make real connections.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-              <Search className="w-5 h-5 text-gray-600" />
-            </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors relative">
-              <Bell className="w-5 h-5 text-gray-600" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
-            </button>
-          </div>
+          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors relative -mr-2">
+            <Bell className="w-5 h-5 text-gray-600" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
+          </button>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 pt-5 space-y-6">
+      <div className="max-w-3xl mx-auto px-3 pt-4 space-y-5">
         {/* My Circles - Horizontal scroll on mobile */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold text-text-sec">My Circles</h2>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-lg font-bold text-text-sec">My Circles</h2>
           </div>
 
           <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
-            <div className="flex gap-4" style={{ minWidth: "min-content" }}>
+            <div className="flex gap-3" style={{ minWidth: "min-content" }}>
               {myCircles.map((circle, index) => (
                 <div
                   key={circle.circleId}
-                  className="flex-shrink-0 w-24 text-center cursor-pointer"
+                  className="flex-shrink-0 w-20 text-center cursor-pointer active:scale-95 transition-transform"
                   onClick={() => navigate(`/circles/${circle.circleId}`, { state: { circleData: circle } })}
                 >
                   <div
-                    className={`${CIRCLE_BG_COLORS[index % CIRCLE_BG_COLORS.length]} rounded-2xl p-3 transition-all hover:scale-105 hover:shadow-md`}
+                    className={`${CIRCLE_BG_COLORS[index % CIRCLE_BG_COLORS.length]} rounded-2xl p-2.5 transition-all hover:shadow-md`}
                   >
                     {circle.coverPhoto ? (
                       <img
@@ -124,19 +118,19 @@ export default function CirclesHomePage() {
                         alt={circle.name}
                         loading="lazy"
                         decoding="async"
-                        className="w-16 h-16 rounded-full object-cover mx-auto shadow-sm"
+                        className="w-14 h-14 rounded-full object-cover mx-auto shadow-sm"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mx-auto shadow-sm">
+                      <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center mx-auto shadow-sm">
                         <span className="text-lg font-bold text-text-sec">
                           {circle.name?.[0]?.toUpperCase()}
                         </span>
                       </div>
                     )}
-                    <h3 className="font-semibold text-text-sec mt-2 text-sm truncate">
+                    <h3 className="font-semibold text-text-sec mt-2 text-xs truncate">
                       {circle.name}
                     </h3>
-                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                    <p className="text-[11px] text-gray-500 mt-0.5 truncate">
                       {circle.category}
                     </p>
                   </div>
@@ -145,17 +139,17 @@ export default function CirclesHomePage() {
 
               {/* Create Circle Card */}
               <div
-                className="flex-shrink-0 w-24 text-center cursor-pointer"
+                className="flex-shrink-0 w-20 text-center cursor-pointer active:scale-95 transition-transform"
                 onClick={() => setIsCreateModalOpen(true)}
               >
-                <div className="bg-gray-50 rounded-2xl p-3 transition-all hover:scale-105 hover:shadow-md border-2 border-dashed border-gray-200 h-full flex flex-col items-center">
-                  <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                    <Plus className="w-7 h-7 text-gray-500" />
+                <div className="bg-gray-50 rounded-2xl p-2.5 transition-all hover:shadow-md border-2 border-dashed border-gray-200 h-full flex flex-col items-center">
+                  <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center">
+                    <Plus className="w-6 h-6 text-gray-500" />
                   </div>
-                  <h3 className="font-semibold text-text-sec mt-2 text-sm">
+                  <h3 className="font-semibold text-text-sec mt-2 text-xs">
                     Create
                   </h3>
-                  <p className="text-xs text-gray-500 mt-0.5">Circle</p>
+                  <p className="text-[11px] text-gray-500 mt-0.5">Circle</p>
                 </div>
               </div>
             </div>
@@ -164,7 +158,7 @@ export default function CirclesHomePage() {
 
         {/* Feed Section */}
         <section>
-          <div className="space-y-5">
+          <div className="space-y-4">
             {isLoadingFeed && (
               <>
                 <PostCardSkeleton variant="feed" />
