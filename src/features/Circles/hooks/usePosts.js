@@ -15,7 +15,8 @@ from
 '../api/postsApi';
 
 import {
-  getFeed
+  getFeed,
+  updateSeenFeed
 }
 from
 '../api/feedApi';
@@ -42,6 +43,17 @@ useFeed() {
 
     staleTime:
       1000 * 30
+  });
+}
+
+export function
+useMarkFeedSeen() {
+  return useMutation({
+    mutationFn:
+      postIds =>
+        updateSeenFeed(
+          postIds
+        )
   });
 }
 

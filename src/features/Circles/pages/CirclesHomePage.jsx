@@ -13,8 +13,10 @@ import CreateCircleModal from "../components/circle/CreateCircleModal";
 import CommentSection from "../components/comment/CommentSection";
 import PostCard from "../components/post/PostCard";
 import PostMeta from "../components/post/PostMeta";
+import PostSeenObserver from "../components/post/PostSeenObserver";
 import { useCircles } from "../hooks/useCircles";
 import { useFeed } from "../hooks/usePosts";
+import { useSeenTracker } from "../hooks/useSeenTracker";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { buildPostActions } from "../utils/postActions";
@@ -42,6 +44,8 @@ export default function CirclesHomePage() {
 
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;
+
+  const markPostSeen = useSeenTracker();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
@@ -178,31 +182,32 @@ export default function CirclesHomePage() {
                   : null;
 
               return (
-                <PostCard
-                  key={post.postId}
-                  variant="feed"
-                  avatar={post.authorImage || DEFAULT_AVATAR}
-                  name={post.authorName || "Anonymous"}
-                  meta={
-                    <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
-                      <PostMeta post={post} />
-                      {distance && (
-                        <>
-                          <span>•</span>
-                          <span>{distance}</span>
-                        </>
-                      )}
-                    </div>
-                  }
-                  heading={post.circleName}
-                  media={post.media}
-                  body={post.content}
-                  tags={post.tags || []}
-                  actionsWrapperClassName="grid grid-cols-3 gap-2"
-                  actions={buildPostActions({
-                    onComment: () => setCommentPost(post),
-                  })}
-                />
+                <PostSeenObserver key={post.postId} postId={post.postId} onSeen={markPostSeen}>
+                  <PostCard
+                    variant="feed"
+                    avatar={post.authorImage || DEFAULT_AVATAR}
+                    name={post.authorName || "Anonymous"}
+                    meta={
+                      <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
+                        <PostMeta post={post} />
+                        {distance && (
+                          <>
+                            <span>•</span>
+                            <span>{distance}</span>
+                          </>
+                        )}
+                      </div>
+                    }
+                    heading={post.circleName}
+                    media={post.media}
+                    body={post.content}
+                    tags={post.tags || []}
+                    actionsWrapperClassName="grid grid-cols-3 gap-2"
+                    actions={buildPostActions({
+                      onComment: () => setCommentPost(post),
+                    })}
+                  />
+                </PostSeenObserver>
               );
             })}
           </div>
