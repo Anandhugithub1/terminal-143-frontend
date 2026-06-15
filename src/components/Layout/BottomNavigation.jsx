@@ -10,7 +10,9 @@ import {
   RiUserLine,
   RiUserFill,
   RiFileListLine,
-  RiFileListFill
+  RiFileListFill,
+  RiGroup2Line,
+  RiGroup2Fill
 } from 'react-icons/ri'
 import { useTranslation } from 'react-i18next'
 
@@ -32,6 +34,16 @@ const BottomNav = () => {
           <RiFileListFill size="1.4em" />
         ) : (
           <RiFileListLine size="1.4em" />
+        )
+    },
+    {
+      name: t('circles'),
+      path: '/circles',
+      icon: ({ isActive }) =>
+        isActive ? (
+          <RiGroup2Fill size="1.4em" />
+        ) : (
+          <RiGroup2Line size="1.4em" />
         )
     },
     {
