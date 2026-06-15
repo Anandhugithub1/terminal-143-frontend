@@ -38,13 +38,13 @@ export default function PostCard({
       }
     >
       {/* Header */}
-      <div className={isFeed ? "p-4 pb-2" : "mb-3"}>
-        <div className="flex items-start justify-between">
+      <div className={isFeed ? "p-3 pb-2 sm:p-4 sm:pb-2" : "mb-3"}>
+        <div className="flex items-start justify-between gap-2">
           <div
-            className={`flex items-center gap-3 ${onAuthorClick ? "active:opacity-60 transition-opacity cursor-pointer" : ""}`}
+            className={`flex items-center gap-2.5 min-w-0 ${onAuthorClick ? "active:opacity-60 transition-opacity cursor-pointer" : ""}`}
             onClick={onAuthorClick}
           >
-            <div className="relative">
+            <div className="relative shrink-0">
               <img
                 src={avatar}
                 alt={name}
@@ -52,7 +52,7 @@ export default function PostCard({
                 decoding="async"
                 className={
                   isFeed
-                    ? "w-12 h-12 rounded-full object-cover shadow-md"
+                    ? "w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-md"
                     : "w-10 h-10 rounded-full object-cover"
                 }
               />
@@ -61,13 +61,13 @@ export default function PostCard({
               )}
             </div>
 
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h3
                   className={
                     isFeed
-                      ? "text-lg font-bold text-text-sec"
-                      : "font-semibold text-gray-800"
+                      ? "text-base sm:text-lg font-bold text-text-sec truncate"
+                      : "font-semibold text-gray-800 text-sm truncate"
                   }
                 >
                   {name}
@@ -80,7 +80,7 @@ export default function PostCard({
 
           <button
             onClick={() => setIsMenuOpen(true)}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-1 -mr-1 shrink-0 hover:bg-gray-100 rounded-full transition-colors"
           >
             <MoreVertical className={isFeed ? "w-5 h-5 text-gray-500" : "w-4 h-4 text-gray-400"} />
           </button>
@@ -88,18 +88,18 @@ export default function PostCard({
       </div>
 
       {/* Content */}
-      <div className={isFeed ? "px-4 pb-2" : ""}>
+      <div className={isFeed ? "px-3 pb-2 sm:px-4" : ""}>
         {heading && (
           onHeadingClick ? (
             <button
               onClick={onHeadingClick}
-              className="inline-flex items-center gap-0.5 text-lg font-bold text-text-sec mb-1 active:opacity-60 transition-opacity"
+              className="inline-flex items-center gap-0.5 text-base sm:text-lg font-bold text-text-sec mb-1 active:opacity-60 transition-opacity"
             >
               {heading}
               <ChevronRight className="w-4 h-4 text-gray-400" />
             </button>
           ) : (
-            <h4 className="text-lg font-bold text-text-sec mb-1">{heading}</h4>
+            <h4 className="text-base sm:text-lg font-bold text-text-sec mb-1">{heading}</h4>
           )
         )}
 
@@ -135,7 +135,7 @@ export default function PostCard({
 
       {/* Media */}
       {(media?.[0]?.url || image) && (
-        <div className={isFeed ? "px-4 pb-2" : "mb-3"}>
+        <div className={isFeed ? "px-3 pb-2 sm:px-4" : "mb-3"}>
           <PostMedia
             media={media}
             image={image}
@@ -151,7 +151,7 @@ export default function PostCard({
 
       {/* Actions */}
       {actions.length > 0 && (
-        <div className={isFeed ? "p-4 pt-2 border-t border-border-clr mt-2" : ""}>
+        <div className={isFeed ? "px-3 py-2.5 sm:p-4 sm:pt-2 border-t border-border-clr mt-2" : ""}>
           <div className={actionsWrapperClassName}>
             {actions.map(({ key, icon: Icon, label, onClick, className, iconClassName }) => (
               <button key={key} onClick={onClick} className={className}>

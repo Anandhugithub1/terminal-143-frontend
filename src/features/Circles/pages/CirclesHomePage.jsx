@@ -3,6 +3,7 @@ import {
   Bell,
   Plus,
   Compass,
+  MapPin,
 } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -205,15 +206,17 @@ export default function CirclesHomePage() {
                     avatar={post.authorImage || DEFAULT_AVATAR}
                     name={post.authorName || "Anonymous"}
                     meta={
-                      <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
-                        <PostMeta post={post} />
-                        {distance && (
-                          <>
-                            <span>•</span>
-                            <span>{distance}</span>
-                          </>
-                        )}
-                      </div>
+                      <PostMeta
+                        post={post}
+                        extra={
+                          distance && (
+                            <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                              <MapPin className="w-3 h-3 shrink-0" />
+                              {distance}
+                            </span>
+                          )
+                        }
+                      />
                     }
                     heading={post.circleName}
                     onHeadingClick={
