@@ -9,14 +9,8 @@ import {
   LogOut,
   Bell,
   MessageCircle,
-  Calendar,
   Shield,
   HelpCircle,
-  Star,
-  TrendingUp,
-  Clock,
-  MapPin,
-  ChevronRight,
 } from "lucide-react";
 import { useState } from "react";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
@@ -33,13 +27,6 @@ export default function Sidebar({ isOpen, onClose }) {
     { id: "likes", label: "Likes", icon: Heart, color: "text-gray-600" },
     { id: "messages", label: "Messages", icon: MessageCircle, color: "text-gray-600" },
     { id: "notifications", label: "Notifications", icon: Bell, color: "text-gray-600" },
-  ];
-
-  const discoverItems = [
-    { id: "trending", label: "Trending Circles", icon: TrendingUp, color: "text-purple-500" },
-    { id: "nearby", label: "Nearby Events", icon: MapPin, color: "text-green-500" },
-    { id: "recommended", label: "Recommended", icon: Star, color: "text-yellow-500" },
-    { id: "recent", label: "Recent Activity", icon: Clock, color: "text-blue-500" },
   ];
 
   const accountItems = [
@@ -93,16 +80,10 @@ export default function Sidebar({ isOpen, onClose }) {
               <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white"></div>
             </div>
             <div className="flex-1">
-              <h3 className="font-bold text-text-sec">Alex Morgan</h3>
-              <p className="text-xs text-gray-500">@alexmorgan</p>
-              <div className="flex items-center gap-2 mt-1">
-                <div className="flex items-center gap-0.5">
-                  <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                  <span className="text-xs font-semibold">4.8</span>
-                </div>
-                <span className="text-xs text-gray-400">•</span>
-                <span className="text-xs text-gray-500">23 connections</span>
-              </div>
+              <h3 className="font-bold text-text-sec">{myProfile?.name || "User"}</h3>
+              {myProfile?.username && (
+                <p className="text-xs text-gray-500">@{myProfile.username}</p>
+              )}
             </div>
           </div>
         </div>
@@ -133,33 +114,6 @@ export default function Sidebar({ isOpen, onClose }) {
                   <span className={`text-sm font-medium ${activeTab === item.id ? "text-primary" : "text-text-sec"}`}>
                     {item.label}
                   </span>
-                  {item.id === "messages" && (
-                    <span className="ml-auto bg-primary text-white text-xs px-1.5 py-0.5 rounded-full">
-                      3
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Discover Section */}
-          <div className="px-3 py-2 border-t border-border-clr">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider px-3 mb-2">
-              Discover
-            </p>
-            {discoverItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all hover:bg-gray-100 mb-1 group"
-                >
-                  <Icon className={`w-5 h-5 ${item.color} group-hover:scale-110 transition-transform`} />
-                  <span className="text-sm font-medium text-text-sec">
-                    {item.label}
-                  </span>
-                  <ChevronRight className="w-4 h-4 text-gray-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
               );
             })}
