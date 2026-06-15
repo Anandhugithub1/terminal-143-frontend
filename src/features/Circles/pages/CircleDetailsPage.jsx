@@ -19,7 +19,7 @@ import { usePosts } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { queryKeys } from "../queries/queryKeys";
-import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, isMutualPreferenceMatch } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
@@ -271,26 +271,31 @@ export default function CircleDetailsPage() {
               <p className="text-sm text-gray-400 text-center py-4">No posts yet. Be the first to post!</p>
             )}
 
-            {posts.map((post) => (
-              <PostCard
-                key={post.postId}
-                variant="circle"
-                avatar={post.authorImage || DEFAULT_AVATAR}
-                name={post.authorName || "Anonymous"}
-                meta={<PostMeta post={post} />}
-                body={post.content}
-                media={post.media}
-                tags={post.tags || []}
-                onShare={() => handleSharePost(post)}
-                onReport={() => alert("Post reported")}
-                actionsWrapperClassName="grid grid-cols-3 gap-2"
-                actions={buildPostActions({
-                  isLiked: likedPosts.has(post.postId),
-                  onToggleLike: () => toggleLike(post.postId),
-                  onComment: () => setCommentPost(post),
-                })}
-              />
-            ))}
+            {posts.map((post) => {
+              const canMatch = isMutualPreferenceMatch(myProfile, post);
+
+              return (
+                <PostCard
+                  key={post.postId}
+                  variant="circle"
+                  avatar={post.authorImage || DEFAULT_AVATAR}
+                  name={post.authorName || "Anonymous"}
+                  meta={<PostMeta post={post} />}
+                  body={post.content}
+                  media={post.media}
+                  tags={post.tags || []}
+                  onShare={() => handleSharePost(post)}
+                  onReport={() => alert("Post reported")}
+                  actionsWrapperClassName={canMatch ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                  actions={buildPostActions({
+                    isLiked: likedPosts.has(post.postId),
+                    onToggleLike: () => toggleLike(post.postId),
+                    onComment: () => setCommentPost(post),
+                    includeMatchActions: canMatch,
+                  })}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
