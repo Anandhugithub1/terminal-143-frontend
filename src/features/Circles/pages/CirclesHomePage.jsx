@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { LoadingSpinner } from "../../../components/Ui/Spinner.jsx";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
@@ -235,7 +236,9 @@ export default function CirclesHomePage() {
                     actionsWrapperClassName="grid grid-cols-3 gap-2"
                     actions={buildPostActions({
                       onComment: () => setCommentPost(post),
-                      onToggleLike: () => sendMatchRequest(post.authorId),
+                      onToggleLike: () => sendMatchRequest(post.authorId, {
+                        onSuccess: () => toast.success("Match request sent"),
+                      }),
                       onPass: () => markPostSeen(post.postId, { immediate: isLastPost }),
                     })}
                   />

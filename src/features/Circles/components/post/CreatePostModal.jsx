@@ -40,6 +40,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   const videoRef = useRef(null);
   const [playingVideo, setPlayingVideo] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEnrichingLocation, setIsEnrichingLocation] = useState(false);
   const { media, addFiles, removeMedia, reset: resetMedia, isValidating } = useMediaAttachments();
 
   const handleAddTag = (tag) => {
@@ -67,6 +68,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
 
   const handleLocationSelect = useCallback((loc, detailsPromise) => {
     if (!loc) {
+      setIsEnrichingLocation(false);
       setLocation({
         coordinates: { lat: null, lon: null },
         placeName: "",
@@ -85,16 +87,21 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       h3: { r4: loc.h3Index || "" },
     });
 
-    detailsPromise?.then((enriched) => {
-      if (!enriched) return;
-      setLocation({
-        coordinates: { lat: enriched.lat, lon: enriched.lon },
-        placeName: enriched.placeName,
-        countryCode: enriched.countryCode,
-        admin1: enriched.admin1,
-        h3: { r4: enriched.h3Index || "" },
-      });
-    });
+    if (detailsPromise) {
+      setIsEnrichingLocation(true);
+      detailsPromise
+        .then((enriched) => {
+          if (!enriched) return;
+          setLocation({
+            coordinates: { lat: enriched.lat, lon: enriched.lon },
+            placeName: enriched.placeName,
+            countryCode: enriched.countryCode,
+            admin1: enriched.admin1,
+            h3: { r4: enriched.h3Index || "" },
+          });
+        })
+        .finally(() => setIsEnrichingLocation(false));
+    }
   }, []);
 
   const handleRemoveMedia = (id) => {
@@ -121,7 +128,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
 
   // Handle submit
   const handleSubmit = async () => {
-    if ((!postContent.trim() && media.length === 0) || isValidating || isSubmitting) {
+    if ((!postContent.trim() && media.length === 0) || isValidating || isSubmitting || isEnrichingLocation) {
       return;
     }
 
@@ -554,19 +561,19 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={(!postContent.trim() && media.length === 0) || isValidating || isSubmitting}
+                  disabled={(!postContent.trim() && media.length === 0) || isValidating || isSubmitting || isEnrichingLocation}
                   className={`flex-1 px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
-                    (postContent.trim() || media.length > 0) && !isValidating && !isSubmitting
+                    (postContent.trim() || media.length > 0) && !isValidating && !isSubmitting && !isEnrichingLocation
                       ? "bg-primary text-white hover:shadow-lg"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   }`}
                 >
-                  {isSubmitting ? (
+                  {(isSubmitting || isEnrichingLocation) ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <Send className="w-4 h-4" />
                   )}
-                  {isSubmitting ? "Posting..." : "Post"}
+                  {isSubmitting ? "Posting..." : isEnrichingLocation ? "Fetching location..." : "Post"}
                 </button>
               </div>
             </div>

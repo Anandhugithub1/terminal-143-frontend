@@ -64,6 +64,8 @@ export default function CreateCircleModal({
     h3: { r4: "" }
   });
 
+  const [isEnrichingLocation, setIsEnrichingLocation] = useState(false);
+
   const [
     coverFile,
     setCoverFile
@@ -125,6 +127,7 @@ export default function CreateCircleModal({
 
   const handleLocationSelect = useCallback((loc, detailsPromise) => {
     if (!loc) {
+      setIsEnrichingLocation(false);
       setLocation({
         coordinates: { lat: null, lon: null },
         placeName: "",
@@ -143,16 +146,21 @@ export default function CreateCircleModal({
       h3: { r4: loc.h3Index || "" },
     });
 
-    detailsPromise?.then((enriched) => {
-      if (!enriched) return;
-      setLocation({
-        coordinates: { lat: enriched.lat, lon: enriched.lon },
-        placeName: enriched.placeName,
-        countryCode: enriched.countryCode,
-        admin1: enriched.admin1,
-        h3: { r4: enriched.h3Index || "" },
-      });
-    });
+    if (detailsPromise) {
+      setIsEnrichingLocation(true);
+      detailsPromise
+        .then((enriched) => {
+          if (!enriched) return;
+          setLocation({
+            coordinates: { lat: enriched.lat, lon: enriched.lon },
+            placeName: enriched.placeName,
+            countryCode: enriched.countryCode,
+            admin1: enriched.admin1,
+            h3: { r4: enriched.h3Index || "" },
+          });
+        })
+        .finally(() => setIsEnrichingLocation(false));
+    }
   }, []);
 
  const uploadCoverPhoto =
@@ -545,7 +553,8 @@ export default function CreateCircleModal({
               }
               disabled={
                 createCircleMutation.isPending ||
-                isUploadingImage
+                isUploadingImage ||
+                isEnrichingLocation
               }
               className="flex-1 px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50"
             >
@@ -553,6 +562,8 @@ export default function CreateCircleModal({
                 ? "Uploading image..."
                 : createCircleMutation.isPending
                 ? "Creating..."
+                : isEnrichingLocation
+                ? "Fetching location..."
                 : "Create Circle"}
             </button>
           </div>

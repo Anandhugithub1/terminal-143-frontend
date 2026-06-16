@@ -21,14 +21,13 @@ export const useSendMatchRequest = () => {
   })
 
   return {
-    send: (recipientId) => {
+    send: (recipientId, options = {}) => {
       if (!recipientId) {
         console.warn("[hook] Aborting; recipientId missing")
         return
       }
 
-      console.log("[HOOK] sendMatchRequest:", recipientId)
-      mutation.mutate({ recipientId })
+      mutation.mutate({ recipientId }, options)
     },
     isSending: mutation.isLoading,
     error: mutation.error
