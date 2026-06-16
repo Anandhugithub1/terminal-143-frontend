@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useComments, useCreateComment, useReplyToComment } from "../../hooks/useComments";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 import CommentCard from "./CommentCard";
@@ -10,6 +11,7 @@ import { CommentSkeleton } from "../common/Skeletons";
 const COMMENT_MAX_LENGTH = 500;
 
 export default function CommentSection({ isOpen, onClose, post }) {
+  const navigate = useNavigate();
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
@@ -120,6 +122,11 @@ export default function CommentSection({ isOpen, onClose, post }) {
                 text={comment.content || comment.text || comment.body}
                 time={formatCommentTime(comment.createdAtEpoch)}
                 likes={comment.likes ?? 0}
+                onAuthorClick={
+                  comment.authorId
+                    ? () => navigate(`/profile/${comment.authorId}`)
+                    : undefined
+                }
                 onReply={isPostAuthor ? () => setReplyingTo(isReplying ? null : commentKey) : undefined}
                 replies={(comment.replies || []).map((reply) => ({
                   commentId: reply.commentId || reply.id,
@@ -128,6 +135,9 @@ export default function CommentSection({ isOpen, onClose, post }) {
                   text: reply.content || reply.text || reply.body,
                   time: formatCommentTime(reply.createdAtEpoch),
                   likes: reply.likes ?? 0,
+                  onAuthorClick: reply.authorId
+                    ? () => navigate(`/profile/${reply.authorId}`)
+                    : undefined,
                 }))}
                 replySlot={
                   isReplying && (

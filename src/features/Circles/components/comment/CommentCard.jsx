@@ -11,6 +11,7 @@ export default function CommentCard({
   likes = 0,
   onLike,
   onReply,
+  onAuthorClick,
   isReply = false,
   replySlot,
   replies = [],
@@ -22,12 +23,16 @@ export default function CommentCard({
         alt={name}
         loading="lazy"
         decoding="async"
-        className={`${isReply ? "w-8 h-8" : "w-10 h-10"} rounded-full object-cover flex-shrink-0`}
+        onClick={onAuthorClick}
+        className={`${isReply ? "w-8 h-8" : "w-10 h-10"} rounded-full object-cover flex-shrink-0 ${onAuthorClick ? "cursor-pointer active:opacity-60 transition-opacity" : ""}`}
       />
       <div className="flex-1 min-w-0">
         <div className="bg-gray-50 rounded-2xl p-3">
           <div className="flex items-center justify-between mb-1">
-            <h4 className="font-semibold text-gray-800 text-sm">{name}</h4>
+            <h4
+              onClick={onAuthorClick}
+              className={`font-semibold text-gray-800 text-sm ${onAuthorClick ? "cursor-pointer active:opacity-60 transition-opacity" : ""}`}
+            >{name}</h4>
             <button className="p-1 hover:bg-gray-200 rounded-full transition-colors">
               <MoreVertical className={isReply ? "w-3.5 h-3.5 text-gray-400" : "w-4 h-4 text-gray-400"} />
             </button>
@@ -64,6 +69,7 @@ export default function CommentCard({
             text={reply.text}
             time={reply.time}
             likes={reply.likes}
+            onAuthorClick={reply.onAuthorClick}
           />
         ))}
       </div>
