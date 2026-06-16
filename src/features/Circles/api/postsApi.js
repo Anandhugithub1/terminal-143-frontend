@@ -50,13 +50,7 @@ export const getPost =
   );
 };
 
-export const updatePost =
-(
-  circleId,
-  postId,
-  payload
-) =>
-  api.patch(
-    `${BASE}/${circleId}/posts/${postId}`,
-    payload
-  );
+export const updatePost = (circleId, postId, createdAtEpoch, payload) =>
+  api.patch(`${BASE}/${circleId}/posts/${postId}`, payload, {
+    params: { postedAt: createdAtEpoch },
+  });

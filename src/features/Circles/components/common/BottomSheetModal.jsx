@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 // Shared overlay + panel shell for the Circles modals: a bottom sheet on
@@ -7,18 +8,19 @@ export default function BottomSheetModal({ isOpen, onClose, children, panelClass
   if (!animated) {
     if (!isOpen) return null;
 
-    return (
-      <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
+    return createPortal(
+      <div className="fixed inset-0 z-[200] flex items-end justify-center sm:items-center sm:p-4">
         <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
         <div className={`relative bg-white w-full shadow-xl ${panelClassName}`}>{children}</div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4">
+        <div className="fixed inset-0 z-[200] flex items-end justify-center sm:items-center sm:p-4">
           <motion.div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             initial={{ opacity: 0 }}
@@ -39,6 +41,7 @@ export default function BottomSheetModal({ isOpen, onClose, children, panelClass
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

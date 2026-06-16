@@ -12,10 +12,11 @@ import { useQueryClient } from "@tanstack/react-query";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import CreatePostModal from "../components/post/CreatePostModal";
 import PostCard from "../components/post/PostCard";
+import EditPostModal from "../components/post/EditPostModal";
 import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import { useCircle } from "../hooks/useCircles";
-import { usePosts } from "../hooks/usePosts";
+import { usePosts, useUpdatePost } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { queryKeys } from "../queries/queryKeys";
@@ -33,12 +34,17 @@ export default function CircleDetailsPage() {
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [commentPost, setCommentPost] = useState(null);
+  const [editPost, setEditPost] = useState(null);
 
   const queryClient = useQueryClient();
 
   const { data: fetchedCircle, isLoading } = useCircle(circleId);
   const { data: postsData, isLoading: isLoadingPosts } = usePosts(circleId);
   const { data: myProfile } = useMyProfile();
+  const updatePostMutation = useUpdatePost(circleId);
+
+  // Strip "USER#" prefix from PK to match bare authorId from post data
+  const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
 
   // Prefer freshly fetched circle data, fall back to data passed via navigation state
   const data = fetchedCircle || location.state?.circleData;
@@ -97,6 +103,14 @@ export default function CircleDetailsPage() {
     });
   };
 
+  const handleSaveEdit = (payload) => {
+    if (!editPost) return;
+    updatePostMutation.mutate(
+      { postId: editPost.postId, createdAtEpoch: editPost.createdAtEpoch, payload },
+      { onSuccess: () => setEditPost(null) }
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Create Post Modal */}
@@ -115,6 +129,19 @@ export default function CircleDetailsPage() {
         onClose={() => setCommentPost(null)}
         post={commentPost}
       />
+
+      {/* Edit Post Modal — only mounted when a post is selected so state initialises from the real post */}
+      {editPost && (
+        <EditPostModal
+          isOpen
+          onClose={() => setEditPost(null)}
+          post={editPost}
+          circleId={circleId}
+          circleName={data?.name}
+          onSave={handleSaveEdit}
+          isSaving={updatePostMutation.isPending}
+        />
+      )}
 
       {/* Cover Image */}
       <div className="relative h-40 sm:h-64 bg-gradient-to-br from-rose-400 to-orange-400">
@@ -273,6 +300,7 @@ export default function CircleDetailsPage() {
 
             {posts.map((post) => {
               const canMatch = isMutualPreferenceMatch(myProfile, post);
+              const isAuthor = !!myId && myId === post.authorId;
 
               return (
                 <PostCard
@@ -284,6 +312,8 @@ export default function CircleDetailsPage() {
                   body={post.content}
                   media={post.media}
                   tags={post.tags || []}
+                  isAuthor={isAuthor}
+                  onEdit={() => setEditPost(post)}
                   onShare={() => handleSharePost(post)}
                   onReport={() => alert("Post reported")}
                   onAuthorClick={

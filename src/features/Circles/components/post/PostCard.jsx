@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight, Flag, MoreVertical, Share2 } from "lucide-react";
+import { ChevronRight, Flag, MoreVertical, Pencil, Share2 } from "lucide-react";
 import PostMedia from "./PostMedia";
 import BottomSheetModal from "../common/BottomSheetModal";
 
@@ -16,6 +16,8 @@ export default function PostCard({
   meta,
   onShare,
   onReport,
+  onEdit,
+  isAuthor = false,
   heading,
   onHeadingClick,
   onAuthorClick,
@@ -169,12 +171,24 @@ export default function PostCard({
         onClose={() => setIsMenuOpen(false)}
         panelClassName="rounded-t-2xl sm:rounded-2xl sm:max-w-sm overflow-hidden"
       >
+        {isAuthor && (
+          <button
+            onClick={() => {
+              setIsMenuOpen(false);
+              onEdit?.();
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <Pencil className="w-5 h-5 text-gray-500" />
+            Edit Post
+          </button>
+        )}
         <button
           onClick={() => {
             setIsMenuOpen(false);
             onShare?.();
           }}
-          className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors ${isAuthor ? "border-t border-gray-100" : ""}`}
         >
           <Share2 className="w-5 h-5 text-gray-500" />
           Share

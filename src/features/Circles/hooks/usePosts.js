@@ -9,7 +9,8 @@ from
 import {
   listPosts,
   createPost,
-  getPost
+  getPost,
+  updatePost
 }
 from
 '../api/postsApi';
@@ -116,6 +117,19 @@ usePost(
 
     staleTime:
       1000 * 30
+  });
+}
+
+export function
+useUpdatePost(circleId) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ postId, createdAtEpoch, payload }) =>
+      updatePost(circleId, postId, createdAtEpoch, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts(circleId) });
+    },
   });
 }
 
