@@ -21,6 +21,8 @@ export default function PostMedia({ media = [], image, alt, className }) {
   const [isMuted, setIsMuted] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [videoAspectRatio, setVideoAspectRatio] = useState(16 / 9);
+  const [imageAspectRatio, setImageAspectRatio] = useState(null);
 
   // Lazy-load: start fetching once the card is within ~200px of the viewport.
   useEffect(() => {
@@ -69,17 +71,31 @@ export default function PostMedia({ media = [], image, alt, className }) {
   if (!url) return null;
 
   if (isVideo) {
+    // Cap portrait videos at 4:5 (Instagram max portrait ratio) so they don't
+    // take over the entire screen; landscape videos show at their natural ratio.
+    const clampedRatio = Math.max(videoAspectRatio, 4 / 5);
+
     return (
-      <div ref={containerRef} className={`relative overflow-hidden bg-black ${className}`}>
+      <div
+        ref={containerRef}
+        className="relative w-full overflow-hidden bg-black rounded-xl mt-2"
+        style={{ aspectRatio: clampedRatio }}
+      >
         {shouldLoad && !hasError && (
           <video
             ref={videoRef}
             src={url}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             muted={isMuted}
             loop
             playsInline
             preload="metadata"
+            onLoadedMetadata={(e) => {
+              const { videoWidth, videoHeight } = e.target;
+              if (videoWidth && videoHeight) {
+                setVideoAspectRatio(videoWidth / videoHeight);
+              }
+            }}
             onLoadedData={() => setIsLoaded(true)}
             onError={() => setHasError(true)}
             onClick={() => {
@@ -121,15 +137,30 @@ export default function PostMedia({ media = [], image, alt, className }) {
     );
   }
 
+  // Cap portrait images at 4:5; use 1:1 as placeholder until dimensions load.
+  const clampedImageRatio = imageAspectRatio !== null
+    ? Math.max(imageAspectRatio, 4 / 5)
+    : 1;
+
   return (
-    <div ref={containerRef} className={`relative overflow-hidden bg-gray-100 ${className}`}>
+    <div
+      ref={containerRef}
+      className="relative w-full overflow-hidden bg-gray-100 rounded-xl mt-2"
+      style={{ aspectRatio: clampedImageRatio }}
+    >
       {shouldLoad && !hasError && (
         <img
           src={url}
           alt={alt}
           loading="lazy"
-          className="w-full h-full object-cover"
-          onLoad={() => setIsLoaded(true)}
+          className="w-full h-full object-contain"
+          onLoad={(e) => {
+            const { naturalWidth, naturalHeight } = e.target;
+            if (naturalWidth && naturalHeight) {
+              setImageAspectRatio(naturalWidth / naturalHeight);
+            }
+            setIsLoaded(true);
+          }}
           onError={() => setHasError(true)}
         />
       )}
