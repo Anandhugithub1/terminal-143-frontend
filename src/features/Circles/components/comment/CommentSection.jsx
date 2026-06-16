@@ -19,11 +19,13 @@ export default function CommentSection({ isOpen, onClose, post }) {
   const createCommentMutation = useCreateComment(postId);
   const replyCommentMutation = useReplyToComment(postId);
 
-  // Cached profile (5 min staleTime) — avoids refetching just to know the
-  // current user's username for the "can reply to own comment" check.
   const { data: myProfile } = useMyProfile();
 
   const comments = commentsData?.items || commentsData?.comments || [];
+
+  // Strip "USER#" prefix from PK to compare against bare authorId from post
+  const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
+  const isPostAuthor = !!myId && myId === post?.authorId;
 
   if (!isOpen) return null;
 
@@ -37,6 +39,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
         content,
         circleId: post.circleId,
         createdAtEpoch: String(post.createdAtEpoch),
+        authorImage: myProfile?.profilePhoto || "",
       },
       {
         onSuccess: () => setNewComment(""),
@@ -55,6 +58,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
         circleId: post.circleId,
         createdAtEpoch: String(post.createdAtEpoch),
         parentCommentId: comment.commentId || comment.id,
+        authorImage: myProfile?.profilePhoto || "",
       },
       {
         onSuccess: () => {
@@ -105,7 +109,6 @@ export default function CommentSection({ isOpen, onClose, post }) {
 
           {comments.map((comment) => {
             const commentAuthor = comment.authorName || comment.author?.name || comment.userName || comment.name;
-            const canReply = !!myProfile?.username && commentAuthor === myProfile.username;
             const commentKey = comment.commentId || comment.id;
             const isReplying = replyingTo === commentKey;
 
@@ -117,7 +120,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
                 text={comment.content || comment.text || comment.body}
                 time={formatCommentTime(comment.createdAtEpoch)}
                 likes={comment.likes ?? 0}
-                onReply={canReply ? () => setReplyingTo(isReplying ? null : commentKey) : undefined}
+                onReply={isPostAuthor ? () => setReplyingTo(isReplying ? null : commentKey) : undefined}
                 replies={(comment.replies || []).map((reply) => ({
                   commentId: reply.commentId || reply.id,
                   avatar: reply.authorImage || reply.author?.avatar || reply.avatar || DEFAULT_AVATAR,
@@ -130,8 +133,13 @@ export default function CommentSection({ isOpen, onClose, post }) {
                   isReplying && (
                     <form
                       onSubmit={(e) => handleSubmitReply(e, comment)}
-                      className="mt-2 flex items-center gap-2 px-2"
+                      className="mt-2 flex items-center gap-2 pl-1"
                     >
+                      <img
+                        src={myProfile?.profilePhoto || DEFAULT_AVATAR}
+                        alt="You"
+                        className="w-6 h-6 rounded-full object-cover flex-shrink-0"
+                      />
                       <input
                         type="text"
                         autoFocus
