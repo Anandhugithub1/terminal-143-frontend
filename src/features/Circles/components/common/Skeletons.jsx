@@ -97,3 +97,15 @@ export function CircleHeaderSkeleton() {
     </div>
   );
 }
+
+export function CircleAvatarSkeleton() {
+  return (
+    <div className="flex-shrink-0 w-20 text-center">
+      <div className="rounded-2xl p-2.5">
+        <Skeleton circle width={56} height={56} className="mx-auto" />
+        <Skeleton width={48} height={10} className="mt-2" />
+        <Skeleton width={36} height={8} className="mt-1" />
+      </div>
+    </div>
+  );
+}
