@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight, Flag, MoreVertical, Pencil, Share2 } from "lucide-react";
+import { ChevronRight, Flag, MoreVertical, Pencil, Share2, Trash2 } from "lucide-react";
 import PostMedia from "./PostMedia";
 import BottomSheetModal from "../common/BottomSheetModal";
 
@@ -17,6 +17,7 @@ export default function PostCard({
   onShare,
   onReport,
   onEdit,
+  onDelete,
   isAuthor = false,
   heading,
   onHeadingClick,
@@ -193,16 +194,30 @@ export default function PostCard({
           <Share2 className="w-5 h-5 text-gray-500" />
           Share
         </button>
-        <button
-          onClick={() => {
-            setIsMenuOpen(false);
-            onReport?.();
-          }}
-          className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
-        >
-          <Flag className="w-5 h-5" />
-          Report Post
-        </button>
+        {isAuthor && (
+          <button
+            onClick={() => {
+              setIsMenuOpen(false);
+              onDelete?.();
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
+          >
+            <Trash2 className="w-5 h-5" />
+            Delete Post
+          </button>
+        )}
+        {!isAuthor && (
+          <button
+            onClick={() => {
+              setIsMenuOpen(false);
+              onReport?.();
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
+          >
+            <Flag className="w-5 h-5" />
+            Report Post
+          </button>
+        )}
       </BottomSheetModal>
     </div>
   );

@@ -44,7 +44,7 @@ export default function CirclesHomePage() {
   const myCircles = circlesData?.circles || [];
 
   const { data: feedData, isLoading: isLoadingFeed } = useFeed();
-  const feed = feedData?.posts || [];
+  const feed = (feedData?.posts || []).filter((p) => p.status !== "deleted");
 
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;

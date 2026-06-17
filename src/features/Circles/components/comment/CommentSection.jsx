@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useComments, useCreateComment, useReplyToComment } from "../../hooks/useComments";
+import { useComments, useCreateComment, useReplyToComment, useDeleteComment } from "../../hooks/useComments";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 import CommentCard from "./CommentCard";
 import BottomSheetModal from "../common/BottomSheetModal";
@@ -20,6 +20,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
   const { data: commentsData, isLoading } = useComments(postId);
   const createCommentMutation = useCreateComment(postId);
   const replyCommentMutation = useReplyToComment(postId);
+  const deleteCommentMutation = useDeleteComment(postId);
 
   const { data: myProfile } = useMyProfile();
 
@@ -127,6 +128,11 @@ export default function CommentSection({ isOpen, onClose, post }) {
                     ? () => navigate(`/profile/${comment.authorId}`)
                     : undefined
                 }
+                onDelete={
+                  (isPostAuthor || (myId && myId === comment.authorId))
+                    ? () => deleteCommentMutation.mutate(commentKey)
+                    : undefined
+                }
                 onReply={isPostAuthor ? () => setReplyingTo(isReplying ? null : commentKey) : undefined}
                 replies={(comment.replies || []).map((reply) => ({
                   commentId: reply.commentId || reply.id,
@@ -138,6 +144,10 @@ export default function CommentSection({ isOpen, onClose, post }) {
                   onAuthorClick: reply.authorId
                     ? () => navigate(`/profile/${reply.authorId}`)
                     : undefined,
+                  onDelete:
+                    (isPostAuthor || (myId && myId === reply.authorId))
+                      ? () => deleteCommentMutation.mutate(reply.commentId || reply.id)
+                      : undefined,
                 }))}
                 replySlot={
                   isReplying && (

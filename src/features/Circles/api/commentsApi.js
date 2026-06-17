@@ -28,3 +28,6 @@ export const replytoComment =
     `${BASE}/posts/${postId}/comments/reply`,
     payload
   );
+
+export const deleteComment = (postId, commentId) =>
+  api.delete(`${BASE}/posts/${postId}/comments/${commentId}`);

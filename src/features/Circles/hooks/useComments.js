@@ -9,7 +9,8 @@ from
 import {
   listComments,
   createComment,
-  replytoComment
+  replytoComment,
+  deleteComment
 }
 from
 '../api/commentsApi';
@@ -103,5 +104,15 @@ useReplyToComment(
           }
         );
       }
+  });
+}
+export function useDeleteComment(postId) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (commentId) => deleteComment(postId, commentId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.comments(postId) });
+    },
   });
 }

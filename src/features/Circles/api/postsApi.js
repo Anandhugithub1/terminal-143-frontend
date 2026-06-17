@@ -54,3 +54,8 @@ export const updatePost = (circleId, postId, createdAtEpoch, payload) =>
   api.patch(`${BASE}/${circleId}/posts/${postId}`, payload, {
     params: { postedAt: createdAtEpoch },
   });
+
+export const deletePost = (circleId, postId, createdAtEpoch) =>
+  api.delete(`${BASE}/${circleId}/posts/${postId}`, {
+    params: { postedAt: createdAtEpoch },
+  });

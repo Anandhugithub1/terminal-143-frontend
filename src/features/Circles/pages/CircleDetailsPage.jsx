@@ -16,7 +16,7 @@ import EditPostModal from "../components/post/EditPostModal";
 import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import { useCircle } from "../hooks/useCircles";
-import { usePosts, useUpdatePost } from "../hooks/usePosts";
+import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { queryKeys } from "../queries/queryKeys";
@@ -42,13 +42,14 @@ export default function CircleDetailsPage() {
   const { data: postsData, isLoading: isLoadingPosts } = usePosts(circleId);
   const { data: myProfile } = useMyProfile();
   const updatePostMutation = useUpdatePost(circleId);
+  const deletePostMutation = useDeletePost(circleId);
 
   // Strip "USER#" prefix from PK to match bare authorId from post data
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
 
   // Prefer freshly fetched circle data, fall back to data passed via navigation state
   const data = fetchedCircle || location.state?.circleData;
-  const posts = postsData?.items || [];
+  const posts = (postsData?.items || []).filter((p) => p.status !== "deleted");
 
   if (isLoading && !data) {
     return <CircleHeaderSkeleton />;
@@ -101,6 +102,11 @@ export default function CircleDetailsPage() {
     queryClient.invalidateQueries({
       queryKey: queryKeys.posts(circleId),
     });
+  };
+
+  const handleDeletePost = (post) => {
+    if (!window.confirm("Delete this post? This cannot be undone.")) return;
+    deletePostMutation.mutate({ postId: post.postId, createdAtEpoch: post.createdAtEpoch });
   };
 
   const handleSaveEdit = (payload) => {
@@ -314,6 +320,7 @@ export default function CircleDetailsPage() {
                   tags={post.tags || []}
                   isAuthor={isAuthor}
                   onEdit={() => setEditPost(post)}
+                  onDelete={() => handleDeletePost(post)}
                   onShare={() => handleSharePost(post)}
                   onReport={() => alert("Post reported")}
                   onAuthorClick={

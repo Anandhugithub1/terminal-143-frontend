@@ -10,7 +10,8 @@ import {
   listPosts,
   createPost,
   getPost,
-  updatePost
+  updatePost,
+  deletePost
 }
 from
 '../api/postsApi';
@@ -117,6 +118,18 @@ usePost(
 
     staleTime:
       1000 * 30
+  });
+}
+
+export function
+useDeletePost(circleId) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ postId, createdAtEpoch }) => deletePost(circleId, postId, createdAtEpoch),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts(circleId) });
+    },
   });
 }
 
