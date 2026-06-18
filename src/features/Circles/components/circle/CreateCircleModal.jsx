@@ -6,7 +6,8 @@ import {
 import {
   useRef,
   useState,
-  useCallback
+  useCallback,
+  useEffect
 } from "react";
 
 import {
@@ -24,6 +25,7 @@ import {
 import LocationInput from "../../../AddProfile/components/LocationInput";
 import { ensureNormalizedImage } from "../../../../utils/imageConversion";
 import BottomSheetModal from "../common/BottomSheetModal";
+import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -65,6 +67,15 @@ export default function CreateCircleModal({
   });
 
   const [isEnrichingLocation, setIsEnrichingLocation] = useState(false);
+
+  const { data: myProfile } = useMyProfile();
+
+  useEffect(() => {
+    if (isOpen && myProfile?.location?.placeName && !location.placeName) {
+      setLocation(myProfile.location);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, myProfile]);
 
   const [
     coverFile,

@@ -3,7 +3,6 @@ import {
   Image,
   MapPin,
   Send,
-  Smile,
   Hash,
   Video,
   Play,
@@ -13,7 +12,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useRef, useCallback } from "react";
-import { suggestedTags, activityTypes } from "../../constants/postOptions";
+import { suggestedTags } from "../../constants/postOptions";
 import { MAX_MEDIA_ITEMS, MAX_VIDEO_DURATION_SEC } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
 import LocationInput from "../../../AddProfile/components/LocationInput";
@@ -21,13 +20,14 @@ import { createPost } from "../../api/postsApi";
 import { getPresignedUrl } from "../../api/imageupload";
 import { DEFAULT_AVATAR } from "../../utils/postDisplay";
 import BottomSheetModal from "../common/BottomSheetModal";
+import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
+  const { data: myProfile } = useMyProfile();
   const [postContent, setPostContent] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [showTagInput, setShowTagInput] = useState(false);
   const [tagInput, setTagInput] = useState("");
-  const [activityType, setActivityType] = useState("");
   const [showLocationInput, setShowLocationInput] = useState(false);
   const [location, setLocation] = useState({
     coordinates: { lat: null, lon: null },
@@ -164,7 +164,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
         media: uploadedMedia,
         visibility: "all",
         tags: selectedTags,
-        activityType: activityType || undefined,
         location: showLocationInput ? location : undefined,
         authorImage: authorData?.avatar || "",
         circleName: circleName || "",
@@ -180,7 +179,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       setPostContent("");
       setSelectedTags([]);
       resetMedia();
-      setActivityType("");
       setShowLocationInput(false);
       setLocation({
         coordinates: { lat: null, lon: null },
@@ -375,33 +373,19 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 )}
               </div>
 
-              {/* Activity Type */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Activity Type
-                </label>
-                <select
-                  value={activityType}
-                  onChange={(e) => setActivityType(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-white"
-                >
-                  <option value="">Select activity (optional)</option>
-                  {activityTypes.map((activity) => (
-                    <option key={activity} value={activity}>
-                      {activity}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               {/* Location Toggle */}
               <div>
                 <button
                   onClick={() => {
                     if (showLocationInput) {
                       handleLocationSelect(null);
+                      setShowLocationInput(false);
+                    } else {
+                      if (!location.placeName && myProfile?.location?.placeName) {
+                        setLocation(myProfile.location);
+                      }
+                      setShowLocationInput(true);
                     }
-                    setShowLocationInput(!showLocationInput);
                   }}
                   className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors"
                 >
@@ -536,15 +520,21 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                     />
                   </label>
                   <button
-                    onClick={() => setShowLocationInput(!showLocationInput)}
+                    onClick={() => {
+                      if (showLocationInput) {
+                        handleLocationSelect(null);
+                        setShowLocationInput(false);
+                      } else {
+                        if (!location.placeName && myProfile?.location?.placeName) {
+                          setLocation(myProfile.location);
+                        }
+                        setShowLocationInput(true);
+                      }
+                    }}
                     className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
                   >
                     <MapPin className="w-4 h-4 text-red-500" />
                     Location
-                  </button>
-                  <button className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors">
-                    <Smile className="w-4 h-4 text-yellow-500" />
-                    Activity
                   </button>
                 </div>
               </div>
