@@ -15,6 +15,7 @@ import PostCard from "../components/post/PostCard";
 import EditPostModal from "../components/post/EditPostModal";
 import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
+import ConfirmDialog from "../components/common/ConfirmDialog";
 import { useCircle } from "../hooks/useCircles";
 import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
@@ -35,6 +36,7 @@ export default function CircleDetailsPage() {
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [commentPost, setCommentPost] = useState(null);
   const [editPost, setEditPost] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -105,8 +107,7 @@ export default function CircleDetailsPage() {
   };
 
   const handleDeletePost = (post) => {
-    if (!window.confirm("Delete this post? This cannot be undone.")) return;
-    deletePostMutation.mutate({ postId: post.postId, createdAtEpoch: post.createdAtEpoch });
+    setDeleteConfirm(post);
   };
 
   const handleSaveEdit = (payload) => {
@@ -148,6 +149,15 @@ export default function CircleDetailsPage() {
           isSaving={updatePostMutation.isPending}
         />
       )}
+
+      {/* Delete Post Confirm */}
+      <ConfirmDialog
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={() => deletePostMutation.mutate({ postId: deleteConfirm.postId, createdAtEpoch: deleteConfirm.createdAtEpoch })}
+        title="Delete post?"
+        message="This cannot be undone. The post will be permanently removed."
+      />
 
       {/* Cover Image */}
       <div className="relative h-40 sm:h-64 bg-gradient-to-br from-rose-400 to-orange-400">
