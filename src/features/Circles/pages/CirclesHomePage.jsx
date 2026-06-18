@@ -1,6 +1,5 @@
 import {
   Menu,
-  Bell,
   Plus,
   Compass,
   MapPin,
@@ -12,6 +11,7 @@ import { toast } from "sonner";
 
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import BottomNav from "../../../components/Layout/BottomNavigation";
+import TopNav from "../../../components/Layout/TopNavigation";
 import Sidebar from "../components/layout/Sidebar";
 import CreateCircleModal from "../components/circle/CreateCircleModal";
 import CommentSection from "../components/comment/CommentSection";
@@ -69,29 +69,7 @@ export default function CirclesHomePage() {
         post={commentPost}
       />
 
-      {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-4 py-3">
-        <div className="flex items-center justify-between gap-2">
-          <button
-            onClick={() => setIsSidebarOpen(true)}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors -ml-2"
-          >
-            <Menu className="w-6 h-6 text-gray-600" />
-          </button>
-
-          <div className="text-center flex-1 min-w-0">
-            <h1 className="text-xl font-bold text-text-sec">Circles</h1>
-            <p className="text-xs text-gray-500 mt-0.5 truncate">
-              Find people, share interests, make real connections.
-            </p>
-          </div>
-
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors relative -mr-2">
-            <Bell className="w-5 h-5 text-gray-600" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full"></span>
-          </button>
-        </div>
-      </div>
+      <TopNav />
 
       <div className="max-w-3xl mx-auto px-3 pt-4 space-y-5">
         {/* My Circles - Horizontal scroll on mobile */}
@@ -103,6 +81,12 @@ export default function CirclesHomePage() {
                 <span className="ml-1.5 text-sm font-normal text-gray-400">({myCircles.length})</span>
               )}
             </h2>
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <Menu className="w-5 h-5 text-gray-600" />
+            </button>
           </div>
 
           <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
