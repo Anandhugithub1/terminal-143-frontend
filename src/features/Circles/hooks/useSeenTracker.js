@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useMarkFeedSeen } from "./usePosts";
 
-const FLUSH_INTERVAL = 60 * 1000;
-const BATCH_SIZE = 10;
+const FLUSH_INTERVAL = 10 * 1000;
+const BATCH_SIZE = 3;
 
 export function useSeenTracker() {
   const { mutate: markFeedSeen } = useMarkFeedSeen();

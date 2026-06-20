@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
-const VISIBILITY_THRESHOLD = 0.6;
-const DWELL_TIME = 2000;
+const VISIBILITY_THRESHOLD = 0.3;
+const DWELL_TIME = 1500;
 
 export default function PostSeenObserver({ postId, onSeen, children }) {
   const containerRef = useRef(null);
