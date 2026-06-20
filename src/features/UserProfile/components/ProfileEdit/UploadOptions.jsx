@@ -1,54 +1,18 @@
 import { useState } from "react";
-
-export const ConfirmModal = ({ open, onCancel, onConfirm, title, description }) => {
-  if (!open) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
-      <div className="bg-white rounded-2xl p-6 w-80 shadow-xl">
-        <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
-        <p className="text-sm text-gray-600 mt-2">{description}</p>
-        <div className="mt-6 flex justify-end gap-3">
-          <button
-            onClick={onCancel}
-            className="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            className="px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600"
-          >
-            Remove
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import ConfirmDialog from "../../../../shared/components/ConfirmDialog";
 
 export const UploadOptions = ({
   onRemove,
   onCamera,
   onGallery,
-  onCancel, // <-- added back
-  cameraLabel = 'Take Photo',
-  galleryLabel = 'Choose from Gallery',
-  removeLabel = 'Remove Photo',
-  modalTitle = 'Remove Profile Photo?',
-  modalDescription = 'Are you sure you want to remove your profile picture? This cannot be undone.',
+  onCancel,
+  cameraLabel = "Take Photo",
+  galleryLabel = "Choose from Gallery",
+  removeLabel = "Remove Photo",
+  modalTitle = "Remove Profile Photo?",
+  modalDescription = "Are you sure you want to remove your profile picture? This cannot be undone.",
 }) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleRemove = () => {
-    setShowModal(false);
-    onRemove();
-  };
-
-  const handleCancel = () => {
-    setShowModal(false);
-    if (onCancel) onCancel(); // call parent callback if provided
-  };
+  const [showConfirm, setShowConfirm] = useState(false);
 
   return (
     <>
@@ -66,19 +30,23 @@ export const UploadOptions = ({
           {galleryLabel}
         </button>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => setShowConfirm(true)}
           className="w-full py-2 mb-2 bg-red-100 rounded-lg hover:bg-red-200"
         >
           {removeLabel}
         </button>
       </div>
 
-      <ConfirmModal
-        open={showModal}
-        onCancel={handleCancel} 
-        onConfirm={handleRemove}
+      <ConfirmDialog
+        isOpen={showConfirm}
+        onClose={() => {
+          setShowConfirm(false);
+          if (onCancel) onCancel();
+        }}
+        onConfirm={onRemove}
         title={modalTitle}
-        description={modalDescription}
+        message={modalDescription}
+        confirmLabel="Remove"
       />
     </>
   );

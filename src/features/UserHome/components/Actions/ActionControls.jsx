@@ -1,40 +1,28 @@
-import { RxCross1,  } from "react-icons/rx";
+import { RxCross1 } from "react-icons/rx";
 import { AiOutlineReload } from "react-icons/ai";
-import {  FaHeart, } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 
-export default function ActionControls({
-  onReject,
-  onRefresh,
-  onLike,
-  className = '',
-}) {
+const ACTIONS = [
+  { label: "Pass", Icon: RxCross1, size: 30, color: "text-white" },
+  { label: "Refresh", Icon: AiOutlineReload, size: 30, color: "text-sky-400" },
+  { label: "Like", Icon: FaHeart, size: 25, color: "text-rose-400" },
+];
+
+export default function ActionControls({ onReject, onRefresh, onLike, className = "" }) {
+  const handlers = [onReject, onRefresh, onLike];
+
   return (
-    <div
-      className={`flex justify-center items-center space-x-8 transition-all duration-300 ${className}`}
-    >
-      {/* Reject Button — Black bg, white X */}
-      <button
-        onClick={onReject}
-        className="w-16 h-16 flex items-center justify-center bg-black text-white rounded-full shadow-lg active:scale-95 transition-transform"
-      >
-        <RxCross1 size={30} />
-      </button>
-
-      {/* Refresh Button — Black bg, light blue icon */}
-      <button
-        onClick={onRefresh}
-        className="w-16 h-16 flex items-center justify-center bg-black text-[#4aa3cf] rounded-full shadow-lg active:scale-95 transition-transform"
-      >
-        <AiOutlineReload size={30} />
-      </button>
-
-      {/* Like Button — Black bg, light red heart */}
-      <button
-        onClick={onLike}
-        className="w-16 h-16 flex items-center justify-center bg-black text-[#ff4d67] rounded-full shadow-lg active:scale-95 transition-transform"
-      >
-        <FaHeart size={25} />
-      </button>
+    <div className={`flex justify-center items-center space-x-8 transition-all duration-300 ${className}`}>
+      {ACTIONS.map(({ label, Icon, size, color }, i) => (
+        <button
+          key={label}
+          aria-label={label}
+          onClick={handlers[i]}
+          className={`w-16 h-16 flex items-center justify-center bg-black ${color} rounded-full shadow-lg active:scale-95 transition-transform`}
+        >
+          <Icon size={size} />
+        </button>
+      ))}
     </div>
   );
 }

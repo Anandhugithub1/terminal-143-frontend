@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useMemo, lazy, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
 import "@fontsource-variable/inter";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useTranslation } from "react-i18next";
@@ -12,24 +10,16 @@ import { useEditableProfile } from "../../../Hooks/EditProfile";
 import { Section, LazyWrapper } from "../components/ProfileEdit/Reusable";
 import FieldEditPage from "./FieldEditPage";
 import { LANGUAGES } from "../utlis/profileUtils";
+import PageHeader from "../../../shared/components/PageHeader";
+import { SOCIAL_PLATFORMS } from "../constants/socialPlatforms";
 
 const EditableSocialLinks = lazy(() =>
   import("../components/ProfileEdit/EditableSocialLinks")
 );
 const EditableBio = lazy(() => import("../components/ProfileEdit/EditableBio"));
 
-const SOCIAL_PLATFORMS = [
-  { key: "IG" },
-  { key: "FB" },
-  { key: "Telegram" },
-  { key: "Line" },
-  { key: "Wechat" },
-  { key: "Other" },
-];
-
 export default function ProfileEditPage() {
   const { t } = useTranslation("settings");
-  const navigate = useNavigate();
 
   const [activeField, setActiveField] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -108,20 +98,7 @@ export default function ProfileEditPage() {
   return (
     <div className="flex flex-col h-screen bg-white font-inter relative overflow-hidden">
       <main className="flex-1 overflow-y-auto pb-20">
-        {/* Header */}
-        <section className="px-5 pt-6 pb-8 border-b border-gray-200">
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="p-1 rounded-full hover:bg-gray-100"
-            >
-              <ChevronLeft size={24} className="text-gray-700" />
-            </button>
-            <h1 className="text-lg font-semibold text-gray-800">
-              {t("profileEdit.title")}
-            </h1>
-          </div>
-        </section>
+        <PageHeader title={t("profileEdit.title")} />
 
         <div className="p-5 space-y-6">
           {/* Bio */}

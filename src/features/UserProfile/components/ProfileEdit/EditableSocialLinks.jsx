@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { SOCIAL_PLATFORMS as PLATFORM_CONFIGS } from '../../constants/socialPlatforms';
 
-const SOCIAL_PLATFORMS = ['IG', 'FB', 'Telegram', 'Line', 'Wechat', 'Other'];
+const SOCIAL_PLATFORMS = PLATFORM_CONFIGS.map((p) => p.key);
 
 const EditableSocialLinks = ({
   socialLinks,
   onChange,
-  platformLabels = {}, // e.g., { IG: "Instagram", FB: "Facebook" }
-  inputPlaceholders = {}, // e.g., { IG: "Your IG handle" }
+  platformLabels = {},
+  inputPlaceholders = {},
   showMoreLabel = 'Show more',
 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  // Show filled platforms first, then default to first two if none
   const filled = SOCIAL_PLATFORMS.filter((p) => socialLinks[p]);
   const defaultVisible = filled.length > 0 ? filled : SOCIAL_PLATFORMS.slice(0, 2);
 
