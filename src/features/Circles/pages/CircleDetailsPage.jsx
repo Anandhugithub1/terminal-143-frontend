@@ -23,7 +23,7 @@ import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { queryKeys } from "../queries/queryKeys";
-import { DEFAULT_AVATAR, isMutualPreferenceMatch } from "../utils/postDisplay";
+import { DEFAULT_AVATAR } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
@@ -357,7 +357,6 @@ export default function CircleDetailsPage() {
             )}
 
             {posts.map((post) => {
-              const canMatch = isMutualPreferenceMatch(myProfile, post);
               const isAuthor = !!myId && myId === post.authorId;
 
               return (
@@ -380,12 +379,12 @@ export default function CircleDetailsPage() {
                       ? () => navigate(`/profile/${post.authorId}`)
                       : undefined
                   }
-                  actionsWrapperClassName={canMatch ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                  actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                   actions={buildPostActions({
                     isLiked: likedPosts.has(post.postId),
                     onToggleLike: () => toggleLike(post.postId),
                     onComment: () => setCommentPost(post),
-                    includeMatchActions: canMatch,
+                    includeMatchActions: !isAuthor,
                   })}
                 />
               );
