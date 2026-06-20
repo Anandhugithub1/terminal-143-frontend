@@ -125,7 +125,7 @@ const confirmAction = () => {
     }
 
     return (
-      <div className="flex-1 bg-white pb-28">
+      <div className="flex-1 bg-white">
         <div className="max-w-md w-full mx-auto px-4 pt-4">
           <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">
             Your Match Requests
@@ -164,7 +164,7 @@ const confirmAction = () => {
   };
 
   return (
-    <PageLayout className="bg-gray-50 pb-24">
+    <PageLayout className="bg-gray-50">
       {renderContent()}
 
       <ConfirmationModal

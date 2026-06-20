@@ -1,8 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUserProfileById } from '../api';
-import TopNav from '../../../components/Layout/TopNavigation';
-import BottomNav from '../../../components/Layout/BottomNavigation';
+import PageLayout from '../../../shared/components/PageLayout';
 import ProfileSkeleton from '../components/ProfileSkeleton';
 
 import placeholderImage from '../../../assets/woman.png';
@@ -66,38 +65,23 @@ export default function UserProfilePage() {
   };
 
   return (
-    <div className="relative bg-white min-h-screen pb-20">
-      <TopNav />
-
+    <PageLayout className="relative bg-white">
       <div className="relative">
-        <div className="relative">
-         <Suspense fallback={null}>
-           <ProfileCard
+        <Suspense fallback={null}>
+          <ProfileCard
             profile={normalized}
             placeholderImage={placeholderImage}
             onConnectClick={() => {}}
             onMessageClick={() => {}}
           />
-         </Suspense>
-
-          {/* <div className="flex justify-center mt-2 mb-2">
-            <ActionControls
-              onReject={() => {}}
-              onRefresh={() => {}}
-              onLike={() => {}}
-            />
-          </div> */}
-        </div>
+        </Suspense>
 
         <div className="mt-16 sm:mt-14 px-4 relative z-10">
           <Suspense fallback={null}>
-                      <DetailSection profile={normalized} />
-
+            <DetailSection profile={normalized} />
           </Suspense>
         </div>
       </div>
-
-      <BottomNav />
-    </div>
+    </PageLayout>
   );
 }
