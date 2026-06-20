@@ -91,6 +91,7 @@ export default function CirclesHomePage() {
 
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;
+  const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
 
   const markPostSeen = useSeenTracker();
   const { send: sendMatchRequest } = useSendMatchRequest();
@@ -323,23 +324,31 @@ export default function CirclesHomePage() {
                   </div>
                 )}
 
-                {!isLoadingCirclePosts && circlePosts.map((post) => (
-                  <PostCard
-                    key={post.postId}
-                    variant="feed"
-                    avatar={post.authorImage || DEFAULT_AVATAR}
-                    name={post.authorName || "Anonymous"}
-                    meta={<PostMeta post={post} />}
-                    body={post.content}
-                    media={post.media}
-                    tags={post.tags || []}
-                    actionsWrapperClassName="flex gap-2"
-                    actions={buildPostActions({
-                      includeMatchActions: false,
-                      onComment: () => setCommentPost(post),
-                    })}
-                  />
-                ))}
+                {!isLoadingCirclePosts && circlePosts.map((post) => {
+                  const isAuthor = !!myId && myId === post.authorId;
+                  return (
+                    <PostCard
+                      key={post.postId}
+                      variant="feed"
+                      avatar={post.authorImage || DEFAULT_AVATAR}
+                      name={post.authorName || "Anonymous"}
+                      meta={<PostMeta post={post} />}
+                      body={post.content}
+                      media={post.media}
+                      tags={post.tags || []}
+                      onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
+                      actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                      actions={buildPostActions({
+                        includeMatchActions: !isAuthor,
+                        onComment: () => setCommentPost(post),
+                        onToggleLike: () =>
+                          sendMatchRequest(post.authorId, {
+                            onSuccess: () => toast.success("Match request sent"),
+                          }),
+                      })}
+                    />
+                  );
+                })}
               </>
             )}
 
@@ -438,6 +447,7 @@ export default function CirclesHomePage() {
                       ? formatDistance(haversineDistanceKm(myCoords, post.location.coordinates))
                       : null;
                   const isLastPost = index === feed.length - 1;
+                  const isAuthor = !!myId && myId === post.authorId;
                   const onSeen = (postId) => markPostSeen(postId, { immediate: isLastPost });
 
                   return (
@@ -465,8 +475,9 @@ export default function CirclesHomePage() {
                         media={post.media}
                         body={post.content}
                         tags={post.tags || []}
-                        actionsWrapperClassName="grid grid-cols-3 gap-2"
+                        actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                         actions={buildPostActions({
+                          includeMatchActions: !isAuthor,
                           onComment: () => setCommentPost(post),
                           onToggleLike: () =>
                             sendMatchRequest(post.authorId, {
