@@ -1,5 +1,4 @@
 import {
-  Menu,
   Plus,
   Compass,
   MapPin,
@@ -12,7 +11,6 @@ import { toast } from "sonner";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import TopNav from "../../../components/Layout/TopNavigation";
-import Sidebar from "../components/layout/Sidebar";
 import CreateCircleModal from "../components/circle/CreateCircleModal";
 import CommentSection from "../components/comment/CommentSection";
 import PostCard from "../components/post/PostCard";
@@ -37,7 +35,6 @@ const CIRCLE_BG_COLORS = [
 
 export default function CirclesHomePage() {
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [commentPost, setCommentPost] = useState(null);
   const { data: circlesData, isLoading: isLoadingCircles } = useCircles();
@@ -58,7 +55,6 @@ export default function CirclesHomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <CreateCircleModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
@@ -81,12 +77,6 @@ export default function CirclesHomePage() {
                 <span className="ml-1.5 text-sm font-normal text-gray-400">({myCircles.length})</span>
               )}
             </h2>
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-            >
-              <Menu className="w-5 h-5 text-gray-600" />
-            </button>
           </div>
 
           <div className="overflow-x-auto no-scrollbar -mx-1 px-1">
