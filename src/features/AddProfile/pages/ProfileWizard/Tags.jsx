@@ -62,14 +62,6 @@ export default function Tags() {
 
   const completeMutation = useMutation({
     mutationFn: completeProfileApi,
-    onSuccess: () => {
-      submittingRef.current = false;
-      clearFormData();
-      toast.success("Your profile is ready");
-      setTimeout(() => {
-        navigate("/home", { state: { profileJustCompleted: true } });
-      }, 500);
-    },
     onError: () => {
       submittingRef.current = false;
       setIsSubmitting(false);
@@ -94,7 +86,7 @@ export default function Tags() {
     return publicUrl;
   };
 
-  // Called by OnboardingPage after circles are joined
+  // Called by OnboardingPage — profile must be completed before circles are joined
   const handleComplete = async () => {
     if (submittingRef.current) return;
 
@@ -139,6 +131,7 @@ export default function Tags() {
       if (normalizedLocation) payload.location = normalizedLocation;
 
       await completeMutation.mutateAsync(payload);
+      clearFormData();
     } catch {
       submittingRef.current = false;
       setIsSubmitting(false);

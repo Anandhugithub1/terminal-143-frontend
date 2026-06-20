@@ -1,6 +1,5 @@
 import {
   ArrowLeft,
-  ArrowRight,
   Search,
   Check,
   Sparkles,
@@ -10,8 +9,10 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
 import { useJoinCircle } from "../hooks/useMembership";
+import TopNav from "../../../components/Layout/TopNavigation";
 
 export default function OnboardingPage({ onComplete, onBack }) {
   const navigate = useNavigate();
@@ -68,65 +69,57 @@ export default function OnboardingPage({ onComplete, onBack }) {
   const handleComplete = async () => {
     if (selectedCircles.length < 3) return;
 
-    await Promise.allSettled(
-      selectedCirclesData.map((circle) => joinCircle(circle.circleId))
-    );
-
-    if (onComplete) {
-      setIsCompleting(true);
-      try {
+    setIsCompleting(true);
+    try {
+      if (onComplete) {
+        // Complete profile first so circle joins have an authenticated profile
         await onComplete(selectedCirclesData);
-      } finally {
-        setIsCompleting(false);
       }
-    } else {
-      navigate("/circles");
+
+      // Join circles after profile is ready
+      await Promise.allSettled(
+        selectedCirclesData.map((circle) => joinCircle(circle.circleId))
+      );
+
+      if (onComplete) {
+        toast.success("Your profile is ready");
+        navigate("/home", { state: { profileJustCompleted: true } });
+      } else {
+        navigate("/circles");
+      }
+    } catch {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsCompleting(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white overflow-x-hidden">
-      {/* Header */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-gray-100 safe-top">
-        <div className="max-w-3xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={step === 2 ? () => setStep(1) : (onBack || (() => navigate(-1)))}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors active:bg-gray-200 min-h-[44px] min-w-[44px] flex items-center justify-center"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
-            </button>
-            <div className="text-center">
-              <h1 className="text-xl font-bold text-gray-800">
-                {step === 1 ? "Choose Your Activity Circles" : "Almost There!"}
-              </h1>
-            </div>
-            <button
-              onClick={handleContinue}
-              disabled={selectedCircles.length < 3}
-              className={`p-2 rounded-full transition-all min-h-[44px] min-w-[44px] flex items-center justify-center ${
-                selectedCircles.length >= 3
-                  ? "bg-primary text-white hover:shadow-lg active:scale-95"
-                  : "bg-gray-100 text-gray-400 cursor-not-allowed"
-              }`}
-              aria-label="Continue"
-            >
-              <ArrowRight className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="mt-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-gray-600">
-                {step === 1 ? "Select your interests" : "Confirm your choices"}
+      <TopNav />
+
+      {/* Progress sub-bar */}
+      <div className="sticky top-[65px] z-10 bg-white border-b border-gray-100">
+        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
+          <button
+            onClick={step === 2 ? () => setStep(1) : (onBack || (() => navigate(-1)))}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors active:bg-gray-200 shrink-0"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-600" />
+          </button>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs font-medium text-gray-500">
+                {step === 1 ? "Select your circles" : "Confirm your choices"}
               </span>
-              <span className="text-sm font-medium text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                 {selectedCircles.length} selected
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-gray-200 rounded-full h-1.5">
               <div
-                className="bg-primary h-2 rounded-full transition-all duration-500"
+                className="bg-primary h-1.5 rounded-full transition-all duration-500"
                 style={{
                   width: step === 1
                     ? `${Math.min((selectedCircles.length / 3) * 100, 100)}%`
