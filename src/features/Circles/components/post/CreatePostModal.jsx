@@ -245,7 +245,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 placeholder="Share your running experience, tips, or ask a question..."
                 rows={5}
                 maxLength={1000}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none text-sm"
+                className="w-full px-4 py-3 bg-white text-gray-800 placeholder-gray-400 border border-gray-300 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none text-sm"
               />
               <div className="flex justify-end">
                 <span className={`text-xs ${postContent.length > 900 ? "text-red-500" : "text-gray-400"}`}>
