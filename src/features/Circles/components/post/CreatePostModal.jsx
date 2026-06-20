@@ -15,14 +15,12 @@ import { useState, useRef } from "react";
 import { suggestedTags } from "../../constants/postOptions";
 import { MAX_MEDIA_ITEMS, MAX_VIDEO_DURATION_SEC } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
-import LocationInput from "../../../AddProfile/components/LocationInput";
 import { createPost } from "../../api/postsApi";
 import { getPresignedUrl } from "../../api/imageupload";
 import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
 import { DEFAULT_AVATAR } from "../../utils/postDisplay";
 import BottomSheetModal from "../common/BottomSheetModal";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
-import { useLocationState } from "../../../../shared/hooks/useLocationState";
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
   const { data: myProfile } = useMyProfile();
@@ -30,8 +28,9 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   const [selectedTags, setSelectedTags] = useState([]);
   const [showTagInput, setShowTagInput] = useState(false);
   const [tagInput, setTagInput] = useState("");
-  const [showLocationInput, setShowLocationInput] = useState(false);
-  const { location, setLocation, isEnrichingLocation, handleLocationSelect, resetLocation } = useLocationState();
+  const [includeLocation, setIncludeLocation] = useState(true);
+
+  const profileLocation = myProfile?.location ?? null;
 
   const videoRef = useRef(null);
   const [playingVideo, setPlayingVideo] = useState(null);
@@ -85,7 +84,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
 
   // Handle submit
   const handleSubmit = async () => {
-    if ((!postContent.trim() && media.length === 0) || isValidating || isSubmitting || isEnrichingLocation) {
+    if ((!postContent.trim() && media.length === 0) || isValidating || isSubmitting) {
       return;
     }
 
@@ -117,8 +116,8 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
         media: uploadedMedia,
         visibility: "all",
         tags: selectedTags,
-        location: showLocationInput ? location : undefined,
-        authorImage: authorData?.avatar || "",
+        location: includeLocation && profileLocation ? profileLocation : undefined,
+        authorImage: myProfile?.profilePhoto || "",
         circleName: circleName || "",
       };
 
@@ -128,12 +127,10 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
         onSubmit(res.data);
       }
 
-      // Reset form
       setPostContent("");
       setSelectedTags([]);
       resetMedia();
-      setShowLocationInput(false);
-      resetLocation();
+      setIncludeLocation(true);
       onClose();
     } catch (err) {
       console.error(err);
@@ -171,12 +168,12 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
               {/* User Info */}
               <div className="flex items-center gap-3">
                 <img
-                  src={authorData?.avatar || DEFAULT_AVATAR}
-                  alt={authorData?.name || "Your avatar"}
+                  src={myProfile?.profilePhoto || DEFAULT_AVATAR}
+                  alt={myProfile?.name || "Your avatar"}
                   className="w-10 h-10 rounded-full object-cover"
                 />
                 <div>
-                  <h4 className="font-semibold text-gray-800">{authorData?.name || "Your Name"}</h4>
+                  <h4 className="font-semibold text-gray-800">{myProfile?.name || "You"}</h4>
                   <p className="text-xs text-gray-500">Post to circle</p>
                 </div>
               </div>
@@ -320,45 +317,33 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 )}
               </div>
 
-              {/* Location Toggle */}
-              <div>
-                <button
-                  onClick={() => {
-                    if (showLocationInput) {
-                      handleLocationSelect(null);
-                      setShowLocationInput(false);
-                    } else {
-                      if (!location.placeName && myProfile?.location?.placeName) {
-                        setLocation(myProfile.location);
-                      }
-                      setShowLocationInput(true);
-                    }
-                  }}
-                  className="flex items-center gap-2 text-sm text-gray-600 hover:text-primary transition-colors"
-                >
-                  <MapPin className="w-4 h-4" />
-                  {showLocationInput ? "Remove Location" : "Add Location"}
-                </button>
-
-                <AnimatePresence initial={false}>
-                  {showLocationInput && (
-                    <motion.div
-                      className="mt-3 overflow-hidden"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
+              {/* Location — auto-filled from profile, dismissible */}
+              {profileLocation?.placeName && (
+                <div className="flex items-center gap-2">
+                  {includeLocation ? (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-full text-xs font-medium">
+                      <MapPin className="w-3.5 h-3.5 shrink-0" />
+                      {profileLocation.placeName}
+                      {profileLocation.countryCode && `, ${profileLocation.countryCode}`}
+                      <button
+                        onClick={() => setIncludeLocation(false)}
+                        className="ml-1 hover:bg-blue-100 rounded-full p-0.5"
+                        aria-label="Remove location"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setIncludeLocation(true)}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-500 rounded-full text-xs font-medium hover:bg-gray-200 transition-colors"
                     >
-                      <div className="p-3 bg-white rounded-xl border border-gray-200">
-                        <LocationInput
-                          formData={{ location }}
-                          onSelect={handleLocationSelect}
-                        />
-                      </div>
-                    </motion.div>
+                      <MapPin className="w-3.5 h-3.5" />
+                      Add location
+                    </button>
                   )}
-                </AnimatePresence>
-              </div>
+                </div>
+              )}
 
               {/* Tags Section */}
               <div>
@@ -466,23 +451,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                       className="hidden"
                     />
                   </label>
-                  <button
-                    onClick={() => {
-                      if (showLocationInput) {
-                        handleLocationSelect(null);
-                        setShowLocationInput(false);
-                      } else {
-                        if (!location.placeName && myProfile?.location?.placeName) {
-                          setLocation(myProfile.location);
-                        }
-                        setShowLocationInput(true);
-                      }
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors"
-                  >
-                    <MapPin className="w-4 h-4 text-red-500" />
-                    Location
-                  </button>
                 </div>
               </div>
             </div>
@@ -498,19 +466,19 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 </button>
                 <button
                   onClick={handleSubmit}
-                  disabled={(!postContent.trim() && media.length === 0) || isValidating || isSubmitting || isEnrichingLocation}
+                  disabled={(!postContent.trim() && media.length === 0) || isValidating || isSubmitting}
                   className={`flex-1 px-6 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
-                    (postContent.trim() || media.length > 0) && !isValidating && !isSubmitting && !isEnrichingLocation
+                    (postContent.trim() || media.length > 0) && !isValidating && !isSubmitting
                       ? "bg-primary text-white hover:shadow-lg"
                       : "bg-gray-200 text-gray-400 cursor-not-allowed"
                   }`}
                 >
-                  {(isSubmitting || isEnrichingLocation) ? (
+                  {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <Send className="w-4 h-4" />
                   )}
-                  {isSubmitting ? "Posting..." : isEnrichingLocation ? "Fetching location..." : "Post"}
+                  {isSubmitting ? "Posting..." : "Post"}
                 </button>
               </div>
             </div>
