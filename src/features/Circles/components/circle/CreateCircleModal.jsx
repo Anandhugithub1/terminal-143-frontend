@@ -6,7 +6,6 @@ import {
 import {
   useRef,
   useState,
-  useCallback,
   useEffect
 } from "react";
 
@@ -21,11 +20,13 @@ import {
 import {
   getPresignedUrl
 } from "../../api/imageupload";
+import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
 
 import LocationInput from "../../../AddProfile/components/LocationInput";
 import { ensureNormalizedImage } from "../../../../utils/imageConversion";
 import BottomSheetModal from "../common/BottomSheetModal";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
+import { useLocationState } from "../../../../shared/hooks/useLocationState";
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -55,18 +56,7 @@ export default function CreateCircleModal({
     setCategory
   ] = useState("");
 
-  const [
-    location,
-    setLocation
-  ] = useState({
-    coordinates: { lat: null, lon: null },
-    placeName: "",
-    countryCode: "",
-    admin1: "",
-    h3: { r4: "" }
-  });
-
-  const [isEnrichingLocation, setIsEnrichingLocation] = useState(false);
+  const { location, setLocation, isEnrichingLocation, handleLocationSelect, resetLocation } = useLocationState();
 
   const { data: myProfile } = useMyProfile();
 
@@ -136,44 +126,6 @@ export default function CreateCircleModal({
       );
     };
 
-  const handleLocationSelect = useCallback((loc, detailsPromise) => {
-    if (!loc) {
-      setIsEnrichingLocation(false);
-      setLocation({
-        coordinates: { lat: null, lon: null },
-        placeName: "",
-        countryCode: "",
-        admin1: "",
-        h3: { r4: "" },
-      });
-      return;
-    }
-
-    setLocation({
-      coordinates: { lat: loc.lat, lon: loc.lon },
-      placeName: loc.placeName,
-      countryCode: loc.countryCode,
-      admin1: loc.admin1,
-      h3: { r4: loc.h3Index || "" },
-    });
-
-    if (detailsPromise) {
-      setIsEnrichingLocation(true);
-      detailsPromise
-        .then((enriched) => {
-          if (!enriched) return;
-          setLocation({
-            coordinates: { lat: enriched.lat, lon: enriched.lon },
-            placeName: enriched.placeName,
-            countryCode: enriched.countryCode,
-            admin1: enriched.admin1,
-            h3: { r4: enriched.h3Index || "" },
-          });
-        })
-        .finally(() => setIsEnrichingLocation(false));
-    }
-  }, []);
-
  const uploadCoverPhoto =
   async () => {
 
@@ -199,30 +151,7 @@ export default function CreateCircleModal({
         }
       );
 
-    const uploadRes =
-      await fetch(
-        presignedUrl,
-        {
-          method:
-            'PUT',
-
-          headers: {
-            'Content-Type':
-              uploadFile.type
-          },
-
-          body:
-            uploadFile
-        }
-      );
-
-    if (
-      !uploadRes.ok
-    ) {
-      throw new Error(
-        'Upload failed'
-      );
-    }
+    await uploadToS3(presignedUrl, uploadFile);
 
     return publicUrl;
   };
@@ -321,7 +250,7 @@ export default function CreateCircleModal({
           ""
         );
 
-        handleLocationSelect(null);
+        resetLocation();
 
         setCoverFile(
           null

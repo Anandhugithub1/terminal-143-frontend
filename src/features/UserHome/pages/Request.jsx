@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useMatchRequestResponse, useMatchRequests } from '../api';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import TopNav from '../../../components/Layout/TopNavigation';
-import BottomNav from '../../../components/Layout/BottomNavigation';
+import PageLayout from '../../../shared/components/PageLayout';
+import EmptyState from '../../../shared/components/EmptyState';
 import { ConfirmationModal } from '../../../components/Ui/Confirmation';
 import RequestItem from '../components/Actions/RequestItem';
 import { useNavigate } from 'react-router-dom';
@@ -118,12 +118,8 @@ const confirmAction = () => {
 
     if (!requests.length) {
       return (
-        <div className="flex-1 flex items-center justify-center text-center px-6">
-          <div className="bg-gray-100 p-6 rounded-xl shadow max-w-sm mx-auto">
-            <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-4" />
-            <h2 className="text-lg font-bold">No Requests Yet</h2>
-            <p className="text-sm text-gray-500">You're all caught up.</p>
-          </div>
+        <div className="flex-1 flex items-center justify-center">
+          <EmptyState title="No Requests Yet" subtitle="You're all caught up." />
         </div>
       );
     }
@@ -168,10 +164,8 @@ const confirmAction = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-24 flex flex-col">
-      <TopNav />
+    <PageLayout className="bg-gray-50 pb-24">
       {renderContent()}
-      <BottomNav />
 
       <ConfirmationModal
         isOpen={modalOpen}
@@ -180,6 +174,6 @@ const confirmAction = () => {
         action={selectedRequest?.action}
         name={selectedRequest?.senderUsername}
       />
-    </div>
+    </PageLayout>
   );
 }

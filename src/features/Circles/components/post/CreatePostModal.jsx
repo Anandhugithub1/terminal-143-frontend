@@ -11,16 +11,18 @@ import {
   Loader2,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef } from "react";
 import { suggestedTags } from "../../constants/postOptions";
 import { MAX_MEDIA_ITEMS, MAX_VIDEO_DURATION_SEC } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
 import LocationInput from "../../../AddProfile/components/LocationInput";
 import { createPost } from "../../api/postsApi";
 import { getPresignedUrl } from "../../api/imageupload";
+import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
 import { DEFAULT_AVATAR } from "../../utils/postDisplay";
 import BottomSheetModal from "../common/BottomSheetModal";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
+import { useLocationState } from "../../../../shared/hooks/useLocationState";
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
   const { data: myProfile } = useMyProfile();
@@ -29,18 +31,11 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   const [showTagInput, setShowTagInput] = useState(false);
   const [tagInput, setTagInput] = useState("");
   const [showLocationInput, setShowLocationInput] = useState(false);
-  const [location, setLocation] = useState({
-    coordinates: { lat: null, lon: null },
-    placeName: "",
-    countryCode: "",
-    admin1: "",
-    h3: { r4: "" }
-  });
+  const { location, setLocation, isEnrichingLocation, handleLocationSelect, resetLocation } = useLocationState();
 
   const videoRef = useRef(null);
   const [playingVideo, setPlayingVideo] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isEnrichingLocation, setIsEnrichingLocation] = useState(false);
   const { media, addFiles, removeMedia, reset: resetMedia, isValidating } = useMediaAttachments();
 
   const handleAddTag = (tag) => {
@@ -65,44 +60,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
     addFiles(e.target.files);
     e.target.value = "";
   };
-
-  const handleLocationSelect = useCallback((loc, detailsPromise) => {
-    if (!loc) {
-      setIsEnrichingLocation(false);
-      setLocation({
-        coordinates: { lat: null, lon: null },
-        placeName: "",
-        countryCode: "",
-        admin1: "",
-        h3: { r4: "" },
-      });
-      return;
-    }
-
-    setLocation({
-      coordinates: { lat: loc.lat, lon: loc.lon },
-      placeName: loc.placeName,
-      countryCode: loc.countryCode,
-      admin1: loc.admin1,
-      h3: { r4: loc.h3Index || "" },
-    });
-
-    if (detailsPromise) {
-      setIsEnrichingLocation(true);
-      detailsPromise
-        .then((enriched) => {
-          if (!enriched) return;
-          setLocation({
-            coordinates: { lat: enriched.lat, lon: enriched.lon },
-            placeName: enriched.placeName,
-            countryCode: enriched.countryCode,
-            admin1: enriched.admin1,
-            h3: { r4: enriched.h3Index || "" },
-          });
-        })
-        .finally(() => setIsEnrichingLocation(false));
-    }
-  }, []);
 
   const handleRemoveMedia = (id) => {
     if (playingVideo === id) setPlayingVideo(null);
@@ -149,11 +106,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
             mediaIndex: index,
           });
 
-          await fetch(presignedUrl, {
-            method: "PUT",
-            headers: { "Content-Type": item.file.type },
-            body: item.file,
-          });
+          await uploadToS3(presignedUrl, item.file);
 
           return { type: item.type, url: publicUrl };
         })
@@ -180,13 +133,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       setSelectedTags([]);
       resetMedia();
       setShowLocationInput(false);
-      setLocation({
-        coordinates: { lat: null, lon: null },
-        placeName: "",
-        countryCode: "",
-        admin1: "",
-        h3: { r4: "" }
-      });
+      resetLocation();
       onClose();
     } catch (err) {
       console.error(err);

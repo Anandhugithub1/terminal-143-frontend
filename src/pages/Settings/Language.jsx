@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
+import PageHeader from '../../shared/components/PageHeader';
 import '@fontsource-variable/inter';
 import i18n from '../../i18n/i18n';
 import clsx from 'clsx';
@@ -17,7 +17,6 @@ const LANGUAGES = [
 ];
 
 const LanguagePage = () => {
-  const navigate = useNavigate();
   const { t } = useTranslation('settings');
   const [selectedLang, setSelectedLang] = useState(localStorage.getItem('lang') || 'en');
 
@@ -29,12 +28,7 @@ const LanguagePage = () => {
 
   return (
     <div className="min-h-screen bg-white font-inter">
-      <header className="flex items-center px-4 py-3 border-b border-gray-200">
-        <button onClick={() => navigate(-1)} aria-label={t('back')}>
-          <ArrowLeft size={24} />
-        </button>
-        <h1 className="ml-4 text-lg font-semibold">{t('select_language')}</h1>
-      </header>
+      <PageHeader title={t('select_language')} />
 
       <div className="p-4">
         <nav className="mt-6 space-y-3">

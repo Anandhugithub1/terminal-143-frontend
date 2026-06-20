@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
-  ArrowLeft,
   Sliders,
   Lock,
   Trash2,
@@ -9,10 +8,9 @@ import {
   HelpCircle,
   Info,
   Globe,
-  
-
   Stars
 } from 'lucide-react';
+import PageHeader from '../../shared/components/PageHeader';
 import '@fontsource-variable/inter';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
 import { useTranslation } from 'react-i18next';
@@ -49,12 +47,7 @@ const SettingsPage = () => {
 
   return (
     <div className="min-h-screen bg-white font-inter relative">
-      <header className="flex items-center px-4 py-3 border-b border-gray-200">
-        <button onClick={() => navigate(-1)} aria-label="Back">
-          <ArrowLeft size={24} />
-        </button>
-        <h1 className="ml-4 text-lg font-semibold">{t('settings')}</h1>
-      </header>
+      <PageHeader title={t('settings')} />
 
       <div className="p-4">
         <nav className="mt-6 space-y-4">

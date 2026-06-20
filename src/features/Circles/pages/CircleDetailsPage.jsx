@@ -27,6 +27,7 @@ import { DEFAULT_AVATAR, isMutualPreferenceMatch } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
+import EmptyState from "../../../shared/components/EmptyState";
 
 export default function CircleDetailsPage() {
   const { circleId } = useParams();
@@ -338,20 +339,20 @@ export default function CircleDetailsPage() {
             )}
 
             {!isLoadingPosts && posts.length === 0 && (
-              <div className="bg-white rounded-2xl shadow-sm p-10 flex flex-col items-center text-center">
-                <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                  <MessageSquare className="w-6 h-6 text-gray-400" />
-                </div>
-                <p className="text-gray-800 font-semibold text-sm mb-1">No posts yet</p>
-                <p className="text-gray-400 text-xs mb-5 leading-relaxed">
-                  Be the first to share something with this circle!
-                </p>
-                <button
-                  onClick={() => setIsCreatePostModalOpen(true)}
-                  className="px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-full active:scale-95 transition-transform"
-                >
-                  Create Post
-                </button>
+              <div className="bg-white rounded-2xl shadow-sm">
+                <EmptyState
+                  icon={MessageSquare}
+                  title="No posts yet"
+                  subtitle="Be the first to share something with this circle!"
+                  action={
+                    <button
+                      onClick={() => setIsCreatePostModalOpen(true)}
+                      className="px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-full active:scale-95 transition-transform"
+                    >
+                      Create Post
+                    </button>
+                  }
+                />
               </div>
             )}
 

@@ -4,8 +4,8 @@
   import { useMatches, SendProfileFeeback } from '../api'
   import { useNavigate } from 'react-router-dom'
 
-  import TopNav from '../../../components/Layout/TopNavigation'
-  import BottomNav from '../../../components/Layout/BottomNavigation'
+  import PageLayout from '../../../shared/components/PageLayout'
+  import EmptyState from '../../../shared/components/EmptyState'
 import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "react-icons/ai"
   import { FaInstagram, FaTelegramPlane, FaFacebookF, FaLink } from 'react-icons/fa'
   import { SiLine } from 'react-icons/si'
@@ -67,16 +67,11 @@ import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "reac
 
     if (isLoading) {
       return (
-        <div className="bg-white min-h-screen flex flex-col">
-          <TopNav />
+        <PageLayout className="bg-white">
           <div className="p-4 pt-6 space-y-4">
             <h1 className="text-2xl font-bold">Loading Matches...</h1>
-
             {Array.from({ length: 3 }).map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl shadow-md p-4 bg-gray-50 flex gap-4 items-center"
-              >
+              <div key={i} className="rounded-2xl shadow-md p-4 bg-gray-50 flex gap-4 items-center">
                 <Skeleton circle width={64} height={64} />
                 <div className="flex-1">
                   <Skeleton height={20} width="50%" />
@@ -86,35 +81,25 @@ import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "reac
               </div>
             ))}
           </div>
-          <BottomNav />
-        </div>
+        </PageLayout>
       )
     }
 
     if (isError || matches.length === 0) {
       return (
-        <div className="bg-white min-h-screen flex flex-col">
-          <TopNav />
-          <div className="flex-1 flex items-center justify-center text-center p-6">
-            <div className="bg-gray-100 p-6 rounded-xl shadow max-w-sm mx-auto">
-              <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-3" />
-              <h2 className="text-lg font-bold">No Matches Found</h2>
-              <p className="text-sm text-gray-500">
-                {isError
-                  ? 'Could not load matches. Please try again later.'
-                  : 'Start swiping to find someone special.'}
-              </p>
-            </div>
+        <PageLayout className="bg-white">
+          <div className="flex-1 flex items-center justify-center">
+            <EmptyState
+              title={isError ? "Could not load matches" : "No Matches Found"}
+              subtitle={isError ? "Please try again later." : "Start swiping to find someone special."}
+            />
           </div>
-          <BottomNav />
-        </div>
+        </PageLayout>
       )
     }
 
     return (
-      <div className="bg-white min-h-screen pb-20">
-
-        <TopNav />
+      <PageLayout className="bg-white">
 
         <div className="px-4 pt-4">
 
@@ -279,8 +264,6 @@ import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from "reac
 
         </div>
 
-        <BottomNav />
-
-      </div>
+      </PageLayout>
     )
   }

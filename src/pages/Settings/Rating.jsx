@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Star, FileText, Loader2, User, Check, Sparkles, ThumbsUp, MessageCircle } from "lucide-react";
+import { Star, FileText, Loader2, User, Check, Sparkles, ThumbsUp, MessageCircle } from "lucide-react";
+import PageHeader from '../../shared/components/PageHeader';
 import { toast } from "sonner";
 
 export default function ReviewPage() {
@@ -59,20 +60,10 @@ export default function ReviewPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-10 backdrop-blur-md bg-white/90 border-b border-gray-200/50 shadow-sm">
-        <div className="flex items-center px-4 py-3 max-w-lg mx-auto">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-all duration-200 active:scale-95"
-          >
-            <ArrowLeft size={20} className="text-gray-600" />
-          </button>
-          <h1 className="ml-2 text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-            Rate the App
-          </h1>
-        </div>
-      </header>
+      <PageHeader
+        title="Rate the App"
+        className="sticky top-0 z-10 backdrop-blur-md bg-white/90 border-gray-200/50 shadow-sm"
+      />
 
       {/* Content */}
       <div className="flex-1 px-4 py-6 max-w-lg mx-auto w-full">

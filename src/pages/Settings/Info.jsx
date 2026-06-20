@@ -1,12 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, HeartHandshake, Globe, Users } from 'lucide-react';
+import { HeartHandshake, Globe, Users } from 'lucide-react';
+import PageHeader from '../../shared/components/PageHeader';
 import { useTranslation } from 'react-i18next';
 import '@fontsource-variable/inter';
 
 const Infopage = () => {
   const { t } = useTranslation('common');
-  const navigate = useNavigate();
 
   const infoItems = [
     {
@@ -28,12 +27,7 @@ const Infopage = () => {
 
   return (
     <div className="min-h-screen bg-white font-inter">
-      <header className="flex items-center px-4 py-3 border-b border-gray-200">
-        <button onClick={() => navigate(-1)} aria-label="Back">
-          <ArrowLeft size={24} />
-        </button>
-        <h1 className="ml-4 text-lg font-semibold">{t('aboutApp')}</h1>
-      </header>
+      <PageHeader title={t('aboutApp')} />
 
       <div className="p-4 space-y-6">
         <p className="text-gray-700 text-base leading-relaxed">

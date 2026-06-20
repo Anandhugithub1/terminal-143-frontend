@@ -1,56 +1,21 @@
 import { X, Image, MapPin, Loader2 } from "lucide-react";
-import { useState, useCallback, useRef } from "react";
+import { useState, useRef } from "react";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
 import LocationInput from "../../../AddProfile/components/LocationInput";
 import { getPresignedUrl } from "../../api/imageupload";
+import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
 import BottomSheetModal from "../common/BottomSheetModal";
+import { useLocationState } from "../../../../shared/hooks/useLocationState";
 
 export default function EditPostModal({ isOpen, onClose, post, circleId, circleName, onSave, isSaving }) {
   const [content, setContent] = useState(post?.content || "");
   const [keptMedia, setKeptMedia] = useState(post?.media || []);
   const [showLocation, setShowLocation] = useState(!!post?.location?.placeName);
-  const [location, setLocation] = useState(post?.location || {
-    coordinates: { lat: null, lon: null },
-    placeName: "",
-    countryCode: "",
-    admin1: "",
-    h3: { r4: "" },
-  });
-  const [isEnrichingLocation, setIsEnrichingLocation] = useState(false);
+  const { location, isEnrichingLocation, handleLocationSelect } = useLocationState(post?.location);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   const { media: newMedia, addFiles, removeMedia: removeNewMedia, isValidating } = useMediaAttachments();
-
-  const handleLocationSelect = useCallback((loc, detailsPromise) => {
-    if (!loc) {
-      setIsEnrichingLocation(false);
-      setLocation({ coordinates: { lat: null, lon: null }, placeName: "", countryCode: "", admin1: "", h3: { r4: "" } });
-      return;
-    }
-    setLocation({
-      coordinates: { lat: loc.lat, lon: loc.lon },
-      placeName: loc.placeName,
-      countryCode: loc.countryCode,
-      admin1: loc.admin1,
-      h3: { r4: loc.h3Index || "" },
-    });
-    if (detailsPromise) {
-      setIsEnrichingLocation(true);
-      detailsPromise
-        .then((enriched) => {
-          if (!enriched) return;
-          setLocation({
-            coordinates: { lat: enriched.lat, lon: enriched.lon },
-            placeName: enriched.placeName,
-            countryCode: enriched.countryCode,
-            admin1: enriched.admin1,
-            h3: { r4: enriched.h3Index || "" },
-          });
-        })
-        .finally(() => setIsEnrichingLocation(false));
-    }
-  }, []);
 
   const handleSave = async () => {
     if (!content.trim() || isEnrichingLocation || isValidating || isUploading) return;
@@ -66,7 +31,7 @@ export default function EditPostModal({ isOpen, onClose, post, circleId, circleN
             postId: post.postId,
             mediaIndex: keptMedia.length + index,
           });
-          await fetch(presignedUrl, { method: "PUT", headers: { "Content-Type": item.file.type }, body: item.file });
+          await uploadToS3(presignedUrl, item.file);
           return { type: item.type, url: publicUrl };
         })
       );

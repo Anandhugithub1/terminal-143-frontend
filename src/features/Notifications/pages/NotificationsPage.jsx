@@ -1,149 +1,78 @@
-import React, { useMemo } from "react"
-import { useNavigate } from "react-router-dom"
-import Skeleton from "react-loading-skeleton"
-import { ArrowLeft, Bell } from "lucide-react"
-import { getWelcomeNotification,normalizeNotification } from "../utlis/getWelcomeNotification"
-import { useNotifications } from "../Hooks/useNotifications"
-
-
-
-
-/* ---------------- page ---------------- */
+import React, { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import { Bell } from "lucide-react";
+import { getWelcomeNotification, normalizeNotification } from "../utlis/getWelcomeNotification";
+import { useNotifications } from "../Hooks/useNotifications";
+import PageHeader from "../../../shared/components/PageHeader";
+import EmptyState from "../../../shared/components/EmptyState";
 
 export default function NotificationsPage() {
-  const navigate = useNavigate()
-
-  const {
-    data,
-    isLoading,
-    isError
-  } = useNotifications()
+  const navigate = useNavigate();
+  const { data, isLoading, isError } = useNotifications();
 
   const notifications = useMemo(() => {
-    const raw = data?.pages.flatMap(p => p.items) || []
-    const normalized = raw.map(normalizeNotification)
+    const raw = data?.pages.flatMap(p => p.items) || [];
+    const normalized = raw.map(normalizeNotification);
+    const welcome = getWelcomeNotification();
+    return welcome ? [welcome, ...normalized] : normalized;
+  }, [data]);
 
-    const welcome = getWelcomeNotification()
+  return (
+    <div className="min-h-screen bg-white">
+      <PageHeader title="Notifications" />
 
-    if (welcome) {
-      return [welcome, ...normalized]
-    }
-
-    return normalized
-  }, [data])
-
-  /* ---------------- loading ---------------- */
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <header className="flex items-center px-4 py-3">
-          <button onClick={() => navigate(-1)}>
-            <ArrowLeft size={24} className="text-primary" />
-          </button>
-          <h1 className="ml-4 text-lg font-semibold text-gray-900">
-            Notifications
-          </h1>
-        </header>
-
+      {isLoading && (
         <main className="px-4 py-6 space-y-4">
           {[1, 2, 3].map(i => (
-            <div
-              key={i}
-              className="p-4 rounded-xl border border-border-clr"
-            >
+            <div key={i} className="p-4 rounded-xl border border-border-clr">
               <Skeleton width={160} height={14} />
               <Skeleton width={220} height={12} className="mt-2" />
             </div>
           ))}
         </main>
-      </div>
-    )
-  }
+      )}
 
-  /* ---------------- error ---------------- */
+      {isError && (
+        <div className="h-[60vh] flex items-center justify-center">
+          <p className="text-red-500 text-sm">Failed to load notifications</p>
+        </div>
+      )}
 
-  if (isError) {
-    return (
-      <div className="h-screen flex items-center justify-center">
-        Failed to load notifications
-      </div>
-    )
-  }
+      {!isLoading && !isError && notifications.length === 0 && (
+        <EmptyState
+          icon={Bell}
+          title="No notifications today"
+          subtitle="You're all caught up."
+          className="mt-16"
+        />
+      )}
 
-  /* ---------------- empty ---------------- */
-
-  if (notifications.length === 0) {
-    return (
-      <div className="min-h-screen bg-white">
-        <header className="flex items-center px-4 py-3">
-          <button onClick={() => navigate(-1)}>
-            <ArrowLeft size={24} className="text-primary" />
-          </button>
-          <h1 className="ml-4 text-lg font-semibold text-gray-900">
-            Notifications
-          </h1>
-        </header>
-
-        <main className="flex items-center justify-center py-24">
-          <div className="text-center">
-            <div className="w-16 h-16 mx-auto rounded-full bg-input flex items-center justify-center mb-4">
-              <Bell className="text-text-pr" />
-            </div>
-            <h2 className="font-semibold text-gray-900">
-              No notifications today
-            </h2>
-            <p className="text-sm text-gray-500 mt-1">
-              You’re all caught up.
-            </p>
-          </div>
-        </main>
-      </div>
-    )
-  }
-
-  /* ---------------- list ---------------- */
-
-  return (
-    <div className="min-h-screen bg-white">
-      <header className="flex items-center px-4 py-3">
-        <button onClick={() => navigate(-1)}>
-          <ArrowLeft size={24} className="text-primary" />
-        </button>
-        <h1 className="ml-4 text-lg font-semibold text-gray-900">
-          Notifications
-        </h1>
-      </header>
-
-      <main className="px-4 py-4 space-y-3">
-        {notifications.map(n => (
-          <div
-            key={n.SK}
-            className="flex items-start gap-3 p-4 rounded-xl border border-border-clr bg-white"
-          >
+      {!isLoading && !isError && notifications.length > 0 && (
+        <main className="px-4 py-4 space-y-3">
+          {notifications.map(n => (
             <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                n.type === "WELCOME" ? "bg-blue-50" : "bg-pink-50"
-              }`}
+              key={n.SK}
+              className="flex items-start gap-3 p-4 rounded-xl border border-border-clr bg-white"
             >
-              <Bell
-                size={18}
-                className={n.type === "WELCOME" ? "text-blue-500" : "text-pink-500"}
-              />
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                n.type === "WELCOME" ? "bg-blue-50" : "bg-pink-50"
+              }`}>
+                <Bell
+                  size={18}
+                  className={n.type === "WELCOME" ? "text-blue-500" : "text-pink-500"}
+                />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-medium text-gray-900 leading-snug">{n.message}</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {new Date(n.createdAt).toLocaleString()}
+                </p>
+              </div>
             </div>
-
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-900 leading-snug">
-                {n.message}
-              </p>
-
-              <p className="text-xs text-gray-400 mt-1">
-                {new Date(n.createdAt).toLocaleString()}
-              </p>
-            </div>
-          </div>
-        ))}
-      </main>
+          ))}
+        </main>
+      )}
     </div>
-  )
+  );
 }

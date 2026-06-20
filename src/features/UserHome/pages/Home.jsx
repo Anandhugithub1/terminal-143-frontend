@@ -2,8 +2,7 @@
 import React, { useState, useCallback, lazy, Suspense, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 
-import TopNav from "../../../components/Layout/TopNavigation";
-import BottomNav from "../../../components/Layout/BottomNavigation";
+import PageLayout from "../../../shared/components/PageLayout";
 import ProfileSkeleton from "../components/ProfileSkeleton";
 import { useReportUser } from "../api";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
@@ -189,8 +188,7 @@ const [showReport, setShowReport] = useState(false);
   }
 
   return (
-    <div className="relative bg-white min-h-screen pb-20 flex flex-col">
-      <TopNav />
+    <PageLayout className="relative bg-white">
 
       <LocationBar
         title={myProfile?.location?.placeName || "Location"}
@@ -288,8 +286,6 @@ const [showReport, setShowReport] = useState(false);
         )}
       </div>
 
-      <BottomNav />
-
       {canShow && (
         <AddToHomeBanner
           onAdd={showPrompt}
@@ -309,6 +305,6 @@ const [showReport, setShowReport] = useState(false);
         open={showBraveHelp}
         onClose={() => setShowBraveHelp(false)}
       />
-    </div>
+    </PageLayout>
   );
 }

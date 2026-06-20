@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { ChevronLeft, User, UserPlus, Heart, Smile, Star } from "lucide-react"
+import { User, UserPlus, Heart, Smile, Star } from "lucide-react"
+import PageHeader from '../../shared/components/PageHeader'
 import { useNavigate } from "react-router-dom"
 import { Button } from "../../shared/Button"
 import "@fontsource-variable/inter"
@@ -90,16 +91,7 @@ const PreferencesPage = () => {
 
   return (
     <div className="min-h-screen bg-white font-inter flex flex-col justify-between">
-      {/* Header */}
-      <header className="flex items-center px-4 py-4 border-b border-gray-100">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center text-gray-400 hover:text-gray-500 text-sm font-normal"
-        >
-          <ChevronLeft size={22} />
-          <span className="mr-1 text-lg font-bold">Back</span>
-        </button>
-      </header>
+      <PageHeader title="Preferences" />
 
       {/* Content */}
       <main className="flex-1 p-5">

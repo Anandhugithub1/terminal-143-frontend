@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  ArrowLeft,
   MessageCircle,
   Tag,
   FileText,
@@ -9,6 +8,7 @@ import {
   Loader2,
   ChevronDown,
 } from "lucide-react";
+import PageHeader from '../../shared/components/PageHeader';
 import { toast } from "sonner"
 import { Listbox } from "@headlessui/react";
 import { createSupportCase } from "./api";
@@ -60,18 +60,10 @@ export default function HelpCenterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="sticky top-0 z-10 flex items-center px-4 py-4 bg-white border-b border-gray-200 shadow-sm">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 -ml-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
-        >
-          <ArrowLeft size={20} className="text-gray-700" />
-        </button>
-
-        <h1 className="ml-2 text-xl font-semibold text-gray-900">
-          Help Center
-        </h1>
-      </header>
+      <PageHeader
+        title="Help Center"
+        className="sticky top-0 z-10 shadow-sm border-gray-200"
+      />
 
       <div className="flex-1 px-4 py-6 max-w-lg mx-auto w-full">
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">

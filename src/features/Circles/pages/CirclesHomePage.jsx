@@ -24,6 +24,7 @@ import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { buildPostActions } from "../utils/postActions";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
 import { PostCardSkeleton, CircleAvatarSkeleton } from "../components/common/Skeletons";
+import EmptyState from "../../../shared/components/EmptyState";
 
 const CIRCLE_BG_COLORS = [
   "bg-rose-50",
@@ -179,19 +180,19 @@ export default function CirclesHomePage() {
             )}
 
             {!isLoadingFeed && feed.length === 0 && (
-              <div className="flex flex-col items-center justify-center text-center py-12 px-4">
-                <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center mb-3">
-                  <Rss className="w-6 h-6 text-gray-400" />
-                </div>
-                <p className="text-gray-700 font-semibold text-sm mb-1">Nothing here yet</p>
-                <p className="text-gray-400 text-xs">Posts from your circles will appear here. Try joining more circles!</p>
-                <button
-                  onClick={() => navigate("/circles/discover")}
-                  className="mt-4 px-5 py-2 bg-primary text-white text-sm font-semibold rounded-full active:scale-95 transition-transform"
-                >
-                  Discover Circles
-                </button>
-              </div>
+              <EmptyState
+                icon={Rss}
+                title="Nothing here yet"
+                subtitle="Posts from your circles will appear here. Try joining more circles!"
+                action={
+                  <button
+                    onClick={() => navigate("/circles/discover")}
+                    className="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-full active:scale-95 transition-transform"
+                  >
+                    Discover Circles
+                  </button>
+                }
+              />
             )}
 
             {feed.map((post, index) => {
