@@ -171,7 +171,7 @@ export default function CirclesHomePage() {
       <TopNav />
 
       {/* Sticky story strip */}
-      <div className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
+      <div className="sticky top-[65px] z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
         <div className="max-w-3xl mx-auto px-3 py-3 overflow-x-auto scrollbar-hide">
           <div className="flex gap-3" style={{ minWidth: "min-content" }}>
 
