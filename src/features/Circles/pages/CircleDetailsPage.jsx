@@ -1,9 +1,7 @@
 import {
   ArrowLeft,
-  MoreVertical,
   Users,
   Calendar,
-  Settings,
   Image,
   Video,
   MessageSquare,
@@ -177,9 +175,6 @@ export default function CircleDetailsPage() {
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-          <button className="p-2 bg-black/25 backdrop-blur-sm rounded-full active:bg-black/40 transition-colors">
-            <MoreVertical className="w-5 h-5 text-white" />
-          </button>
         </div>
 
         {/* Circle info overlay */}
@@ -224,9 +219,6 @@ export default function CircleDetailsPage() {
                   className="flex-1 btn-outlined rounded-xl py-2.5 text-sm"
                 >
                   Invite
-                </button>
-                <button className="w-11 h-11 flex-shrink-0 flex items-center justify-center btn-outlined rounded-xl">
-                  <Settings className="w-5 h-5 text-gray-600" />
                 </button>
               </>
             ) : (
