@@ -182,8 +182,8 @@ const [showReport, setShowReport] = useState(false);
       interests: rawProfile.interest || [],
       userId: rawProfile.PK,
       suggestionIndex: rawProfile.suggestionIndex,
-      feedback: rawProfile.feedback || {}
-      
+      feedback: rawProfile.feedback || {},
+      healthDisclosures: rawProfile.healthDisclosures || [],
     };
   }
 

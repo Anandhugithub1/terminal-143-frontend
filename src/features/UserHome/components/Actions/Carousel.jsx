@@ -1,6 +1,7 @@
 import React, { memo, useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const PhotoCarousel = memo(({
   images,
@@ -101,7 +102,7 @@ const PhotoCarousel = memo(({
     if (Math.abs(deltaX) < 30) {
       const rect = containerRef.current.getBoundingClientRect();
       const tapX = e.changedTouches[0].clientX;
-      if (tapX > rect.width / 2) {
+      if (tapX - rect.left > rect.width / 2) {
         onNext();
       } else {
         onPrev();
@@ -149,32 +150,41 @@ const PhotoCarousel = memo(({
         'relative w-full h-full carousel-touch-zone overflow-hidden rounded-3xl',
         className
       )}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
-      <div
-        className="relative select-none w-full h-full"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        {/* Plain <img> for instant show (no framer-motion fade) */}
-        <img
-          key={images[norm(activeIdx)]}
-          src={images[norm(activeIdx)]}
-          alt={`${alt} photo ${norm(activeIdx) + 1}`}
-          className="w-full h-full object-cover"
-          draggable="false"
-          loading="eager"     // request immediate loading for the visible image
-          decoding="sync"     // prefer synchronous decoding for fastest display
-          onError={handleError}
-          style={{
-            maxHeight: '100vh',
-            objectFit: 'cover',
-            objectPosition: 'center',
-            touchAction: 'manipulation',
-          }}
-        />
+      <img
+        key={images[norm(activeIdx)]}
+        src={images[norm(activeIdx)]}
+        alt={`${alt} photo ${norm(activeIdx) + 1}`}
+        className="w-full h-full object-cover select-none"
+        draggable="false"
+        loading="eager"
+        decoding="sync"
+        onError={handleError}
+        style={{ objectFit: 'cover', objectPosition: 'center', touchAction: 'manipulation' }}
+      />
 
-        {segments}
-      </div>
+      {segments}
+
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={onPrev}
+            aria-label="Previous photo"
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center border-0 text-gray-700 shadow-sm"
+          >
+            <ChevronLeft size={16} strokeWidth={2.5} />
+          </button>
+          <button
+            onClick={onNext}
+            aria-label="Next photo"
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center border-0 text-gray-700 shadow-sm"
+          >
+            <ChevronRight size={16} strokeWidth={2.5} />
+          </button>
+        </>
+      )}
     </div>
   );
 });
