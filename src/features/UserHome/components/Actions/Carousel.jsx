@@ -13,113 +13,38 @@ const PhotoCarousel = memo(({
   onError,
   className = '',
 }) => {
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
-  const touchStartY = useRef(0);
-  const containerRef = useRef(null);
-
-  // Cache of already-preloaded URLs to avoid duplicate work
   const loadedSetRef = useRef(new Set());
-
-  // How many images ahead/behind to preload. 1 = next + prev; increase to 2/3 to be more aggressive.
   const prefetchDistance = 1;
 
-  // Utility to normalize index with wrap-around
   const norm = (idx) => {
     if (!images || images.length === 0) return 0;
     return ((idx % images.length) + images.length) % images.length;
   };
 
-  // Preload logic: create Image() objects for specified indices
   useEffect(() => {
     if (!images || images.length === 0) return;
 
     const toPreload = new Set();
-
-    // Always preload current (ensures current is in cache) + neighbors according to distance
     for (let d = -prefetchDistance; d <= prefetchDistance; d++) {
       const idx = norm(activeIdx + d);
       const url = images[idx];
       if (url) toPreload.add(url);
     }
 
-    // Preload each URL not already loaded
     toPreload.forEach((url) => {
       if (loadedSetRef.current.has(url)) return;
       const img = new window.Image();
       img.src = url;
-      // optional handlers: mark as loaded on success, fallback on error
-      img.onload = () => {
-        loadedSetRef.current.add(url);
-      };
-      img.onerror = () => {
-        loadedSetRef.current.add(url); // mark as attempted so we don't retry forever
-      };
+      img.onload = () => loadedSetRef.current.add(url);
+      img.onerror = () => loadedSetRef.current.add(url);
     });
-
-    // Cleanup: nothing to revoke for Image() objects
-  }, [images, activeIdx, prefetchDistance]);
-
-  useEffect(() => {
-    const handlePhotoTap = (e) => {
-      if (!containerRef.current) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      // `e.detail?.x` is nonstandard — fallback to center
-      const tapX = (e?.detail && typeof e.detail.x === 'number') ? e.detail.x : rect.width / 2;
-
-      if (tapX > rect.width / 2) {
-        onNext(); // right side → next
-      } else {
-        onPrev(); // left side → previous
-      }
-    };
-
-    const current = containerRef.current;
-    current?.addEventListener('photoTap', handlePhotoTap);
-    return () => {
-      current?.removeEventListener('photoTap', handlePhotoTap);
-    };
-  }, [onNext, onPrev]);
-
-  const handleTouchStart = (e) => {
-    e.stopPropagation();
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = (e) => {
-    e.stopPropagation();
-    touchEndX.current = e.changedTouches[0].clientX;
-    const touchEndY = e.changedTouches[0].clientY;
-    const deltaX = touchEndX.current - touchStartX.current;
-    const deltaY = touchEndY - touchStartY.current;
-
-    // Ignore vertical swipes (scroll)
-    if (Math.abs(deltaY) > 40) return;
-
-    // Treat small horizontal movement as tap
-    if (Math.abs(deltaX) < 30) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const tapX = e.changedTouches[0].clientX;
-      if (tapX - rect.left > rect.width / 2) {
-        onNext();
-      } else {
-        onPrev();
-      }
-    } else {
-      // large horizontal swipe -> change photo direction
-      if (deltaX < 0) onNext();
-      else onPrev();
-    }
-  };
+  }, [images, activeIdx]);
 
   const handleError = (e) => {
     if (placeholderImage) e.currentTarget.src = placeholderImage;
     onError?.(e);
   };
 
-  // Top segment progress bars
   const segments = useMemo(
     () => (
       <div className="absolute top-1 left-0 right-0 flex justify-center px-2 pt-1 space-x-1 z-10 pointer-events-none">
@@ -145,13 +70,10 @@ const PhotoCarousel = memo(({
 
   return (
     <div
-      ref={containerRef}
       className={classnames(
-        'relative w-full h-full carousel-touch-zone overflow-hidden rounded-3xl',
+        'relative w-full h-full overflow-hidden rounded-3xl',
         className
       )}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
     >
       <img
         key={images[norm(activeIdx)]}
@@ -162,7 +84,7 @@ const PhotoCarousel = memo(({
         loading="eager"
         decoding="sync"
         onError={handleError}
-        style={{ objectFit: 'cover', objectPosition: 'center', touchAction: 'manipulation' }}
+        style={{ objectFit: 'cover', objectPosition: 'center' }}
       />
 
       {segments}
