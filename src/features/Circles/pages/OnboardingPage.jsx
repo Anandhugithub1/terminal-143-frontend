@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
 import { useJoinCircle } from "../hooks/useMembership";
 import TopNav from "../../../components/Layout/TopNavigation";
+import NavBar from "../../../components/Layout/Navbar";
 
 export default function OnboardingPage({ onComplete, onBack }) {
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white overflow-x-hidden">
-      <TopNav />
+      {onComplete ? <NavBar /> : <TopNav />}
 
       {/* Progress sub-bar */}
       <div className="sticky top-[65px] z-10 bg-white border-b border-gray-100">
@@ -135,8 +136,8 @@ export default function OnboardingPage({ onComplete, onBack }) {
         <div key={step} className="animate-fadeIn">
         {step === 1 ? (
           <>
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+            <div className="text-center mb-8 bg-gray-100 -mx-4 px-4 py-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4">
                 <Sparkles className="w-8 h-8 text-primary" />
               </div>
               <h2 className="text-2xl font-bold text-gray-800 mb-2">
