@@ -82,11 +82,13 @@ const PhotoCarousel = memo(({
   }, [onNext, onPrev]);
 
   const handleTouchStart = (e) => {
+    e.stopPropagation();
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
   };
 
   const handleTouchEnd = (e) => {
+    e.stopPropagation();
     touchEndX.current = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
     const deltaX = touchEndX.current - touchStartX.current;
