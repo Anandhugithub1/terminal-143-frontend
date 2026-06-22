@@ -215,24 +215,24 @@ export default function CircleDetailsPage() {
               <>
                 <button
                   onClick={handleShareCircle}
-                  className="flex-1 bg-primary text-white rounded-xl py-2.5 text-sm font-semibold active:scale-95 transition-transform"
+                  className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
                 >
                   Share
                 </button>
                 <button
                   onClick={handleShareCircle}
-                  className="flex-1 bg-gray-100 text-gray-700 rounded-xl py-2.5 text-sm font-semibold active:scale-95 transition-transform"
+                  className="flex-1 btn-outlined rounded-xl py-2.5 text-sm"
                 >
                   Invite
                 </button>
-                <button className="w-11 h-11 flex-shrink-0 flex items-center justify-center bg-gray-100 rounded-xl active:scale-95 transition-transform">
+                <button className="w-11 h-11 flex-shrink-0 flex items-center justify-center btn-outlined rounded-xl">
                   <Settings className="w-5 h-5 text-gray-600" />
                 </button>
               </>
             ) : (
               <button
                 onClick={() => setIsJoined(true)}
-                className="flex-1 bg-primary text-white rounded-xl py-3 font-semibold active:scale-95 transition-transform"
+                className="flex-1 btn-filled rounded-xl py-3"
               >
                 Join Circle
               </button>
@@ -347,7 +347,7 @@ export default function CircleDetailsPage() {
                   action={
                     <button
                       onClick={() => setIsCreatePostModalOpen(true)}
-                      className="px-6 py-2.5 bg-primary text-white text-sm font-semibold rounded-full active:scale-95 transition-transform"
+                      className="px-6 py-2.5 btn-filled text-sm rounded-full"
                     >
                       Create Post
                     </button>

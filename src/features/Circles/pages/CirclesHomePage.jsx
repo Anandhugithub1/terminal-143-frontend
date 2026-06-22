@@ -283,7 +283,7 @@ export default function CirclesHomePage() {
           {selectedCircle && (
             <button
               onClick={() => navigate(`/circles/${selectedCircleId}`, { state: { circleData: selectedCircle } })}
-              className="text-xs text-primary font-semibold bg-primary/10 px-3 py-1 rounded-full active:opacity-70 transition-opacity"
+              className="text-xs btn-outlined px-3 py-1 rounded-full"
             >
               View circle
             </button>
@@ -317,7 +317,7 @@ export default function CirclesHomePage() {
                     <p className="text-xs text-gray-400 mb-5">Be the first to post in {selectedCircle?.name}</p>
                     <button
                       onClick={() => handlePickCircle(selectedCircle)}
-                      className="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-full active:scale-95 transition-transform shadow-sm"
+                      className="px-5 py-2 btn-filled text-sm rounded-full shadow-sm"
                     >
                       Create a post
                     </button>
@@ -372,7 +372,7 @@ export default function CirclesHomePage() {
                       </div>
                       <button
                         onClick={() => navigate("/circles/discover")}
-                        className="text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full active:scale-95 transition-transform"
+                        className="text-xs btn-outlined px-3 py-1.5 rounded-full"
                       >
                         Discover
                       </button>
@@ -393,7 +393,7 @@ export default function CirclesHomePage() {
                           </p>
                           <button
                             onClick={() => navigate(`/circles/${firstCircleId}`)}
-                            className="text-xs text-primary font-semibold bg-primary/10 px-3 py-1 rounded-full active:opacity-70"
+                            className="text-xs btn-outlined px-3 py-1 rounded-full"
                           >
                             See all
                           </button>

@@ -55,6 +55,15 @@ img {
 }
 
 
+@layer components {
+  .btn-filled {
+    @apply bg-primary text-white font-semibold active:opacity-75 active:scale-95 transition-all;
+  }
+  .btn-outlined {
+    @apply bg-white text-gray-800 border border-gray-200 font-semibold active:bg-primary/5 active:border-primary active:text-primary transition-all;
+  }
+}
+
 @keyframes slideIn {
   from {
     transform: translateX(100%);
