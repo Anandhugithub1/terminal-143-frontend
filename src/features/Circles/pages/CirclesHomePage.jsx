@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Compass, MapPin, PenLine, Plus, Rss } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -85,9 +85,14 @@ export default function CirclesHomePage() {
       ? myCircles[0]?.circleId
       : null;
   const { data: firstCirclePostsData } = usePosts(firstCircleId);
-  const firstCirclePosts = (firstCirclePostsData?.items || [])
-    .filter((p) => p.status !== "deleted")
-    .slice(0, 5);
+  const firstCirclePosts = useMemo(() => {
+    const posts = (firstCirclePostsData?.items || []).filter((p) => p.status !== "deleted");
+    for (let i = posts.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [posts[i], posts[j]] = [posts[j], posts[i]];
+    }
+    return posts.slice(0, 5);
+  }, [firstCirclePostsData]);
 
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;
@@ -398,44 +403,31 @@ export default function CirclesHomePage() {
                             See all
                           </button>
                         </div>
-                        {firstCirclePosts.map((post) => (
-                          <button
-                            key={post.postId}
-                            onClick={() =>
-                              navigate(
-                                `/circles/${firstCircleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`
-                              )
-                            }
-                            className="w-full text-left bg-white rounded-2xl border border-gray-100 shadow-sm p-3.5 active:scale-[0.99] transition-transform"
-                          >
-                            <div className="flex items-start gap-3">
-                              <img
-                                src={post.authorImage || DEFAULT_AVATAR}
-                                alt=""
-                                loading="lazy"
-                                className="w-9 h-9 rounded-full object-cover shrink-0"
-                              />
-                              <div className="min-w-0 flex-1">
-                                <span className="text-sm font-semibold text-gray-800 block truncate">
-                                  {post.authorName || "Anonymous"}
-                                </span>
-                                {post.content && (
-                                  <p className="text-sm text-gray-500 mt-0.5 line-clamp-2 leading-snug">
-                                    {post.content}
-                                  </p>
-                                )}
-                              </div>
-                              {post.media?.[0]?.url && (
-                                <img
-                                  src={post.media[0].url}
-                                  alt=""
-                                  loading="lazy"
-                                  className="w-14 h-14 rounded-xl object-cover shrink-0"
-                                />
-                              )}
-                            </div>
-                          </button>
-                        ))}
+                        {firstCirclePosts.map((post) => {
+                          const isAuthor = !!myId && myId === post.authorId;
+                          return (
+                            <PostCard
+                              key={post.postId}
+                              variant="feed"
+                              avatar={post.authorImage || DEFAULT_AVATAR}
+                              name={post.authorName || "Anonymous"}
+                              meta={<PostMeta post={post} />}
+                              body={post.content}
+                              media={post.media}
+                              tags={post.tags || []}
+                              onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
+                              actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                              actions={buildPostActions({
+                                includeMatchActions: !isAuthor,
+                                onComment: () => setCommentPost(post),
+                                onToggleLike: () =>
+                                  sendMatchRequest(post.authorId, {
+                                    onSuccess: () => toast.success("Match request sent"),
+                                  }),
+                              })}
+                            />
+                          );
+                        })}
                       </>
                     )}
                   </>
