@@ -71,40 +71,55 @@ export default function PostMedia({ media = [], image, alt, className }) {
   if (!url) return null;
 
   if (isVideo) {
-    // Cap portrait videos at 4:5 (Instagram max portrait ratio) so they don't
-    // take over the entire screen; landscape videos show at their natural ratio.
-    const clampedRatio = Math.max(videoAspectRatio, 4 / 5);
+    // Landscape videos (>1) get a portrait 4:5 container — video centered, blur fills gaps (Instagram style).
+    // Portrait/square videos keep their natural ratio.
+    const clampedRatio = videoAspectRatio > 1 ? 4 / 5 : videoAspectRatio;
 
     return (
       <div
         ref={containerRef}
-        className="relative w-full overflow-hidden bg-black rounded-xl mt-2"
+        className="relative w-full overflow-hidden bg-gray-950 isolate"
         style={{ aspectRatio: clampedRatio }}
       >
         {shouldLoad && !hasError && (
-          <video
-            ref={videoRef}
-            src={url}
-            className="w-full h-full object-contain"
-            muted={isMuted}
-            loop
-            playsInline
-            preload="metadata"
-            onLoadedMetadata={(e) => {
-              const { videoWidth, videoHeight } = e.target;
-              if (videoWidth && videoHeight) {
-                setVideoAspectRatio(videoWidth / videoHeight);
-              }
-            }}
-            onLoadedData={() => setIsLoaded(true)}
-            onError={() => setHasError(true)}
-            onClick={() => {
-              const v = videoRef.current;
-              if (!v) return;
-              if (v.paused) v.play().catch(() => {});
-              else v.pause();
-            }}
-          />
+          <>
+            {/* Blurred backdrop — same src, browser reuses the same request */}
+            <video
+              src={url}
+              className="absolute inset-0 w-full h-full object-cover opacity-60"
+              style={{ filter: 'blur(24px)', transform: 'scale(1.15)' }}
+              muted
+              autoPlay
+              loop
+              playsInline
+              aria-hidden="true"
+              tabIndex={-1}
+            />
+            {/* Main video */}
+            <video
+              ref={videoRef}
+              src={url}
+              className="relative w-full h-full object-contain"
+              muted={isMuted}
+              loop
+              playsInline
+              preload="metadata"
+              onLoadedMetadata={(e) => {
+                const { videoWidth, videoHeight } = e.target;
+                if (videoWidth && videoHeight) {
+                  setVideoAspectRatio(videoWidth / videoHeight);
+                }
+              }}
+              onLoadedData={() => setIsLoaded(true)}
+              onError={() => setHasError(true)}
+              onClick={() => {
+                const v = videoRef.current;
+                if (!v) return;
+                if (v.paused) v.play().catch(() => {});
+                else v.pause();
+              }}
+            />
+          </>
         )}
 
         {!isLoaded && !hasError && (
@@ -127,7 +142,7 @@ export default function PostMedia({ media = [], image, alt, className }) {
               e.stopPropagation();
               setIsMuted((m) => !m);
             }}
-            className="absolute bottom-2 right-2 p-1.5 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
+            className="absolute bottom-2 right-2 z-20 p-1.5 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
             aria-label={isMuted ? "Unmute video" : "Mute video"}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
@@ -145,7 +160,7 @@ export default function PostMedia({ media = [], image, alt, className }) {
   return (
     <div
       ref={containerRef}
-      className="relative w-full overflow-hidden bg-gray-100 rounded-xl mt-2"
+      className="relative w-full overflow-hidden bg-gray-100"
       style={{ aspectRatio: clampedImageRatio }}
     >
       {shouldLoad && !hasError && (

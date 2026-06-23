@@ -3,12 +3,8 @@ import { ChevronRight, Flag, MoreVertical, Pencil, Share2, Trash2 } from "lucide
 import PostMedia from "./PostMedia";
 import BottomSheetModal from "../common/BottomSheetModal";
 
-// Shared post card used by the Circles feed (match-style posts) and the
-// circle details "Posts" tab (community posts). The two layouts differ
-// enough that a `variant` flag controls spacing/typography, while the
-// header, body, image, tags and action row are composed from props.
 export default function PostCard({
-  variant = "circle", // "feed" | "circle"
+  variant = "circle",
   avatar,
   name,
   statusDot = false,
@@ -31,130 +27,97 @@ export default function PostCard({
 }) {
   const isFeed = variant === "feed";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const hasMedia = !!(media?.[0]?.url || image);
 
   return (
-    <div
-      className={
-        isFeed
-          ? "bg-white rounded-2xl shadow-sm border border-border-clr overflow-hidden hover:shadow-md transition-shadow"
-          : "bg-gray-50 rounded-xl p-4"
-      }
-    >
+    <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+
       {/* Header */}
-      <div className={isFeed ? "p-3 pb-2 sm:p-4 sm:pb-2" : "mb-3"}>
-        <div className="flex items-start justify-between gap-2">
-          <div
-            className={`flex items-center gap-2.5 min-w-0 ${onAuthorClick ? "active:opacity-60 transition-opacity cursor-pointer" : ""}`}
-            onClick={onAuthorClick}
-          >
-            <div className="relative shrink-0">
-              <img
-                src={avatar}
-                alt={name}
-                loading="lazy"
-                decoding="async"
-                className={
-                  isFeed
-                    ? "w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-md"
-                    : "w-10 h-10 rounded-full object-cover"
-                }
-              />
-              {statusDot && (
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+      <div className="flex items-start justify-between gap-2 px-4 pt-4 pb-3">
+        <div
+          className={`flex items-center gap-3 min-w-0 ${onAuthorClick ? "cursor-pointer active:opacity-60 transition-opacity" : ""}`}
+          onClick={onAuthorClick}
+        >
+          <div className="relative shrink-0">
+            <img
+              src={avatar}
+              alt={name}
+              loading="lazy"
+              decoding="async"
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            {statusDot && (
+              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white" />
+            )}
+          </div>
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              {heading && (
+                onHeadingClick ? (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onHeadingClick(); }}
+                    className="inline-flex items-center gap-0.5 text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full active:opacity-60 transition-opacity"
+                  >
+                    {heading}
+                    <ChevronRight className="w-3 h-3" />
+                  </button>
+                ) : (
+                  <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                    {heading}
+                  </span>
+                )
               )}
+              {badge}
             </div>
+            <h3 className="text-sm font-semibold text-gray-900 truncate leading-tight mt-0.5">
+              {name}
+            </h3>
+            <div className="mt-0.5">{meta}</div>
+          </div>
+        </div>
 
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3
-                  className={
-                    isFeed
-                      ? "text-base sm:text-lg font-bold text-text-sec truncate"
-                      : "font-semibold text-gray-800 text-sm truncate"
-                  }
+        <button
+          onClick={() => setIsMenuOpen(true)}
+          className="p-1.5 -mr-1 shrink-0 hover:bg-gray-100 rounded-full transition-colors"
+        >
+          <MoreVertical className="w-4 h-4 text-gray-400" />
+        </button>
+      </div>
+
+      {/* Body */}
+      {(body || tags.length > 0) && (
+        <div className={`px-4 space-y-2.5 ${hasMedia ? 'pb-2' : 'pb-3'}`}>
+          {body && (
+            <p className="text-sm text-gray-700 leading-relaxed">{body}</p>
+          )}
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-2.5 py-0.5 bg-gray-100 text-gray-500 rounded-full text-xs font-medium"
                 >
-                  {name}
-                </h3>
-                {badge}
-              </div>
-              {meta}
+                  #{tag}
+                </span>
+              ))}
             </div>
-          </div>
-
-          <button
-            onClick={() => setIsMenuOpen(true)}
-            className="p-1 -mr-1 shrink-0 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <MoreVertical className={isFeed ? "w-5 h-5 text-gray-500" : "w-4 h-4 text-gray-400"} />
-          </button>
+          )}
         </div>
-      </div>
+      )}
 
-      {/* Content */}
-      <div className={isFeed ? "px-3 pb-2 sm:px-4" : ""}>
-        {heading && (
-          onHeadingClick ? (
-            <button
-              onClick={onHeadingClick}
-              className="inline-flex items-center gap-0.5 text-base sm:text-lg font-bold text-text-sec mb-1 active:opacity-60 transition-opacity"
-            >
-              {heading}
-              <ChevronRight className="w-4 h-4 text-gray-400" />
-            </button>
-          ) : (
-            <h4 className="text-base sm:text-lg font-bold text-text-sec mb-1">{heading}</h4>
-          )
-        )}
-
-        {body && (
-          <p
-            className={
-              isFeed
-                ? "text-gray-600 text-sm leading-relaxed"
-                : "text-gray-700 text-sm mb-3"
-            }
-          >
-            {body}
-          </p>
-        )}
-
-        {tags.length > 0 && (
-          <div className={`flex flex-wrap gap-2 ${isFeed ? "mt-3" : "mb-3"}`}>
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className={
-                  isFeed
-                    ? "px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium"
-                    : "px-3 py-1 bg-white text-primary rounded-full text-xs font-medium"
-                }
-              >
-                {isFeed ? tag : `#${tag}`}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Media */}
-      {(media?.[0]?.url || image) && (
-        <div className={isFeed ? "px-3 pb-2 sm:px-4" : "mb-3"}>
-          <PostMedia
-            media={media}
-            image={image}
-            alt={heading || name}
-            className={
-              isFeed
-                ? "w-full h-56 sm:h-72 md:h-96 object-cover rounded-xl mt-2"
-                : "w-full h-56 sm:h-72 md:h-96 object-cover rounded-lg"
-            }
-          />
-        </div>
+      {/* Media — edge-to-edge */}
+      {hasMedia && (
+        <PostMedia
+          media={media}
+          image={image}
+          alt={heading || name}
+        />
       )}
 
       {/* Actions */}
       {actions.length > 0 && (
-        <div className={isFeed ? "px-3 py-2.5 sm:p-4 sm:pt-2 border-t border-border-clr mt-2" : ""}>
+        <div className={`border-t border-gray-100 px-4 py-2.5 ${hasMedia ? 'mt-0' : ''}`}>
           <div className={actionsWrapperClassName}>
             {actions.map(({ key, icon: Icon, label, onClick, className, iconClassName }) => (
               <button key={key} onClick={onClick} className={className}>
@@ -174,10 +137,7 @@ export default function PostCard({
       >
         {isAuthor && (
           <button
-            onClick={() => {
-              setIsMenuOpen(false);
-              onEdit?.();
-            }}
+            onClick={() => { setIsMenuOpen(false); onEdit?.(); }}
             className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
             <Pencil className="w-5 h-5 text-gray-500" />
@@ -185,10 +145,7 @@ export default function PostCard({
           </button>
         )}
         <button
-          onClick={() => {
-            setIsMenuOpen(false);
-            onShare?.();
-          }}
+          onClick={() => { setIsMenuOpen(false); onShare?.(); }}
           className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors ${isAuthor ? "border-t border-gray-100" : ""}`}
         >
           <Share2 className="w-5 h-5 text-gray-500" />
@@ -196,10 +153,7 @@ export default function PostCard({
         </button>
         {isAuthor && (
           <button
-            onClick={() => {
-              setIsMenuOpen(false);
-              onDelete?.();
-            }}
+            onClick={() => { setIsMenuOpen(false); onDelete?.(); }}
             className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
           >
             <Trash2 className="w-5 h-5" />
@@ -208,10 +162,7 @@ export default function PostCard({
         )}
         {!isAuthor && (
           <button
-            onClick={() => {
-              setIsMenuOpen(false);
-              onReport?.();
-            }}
+            onClick={() => { setIsMenuOpen(false); onReport?.(); }}
             className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
           >
             <Flag className="w-5 h-5" />
