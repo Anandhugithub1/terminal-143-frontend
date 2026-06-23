@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Compass, MapPin, PenLine, Plus, Rss } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
@@ -85,14 +85,9 @@ export default function CirclesHomePage() {
       ? myCircles[0]?.circleId
       : null;
   const { data: firstCirclePostsData } = usePosts(firstCircleId);
-  const firstCirclePosts = useMemo(() => {
-    const posts = (firstCirclePostsData?.items || []).filter((p) => p.status !== "deleted");
-    for (let i = posts.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [posts[i], posts[j]] = [posts[j], posts[i]];
-    }
-    return posts.slice(0, 5);
-  }, [firstCirclePostsData]);
+  const firstCirclePosts = (firstCirclePostsData?.items || [])
+    .filter((p) => p.status !== "deleted")
+    .slice(0, 5);
 
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;
