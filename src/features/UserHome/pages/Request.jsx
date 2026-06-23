@@ -87,18 +87,21 @@ const confirmAction = () => {
   const renderContent = () => {
     if (isLoading) {
       return (
-        <div className="p-4 pt-6 space-y-4">
-          <h1 className="text-2xl font-bold">Loading Requests...</h1>
+        <div className="flex-1 px-4 pt-5 space-y-3">
+          <div className="h-7 w-40 bg-gray-200 rounded-full animate-pulse" />
           {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="rounded-xl shadow p-4 bg-gray-50 flex gap-4 items-center"
-            >
-              <Skeleton circle height={64} width={64} />
-              <div className="flex-1 space-y-2">
-                <Skeleton height={20} width="40%" />
-                <Skeleton height={16} width="80%" />
-                <Skeleton height={16} width="60%" />
+            <div key={i} className="bg-white rounded-2xl shadow-sm p-4 animate-pulse">
+              <div className="flex gap-4">
+                <div className="w-20 h-20 rounded-2xl bg-gray-200 flex-shrink-0" />
+                <div className="flex-1 min-w-0 space-y-2.5 pt-1">
+                  <div className="h-4 bg-gray-200 rounded-full w-2/5" />
+                  <div className="h-3 bg-gray-100 rounded-full w-full" />
+                  <div className="h-3 bg-gray-100 rounded-full w-3/4" />
+                </div>
+              </div>
+              <div className="flex gap-2 mt-3">
+                <div className="h-9 bg-gray-100 rounded-full flex-1" />
+                <div className="h-9 bg-primary/20 rounded-full flex-1" />
               </div>
             </div>
           ))}
@@ -125,34 +128,29 @@ const confirmAction = () => {
     }
 
     return (
-      <div className="flex-1 bg-white">
-        <div className="max-w-md w-full mx-auto px-4 pt-4">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-800">
-            Your Match Requests
-          </h1>
+      <div className="flex-1">
+        <div className="max-w-md w-full mx-auto px-4 pt-5 pb-4">
+          <div className="flex items-center gap-2 mb-4">
+            <h1 className="text-xl font-bold text-gray-900">Match Requests</h1>
+            <span className="text-xs font-semibold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
+              {requests.length}
+            </span>
+          </div>
 
-          <div className="divide-y divide-gray-200">
+          <div className="space-y-3">
             {requests.map(({ request }, idx) => {
               if (!request?.senderUsername) return null;
-
-              const handleClick = () => {
-                navigate(
-                  `/profile/${encodeURIComponent(request.senderUsername)}`
-                );
-              };
 
               return (
                 <div
                   key={`${request.senderUsername}-${request.sentAt || idx}`}
-                  onClick={handleClick}
-                  className="cursor-pointer hover:bg-gray-50 transition"
+                  onClick={() => navigate(`/profile/${encodeURIComponent(request.senderUsername)}`)}
+                  className="cursor-pointer active:scale-[0.99] transition-transform"
                 >
                   <RequestItem
                     request={request}
                     openModal={openModal}
-                    isProcessing={processingRequests.has(
-                      request.senderUsername
-                    )}
+                    isProcessing={processingRequests.has(request.senderUsername)}
                   />
                 </div>
               );

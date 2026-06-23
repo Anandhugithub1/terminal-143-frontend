@@ -1,139 +1,87 @@
-// src/pages/components/Actions/RequestItem.jsx
 import React from "react";
 import PropTypes from "prop-types";
-import { Coffee, Mountain } from "lucide-react";
 import { formatDate } from "../../../../Utlis/utlis";
 
-
-const ICONS = {
-  Coffee: <Coffee size={14} className="text-gray-700" />,
-  Adventures: <Mountain size={14} className="text-gray-700" />,
-};
-
 const RequestItem = ({ request, openModal, isProcessing }) => {
-  const { senderPhoto, senderName, age, bio, sentAt, status, interests, tags } =
-    request;
+  const { senderPhoto, senderName, age, bio, sentAt, status, interests, tags } = request;
 
-  const chips = Array.isArray(interests)
-    ? interests
-    : Array.isArray(tags)
-    ? tags
-    : [];
+  const chips = Array.isArray(interests) ? interests : Array.isArray(tags) ? tags : [];
 
   return (
-    <div className="py-5 px-0">
-      <div className="flex items-start gap-4 px-4">
-        {/* Avatar */}
-        <div className="flex-shrink-0">
-          {senderPhoto ? (
-            <img
-              src={senderPhoto}
-              alt={senderName}
-              className="w-16 h-16 rounded-full object-cover border border-gray-200"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-gray-200" />
+    <div className="bg-white rounded-2xl shadow-sm p-4 flex gap-4">
+      {/* Avatar */}
+      <div className="flex-shrink-0">
+        {senderPhoto ? (
+          <img
+            src={senderPhoto}
+            alt={senderName}
+            className="w-20 h-20 rounded-2xl object-cover"
+          />
+        ) : (
+          <div className="w-20 h-20 rounded-2xl bg-gray-100" />
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h3 className="text-base font-bold text-gray-900 truncate">
+              {senderName}{age ? <span className="font-normal text-gray-500">, {age}</span> : null}
+            </h3>
+            {sentAt && (
+              <p className="text-xs text-gray-400 mt-0.5">{formatDate(sentAt)}</p>
+            )}
+          </div>
+          {status && (
+            <span className="text-xs font-semibold text-primary capitalize bg-primary/10 px-2 py-0.5 rounded-full shrink-0">
+              {status}
+            </span>
           )}
         </div>
 
-        {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-3">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-semibold text-gray-900 truncate">
-                  {senderName}
-                </h3>
-                {age ? (
-                  <span className="text-sm text-gray-500">, {age}</span>
-                ) : null}
-              </div>
+        {bio && (
+          <p className="text-sm text-gray-500 mt-1.5 line-clamp-2 leading-snug">{bio}</p>
+        )}
 
-              <p className="text-sm text-gray-600 mt-2 line-clamp-3">
-                {bio || "No bio available."}
-              </p>
-
-              {chips.length > 0 && (
-                <div className="flex items-center gap-2 mt-3 flex-wrap">
-                  {chips.slice(0, 2).map((t, i) => (
-                    <span
-                      key={`${t}-${i}`}
-                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gray-100 text-gray-700 border border-gray-100"
-                    >
-                      <span className="w-4 h-4 inline-flex items-center justify-center">
-                        {ICONS[t] || null}
-                      </span>
-                      <span className="truncate">{t}</span>
-                    </span>
-                  ))}
-                  {chips.length > 2 && (
-                    <span className="text-sm text-gray-500 px-2 py-1 rounded-md bg-gray-100 border border-gray-100">
-                      +{chips.length - 2}
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Right column */}
-            <div className="text-right min-w-[72px]">
-              {status && (
-                <div className="text-xs text-blue-500 font-medium capitalize">
-                  {status}
-                </div>
-              )}
-              {sentAt && (
-                <div className="text-xs text-gray-400 mt-2 whitespace-nowrap">
-                  {formatDate(sentAt)}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="mt-4">
-            <div className="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:gap-4">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openModal(request, "reject");
-                }}
-                disabled={isProcessing}
-                className={`w-full rounded-lg px-5 py-2 text-sm font-medium transition
-                  ${
-                    isProcessing
-                      ? "bg-white text-gray-400 border border-gray-200 cursor-wait opacity-60"
-                      : "bg-white text-gray-800 border border-gray-400 hover:shadow-sm"
-                  }
-                `}
-                aria-label={`Reject ${senderName}`}
+        {chips.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-2">
+            {chips.slice(0, 3).map((t, i) => (
+              <span
+                key={`${t}-${i}`}
+                className="px-2.5 py-0.5 rounded-full text-xs bg-gray-100 text-gray-600 font-medium"
               >
-                {isProcessing ? "Processing..." : "Reject"}
-              </button>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openModal(request, "accept");
-                }}
-                disabled={isProcessing}
-                className={`w-full rounded-lg px-6 py-2 text-sm font-semibold transition shadow-md
-                  ${
-                    isProcessing
-                      ? "bg-primary text-white cursor-wait opacity-80"
-                      : "bg-primary text-white hover:bg-pink-600"
-                  }
-                `}
-                aria-label={`Accept ${senderName}`}
-              >
-                {isProcessing ? "Processing..." : "Accept"}
-              </button>
-            </div>
+                {t}
+              </span>
+            ))}
+            {chips.length > 3 && (
+              <span className="px-2.5 py-0.5 rounded-full text-xs bg-gray-100 text-gray-400">
+                +{chips.length - 3}
+              </span>
+            )}
           </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex gap-2 mt-3">
+          <button
+            onClick={(e) => { e.stopPropagation(); openModal(request, "reject"); }}
+            disabled={isProcessing}
+            className="flex-1 rounded-full py-2 text-sm font-medium border border-gray-300 text-gray-700 bg-white active:bg-gray-50 transition disabled:opacity-50"
+            aria-label={`Reject ${senderName}`}
+          >
+            {isProcessing ? "…" : "Reject"}
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); openModal(request, "accept"); }}
+            disabled={isProcessing}
+            className="flex-1 rounded-full py-2 text-sm font-semibold bg-primary text-white active:bg-pink-600 transition shadow-sm disabled:opacity-60"
+            aria-label={`Accept ${senderName}`}
+          >
+            {isProcessing ? "…" : "Accept"}
+          </button>
         </div>
       </div>
-
-      <div className="mt-5 border-t border-gray-200" />
     </div>
   );
 };
