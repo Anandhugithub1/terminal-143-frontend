@@ -190,11 +190,7 @@ export default function CircleDetailsPage() {
           <div className="flex items-center gap-4 text-white/80 text-sm">
             <div className="flex items-center gap-1.5">
               <Users className="w-4 h-4" />
-              <span>{data.members ?? 0} members</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span>{data.onlineMembers ?? 0} online</span>
+              <span>{data.memberCount ?? 0} members</span>
             </div>
           </div>
         </div>
@@ -233,7 +229,7 @@ export default function CircleDetailsPage() {
         </div>
 
         {/* About */}
-        <div className="bg-white rounded-2xl shadow-sm p-4">
+        <div className="bg-gray-100 rounded-2xl shadow-sm p-4">
           <h2 className="text-sm font-bold text-gray-800 mb-2">About</h2>
           <p className="text-gray-600 text-sm leading-relaxed mb-3">{data.description}</p>
           {data.tags?.length > 0 && (
