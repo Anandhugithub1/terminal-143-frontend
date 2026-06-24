@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ImageOff, Volume2, VolumeX } from "lucide-react";
+import { ImageOff, RefreshCw, Volume2, VolumeX } from "lucide-react";
 
 // Renders the first media item of a post. Images are lazy-loaded; videos
 // behave like Instagram/Reels:
@@ -21,6 +21,7 @@ export default function PostMedia({ media = [], image, alt, className }) {
   const [isMuted, setIsMuted] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
   const [videoAspectRatio, setVideoAspectRatio] = useState(16 / 9);
   const [imageAspectRatio, setImageAspectRatio] = useState(null);
 
@@ -68,6 +69,12 @@ export default function PostMedia({ media = [], image, alt, className }) {
     }
   }, [isInView, isVideo]);
 
+  const handleRetry = () => {
+    setHasError(false);
+    setIsLoaded(false);
+    setRetryKey((k) => k + 1);
+  };
+
   if (!url) return null;
 
   if (isVideo) {
@@ -85,6 +92,7 @@ export default function PostMedia({ media = [], image, alt, className }) {
           <>
             {/* Blurred backdrop — same src, browser reuses the same request */}
             <video
+              key={`backdrop-${retryKey}`}
               src={url}
               className="absolute inset-0 w-full h-full object-cover opacity-60"
               style={{ filter: 'blur(24px)', transform: 'scale(1.15)' }}
@@ -97,6 +105,7 @@ export default function PostMedia({ media = [], image, alt, className }) {
             />
             {/* Main video */}
             <video
+              key={`main-${retryKey}`}
               ref={videoRef}
               src={url}
               className="relative w-full h-full object-contain"
@@ -132,6 +141,14 @@ export default function PostMedia({ media = [], image, alt, className }) {
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/60">
             <ImageOff className="w-6 h-6" />
             <span className="text-xs">Video unavailable</span>
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); handleRetry(); }}
+              className="flex items-center gap-1 text-xs text-white/80 hover:text-white transition-colors"
+            >
+              <RefreshCw className="w-3 h-3" />
+              Retry
+            </button>
           </div>
         )}
 
