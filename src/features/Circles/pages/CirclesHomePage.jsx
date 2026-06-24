@@ -22,6 +22,7 @@ import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { buildPostActions } from "../utils/postActions";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { shareLink } from "../utils/share";
 import { PostCardSkeleton, CircleAvatarSkeleton } from "../components/common/Skeletons";
 import { queryKeys } from "../queries/queryKeys";
 
@@ -114,6 +115,15 @@ export default function CirclesHomePage() {
       queryClient.invalidateQueries({ queryKey: queryKeys.posts(postTargetCircle.circleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.feed });
     }
+  };
+
+  const handleSharePost = (post, circleId) => {
+    const url = `${window.location.origin}/circles/${circleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`;
+    shareLink({
+      title: post.authorName ? `${post.authorName}'s post` : "Circle post",
+      text: post.content ? post.content.slice(0, 100) : "",
+      url,
+    });
   };
 
   return (
@@ -337,6 +347,7 @@ export default function CirclesHomePage() {
                       media={post.media}
                       tags={post.tags || []}
                       onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
+                      onShare={() => handleSharePost(post, selectedCircleId)}
                       actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                       actions={buildPostActions({
                         includeMatchActions: !isAuthor,
@@ -411,6 +422,7 @@ export default function CirclesHomePage() {
                               media={post.media}
                               tags={post.tags || []}
                               onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
+                              onShare={() => handleSharePost(post, firstCircleId)}
                               actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                               actions={buildPostActions({
                                 includeMatchActions: !isAuthor,
@@ -459,6 +471,7 @@ export default function CirclesHomePage() {
                         heading={post.circleName}
                         onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
                         onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
+                        onShare={post.circleId ? () => handleSharePost(post, post.circleId) : undefined}
                         media={post.media}
                         body={post.content}
                         tags={post.tags || []}
