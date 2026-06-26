@@ -20,6 +20,7 @@ import { useCircle } from "../hooks/useCircles";
 import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
+import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import { queryKeys } from "../queries/queryKeys";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
@@ -46,6 +47,7 @@ export default function CircleDetailsPage() {
   const { data: myProfile } = useMyProfile();
   const updatePostMutation = useUpdatePost(circleId);
   const deletePostMutation = useDeletePost(circleId);
+  const { send: sendMatchRequest } = useSendMatchRequest();
 
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
 
@@ -87,12 +89,19 @@ export default function CircleDetailsPage() {
     }
   };
 
-  const toggleLike = (postId) => {
+  const toggleLike = (post) => {
     const newLiked = new Set(likedPosts);
-    if (newLiked.has(postId)) {
-      newLiked.delete(postId);
+    if (newLiked.has(post.postId)) {
+      newLiked.delete(post.postId);
     } else {
-      newLiked.add(postId);
+      newLiked.add(post.postId);
+      if (post.authorId) {
+        sendMatchRequest(post.authorId, {
+          postId: post.postId,
+          circleId,
+          createdAtEpoch: post.createdAtEpoch,
+        });
+      }
     }
     setLikedPosts(newLiked);
   };
@@ -370,7 +379,7 @@ export default function CircleDetailsPage() {
                   actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                   actions={buildPostActions({
                     isLiked: likedPosts.has(post.postId),
-                    onToggleLike: () => toggleLike(post.postId),
+                    onToggleLike: () => toggleLike(post),
                     onComment: () => setCommentPost(post),
                     includeMatchActions: !isAuthor,
                   })}

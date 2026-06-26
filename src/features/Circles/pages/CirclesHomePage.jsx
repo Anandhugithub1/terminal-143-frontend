@@ -354,6 +354,9 @@ export default function CirclesHomePage() {
                         onComment: () => setCommentPost(post),
                         onToggleLike: () =>
                           sendMatchRequest(post.authorId, {
+                            postId: post.postId,
+                            circleId: selectedCircleId,
+                            createdAtEpoch: post.createdAtEpoch,
                             onSuccess: () => toast.success("Match request sent"),
                           }),
                       })}
@@ -429,6 +432,9 @@ export default function CirclesHomePage() {
                                 onComment: () => setCommentPost(post),
                                 onToggleLike: () =>
                                   sendMatchRequest(post.authorId, {
+                                    postId: post.postId,
+                                    circleId: firstCircleId,
+                                    createdAtEpoch: post.createdAtEpoch,
                                     onSuccess: () => toast.success("Match request sent"),
                                   }),
                               })}
@@ -481,6 +487,9 @@ export default function CirclesHomePage() {
                           onComment: () => setCommentPost(post),
                           onToggleLike: () =>
                             sendMatchRequest(post.authorId, {
+                              postId: post.postId,
+                              circleId: post.circleId,
+                              createdAtEpoch: post.createdAtEpoch,
                               onSuccess: () => toast.success("Match request sent"),
                             }),
                           onPass: () => markPostSeen(post.postId, { immediate: isLastPost }),

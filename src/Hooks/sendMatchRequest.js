@@ -3,13 +3,19 @@ import axios from "axios"
 
 export const useSendMatchRequest = () => {
   const mutation = useMutation({
-    mutationFn: async ({ recipientId }) => {
+    mutationFn: async ({ recipientId, postId, circleId, createdAtEpoch }) => {
+      const body = { recipientId }
+      if (postId && circleId && createdAtEpoch) {
+        body.postId = postId
+        body.circleId = circleId
+        body.createdAtEpoch = createdAtEpoch
+        body.field = "match"
+      }
       const res = await axios.post(
         "https://api.passormatch.com/match/v0.2/request",
-        { recipientId },
+        body,
         { withCredentials: true }
       )
-
       return res.data
     },
     onError: (err) => {
@@ -26,8 +32,8 @@ export const useSendMatchRequest = () => {
         console.warn("[hook] Aborting; recipientId missing")
         return
       }
-
-      mutation.mutate({ recipientId }, options)
+      const { postId, circleId, createdAtEpoch, ...mutationOptions } = options
+      mutation.mutate({ recipientId, postId, circleId, createdAtEpoch }, mutationOptions)
     },
     isSending: mutation.isLoading,
     error: mutation.error
