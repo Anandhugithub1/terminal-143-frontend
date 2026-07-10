@@ -23,7 +23,7 @@ export default function ChatConversationPage() {
   const match = useMemo(() => matches.find((m) => m.PK === matchId), [matches, matchId])
 
   const { data: history = [], isLoading, isError } = useConversationHistory(matchId)
-  const { send, isConnected } = useSocket()
+  const { send } = useSocket()
   const { previews, markRead, recordSentMessage } = useConversationPreviews()
 
   // Live messages received/sent this session are kept separate from the
@@ -92,12 +92,12 @@ export default function ChatConversationPage() {
       <PageHeader
         title={match?.name || 'Chat'}
         action={
-          <span className="flex items-center gap-1.5 text-xs text-gray-400">
-            <span
-              className={`w-2 h-2 rounded-full ${online ? 'bg-green-500' : 'bg-gray-300'}`}
-            />
-            {online ? 'Online' : isConnected ? 'Offline' : 'Connecting…'}
-          </span>
+          online && (
+            <span className="flex items-center gap-1.5 text-xs text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-green-500" />
+              Online
+            </span>
+          )
         }
       />
 
@@ -114,16 +114,18 @@ export default function ChatConversationPage() {
             <p className="text-gray-400 text-xs mt-1">Please check your connection and try again.</p>
           </div>
         ) : messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-center py-16">
+          <div className="h-full flex flex-col items-center justify-center text-center px-6 py-16">
             <img
               src={match?.photos?.[0]?.url}
               alt={match?.name}
-              className="w-16 h-16 rounded-full object-cover mb-3"
+              className="w-24 h-24 rounded-full object-cover mb-4 border-4 border-white shadow-md"
             />
-            <p className="text-gray-800 font-semibold text-sm">
-              You matched with {match?.name || 'each other'}
+            <p className="text-gray-900 font-semibold text-base mb-2">
+              {match?.name || 'Your match'}
             </p>
-            <p className="text-gray-400 text-xs mt-1">Say hi and break the ice 👋</p>
+            <p className="text-lg font-bold text-gray-900 leading-snug">
+              Say hi and break the <span className="text-primary">ice</span> 👋
+            </p>
           </div>
         ) : (
           messages.map((msg) => (
@@ -159,13 +161,13 @@ export default function ChatConversationPage() {
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 bg-input rounded-full px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-focus"
+          placeholder="Type your message"
+          className="flex-1 bg-input rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-focus"
         />
         <button
           type="submit"
           disabled={!draft.trim()}
-          className="w-10 h-10 shrink-0 flex items-center justify-center rounded-full bg-primary text-white disabled:opacity-40 active:scale-95 transition-transform"
+          className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-gray-900 text-white disabled:opacity-40 active:scale-95 transition-transform"
           aria-label="Send message"
         >
           <Send className="w-4 h-4" />
