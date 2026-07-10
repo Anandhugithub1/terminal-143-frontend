@@ -8,6 +8,11 @@ import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import { getCurrentUsername } from '../../../shared/utils/getCurrentUsername'
 
+// Sends fired within this window of the previous one get folded into the
+// same outgoing message/bubble instead of triggering a separate socket
+// send — avoids spamming chat-service when someone fires off a quick burst.
+const SEND_BATCH_WINDOW_MS = 1800
+
 function formatMessageTime(iso) {
   if (!iso) return ''
   return new Date(iso).toLocaleTimeString(undefined, {
@@ -33,11 +38,22 @@ export default function ChatConversationPage() {
   const scrollRef = useRef(null)
   const hasScrolledRef = useRef(false)
 
+  // Sends that land inside SEND_BATCH_WINDOW_MS of each other are folded
+  // into one pending bubble/socket send instead of firing one per submit.
+  const pendingRef = useRef(null) // { id, lines: string[] }
+  const batchTimerRef = useRef(null)
+  const flushPendingRef = useRef(() => {})
+
   const messages = useMemo(() => [...history, ...liveMessages], [history, liveMessages])
 
   useEffect(() => {
     setLiveMessages([])
     hasScrolledRef.current = false
+    // Switching conversations (or leaving the page) should flush whatever
+    // was pending for the *previous* matchId, not silently drop it. The ref
+    // indirection ensures this always calls the closure for the matchId
+    // that was active when the batch was queued, not the incoming one.
+    return () => flushPendingRef.current()
   }, [matchId])
 
   useEffect(() => {
@@ -64,27 +80,48 @@ export default function ChatConversationPage() {
 
   const online = !!previews[matchId]?.online
 
-  function handleSend(e) {
-    e.preventDefault()
-    const text = draft.trim()
-    if (!text) return
-
-    const message = {
-      id: `${Date.now()}-${Math.random()}`,
-      text,
-      sentAt: new Date().toISOString(),
-      mine: true,
+  // Flush the pending batch: send whatever's accumulated as one socket
+  // message and append it as one bubble. Captures the matchId it was
+  // queued under via closure, so a flush triggered by switching
+  // conversations still targets the right recipient.
+  const flushPending = () => {
+    const pending = pendingRef.current
+    pendingRef.current = null
+    if (batchTimerRef.current) {
+      clearTimeout(batchTimerRef.current)
+      batchTimerRef.current = null
     }
+    if (!pending) return
 
+    const text = pending.lines.join('\n')
     send({
       action: 'sendMessage',
       senderId: getCurrentUsername(),
       recipientId: matchId,
       content: text,
     })
-    setLiveMessages((prev) => [...prev, message])
+    setLiveMessages((prev) => [
+      ...prev,
+      { id: pending.id, text, sentAt: new Date().toISOString(), mine: true },
+    ])
     recordSentMessage(matchId, text)
+  }
+  flushPendingRef.current = flushPending
+
+  function handleSend(e) {
+    e.preventDefault()
+    const text = draft.trim()
+    if (!text) return
     setDraft('')
+
+    if (!pendingRef.current) {
+      pendingRef.current = { id: `${Date.now()}-${Math.random()}`, lines: [text] }
+    } else {
+      pendingRef.current.lines.push(text)
+    }
+
+    if (batchTimerRef.current) clearTimeout(batchTimerRef.current)
+    batchTimerRef.current = setTimeout(flushPending, SEND_BATCH_WINDOW_MS)
   }
 
   return (
