@@ -9,6 +9,8 @@ const WS_URL = "wss://ws.passormatch.com/chat";
 const HEARTBEAT_INTERVAL_MS = 30000;
 const MAX_RECONNECT_DELAY_MS = 30000;
 const BASE_RECONNECT_DELAY_MS = 1000;
+// Backgrounding/tab-switch: close after this long hidden, reconnect on return.
+const HIDDEN_CLOSE_DELAY_MS = 2 * 60 * 1000;
 
 export const SocketState = {
   IDLE: "idle",
@@ -30,6 +32,14 @@ class SocketManager {
     this.explicitClose = false;
     this.refCount = 0;
     this.connecting = false;
+
+    // True while closed due to backgrounding/tab-switch — distinct from a
+    // real release()/closeSession() close, so visibility returning knows to
+    // reconnect even though refCount was never touched.
+    this.suspended = false;
+    this.hiddenTimer = null;
+
+    this._attachLifecycleListeners();
   }
 
   acquire() {
@@ -116,6 +126,68 @@ class SocketManager {
     this.explicitClose = true;
     this._teardown();
     this._setState(SocketState.IDLE);
+  }
+
+  // Hard close for logout / token expiry — unlike disconnect(), this ignores
+  // refCount entirely (components may still hold the socket "acquired", but
+  // the session is over) and stays closed until a fresh acquire() call.
+  closeSession() {
+    this.refCount = 0;
+    this._clearHiddenTimer();
+    this.suspended = false;
+    this.explicitClose = true;
+    this._teardown();
+    this._setState(SocketState.IDLE);
+  }
+
+  // Backgrounding/tab-switch close: tears the socket down but — unlike
+  // disconnect() — leaves refCount untouched and remembers to reconnect
+  // once the tab is visible again, without needing a new acquire() call.
+  _suspend() {
+    if (!this.ws || this.refCount === 0) return;
+    this.suspended = true;
+    this.explicitClose = true;
+    this._teardown();
+    this._setState(SocketState.CLOSED);
+  }
+
+  _resume() {
+    this._clearHiddenTimer();
+    if (!this.suspended) return;
+    this.suspended = false;
+    if (this.refCount === 0) return;
+    this.explicitClose = false;
+    this.reconnectAttempts = 0;
+    this.connect();
+  }
+
+  _clearHiddenTimer() {
+    if (this.hiddenTimer) {
+      clearTimeout(this.hiddenTimer);
+      this.hiddenTimer = null;
+    }
+  }
+
+  _attachLifecycleListeners() {
+    if (typeof document === "undefined") return;
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        this._clearHiddenTimer();
+        this.hiddenTimer = setTimeout(() => this._suspend(), HIDDEN_CLOSE_DELAY_MS);
+      } else {
+        this._resume();
+      }
+    });
+
+    // Best-effort — browsers don't guarantee this fires in time to complete
+    // an async send, but it costs nothing to try. Server-side cleanup for
+    // the case it doesn't land is handled independently (connection TTL).
+    window.addEventListener("pagehide", () => {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.close();
+      }
+    });
   }
 
   send(payload) {

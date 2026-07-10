@@ -16,6 +16,7 @@ import { PrimaryButton, SecondaryButton } from '../../shared/Button';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
 import { signOut } from '../../features/Auth/authApi';
+import { socketManager } from '../../shared/socket/socketManager';
 
 const SettingsPage = () => {
   const { t } = useTranslation('settings');
@@ -26,6 +27,7 @@ const SettingsPage = () => {
   const logoutMutation = useMutation({
     mutationFn: () => signOut('signout'),
     onSuccess: () => {
+      socketManager.closeSession();
       localStorage.clear();
       sessionStorage.clear();
       navigate('/login');
