@@ -2,8 +2,9 @@
 // Singleton manager for the chat-service WebSocket connection.
 // One physical socket is shared across the whole app; components subscribe
 // via useSocket() rather than opening their own connection.
+import { fetchConnectTicket } from "./ticketApi";
 
-const WS_URL = "wss://ws.passormatch.com";
+const WS_URL = "wss://ws.passormatch.com/chat";
 const HEARTBEAT_INTERVAL_MS = 30000;
 const MAX_RECONNECT_DELAY_MS = 30000;
 const BASE_RECONNECT_DELAY_MS = 1000;
@@ -27,6 +28,7 @@ class SocketManager {
     this.reconnectAttempts = 0;
     this.explicitClose = false;
     this.refCount = 0;
+    this.connecting = false;
   }
 
   acquire() {
@@ -46,17 +48,39 @@ class SocketManager {
     }
   }
 
-  connect() {
+  async connect() {
     if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
       return;
     }
+    if (this.connecting) return;
+    this.connecting = true;
 
     this._setState(SocketState.CONNECTING);
-    // Auth cookie (Domain=.passormatch.com) rides along automatically on the
-    // upgrade request — no token in the URL needed.
-    this.ws = new WebSocket(WS_URL);
+
+    // Tickets are single-use and expire in ~60s — fetch a fresh one for
+    // every connection attempt, including reconnects. The auth cookie
+    // rides along on this request; the ticket itself goes on the WS URL
+    // since the upgrade request can't carry the cookie cross-site.
+    let ticket;
+    try {
+      ticket = await fetchConnectTicket();
+    } catch {
+      this.connecting = false;
+      this._setState(SocketState.CLOSED);
+      if (!this.explicitClose) this._scheduleReconnect();
+      return;
+    }
+
+    // Another acquire()/disconnect() may have raced us while awaiting the ticket.
+    if (this.explicitClose || this.refCount === 0) {
+      this.connecting = false;
+      return;
+    }
+
+    this.ws = new WebSocket(`${WS_URL}?ticket=${encodeURIComponent(ticket)}`);
 
     this.ws.onopen = () => {
+      this.connecting = false;
       this.reconnectAttempts = 0;
       this._setState(SocketState.OPEN);
       this._startHeartbeat();
@@ -74,6 +98,7 @@ class SocketManager {
     };
 
     this.ws.onclose = () => {
+      this.connecting = false;
       this._stopHeartbeat();
       this._setState(SocketState.CLOSED);
       if (!this.explicitClose) {
