@@ -1,4 +1,4 @@
-// 📁 src/shared/socket/socketManager.js
+//  src/shared/socket/socketManager.js
 // Singleton manager for the chat-service WebSocket connection.
 // One physical socket is shared across the whole app; components subscribe
 // via useSocket() rather than opening their own connection.

@@ -62,14 +62,14 @@ const BottomNav = () => {
 
   return (
     <nav className="fixed bottom-0 inset-x-0 bg-white/90 backdrop-blur-sm border-t border-gray-100 py-3 shadow-lg z-50">
-      <div className="flex justify-around items-center">
+      <div className="flex justify-around items-center px-1">
         {tabs.map(tab => (
           <NavLink
             key={tab.name}
             to={tab.path}
             end={tab.path === '/profile'}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 transition-colors duration-200 ${
+              `flex flex-col items-center gap-1 min-w-0 px-0.5 transition-colors duration-200 ${
                 isActive
                   ? 'text-text-pr'
                   : 'text-gray-500 hover:text-gray-700'
@@ -82,7 +82,7 @@ const BottomNav = () => {
                 <div className="transition-transform duration-200 ease-in-out">
                   {tab.icon({ isActive })}
                 </div>
-                <span className="text-xs font-medium">{tab.name}</span>
+                <span className="text-[10px] leading-tight font-medium whitespace-nowrap">{tab.name}</span>
                 {isActive && (
                   <div className="w-4 h-1 bg-primary rounded-full mt-1 animate-bounce-indicator" />
                 )}
