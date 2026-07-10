@@ -3,6 +3,7 @@
 // One physical socket is shared across the whole app; components subscribe
 // via useSocket() rather than opening their own connection.
 import { fetchConnectTicket } from "./ticketApi";
+import { getCurrentUsername } from "../utils/getCurrentUsername";
 
 const WS_URL = "wss://ws.passormatch.com/chat";
 const HEARTBEAT_INTERVAL_MS = 30000;
@@ -160,8 +161,10 @@ class SocketManager {
 
   _startHeartbeat() {
     this._stopHeartbeat();
+    // userId rides along so chat-service can re-broadcast presence on every
+    // heartbeat — see presenceService.js on the backend.
     this.heartbeatTimer = setInterval(() => {
-      this.send({ action: "heartbeat" });
+      this.send({ action: "heartbeat", userId: getCurrentUsername() });
     }, HEARTBEAT_INTERVAL_MS);
   }
 

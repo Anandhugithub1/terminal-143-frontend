@@ -4,6 +4,15 @@ import { normalizeIncomingMessage } from '../api'
 
 const STORAGE_KEY = 'chat.conversationPreviews'
 
+// chat-service has no $disconnect signal reliable enough to broadcast
+// "offline" (API Gateway doesn't resend connect-time query params to it),
+// so presence is re-broadcast as "online" on every heartbeat (~30s) instead.
+// A match is considered online if we've heard from them more recently than
+// this window; STALE_CHECK_INTERVAL_MS re-evaluates that on a timer so the
+// UI flips to offline on its own once the window elapses, without a new event.
+const PRESENCE_STALE_MS = 90 * 1000
+const STALE_CHECK_INTERVAL_MS = 15 * 1000
+
 function loadPreviews() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}
@@ -39,15 +48,39 @@ function updateMatch(matchId, patch) {
   }))
 }
 
+function isOnline(preview) {
+  return !!preview?.lastSeenAt && Date.now() - preview.lastSeenAt < PRESENCE_STALE_MS
+}
+
+// previews.online is derived at read time (never trust a stored boolean —
+// it goes stale the moment heartbeats stop), so every subscriber sees a
+// consistent, non-stale view instead of each recomputing it separately.
+function withDerivedOnline(rawPreviews) {
+  const result = {}
+  for (const [matchId, preview] of Object.entries(rawPreviews)) {
+    result[matchId] = { ...preview, online: isOnline(preview) }
+  }
+  return result
+}
+
 // Tracks last-message/unread-count/online state per matchId, keyed off
 // socket events, and persists it locally since the backend doesn't yet
 // expose a conversations-list endpoint with this data baked in.
 export function useConversationPreviews() {
-  const [state, setState] = useState(previews)
+  const [state, setState] = useState(() => withDerivedOnline(previews))
 
   useEffect(() => {
-    subscribers.add(setState)
-    return () => subscribers.delete(setState)
+    const onRawChange = (rawPreviews) => setState(withDerivedOnline(rawPreviews))
+    subscribers.add(onRawChange)
+
+    // Re-derive on a timer too, independent of any event, so a match flips
+    // to offline once PRESENCE_STALE_MS elapses even if nothing else changes.
+    const interval = setInterval(() => setState(withDerivedOnline(previews)), STALE_CHECK_INTERVAL_MS)
+
+    return () => {
+      subscribers.delete(onRawChange)
+      clearInterval(interval)
+    }
   }, [])
 
   useSocketEvent('MESSAGE', (payload) => {
@@ -61,10 +94,10 @@ export function useConversationPreviews() {
     }))
   })
 
-  useSocketEvent('presence', (payload) => {
-    const matchId = payload.matchId || payload.userId
-    if (!matchId) return
-    updateMatch(matchId, () => ({ online: !!payload.online }))
+  useSocketEvent('PRESENCE', (payload) => {
+    const matchId = payload.userId
+    if (!matchId || !payload.online) return
+    updateMatch(matchId, () => ({ lastSeenAt: Date.now() }))
   })
 
   const markRead = useCallback((matchId) => {
