@@ -50,7 +50,7 @@ export function useConversationPreviews() {
     return () => subscribers.delete(setState)
   }, [])
 
-  useSocketEvent('newMessage', (payload) => {
+  useSocketEvent('MESSAGE', (payload) => {
     const msg = normalizeIncomingMessage(payload)
     if (!msg) return
     updateMatch(msg.matchId, (prev) => ({

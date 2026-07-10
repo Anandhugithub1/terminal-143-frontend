@@ -7,6 +7,7 @@ import { useConversationHistory, normalizeIncomingMessage } from '../api'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import PageHeader from '../../../shared/components/PageHeader'
+import { getCurrentUsername } from '../../../shared/utils/getCurrentUsername'
 
 function formatMessageTime(iso) {
   if (!iso) return ''
@@ -45,7 +46,7 @@ export default function ChatConversationPage() {
     }
   }, [matchId, markRead, isLoading, messages.length])
 
-  useSocketEvent('newMessage', (payload) => {
+  useSocketEvent('MESSAGE', (payload) => {
     const msg = normalizeIncomingMessage(payload)
     if (!msg || msg.matchId !== matchId) return
     setLiveMessages((prev) => [...prev, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }])
@@ -75,7 +76,12 @@ export default function ChatConversationPage() {
       mine: true,
     }
 
-    send({ action: 'sendMessage', matchId, text })
+    send({
+      action: 'sendMessage',
+      senderId: getCurrentUsername(),
+      recipientId: matchId,
+      content: text,
+    })
     setLiveMessages((prev) => [...prev, message])
     recordSentMessage(matchId, text)
     setDraft('')
