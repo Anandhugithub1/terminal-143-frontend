@@ -1,4 +1,5 @@
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery, useInfiniteQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { matchesApi, userProfilesApi,reportApi } from '../../api/clients';
 import { toast } from 'sonner';
 /* existing hooks (unchanged) */
@@ -17,6 +18,34 @@ export function useMatches() {
     retry: 1,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
+}
+
+// Paginated matches (10 per page, matching match-service's default) for
+// infinite-scroll UIs like the chat list. Prefer this over useMatches()
+// wherever the full list would otherwise be fetched at once.
+async function fetchMatchesPage({ pageParam }) {
+  const res = await matchesApi.get('/list', {
+    params: pageParam ? { lastKey: pageParam } : undefined,
+    withCredentials: true,
+  });
+  return { matches: res.data.matches || [], lastKey: res.data.lastKey || null };
+}
+
+export function useInfiniteMatches() {
+  const query = useInfiniteQuery({
+    queryKey: ['matches', 'infinite'],
+    queryFn: fetchMatchesPage,
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => lastPage.lastKey,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  const matches = useMemo(
+    () => query.data?.pages.flatMap((page) => page.matches) ?? [],
+    [query.data]
+  );
+
+  return { ...query, matches };
 }
 
 export function useMatchRequests() {

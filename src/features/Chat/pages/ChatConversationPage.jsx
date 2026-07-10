@@ -134,12 +134,9 @@ export default function ChatConversationPage() {
               alt={match?.name}
               className="w-24 h-24 rounded-full object-cover mb-4 border-4 border-white shadow-md"
             />
-            <p className="text-gray-900 font-semibold text-base mb-2">
+            <p className="text-gray-900 font-semibold text-base">
               {match?.name || 'Your match'}
             </p>
-            <h2 className="text-xl font-semibold text-gray-900 leading-snug tracking-tight">
-              Say hi and break the ice <span aria-hidden="true">👋</span>
-            </h2>
           </div>
         ) : (
           messages.map((msg) => (

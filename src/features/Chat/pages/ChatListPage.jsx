@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useNavigate } from 'react-router-dom'
 import { MessageCircle } from 'lucide-react'
-import { useMatches, SendProfileFeeback } from '../../UserHome/api'
+import { useInfiniteMatches, SendProfileFeeback } from '../../UserHome/api'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import PageLayout from '../../../shared/components/PageLayout'
 import EmptyState from '../../../shared/components/EmptyState'
@@ -11,13 +11,39 @@ import MatchRow from '../components/MatchRow'
 import NewMatchesStrip from '../components/NewMatchesStrip'
 
 export default function ChatListPage() {
-  const { data: matches = [], isLoading, isError } = useMatches()
+  const {
+    matches,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteMatches()
   const { previews } = useConversationPreviews()
   const { mutate: sendFeedback } = SendProfileFeeback()
 
   const [sentFeedback, setSentFeedback] = useState({})
   const [loadingUser, setLoadingUser] = useState(null)
   const navigate = useNavigate()
+
+  // Fetch the next page of matches as the sentinel at the bottom of the
+  // conversation list scrolls into view.
+  const loadMoreRef = useRef(null)
+  useEffect(() => {
+    const node = loadMoreRef.current
+    if (!node || !hasNextPage) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isFetchingNextPage) {
+          fetchNextPage()
+        }
+      },
+      { rootMargin: '200px' }
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   function handleFeedback(username, liked) {
     if (loadingUser) return
@@ -45,14 +71,23 @@ export default function ChatListPage() {
     }
   }
 
-  // Every match shows in the top strip (classic dating-app "stories" row).
-  // The list below is just active conversations, most recent first.
-  const conversations = useMemo(() => {
-    return matches
-      .filter((match) => previews[match.PK]?.lastMessageAt)
-      .sort(
-        (a, b) => new Date(previews[b.PK].lastMessageAt) - new Date(previews[a.PK].lastMessageAt)
-      )
+  // Matches you haven't messaged yet show in the top strip; once a
+  // conversation starts, a match drops out of the strip and into the
+  // chat list below, most recent first.
+  const { newMatches, conversations } = useMemo(() => {
+    const fresh = []
+    const active = []
+    for (const match of matches) {
+      if (previews[match.PK]?.lastMessageAt) {
+        active.push(match)
+      } else {
+        fresh.push(match)
+      }
+    }
+    active.sort(
+      (a, b) => new Date(previews[b.PK].lastMessageAt) - new Date(previews[a.PK].lastMessageAt)
+    )
+    return { newMatches: fresh, conversations: active }
   }, [matches, previews])
 
   if (isLoading) {
@@ -97,7 +132,7 @@ export default function ChatListPage() {
       <div className="pt-3" />
 
       <NewMatchesStrip
-        matches={matches}
+        matches={newMatches}
         onOpenChat={(matchId) => navigate(`/matches/${matchId}/chat`)}
       />
 
@@ -129,6 +164,14 @@ export default function ChatListPage() {
               onDislike={() => handleFeedback(match.PK, false)}
             />
           ))}
+
+          {hasNextPage && (
+            <div ref={loadMoreRef} className="py-4 flex justify-center">
+              {isFetchingNextPage && (
+                <Skeleton circle width={24} height={24} />
+              )}
+            </div>
+          )}
         </div>
       )}
     </PageLayout>
