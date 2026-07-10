@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { Send } from 'lucide-react'
+import { useParams, useNavigate } from 'react-router-dom'
+import { ArrowLeft, Send } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import { useMatches } from '../../UserHome/api'
 import { useConversationHistory, normalizeIncomingMessage } from '../api'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
-import PageHeader from '../../../shared/components/PageHeader'
 import { getCurrentUsername } from '../../../shared/utils/getCurrentUsername'
 
 function formatMessageTime(iso) {
@@ -19,6 +18,7 @@ function formatMessageTime(iso) {
 
 export default function ChatConversationPage() {
   const { matchId } = useParams()
+  const navigate = useNavigate()
   const { data: matches = [] } = useMatches()
   const match = useMemo(() => matches.find((m) => m.PK === matchId), [matches, matchId])
 
@@ -89,17 +89,31 @@ export default function ChatConversationPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <PageHeader
-        title={match?.name || 'Chat'}
-        action={
-          online && (
+      <header className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-1.5 -ml-1.5 hover:bg-gray-100 rounded-full transition-colors shrink-0"
+          aria-label="Back"
+        >
+          <ArrowLeft className="w-5 h-5 text-primary" />
+        </button>
+        <img
+          src={match?.photos?.[0]?.url}
+          alt={match?.name}
+          className="w-9 h-9 rounded-full object-cover bg-gray-100 shrink-0"
+        />
+        <div className="flex-1 min-w-0">
+          <p className="text-[15px] font-semibold text-gray-900 truncate">
+            {match?.name || 'Chat'}
+          </p>
+          {online && (
             <span className="flex items-center gap-1.5 text-xs text-gray-400">
-              <span className="w-2 h-2 rounded-full bg-green-500" />
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
               Online
             </span>
-          )
-        }
-      />
+          )}
+        </div>
+      </header>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
         {isLoading ? (
@@ -123,9 +137,9 @@ export default function ChatConversationPage() {
             <p className="text-gray-900 font-semibold text-base mb-2">
               {match?.name || 'Your match'}
             </p>
-            <p className="text-lg font-bold text-gray-900 leading-snug">
-              Say hi and break the <span className="text-primary">ice</span> 👋
-            </p>
+            <h2 className="text-xl font-semibold text-gray-900 leading-snug tracking-tight">
+              Say hi and break the ice <span aria-hidden="true">👋</span>
+            </h2>
           </div>
         ) : (
           messages.map((msg) => (

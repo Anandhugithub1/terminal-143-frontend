@@ -4,7 +4,6 @@ import 'react-loading-skeleton/dist/skeleton.css'
 import { useNavigate } from 'react-router-dom'
 import { MessageCircle } from 'lucide-react'
 import { useMatches, SendProfileFeeback } from '../../UserHome/api'
-import { useSocket } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import PageLayout from '../../../shared/components/PageLayout'
 import EmptyState from '../../../shared/components/EmptyState'
@@ -13,7 +12,6 @@ import NewMatchesStrip from '../components/NewMatchesStrip'
 
 export default function ChatListPage() {
   const { data: matches = [], isLoading, isError } = useMatches()
-  const { isConnected } = useSocket()
   const { previews } = useConversationPreviews()
   const { mutate: sendFeedback } = SendProfileFeeback()
 
@@ -47,23 +45,14 @@ export default function ChatListPage() {
     }
   }
 
-  // Matches with no conversation yet surface in the "New Matches" strip up
-  // top (the usual dating-app pattern); once a conversation starts, a match
-  // moves down into the chat list, most recent first.
-  const { newMatches, conversations } = useMemo(() => {
-    const fresh = []
-    const active = []
-    for (const match of matches) {
-      if (previews[match.PK]?.lastMessageAt) {
-        active.push(match)
-      } else {
-        fresh.push(match)
-      }
-    }
-    active.sort(
-      (a, b) => new Date(previews[b.PK].lastMessageAt) - new Date(previews[a.PK].lastMessageAt)
-    )
-    return { newMatches: fresh, conversations: active }
+  // Every match shows in the top strip (classic dating-app "stories" row).
+  // The list below is just active conversations, most recent first.
+  const conversations = useMemo(() => {
+    return matches
+      .filter((match) => previews[match.PK]?.lastMessageAt)
+      .sort(
+        (a, b) => new Date(previews[b.PK].lastMessageAt) - new Date(previews[a.PK].lastMessageAt)
+      )
   }, [matches, previews])
 
   if (isLoading) {
@@ -105,33 +94,28 @@ export default function ChatListPage() {
 
   return (
     <PageLayout className="bg-white">
-      <div className="px-4 pt-4 pb-2 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Matches / Chat</h1>
-        <div className="flex items-center gap-1.5 text-xs text-gray-400">
-          <span
-            className={`w-2 h-2 rounded-full ${
-              isConnected ? 'bg-green-500' : 'bg-gray-300'
-            }`}
-          />
-          {isConnected ? 'Live' : 'Connecting…'}
-        </div>
-      </div>
+      <div className="pt-3" />
 
       <NewMatchesStrip
-        matches={newMatches}
+        matches={matches}
         onOpenChat={(matchId) => navigate(`/matches/${matchId}/chat`)}
       />
+
+      <div className="border-t border-gray-100" />
 
       {conversations.length === 0 ? (
         <div className="flex-1 flex items-center justify-center">
           <EmptyState
             icon={MessageCircle}
             title="No conversations yet"
-            subtitle="Tap a new match above to say hi and start chatting."
+            subtitle="Tap a match above to say hi and start chatting."
           />
         </div>
       ) : (
-        <div className="flex-1 divide-y divide-gray-100">
+        <div className="flex-1">
+          <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
+            Chat
+          </p>
           {conversations.map((match) => (
             <MatchRow
               key={match.PK}

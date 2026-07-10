@@ -1,18 +1,15 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import {
-  AiOutlineHome,
-  AiFillHome,
-  AiOutlineHeart,
-  AiFillHeart
-} from 'react-icons/ai'
+import { AiOutlineHome, AiFillHome } from 'react-icons/ai'
 import {
   RiUserLine,
   RiUserFill,
-  RiFileListLine,
-  RiFileListFill,
+  RiUserAddLine,
+  RiUserAddFill,
   RiGroup2Line,
-  RiGroup2Fill
+  RiGroup2Fill,
+  RiChat3Line,
+  RiChat3Fill
 } from 'react-icons/ri'
 import { useTranslation } from 'react-i18next'
 
@@ -31,9 +28,9 @@ const BottomNav = () => {
       path: '/requests',
       icon: ({ isActive }) =>
         isActive ? (
-          <RiFileListFill size="1.4em" />
+          <RiUserAddFill size="1.4em" />
         ) : (
-          <RiFileListLine size="1.4em" />
+          <RiUserAddLine size="1.4em" />
         )
     },
     {
@@ -50,7 +47,7 @@ const BottomNav = () => {
       name: t('matches'),
       path: '/matches',
       icon: ({ isActive }) =>
-        isActive ? <AiFillHeart size="1.4em" /> : <AiOutlineHeart size="1.4em" />
+        isActive ? <RiChat3Fill size="1.4em" /> : <RiChat3Line size="1.4em" />
     },
     {
       name: t('profile'),
