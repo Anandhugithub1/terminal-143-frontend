@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import BottomNav from "../../../components/Layout/BottomNavigation";
@@ -62,6 +63,7 @@ function StoryAvatar({ isActive, onClick, label, sublabel, children, gradientCla
 }
 
 export default function CirclesHomePage() {
+  const { t } = useTranslation("circles");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -120,9 +122,11 @@ export default function CirclesHomePage() {
   const handleSharePost = (post, circleId) => {
     const url = `${window.location.origin}/circles/${circleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`;
     shareLink({
-      title: post.authorName ? `${post.authorName}'s post` : "Circle post",
+      title: post.authorName ? `${post.authorName}'s post` : t("common.circlePost"),
       text: post.content ? post.content.slice(0, 100) : "",
       url,
+      copiedMessage: t("common.linkCopied"),
+      failedMessage: t("common.failedToShare"),
     });
   };
 
@@ -136,7 +140,7 @@ export default function CirclesHomePage() {
       <BottomSheetModal isOpen={isCirclePickerOpen} onClose={() => setIsCirclePickerOpen(false)}>
         <div className="px-4 pb-8">
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
-            Post to a Circle
+            {t("circlesHome.postToCircle")}
           </p>
           <div className="space-y-1">
             {myCircles.map((circle, index) => (
@@ -189,7 +193,7 @@ export default function CirclesHomePage() {
             <StoryAvatar
               isActive={!selectedCircleId}
               onClick={() => setSelectedCircleId(null)}
-              label="For You"
+              label={t("common.forYou")}
               gradientClass="from-primary to-pink-500"
             >
               <div className={`w-full h-full rounded-full flex items-center justify-center ${!selectedCircleId ? "bg-gradient-to-br from-primary to-pink-400" : "bg-gray-100"}`}>
@@ -235,7 +239,7 @@ export default function CirclesHomePage() {
                 <StoryAvatar
                   isActive={false}
                   onClick={() => navigate("/circles/discover")}
-                  label="Discover"
+                  label={t("common.discover")}
                 >
                   <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
                     <Compass className="w-5 h-5 text-gray-400" />
@@ -245,7 +249,7 @@ export default function CirclesHomePage() {
                 <StoryAvatar
                   isActive={false}
                   onClick={() => setIsCreateCircleOpen(true)}
-                  label="New"
+                  label={t("circlesHome.new")}
                 >
                   <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
                     <Plus className="w-5 h-5 text-gray-400" />
@@ -270,7 +274,7 @@ export default function CirclesHomePage() {
             className="w-9 h-9 rounded-full object-cover shrink-0"
           />
           <span className="flex-1 text-left text-sm text-gray-400 bg-gray-100 rounded-full px-4 py-2">
-            What's on your mind?
+            {t("circlesHome.whatsOnYourMind")}
           </span>
           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
             <PenLine className="w-4 h-4 text-primary" />
@@ -281,13 +285,13 @@ export default function CirclesHomePage() {
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-gray-800">
-              {selectedCircle ? selectedCircle.name : "For You"}
+              {selectedCircle ? selectedCircle.name : t("common.forYou")}
             </h2>
             {!selectedCircleId && !isLoadingFeed && feed.length > 0 && (
-              <span className="text-xs text-gray-400 font-normal">· {feed.length} posts</span>
+              <span className="text-xs text-gray-400 font-normal">{t("circlesHome.postsSuffix", { count: feed.length })}</span>
             )}
             {selectedCircleId && !isLoadingCirclePosts && circlePosts.length > 0 && (
-              <span className="text-xs text-gray-400 font-normal">· {circlePosts.length} posts</span>
+              <span className="text-xs text-gray-400 font-normal">{t("circlesHome.postsSuffix", { count: circlePosts.length })}</span>
             )}
           </div>
           {selectedCircle && (
@@ -295,7 +299,7 @@ export default function CirclesHomePage() {
               onClick={() => navigate(`/circles/${selectedCircleId}`, { state: { circleData: selectedCircle } })}
               className="text-xs btn-outlined px-3 py-1 rounded-full"
             >
-              View circle
+              {t("circlesHome.viewCircle")}
             </button>
           )}
         </div>
@@ -323,13 +327,13 @@ export default function CirclesHomePage() {
                     <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
                       <PenLine className="w-7 h-7 text-gray-300" />
                     </div>
-                    <p className="text-sm font-semibold text-gray-700 mb-1">No posts yet</p>
-                    <p className="text-xs text-gray-400 mb-5">Be the first to post in {selectedCircle?.name}</p>
+                    <p className="text-sm font-semibold text-gray-700 mb-1">{t("circlesHome.noPostsYetTitle")}</p>
+                    <p className="text-xs text-gray-400 mb-5">{t("circlesHome.beFirstToPost", { circleName: selectedCircle?.name })}</p>
                     <button
                       onClick={() => handlePickCircle(selectedCircle)}
                       className="px-5 py-2 btn-filled text-sm rounded-full shadow-sm"
                     >
-                      Create a post
+                      {t("circlesHome.createAPost")}
                     </button>
                   </div>
                 )}
@@ -341,7 +345,7 @@ export default function CirclesHomePage() {
                       key={post.postId}
                       variant="feed"
                       avatar={post.authorImage || DEFAULT_AVATAR}
-                      name={post.authorName || "Anonymous"}
+                      name={post.authorName || t("common.anonymous")}
                       meta={<PostMeta post={post} />}
                       body={post.content}
                       media={post.media}
@@ -357,7 +361,7 @@ export default function CirclesHomePage() {
                             postId: post.postId,
                             circleId: selectedCircleId,
                             createdAtEpoch: post.createdAtEpoch,
-                            onSuccess: () => toast.success("Match request sent"),
+                            onSuccess: () => toast.success(t("circlesHome.matchRequestSent")),
                           }),
                       })}
                     />
@@ -380,15 +384,15 @@ export default function CirclesHomePage() {
                       <div className="flex items-center gap-3">
                         <span className="text-2xl">🌱</span>
                         <div>
-                          <p className="text-sm font-semibold text-gray-700">Your feed is quiet</p>
-                          <p className="text-xs text-gray-400 mt-0.5">Join more circles to fill it up</p>
+                          <p className="text-sm font-semibold text-gray-700">{t("circlesHome.feedQuietTitle")}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">{t("circlesHome.feedQuietBody")}</p>
                         </div>
                       </div>
                       <button
                         onClick={() => navigate("/circles/discover")}
                         className="text-xs btn-outlined px-3 py-1.5 rounded-full"
                       >
-                        Discover
+                        {t("common.discover")}
                       </button>
                     </div>
 
@@ -397,7 +401,7 @@ export default function CirclesHomePage() {
                       <>
                         <div className="flex items-center justify-between pt-2">
                           <p className="text-sm font-bold text-gray-700">
-                            Meanwhile in{" "}
+                            {t("circlesHome.meanwhileIn")}
                             <button
                               onClick={() => navigate(`/circles/${firstCircleId}`)}
                               className="text-primary"
@@ -409,7 +413,7 @@ export default function CirclesHomePage() {
                             onClick={() => navigate(`/circles/${firstCircleId}`)}
                             className="text-xs btn-outlined px-3 py-1 rounded-full"
                           >
-                            See all
+                            {t("circlesHome.seeAll")}
                           </button>
                         </div>
                         {firstCirclePosts.map((post) => {
@@ -419,7 +423,7 @@ export default function CirclesHomePage() {
                               key={post.postId}
                               variant="feed"
                               avatar={post.authorImage || DEFAULT_AVATAR}
-                              name={post.authorName || "Anonymous"}
+                              name={post.authorName || t("common.anonymous")}
                               meta={<PostMeta post={post} />}
                               body={post.content}
                               media={post.media}
@@ -435,7 +439,7 @@ export default function CirclesHomePage() {
                                     postId: post.postId,
                                     circleId: firstCircleId,
                                     createdAtEpoch: post.createdAtEpoch,
-                                    onSuccess: () => toast.success("Match request sent"),
+                                    onSuccess: () => toast.success(t("circlesHome.matchRequestSent")),
                                   }),
                               })}
                             />
@@ -460,7 +464,7 @@ export default function CirclesHomePage() {
                       <PostCard
                         variant="feed"
                         avatar={post.authorImage || DEFAULT_AVATAR}
-                        name={post.authorName || "Anonymous"}
+                        name={post.authorName || t("common.anonymous")}
                         meta={
                           <PostMeta
                             post={post}
@@ -490,7 +494,7 @@ export default function CirclesHomePage() {
                               postId: post.postId,
                               circleId: post.circleId,
                               createdAtEpoch: post.createdAtEpoch,
-                              onSuccess: () => toast.success("Match request sent"),
+                              onSuccess: () => toast.success(t("circlesHome.matchRequestSent")),
                             }),
                           onPass: () => markPostSeen(post.postId, { immediate: isLastPost }),
                         })}

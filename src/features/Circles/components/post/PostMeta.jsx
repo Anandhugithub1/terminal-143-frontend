@@ -1,7 +1,9 @@
 import { Clock, MapPin, Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { formatPostTime, getAgeFromDob, getGenderLabel } from "../../utils/postDisplay";
 
 export default function PostMeta({ post, extra }) {
+  const { t } = useTranslation("circles");
   const age = getAgeFromDob(post.authorDob);
   const gender = getGenderLabel(post.authorGender);
   const authorInfo = [age, gender].filter(Boolean).join(", ");
@@ -29,7 +31,7 @@ export default function PostMeta({ post, extra }) {
       {typeof likePercentage === "number" && (
         <span className="inline-flex items-center gap-1 whitespace-nowrap text-rose-500 font-medium">
           <Heart className="w-3 h-3 shrink-0 fill-rose-500" />
-          {likePercentage}% liked
+          {t("postMeta.likedPercentage", { percent: likePercentage })}
         </span>
       )}
 

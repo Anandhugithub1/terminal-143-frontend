@@ -2,6 +2,7 @@ import { ArrowLeft, Search, X, Compass } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
 import { useCircles } from "../hooks/useCircles";
@@ -9,6 +10,7 @@ import { useJoinCircle } from "../hooks/useMembership";
 import { queryKeys } from "../queries/queryKeys";
 
 export default function DiscoverCirclesPage() {
+  const { t } = useTranslation("circles");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: circlesData } = useCircles();
@@ -60,7 +62,7 @@ export default function DiscoverCirclesPage() {
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
-          <h1 className="text-lg font-bold text-text-sec">Discover Circles</h1>
+          <h1 className="text-lg font-bold text-text-sec">{t("discoverCircles.header")}</h1>
         </div>
       </div>
 
@@ -70,9 +72,9 @@ export default function DiscoverCirclesPage() {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
               <Compass className="w-8 h-8 text-primary" />
             </div>
-            <h2 className="text-lg font-bold text-gray-800 mb-2">You're in every circle!</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-2">{t("discoverCircles.allJoinedTitle")}</h2>
             <p className="text-gray-500 text-sm">
-              You've already joined all the circles we have to offer right now.
+              {t("discoverCircles.allJoinedBody")}
             </p>
           </div>
         ) : (
@@ -82,7 +84,7 @@ export default function DiscoverCirclesPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search circles..."
+                placeholder={t("discoverCircles.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm"
@@ -91,7 +93,7 @@ export default function DiscoverCirclesPage() {
                 <button
                   onClick={() => setSearchQuery("")}
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
-                  aria-label="Clear search"
+                  aria-label={t("common.clearSearch")}
                 >
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
@@ -150,7 +152,7 @@ export default function DiscoverCirclesPage() {
                       disabled={isJoining}
                       className="w-full py-2 bg-primary text-white rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60"
                     >
-                      {isJoining ? "Joining..." : "Join Circle"}
+                      {isJoining ? t("discoverCircles.joining") : t("discoverCircles.joinCircle")}
                     </button>
                   </div>
                 );
@@ -160,13 +162,13 @@ export default function DiscoverCirclesPage() {
             {filteredCircles.length === 0 && (
               <div className="text-center py-12">
                 <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">No circles found</h3>
-                <p className="text-gray-500 mb-4">Try adjusting your search or filters</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t("common.noCirclesFound")}</h3>
+                <p className="text-gray-500 mb-4">{t("common.tryAdjustingSearch")}</p>
                 <button
                   onClick={clearFilters}
                   className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium active:scale-95 transition-transform"
                 >
-                  Clear filters
+                  {t("common.clearFilters")}
                 </button>
               </div>
             )}

@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import CreatePostModal from "../components/post/CreatePostModal";
 import PostCard from "../components/post/PostCard";
@@ -29,6 +30,7 @@ import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Ske
 import EmptyState from "../../../shared/components/EmptyState";
 
 export default function CircleDetailsPage() {
+  const { t } = useTranslation("circles");
   const { circleId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,7 +63,7 @@ export default function CircleDetailsPage() {
   if (!data) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-400 text-sm">Circle not found</p>
+        <p className="text-gray-400 text-sm">{t("circleDetails.notFound")}</p>
       </div>
     );
   }
@@ -71,6 +73,8 @@ export default function CircleDetailsPage() {
       title: data.name,
       text: data.description || "",
       url: `${window.location.origin}/circles/${circleId}`,
+      copiedMessage: t("common.linkCopied"),
+      failedMessage: t("common.failedToShare"),
     });
   };
 
@@ -79,13 +83,15 @@ export default function CircleDetailsPage() {
       const { data: postDetail } = await getPost(circleId, post.createdAtEpoch, post.postId);
       const shareUrl = `${window.location.origin}/circles/${circleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`;
       await shareLink({
-        title: postDetail?.authorName ? `${postDetail.authorName}'s post` : "Circle post",
+        title: postDetail?.authorName ? `${postDetail.authorName}'s post` : t("common.circlePost"),
         text: postDetail?.content || post.content || "",
         url: shareUrl,
+        copiedMessage: t("common.linkCopied"),
+        failedMessage: t("common.failedToShare"),
       });
     } catch (err) {
       console.error(err);
-      alert("Failed to share post");
+      alert(t("circleDetails.failedToShare"));
     }
   };
 
@@ -160,8 +166,8 @@ export default function CircleDetailsPage() {
             createdAtEpoch: deleteConfirm.createdAtEpoch,
           })
         }
-        title="Delete post?"
-        message="This cannot be undone. The post will be permanently removed."
+        title={t("circleDetails.deletePostTitle")}
+        message={t("circleDetails.deletePostMessage")}
       />
 
       {/* Cover Image */}
@@ -199,7 +205,7 @@ export default function CircleDetailsPage() {
           <div className="flex items-center gap-4 text-white/80 text-sm">
             <div className="flex items-center gap-1.5">
               <Users className="w-4 h-4" />
-              <span>{data.memberCount ?? 0} members</span>
+              <span>{t("common.membersCount", { count: data.memberCount ?? 0 })}</span>
             </div>
           </div>
         </div>
@@ -217,13 +223,13 @@ export default function CircleDetailsPage() {
                   onClick={handleShareCircle}
                   className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
                 >
-                  Share
+                  {t("circleDetails.share")}
                 </button>
                 <button
                   onClick={handleShareCircle}
                   className="flex-1 btn-outlined rounded-xl py-2.5 text-sm"
                 >
-                  Invite
+                  {t("circleDetails.invite")}
                 </button>
               </>
             ) : (
@@ -231,7 +237,7 @@ export default function CircleDetailsPage() {
                 onClick={() => setIsJoined(true)}
                 className="flex-1 btn-filled rounded-xl py-3"
               >
-                Join Circle
+                {t("circleDetails.joinCircle")}
               </button>
             )}
           </div>
@@ -239,7 +245,7 @@ export default function CircleDetailsPage() {
 
         {/* About */}
         <div className="bg-gray-100 rounded-2xl shadow-sm p-4">
-          <h2 className="text-sm font-bold text-gray-800 mb-2">About</h2>
+          <h2 className="text-sm font-bold text-gray-800 mb-2">{t("circleDetails.about")}</h2>
           <p className="text-gray-600 text-sm leading-relaxed mb-3">{data.description}</p>
           {data.tags?.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-3">
@@ -256,7 +262,7 @@ export default function CircleDetailsPage() {
           {data.createdDate && (
             <div className="flex items-center gap-1.5 text-xs text-gray-400">
               <Calendar className="w-3.5 h-3.5" />
-              <span>Created {data.createdDate}</span>
+              <span>{t("circleDetails.createdOn", { date: data.createdDate })}</span>
             </div>
           )}
         </div>
@@ -264,7 +270,7 @@ export default function CircleDetailsPage() {
         {/* Rules */}
         {data.rules?.length > 0 && (
           <div className="bg-white rounded-2xl shadow-sm p-4">
-            <h2 className="text-sm font-bold text-gray-800 mb-3">Circle Rules</h2>
+            <h2 className="text-sm font-bold text-gray-800 mb-3">{t("circleDetails.circleRules")}</h2>
             <div className="space-y-2.5">
               {data.rules.map((rule, index) => (
                 <div key={index} className="flex items-start gap-2.5">
@@ -283,14 +289,14 @@ export default function CircleDetailsPage() {
           <div className="flex items-center gap-3">
             <img
               src={myProfile?.profilePhoto || DEFAULT_AVATAR}
-              alt="Your avatar"
+              alt={t("circleDetails.yourAvatarAlt")}
               className="w-10 h-10 rounded-full object-cover flex-shrink-0"
             />
             <button
               onClick={() => setIsCreatePostModalOpen(true)}
               className="flex-1 text-left px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-xl text-gray-400 text-sm transition-colors"
             >
-              Share something with the circle...
+              {t("circleDetails.shareSomething")}
             </button>
           </div>
           <div className="flex items-center gap-1 mt-3 pt-3 border-t border-gray-100">
@@ -299,21 +305,21 @@ export default function CircleDetailsPage() {
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
             >
               <Image className="w-4 h-4 text-green-500" />
-              <span className="text-sm font-medium text-gray-600">Photo</span>
+              <span className="text-sm font-medium text-gray-600">{t("common.photo")}</span>
             </button>
             <button
               onClick={() => setIsCreatePostModalOpen(true)}
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
             >
               <Video className="w-4 h-4 text-purple-500" />
-              <span className="text-sm font-medium text-gray-600">Video</span>
+              <span className="text-sm font-medium text-gray-600">{t("common.video")}</span>
             </button>
             <button
               onClick={() => setIsCreatePostModalOpen(true)}
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
             >
               <MessageSquare className="w-4 h-4 text-blue-500" />
-              <span className="text-sm font-medium text-gray-600">Post</span>
+              <span className="text-sm font-medium text-gray-600">{t("circleDetails.post")}</span>
             </button>
           </div>
         </div>
@@ -321,9 +327,9 @@ export default function CircleDetailsPage() {
         {/* Posts Section */}
         <div>
           <div className="flex items-center justify-between px-1 mb-3">
-            <h2 className="text-base font-bold text-gray-800">Posts</h2>
+            <h2 className="text-base font-bold text-gray-800">{t("circleDetails.posts")}</h2>
             {!isLoadingPosts && posts.length > 0 && (
-              <span className="text-sm text-gray-400">{posts.length} posts</span>
+              <span className="text-sm text-gray-400">{t("circleDetails.postsSuffix", { count: posts.length })}</span>
             )}
           </div>
 
@@ -339,14 +345,14 @@ export default function CircleDetailsPage() {
               <div className="bg-white rounded-2xl shadow-sm">
                 <EmptyState
                   icon={MessageSquare}
-                  title="No posts yet"
-                  subtitle="Be the first to share something with this circle!"
+                  title={t("circleDetails.noPostsYetTitle")}
+                  subtitle={t("circleDetails.noPostsYetSubtitle")}
                   action={
                     <button
                       onClick={() => setIsCreatePostModalOpen(true)}
                       className="px-6 py-2.5 btn-filled text-sm rounded-full"
                     >
-                      Create Post
+                      {t("circleDetails.createPost")}
                     </button>
                   }
                 />
@@ -361,7 +367,7 @@ export default function CircleDetailsPage() {
                   key={post.postId}
                   variant="circle"
                   avatar={post.authorImage || DEFAULT_AVATAR}
-                  name={post.authorName || "Anonymous"}
+                  name={post.authorName || t("common.anonymous")}
                   meta={<PostMeta post={post} />}
                   body={post.content}
                   media={post.media}
@@ -370,7 +376,7 @@ export default function CircleDetailsPage() {
                   onEdit={() => setEditPost(post)}
                   onDelete={() => handleDeletePost(post)}
                   onShare={() => handleSharePost(post)}
-                  onReport={() => alert("Post reported")}
+                  onReport={() => alert(t("circleDetails.postReportedAlert"))}
                   onAuthorClick={
                     post.authorId
                       ? () => navigate(`/profile/${post.authorId}`)

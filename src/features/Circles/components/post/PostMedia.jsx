@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { ImageOff, RefreshCw, Volume2, VolumeX } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Renders the first media item of a post. Images are lazy-loaded; videos
 // behave like Instagram/Reels:
@@ -10,6 +11,7 @@ import { ImageOff, RefreshCw, Volume2, VolumeX } from "lucide-react";
 // - loading spinner until the first frame is ready, error fallback if the
 //   media fails to load
 export default function PostMedia({ media = [], image, alt, className }) {
+  const { t } = useTranslation("circles");
   const item = media?.[0];
   const url = item?.url || image;
   const isVideo = item?.type === "video";
@@ -140,14 +142,14 @@ export default function PostMedia({ media = [], image, alt, className }) {
         {hasError && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/60">
             <ImageOff className="w-6 h-6" />
-            <span className="text-xs">Video unavailable</span>
+            <span className="text-xs">{t("postMedia.videoUnavailable")}</span>
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); handleRetry(); }}
               className="flex items-center gap-1 text-xs text-white/80 hover:text-white transition-colors"
             >
               <RefreshCw className="w-3 h-3" />
-              Retry
+              {t("postMedia.retry")}
             </button>
           </div>
         )}
@@ -160,7 +162,7 @@ export default function PostMedia({ media = [], image, alt, className }) {
               setIsMuted((m) => !m);
             }}
             className="absolute bottom-2 right-2 z-20 p-1.5 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
-            aria-label={isMuted ? "Unmute video" : "Mute video"}
+            aria-label={isMuted ? t("postMedia.unmuteVideo") : t("postMedia.muteVideo")}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
@@ -202,7 +204,7 @@ export default function PostMedia({ media = [], image, alt, className }) {
       {hasError && (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400">
           <ImageOff className="w-6 h-6" />
-          <span className="text-xs">Image unavailable</span>
+          <span className="text-xs">{t("postMedia.imageUnavailable")}</span>
         </div>
       )}
     </div>

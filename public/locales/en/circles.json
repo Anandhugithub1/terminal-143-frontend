@@ -1,0 +1,229 @@
+{
+  "common": {
+    "anonymous": "Anonymous",
+    "circlePost": "Circle post",
+    "cancel": "Cancel",
+    "postReported": "Post reported",
+    "noCirclesFound": "No circles found",
+    "tryAdjustingSearch": "Try adjusting your search or filters",
+    "clearFilters": "Clear filters",
+    "clearSearch": "Clear search",
+    "fetchingLocation": "Fetching location...",
+    "photo": "Photo",
+    "video": "Video",
+    "discover": "Discover",
+    "forYou": "For You",
+    "postsCount": "{{count}} posts",
+    "membersCount": "{{count}} members",
+    "linkCopied": "Post link copied to clipboard",
+    "failedToShare": "Failed to share post"
+  },
+
+  "postDetails": {
+    "notFoundTitle": "Post not found",
+    "goBack": "Go back",
+    "header": "Post",
+    "inCircle": "in ",
+    "postReportedAlert": "Post reported"
+  },
+
+  "discoverCircles": {
+    "header": "Discover Circles",
+    "allJoinedTitle": "You're in every circle!",
+    "allJoinedBody": "You've already joined all the circles we have to offer right now.",
+    "searchPlaceholder": "Search circles...",
+    "joining": "Joining...",
+    "joinCircle": "Join Circle"
+  },
+
+  "onboarding": {
+    "profileReadyToast": "Your profile is ready",
+    "genericErrorToast": "Something went wrong. Please try again.",
+    "goBack": "Go back",
+    "stepSelect": "Select your circles",
+    "stepConfirm": "Confirm your choices",
+    "selectedCount": "{{count}} selected",
+    "heading": "Find Your People Through Activities",
+    "subheading": "Select at least 3 circles based on what you love to do. Great way to meet new friends (and maybe more) naturally!",
+    "selectMoreWarning": "Select at least {{count}} more circle{{plural}} to continue",
+    "searchPlaceholder": "Search activities...",
+    "confirmHeading": "Awesome Choices! 🎉",
+    "confirmSubheading": "You're joining {{count}} activity groups. Get ready to have fun and meet great people!",
+    "yourCircles": "Your Activity Circles",
+    "removeCircle": "Remove circle",
+    "whatToExpect": "What to Expect",
+    "naturalConnections": {
+      "title": "Natural Connections",
+      "body": "Meet people while doing activities you genuinely enjoy"
+    },
+    "regularMeetups": {
+      "title": "Regular Meetups",
+      "body": "Weekly events, outings, and social hours"
+    },
+    "continueWithCount": "Continue with {{count}} Circle{{plural}}",
+    "needMoreSuffix": " (Need {{count}} more)",
+    "joining": "Joining...",
+    "settingUpProfile": "Setting up your profile...",
+    "joinAndStart": "Join {{count}} Circle{{plural}} & Start Connecting",
+    "addMoreCircles": "Add More Circles"
+  },
+
+  "circlesHome": {
+    "postToCircle": "Post to a Circle",
+    "new": "New",
+    "whatsOnYourMind": "What's on your mind?",
+    "postsSuffix": "· {{count}} posts",
+    "viewCircle": "View circle",
+    "noPostsYetTitle": "No posts yet",
+    "beFirstToPost": "Be the first to post in {{circleName}}",
+    "createAPost": "Create a post",
+    "matchRequestSent": "Match request sent",
+    "feedQuietTitle": "Your feed is quiet",
+    "feedQuietBody": "Join more circles to fill it up",
+    "meanwhileIn": "Meanwhile in ",
+    "seeAll": "See all"
+  },
+
+  "circleDetails": {
+    "notFound": "Circle not found",
+    "failedToShare": "Failed to share post",
+    "deletePostTitle": "Delete post?",
+    "deletePostMessage": "This cannot be undone. The post will be permanently removed.",
+    "share": "Share",
+    "invite": "Invite",
+    "joinCircle": "Join Circle",
+    "about": "About",
+    "createdOn": "Created {{date}}",
+    "circleRules": "Circle Rules",
+    "yourAvatarAlt": "Your avatar",
+    "shareSomething": "Share something with the circle...",
+    "post": "Post",
+    "posts": "Posts",
+    "postsSuffix": "{{count}} posts",
+    "noPostsYetTitle": "No posts yet",
+    "noPostsYetSubtitle": "Be the first to share something with this circle!",
+    "createPost": "Create Post",
+    "postReportedAlert": "Post reported"
+  },
+
+  "sidebar": {
+    "menu": {
+      "home": "Home",
+      "myCircles": "My Circles",
+      "matches": "Matches",
+      "likes": "Likes",
+      "messages": "Messages",
+      "notifications": "Notifications"
+    },
+    "account": {
+      "profile": "Profile",
+      "settings": "Settings",
+      "privacy": "Privacy",
+      "helpCenter": "Help Center"
+    },
+    "title": "Circles",
+    "subtitle": "Connect & Share",
+    "userAlt": "User",
+    "fallbackName": "User",
+    "mainMenu": "Main Menu",
+    "accountSection": "Account",
+    "logOut": "Log Out",
+    "footer": "Version 1.0.0 • © 2024 Circles"
+  },
+
+  "postMeta": {
+    "likedPercentage": "{{percent}}% liked"
+  },
+
+  "comments": {
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "reply": "Reply",
+    "header": "Comments",
+    "empty": "No comments yet. Be the first to comment!",
+    "youAlt": "You",
+    "replyPlaceholder": "Write a reply...",
+    "yourAvatarAlt": "Your avatar",
+    "commentPlaceholder": "Write a comment..."
+  },
+
+  "editPostModal": {
+    "header": "Edit Post",
+    "placeholder": "What's on your mind?",
+    "removeLocation": "Remove Location",
+    "addChangeLocation": "Add / Change Location",
+    "addMediaTitle": "Add photo / video",
+    "saving": "Saving...",
+    "fetchingLocation": "Fetching location...",
+    "save": "Save"
+  },
+
+  "createCircleModal": {
+    "invalidImageType": "Please select a JPG, PNG, or WEBP image",
+    "imageTooLarge": "Image must be under 5MB",
+    "nameRequired": "Circle name is required",
+    "descriptionRequired": "Description is required",
+    "categoryRequired": "Please select category",
+    "failedToCreate": "Failed to create circle",
+    "header": "Create a Circle",
+    "subheading": "Create a community around your interests",
+    "imageLabel": "Circle Image",
+    "coverPreviewAlt": "Circle cover preview",
+    "clickToUpload": "Click to upload",
+    "orDragAndDrop": " or drag and drop",
+    "uploadHint": "PNG, JPG up to 5MB",
+    "nameLabel": "Circle Name",
+    "namePlaceholder": "e.g., Weekend Hikers",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "What's this circle about?",
+    "categoryLabel": "Category",
+    "selectCategory": "Select a category",
+    "uploadingImage": "Uploading image...",
+    "creating": "Creating...",
+    "fetchingLocation": "Fetching location...",
+    "createCircle": "Create Circle"
+  },
+
+  "createPostModal": {
+    "failedToCreate": "Failed to create post",
+    "header": "Create Post",
+    "inCircle": "in ",
+    "yourAvatarAlt": "Your avatar",
+    "you": "You",
+    "postToCircle": "Post to circle",
+    "placeholder": "Share your running experience, tips, or ask a question...",
+    "addMediaLabel": "Add Photos & Videos ",
+    "addMediaHint": "(Max {{maxItems}}, videos ≤ {{maxDuration}}s)",
+    "videoBadge": "Video",
+    "addPhotos": "Add Photos",
+    "addVideo": "Add Video (≤{{maxDuration}}s)",
+    "checkingVideo": "Checking video...",
+    "removeLocation": "Remove location",
+    "addLocation": "Add location",
+    "tags": "Tags",
+    "customTagPlaceholder": "Enter custom tag...",
+    "add": "Add",
+    "cancel": "Cancel",
+    "addCustomTag": "+ Add custom tag",
+    "addToYourPost": "Add to your post",
+    "photo": "Photo",
+    "video": "Video",
+    "posting": "Posting...",
+    "post": "Post"
+  },
+
+  "postCard": {
+    "editPost": "Edit Post",
+    "share": "Share",
+    "deletePost": "Delete Post",
+    "reportPost": "Report Post"
+  },
+
+  "postMedia": {
+    "videoUnavailable": "Video unavailable",
+    "retry": "Retry",
+    "muteVideo": "Mute video",
+    "unmuteVideo": "Unmute video",
+    "imageUnavailable": "Image unavailable"
+  }
+}

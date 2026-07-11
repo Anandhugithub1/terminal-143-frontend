@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useComments, useCreateComment, useReplyToComment, useDeleteComment } from "../../hooks/useComments";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 import CommentCard from "./CommentCard";
@@ -11,6 +12,7 @@ import { CommentSkeleton } from "../common/Skeletons";
 const COMMENT_MAX_LENGTH = 500;
 
 export default function CommentSection({ isOpen, onClose, post }) {
+  const { t } = useTranslation("circles");
   const navigate = useNavigate();
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
@@ -81,7 +83,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
         {/* Header */}
         <div className="flex-shrink-0 p-4 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-bold text-gray-800">Comments</h3>
+            <h3 className="text-lg font-bold text-gray-800">{t("comments.header")}</h3>
             {post?.title && (
               <p className="text-xs text-gray-500 mt-0.5">{post.title}</p>
             )}
@@ -107,7 +109,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
           )}
 
           {!isLoading && comments.length === 0 && (
-            <p className="text-sm text-gray-400 text-center py-4">No comments yet. Be the first to comment!</p>
+            <p className="text-sm text-gray-400 text-center py-4">{t("comments.empty")}</p>
           )}
 
           {comments.map((comment) => {
@@ -119,7 +121,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
               <CommentCard
                 key={commentKey}
                 avatar={comment.authorImage || comment.author?.avatar || comment.avatar || DEFAULT_AVATAR}
-                name={commentAuthor || "Anonymous"}
+                name={commentAuthor || t("common.anonymous")}
                 text={comment.content || comment.text || comment.body}
                 time={formatCommentTime(comment.createdAtEpoch)}
                 likes={comment.likes ?? 0}
@@ -137,7 +139,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
                 replies={(comment.replies || []).map((reply) => ({
                   commentId: reply.commentId || reply.id,
                   avatar: reply.authorImage || reply.author?.avatar || reply.avatar || DEFAULT_AVATAR,
-                  name: reply.authorName || reply.author?.name || reply.userName || reply.name || "Anonymous",
+                  name: reply.authorName || reply.author?.name || reply.userName || reply.name || t("common.anonymous"),
                   text: reply.content || reply.text || reply.body,
                   time: formatCommentTime(reply.createdAtEpoch),
                   likes: reply.likes ?? 0,
@@ -157,7 +159,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
                     >
                       <img
                         src={myProfile?.profilePhoto || DEFAULT_AVATAR}
-                        alt="You"
+                        alt={t("comments.youAlt")}
                         className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                       />
                       <input
@@ -165,7 +167,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
                         autoFocus
                         value={replyText}
                         onChange={(e) => setReplyText(e.target.value.slice(0, COMMENT_MAX_LENGTH))}
-                        placeholder="Write a reply..."
+                        placeholder={t("comments.replyPlaceholder")}
                         maxLength={COMMENT_MAX_LENGTH}
                         className="flex-1 px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
                       />
@@ -189,7 +191,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
           <form onSubmit={handleSubmitComment} className="flex items-center gap-3">
             <img
               src={myProfile?.profilePhoto || DEFAULT_AVATAR}
-              alt="Your avatar"
+              alt={t("comments.yourAvatarAlt")}
               className="w-8 h-8 rounded-full object-cover flex-shrink-0"
             />
             <div className="flex-1 relative">
@@ -197,7 +199,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
                 type="text"
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value.slice(0, COMMENT_MAX_LENGTH))}
-                placeholder="Write a comment..."
+                placeholder={t("comments.commentPlaceholder")}
                 maxLength={COMMENT_MAX_LENGTH}
                 className="w-full pl-4 pr-12 py-2.5 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
               />

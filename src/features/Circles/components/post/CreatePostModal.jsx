@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { suggestedTags } from "../../constants/postOptions";
 import { MAX_MEDIA_ITEMS, MAX_VIDEO_DURATION_SEC } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
@@ -23,6 +24,7 @@ import BottomSheetModal from "../common/BottomSheetModal";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 
 export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
+  const { t } = useTranslation("circles");
   const { data: myProfile } = useMyProfile();
   const [postContent, setPostContent] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
@@ -134,7 +136,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       onClose();
     } catch (err) {
       console.error(err);
-      alert(err?.response?.data?.error || "Failed to create post");
+      alert(err?.response?.data?.error || t("createPostModal.failedToCreate"));
     } finally {
       setIsSubmitting(false);
     }
@@ -150,9 +152,9 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       {/* Header */}
             <div className="flex-shrink-0 p-4 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-gray-800">Create Post</h3>
+                <h3 className="text-lg font-bold text-gray-800">{t("createPostModal.header")}</h3>
                 {circleName && (
-                  <p className="text-xs text-gray-500 mt-0.5">in {circleName}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{t("createPostModal.inCircle")}{circleName}</p>
                 )}
               </div>
               <button
@@ -169,12 +171,12 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
               <div className="flex items-center gap-3">
                 <img
                   src={myProfile?.profilePhoto || DEFAULT_AVATAR}
-                  alt={myProfile?.name || "Your avatar"}
+                  alt={myProfile?.name || t("createPostModal.yourAvatarAlt")}
                   className="w-10 h-10 rounded-full object-cover"
                 />
                 <div>
-                  <h4 className="font-semibold text-gray-800">{myProfile?.name || "You"}</h4>
-                  <p className="text-xs text-gray-500">Post to circle</p>
+                  <h4 className="font-semibold text-gray-800">{myProfile?.name || t("createPostModal.you")}</h4>
+                  <p className="text-xs text-gray-500">{t("createPostModal.postToCircle")}</p>
                 </div>
               </div>
 
@@ -186,7 +188,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                     setPostContent(e.target.value);
                   }
                 }}
-                placeholder="Share your running experience, tips, or ask a question..."
+                placeholder={t("createPostModal.placeholder")}
                 rows={5}
                 maxLength={1000}
                 className="w-full px-4 py-3 bg-white text-gray-800 placeholder-gray-400 border border-gray-300 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none text-sm"
@@ -200,7 +202,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
               {/* Media Upload Area */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Add Photos & Videos <span className="text-gray-400 font-normal">(Max {MAX_MEDIA_ITEMS}, videos ≤ {MAX_VIDEO_DURATION_SEC}s)</span>
+                  {t("createPostModal.addMediaLabel")}<span className="text-gray-400 font-normal">{t("createPostModal.addMediaHint", { maxItems: MAX_MEDIA_ITEMS, maxDuration: MAX_VIDEO_DURATION_SEC })}</span>
                 </label>
 
                 {/* Media Preview Grid */}
@@ -268,7 +270,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                           {item.type === "video" && (
                             <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-purple-500/90 rounded text-xs text-white flex items-center gap-1">
                               <Video className="w-3 h-3" />
-                              Video
+                              {t("createPostModal.videoBadge")}
                             </div>
                           )}
                         </motion.div>
@@ -290,7 +292,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                       />
                       <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-primary hover:bg-gray-50 transition-colors">
                         <Image className="w-6 h-6 text-gray-400" />
-                        <span className="text-xs text-gray-500">Add Photos</span>
+                        <span className="text-xs text-gray-500">{t("createPostModal.addPhotos")}</span>
                       </div>
                     </label>
 
@@ -303,7 +305,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                       />
                       <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-purple-500 hover:bg-purple-50 transition-colors">
                         <Video className="w-6 h-6 text-gray-400" />
-                        <span className="text-xs text-gray-500">Add Video (≤{MAX_VIDEO_DURATION_SEC}s)</span>
+                        <span className="text-xs text-gray-500">{t("createPostModal.addVideo", { maxDuration: MAX_VIDEO_DURATION_SEC })}</span>
                       </div>
                     </label>
                   </div>
@@ -312,7 +314,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 {isValidating && (
                   <p className="text-xs text-primary mt-2 flex items-center gap-1.5">
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    Checking video...
+                    {t("createPostModal.checkingVideo")}
                   </p>
                 )}
               </div>
@@ -328,7 +330,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                       <button
                         onClick={() => setIncludeLocation(false)}
                         className="ml-1 hover:bg-blue-100 rounded-full p-0.5"
-                        aria-label="Remove location"
+                        aria-label={t("createPostModal.removeLocation")}
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -339,7 +341,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-500 rounded-full text-xs font-medium hover:bg-gray-200 transition-colors"
                     >
                       <MapPin className="w-3.5 h-3.5" />
-                      Add location
+                      {t("createPostModal.addLocation")}
                     </button>
                   )}
                 </div>
@@ -348,7 +350,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
               {/* Tags Section */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Tags
+                  {t("createPostModal.tags")}
                 </label>
 
                 {/* Selected Tags */}
@@ -395,7 +397,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                       type="text"
                       value={tagInput}
                       onChange={(e) => setTagInput(e.target.value)}
-                      placeholder="Enter custom tag..."
+                      placeholder={t("createPostModal.customTagPlaceholder")}
                       className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:border-primary"
                       onKeyPress={(e) => {
                         if (e.key === "Enter") {
@@ -407,13 +409,13 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                       onClick={handleAddCustomTag}
                       className="px-3 py-2 bg-primary text-white rounded-lg text-xs font-medium hover:bg-primary/90"
                     >
-                      Add
+                      {t("createPostModal.add")}
                     </button>
                     <button
                       onClick={() => setShowTagInput(false)}
                       className="px-3 py-2 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-200"
                     >
-                      Cancel
+                      {t("createPostModal.cancel")}
                     </button>
                   </div>
                 ) : (
@@ -421,18 +423,18 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                     onClick={() => setShowTagInput(true)}
                     className="text-primary text-xs font-medium hover:underline"
                   >
-                    + Add custom tag
+                    {t("createPostModal.addCustomTag")}
                   </button>
                 )}
               </div>
 
               {/* Post Options */}
               <div className="space-y-3 pt-2 border-t border-gray-100">
-                <h4 className="text-sm font-semibold text-gray-700">Add to your post</h4>
+                <h4 className="text-sm font-semibold text-gray-700">{t("createPostModal.addToYourPost")}</h4>
                 <div className="flex flex-wrap gap-3">
                   <label className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">
                     <Image className="w-4 h-4 text-green-500" />
-                    Photo
+                    {t("createPostModal.photo")}
                     <input
                       type="file"
                       accept="image/*"
@@ -443,7 +445,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                   </label>
                   <label className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">
                     <Video className="w-4 h-4 text-purple-500" />
-                    Video
+                    {t("createPostModal.video")}
                     <input
                       type="file"
                       accept="video/*"
@@ -462,7 +464,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                   onClick={onClose}
                   className="flex-1 px-6 py-3 border border-gray-200 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
                 >
-                  Cancel
+                  {t("createPostModal.cancel")}
                 </button>
                 <button
                   onClick={handleSubmit}
@@ -478,7 +480,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                   ) : (
                     <Send className="w-4 h-4" />
                   )}
-                  {isSubmitting ? "Posting..." : "Post"}
+                  {isSubmitting ? t("createPostModal.posting") : t("createPostModal.post")}
                 </button>
               </div>
             </div>

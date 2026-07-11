@@ -1,0 +1,229 @@
+{
+  "common": {
+    "anonymous": "Аноним",
+    "circlePost": "Публикация в круге",
+    "cancel": "Отмена",
+    "postReported": "Публикация отправлена в жалобу",
+    "noCirclesFound": "Круги не найдены",
+    "tryAdjustingSearch": "Попробуйте изменить поиск или фильтры",
+    "clearFilters": "Сбросить фильтры",
+    "clearSearch": "Очистить поиск",
+    "fetchingLocation": "Определение местоположения...",
+    "photo": "Фото",
+    "video": "Видео",
+    "discover": "Обзор",
+    "forYou": "Для вас",
+    "postsCount": "{{count}} публикаций",
+    "membersCount": "{{count}} участников",
+    "linkCopied": "Ссылка на публикацию скопирована",
+    "failedToShare": "Не удалось поделиться публикацией"
+  },
+
+  "postDetails": {
+    "notFoundTitle": "Публикация не найдена",
+    "goBack": "Назад",
+    "header": "Публикация",
+    "inCircle": "в ",
+    "postReportedAlert": "Публикация отправлена в жалобу"
+  },
+
+  "discoverCircles": {
+    "header": "Обзор кругов",
+    "allJoinedTitle": "Вы уже во всех кругах!",
+    "allJoinedBody": "Вы уже присоединились ко всем доступным кругам.",
+    "searchPlaceholder": "Поиск кругов...",
+    "joining": "Вступление...",
+    "joinCircle": "Вступить в круг"
+  },
+
+  "onboarding": {
+    "profileReadyToast": "Ваш профиль готов",
+    "genericErrorToast": "Что-то пошло не так. Попробуйте ещё раз.",
+    "goBack": "Назад",
+    "stepSelect": "Выберите свои круги",
+    "stepConfirm": "Подтвердите выбор",
+    "selectedCount": "Выбрано: {{count}}",
+    "heading": "Найдите своих людей через активности",
+    "subheading": "Выберите как минимум 3 круга на основе того, что вам нравится делать. Отличный способ естественно завести новых друзей (а может, и не только)!",
+    "selectMoreWarning": "Выберите ещё как минимум {{count}} круг(а/ов), чтобы продолжить",
+    "searchPlaceholder": "Поиск активностей...",
+    "confirmHeading": "Отличный выбор! 🎉",
+    "confirmSubheading": "Вы присоединяетесь к {{count}} группам по интересам. Готовьтесь весело провести время и встретить отличных людей!",
+    "yourCircles": "Ваши круги по активностям",
+    "removeCircle": "Удалить круг",
+    "whatToExpect": "Чего ожидать",
+    "naturalConnections": {
+      "title": "Естественные связи",
+      "body": "Знакомьтесь с людьми, занимаясь тем, что вам действительно нравится"
+    },
+    "regularMeetups": {
+      "title": "Регулярные встречи",
+      "body": "Еженедельные мероприятия, прогулки и общение"
+    },
+    "continueWithCount": "Продолжить с {{count}} кругами",
+    "needMoreSuffix": " (нужно ещё {{count}})",
+    "joining": "Вступление...",
+    "settingUpProfile": "Настройка вашего профиля...",
+    "joinAndStart": "Вступить в {{count}} круг(а/ов) и начать общение",
+    "addMoreCircles": "Добавить ещё круги"
+  },
+
+  "circlesHome": {
+    "postToCircle": "Опубликовать в круге",
+    "new": "Новое",
+    "whatsOnYourMind": "О чём вы думаете?",
+    "postsSuffix": "· {{count}} публикаций",
+    "viewCircle": "Просмотреть круг",
+    "noPostsYetTitle": "Пока нет публикаций",
+    "beFirstToPost": "Станьте первым, кто опубликует в {{circleName}}",
+    "createAPost": "Создать публикацию",
+    "matchRequestSent": "Запрос на совпадение отправлен",
+    "feedQuietTitle": "В вашей ленте тихо",
+    "feedQuietBody": "Присоединяйтесь к новым кругам, чтобы наполнить её",
+    "meanwhileIn": "Тем временем в ",
+    "seeAll": "Смотреть все"
+  },
+
+  "circleDetails": {
+    "notFound": "Круг не найден",
+    "failedToShare": "Не удалось поделиться публикацией",
+    "deletePostTitle": "Удалить публикацию?",
+    "deletePostMessage": "Это действие нельзя отменить. Публикация будет удалена навсегда.",
+    "share": "Поделиться",
+    "invite": "Пригласить",
+    "joinCircle": "Вступить в круг",
+    "about": "О круге",
+    "createdOn": "Создан {{date}}",
+    "circleRules": "Правила круга",
+    "yourAvatarAlt": "Ваш аватар",
+    "shareSomething": "Поделитесь чем-нибудь с кругом...",
+    "post": "Опубликовать",
+    "posts": "Публикации",
+    "postsSuffix": "{{count}} публикаций",
+    "noPostsYetTitle": "Пока нет публикаций",
+    "noPostsYetSubtitle": "Станьте первым, кто поделится чем-то в этом круге!",
+    "createPost": "Создать публикацию",
+    "postReportedAlert": "Публикация отправлена в жалобу"
+  },
+
+  "sidebar": {
+    "menu": {
+      "home": "Главная",
+      "myCircles": "Мои круги",
+      "matches": "Совпадения",
+      "likes": "Лайки",
+      "messages": "Сообщения",
+      "notifications": "Уведомления"
+    },
+    "account": {
+      "profile": "Профиль",
+      "settings": "Настройки",
+      "privacy": "Конфиденциальность",
+      "helpCenter": "Центр помощи"
+    },
+    "title": "Круги",
+    "subtitle": "Общайтесь и делитесь",
+    "userAlt": "Пользователь",
+    "fallbackName": "Пользователь",
+    "mainMenu": "Главное меню",
+    "accountSection": "Аккаунт",
+    "logOut": "Выйти",
+    "footer": "Версия 1.0.0 • © 2024 Circles"
+  },
+
+  "postMeta": {
+    "likedPercentage": "{{percent}}% понравилось"
+  },
+
+  "comments": {
+    "delete": "Удалить",
+    "cancel": "Отмена",
+    "reply": "Ответить",
+    "header": "Комментарии",
+    "empty": "Пока нет комментариев. Будьте первым!",
+    "youAlt": "Вы",
+    "replyPlaceholder": "Напишите ответ...",
+    "yourAvatarAlt": "Ваш аватар",
+    "commentPlaceholder": "Напишите комментарий..."
+  },
+
+  "editPostModal": {
+    "header": "Редактировать публикацию",
+    "placeholder": "О чём вы думаете?",
+    "removeLocation": "Удалить местоположение",
+    "addChangeLocation": "Добавить / изменить местоположение",
+    "addMediaTitle": "Добавить фото / видео",
+    "saving": "Сохранение...",
+    "fetchingLocation": "Определение местоположения...",
+    "save": "Сохранить"
+  },
+
+  "createCircleModal": {
+    "invalidImageType": "Пожалуйста, выберите изображение в формате JPG, PNG или WEBP",
+    "imageTooLarge": "Размер изображения должен быть не более 5 МБ",
+    "nameRequired": "Укажите название круга",
+    "descriptionRequired": "Укажите описание",
+    "categoryRequired": "Пожалуйста, выберите категорию",
+    "failedToCreate": "Не удалось создать круг",
+    "header": "Создать круг",
+    "subheading": "Создайте сообщество на основе своих интересов",
+    "imageLabel": "Изображение круга",
+    "coverPreviewAlt": "Предпросмотр обложки круга",
+    "clickToUpload": "Нажмите, чтобы загрузить",
+    "orDragAndDrop": " или перетащите файл",
+    "uploadHint": "PNG, JPG до 5 МБ",
+    "nameLabel": "Название круга",
+    "namePlaceholder": "например, Пешие походы по выходным",
+    "descriptionLabel": "Описание",
+    "descriptionPlaceholder": "О чём этот круг?",
+    "categoryLabel": "Категория",
+    "selectCategory": "Выберите категорию",
+    "uploadingImage": "Загрузка изображения...",
+    "creating": "Создание...",
+    "fetchingLocation": "Определение местоположения...",
+    "createCircle": "Создать круг"
+  },
+
+  "createPostModal": {
+    "failedToCreate": "Не удалось создать публикацию",
+    "header": "Создать публикацию",
+    "inCircle": "в ",
+    "yourAvatarAlt": "Ваш аватар",
+    "you": "Вы",
+    "postToCircle": "Публикация в круге",
+    "placeholder": "Поделитесь своим опытом бега, советами или задайте вопрос...",
+    "addMediaLabel": "Добавить фото и видео ",
+    "addMediaHint": "(до {{maxItems}}, видео не длиннее {{maxDuration}} с)",
+    "videoBadge": "Видео",
+    "addPhotos": "Добавить фото",
+    "addVideo": "Добавить видео (до {{maxDuration}} с)",
+    "checkingVideo": "Проверка видео...",
+    "removeLocation": "Удалить местоположение",
+    "addLocation": "Добавить местоположение",
+    "tags": "Теги",
+    "customTagPlaceholder": "Введите свой тег...",
+    "add": "Добавить",
+    "cancel": "Отмена",
+    "addCustomTag": "+ Добавить свой тег",
+    "addToYourPost": "Добавить к вашей публикации",
+    "photo": "Фото",
+    "video": "Видео",
+    "posting": "Публикация...",
+    "post": "Опубликовать"
+  },
+
+  "postCard": {
+    "editPost": "Редактировать публикацию",
+    "share": "Поделиться",
+    "deletePost": "Удалить публикацию",
+    "reportPost": "Пожаловаться на публикацию"
+  },
+
+  "postMedia": {
+    "videoUnavailable": "Видео недоступно",
+    "retry": "Повторить",
+    "muteVideo": "Выключить звук",
+    "unmuteVideo": "Включить звук",
+    "imageUnavailable": "Изображение недоступно"
+  }
+}

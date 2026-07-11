@@ -1,12 +1,13 @@
 import { Heart, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const DEFAULT_AVATAR =
   "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop";
 
 export default function CommentCard({
   avatar = DEFAULT_AVATAR,
-  name = "Anonymous",
+  name,
   text,
   time,
   likes = 0,
@@ -18,13 +19,15 @@ export default function CommentCard({
   replySlot,
   replies = [],
 }) {
+  const { t } = useTranslation("circles");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const displayName = name || t("common.anonymous");
 
   return (
     <div className={`flex gap-3 ${isReply ? "ml-4 mt-2" : ""}`}>
       <img
         src={avatar}
-        alt={name}
+        alt={displayName}
         loading="lazy"
         decoding="async"
         onClick={onAuthorClick}
@@ -36,7 +39,7 @@ export default function CommentCard({
             <h4
               onClick={onAuthorClick}
               className={`font-semibold text-gray-800 text-sm ${onAuthorClick ? "cursor-pointer active:opacity-60 transition-opacity" : ""}`}
-            >{name}</h4>
+            >{displayName}</h4>
             {onDelete && !confirmDelete && (
               <button
                 onClick={() => setConfirmDelete(true)}
@@ -51,13 +54,13 @@ export default function CommentCard({
                   onClick={() => { onDelete(); setConfirmDelete(false); }}
                   className="flex items-center gap-1 px-2 py-0.5 bg-rose-500 text-white text-xs rounded-full"
                 >
-                  <Trash2 className="w-3 h-3" /> Delete
+                  <Trash2 className="w-3 h-3" /> {t("comments.delete")}
                 </button>
                 <button
                   onClick={() => setConfirmDelete(false)}
                   className="px-2 py-0.5 bg-gray-200 text-gray-600 text-xs rounded-full"
                 >
-                  Cancel
+                  {t("comments.cancel")}
                 </button>
               </div>
             )}
@@ -83,7 +86,7 @@ export default function CommentCard({
               onClick={onReply}
               className="text-xs text-gray-400 hover:text-gray-600 transition-colors font-semibold"
             >
-              Reply
+              {t("comments.reply")}
             </button>
           )}
         </div>

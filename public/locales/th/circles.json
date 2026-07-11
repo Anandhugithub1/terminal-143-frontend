@@ -1,0 +1,229 @@
+{
+  "common": {
+    "anonymous": "ไม่ระบุชื่อ",
+    "circlePost": "โพสต์ในเซอร์เคิล",
+    "cancel": "ยกเลิก",
+    "postReported": "รายงานโพสต์แล้ว",
+    "noCirclesFound": "ไม่พบเซอร์เคิล",
+    "tryAdjustingSearch": "ลองปรับคำค้นหาหรือตัวกรองของคุณ",
+    "clearFilters": "ล้างตัวกรอง",
+    "clearSearch": "ล้างคำค้นหา",
+    "fetchingLocation": "กำลังดึงตำแหน่ง...",
+    "photo": "รูปภาพ",
+    "video": "วิดีโอ",
+    "discover": "ค้นพบ",
+    "forYou": "สำหรับคุณ",
+    "postsCount": "{{count}} โพสต์",
+    "membersCount": "{{count}} สมาชิก",
+    "linkCopied": "คัดลอกลิงก์โพสต์แล้ว",
+    "failedToShare": "แชร์โพสต์ไม่สำเร็จ"
+  },
+
+  "postDetails": {
+    "notFoundTitle": "ไม่พบโพสต์",
+    "goBack": "ย้อนกลับ",
+    "header": "โพสต์",
+    "inCircle": "ใน ",
+    "postReportedAlert": "รายงานโพสต์แล้ว"
+  },
+
+  "discoverCircles": {
+    "header": "ค้นพบเซอร์เคิล",
+    "allJoinedTitle": "คุณเข้าร่วมทุกเซอร์เคิลแล้ว!",
+    "allJoinedBody": "คุณเข้าร่วมเซอร์เคิลทั้งหมดที่เรามีในตอนนี้แล้ว",
+    "searchPlaceholder": "ค้นหาเซอร์เคิล...",
+    "joining": "กำลังเข้าร่วม...",
+    "joinCircle": "เข้าร่วมเซอร์เคิล"
+  },
+
+  "onboarding": {
+    "profileReadyToast": "โปรไฟล์ของคุณพร้อมแล้ว",
+    "genericErrorToast": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
+    "goBack": "ย้อนกลับ",
+    "stepSelect": "เลือกเซอร์เคิลของคุณ",
+    "stepConfirm": "ยืนยันตัวเลือกของคุณ",
+    "selectedCount": "เลือกแล้ว {{count}} รายการ",
+    "heading": "ค้นหาคนที่ใช่ผ่านกิจกรรม",
+    "subheading": "เลือกอย่างน้อย 3 เซอร์เคิลตามสิ่งที่คุณชอบทำ วิธีที่ดีในการพบเพื่อนใหม่ (และอาจมากกว่านั้น) แบบเป็นธรรมชาติ!",
+    "selectMoreWarning": "เลือกอีกอย่างน้อย {{count}} เซอร์เคิลเพื่อดำเนินการต่อ",
+    "searchPlaceholder": "ค้นหากิจกรรม...",
+    "confirmHeading": "ตัวเลือกที่ยอดเยี่ยม! 🎉",
+    "confirmSubheading": "คุณกำลังเข้าร่วม {{count}} กลุ่มกิจกรรม เตรียมพร้อมสนุกและพบปะผู้คนที่ยอดเยี่ยม!",
+    "yourCircles": "เซอร์เคิลกิจกรรมของคุณ",
+    "removeCircle": "ลบเซอร์เคิล",
+    "whatToExpect": "สิ่งที่คาดหวังได้",
+    "naturalConnections": {
+      "title": "การเชื่อมต่อที่เป็นธรรมชาติ",
+      "body": "พบปะผู้คนขณะทำกิจกรรมที่คุณชอบอย่างแท้จริง"
+    },
+    "regularMeetups": {
+      "title": "การพบปะสม่ำเสมอ",
+      "body": "กิจกรรม การออกไปเที่ยว และช่วงเวลาสังสรรค์ทุกสัปดาห์"
+    },
+    "continueWithCount": "ดำเนินการต่อด้วย {{count}} เซอร์เคิล",
+    "needMoreSuffix": " (ต้องการอีก {{count}})",
+    "joining": "กำลังเข้าร่วม...",
+    "settingUpProfile": "กำลังตั้งค่าโปรไฟล์ของคุณ...",
+    "joinAndStart": "เข้าร่วม {{count}} เซอร์เคิล และเริ่มเชื่อมต่อ",
+    "addMoreCircles": "เพิ่มเซอร์เคิลอีก"
+  },
+
+  "circlesHome": {
+    "postToCircle": "โพสต์ไปยังเซอร์เคิล",
+    "new": "ใหม่",
+    "whatsOnYourMind": "คุณกำลังคิดอะไรอยู่?",
+    "postsSuffix": "· {{count}} โพสต์",
+    "viewCircle": "ดูเซอร์เคิล",
+    "noPostsYetTitle": "ยังไม่มีโพสต์",
+    "beFirstToPost": "เป็นคนแรกที่โพสต์ใน {{circleName}}",
+    "createAPost": "สร้างโพสต์",
+    "matchRequestSent": "ส่งคำขอจับคู่แล้ว",
+    "feedQuietTitle": "ฟีดของคุณเงียบไปหน่อย",
+    "feedQuietBody": "เข้าร่วมเซอร์เคิลเพิ่มเติมเพื่อเติมเต็มฟีด",
+    "meanwhileIn": "ในขณะเดียวกันที่ ",
+    "seeAll": "ดูทั้งหมด"
+  },
+
+  "circleDetails": {
+    "notFound": "ไม่พบเซอร์เคิล",
+    "failedToShare": "แชร์โพสต์ไม่สำเร็จ",
+    "deletePostTitle": "ลบโพสต์?",
+    "deletePostMessage": "การกระทำนี้ไม่สามารถย้อนกลับได้ โพสต์จะถูกลบอย่างถาวร",
+    "share": "แชร์",
+    "invite": "เชิญ",
+    "joinCircle": "เข้าร่วมเซอร์เคิล",
+    "about": "เกี่ยวกับ",
+    "createdOn": "สร้างเมื่อ {{date}}",
+    "circleRules": "กฎของเซอร์เคิล",
+    "yourAvatarAlt": "รูปโปรไฟล์ของคุณ",
+    "shareSomething": "แชร์บางอย่างกับเซอร์เคิล...",
+    "post": "โพสต์",
+    "posts": "โพสต์",
+    "postsSuffix": "{{count}} โพสต์",
+    "noPostsYetTitle": "ยังไม่มีโพสต์",
+    "noPostsYetSubtitle": "เป็นคนแรกที่แชร์อะไรบางอย่างกับเซอร์เคิลนี้!",
+    "createPost": "สร้างโพสต์",
+    "postReportedAlert": "รายงานโพสต์แล้ว"
+  },
+
+  "sidebar": {
+    "menu": {
+      "home": "หน้าแรก",
+      "myCircles": "เซอร์เคิลของฉัน",
+      "matches": "แมตช์",
+      "likes": "ถูกใจ",
+      "messages": "ข้อความ",
+      "notifications": "การแจ้งเตือน"
+    },
+    "account": {
+      "profile": "โปรไฟล์",
+      "settings": "การตั้งค่า",
+      "privacy": "ความเป็นส่วนตัว",
+      "helpCenter": "ศูนย์ช่วยเหลือ"
+    },
+    "title": "เซอร์เคิล",
+    "subtitle": "เชื่อมต่อและแบ่งปัน",
+    "userAlt": "ผู้ใช้",
+    "fallbackName": "ผู้ใช้",
+    "mainMenu": "เมนูหลัก",
+    "accountSection": "บัญชี",
+    "logOut": "ออกจากระบบ",
+    "footer": "เวอร์ชัน 1.0.0 • © 2024 Circles"
+  },
+
+  "postMeta": {
+    "likedPercentage": "{{percent}}% ถูกใจ"
+  },
+
+  "comments": {
+    "delete": "ลบ",
+    "cancel": "ยกเลิก",
+    "reply": "ตอบกลับ",
+    "header": "ความคิดเห็น",
+    "empty": "ยังไม่มีความคิดเห็น เป็นคนแรกที่แสดงความคิดเห็น!",
+    "youAlt": "คุณ",
+    "replyPlaceholder": "เขียนคำตอบ...",
+    "yourAvatarAlt": "รูปโปรไฟล์ของคุณ",
+    "commentPlaceholder": "เขียนความคิดเห็น..."
+  },
+
+  "editPostModal": {
+    "header": "แก้ไขโพสต์",
+    "placeholder": "คุณกำลังคิดอะไรอยู่?",
+    "removeLocation": "ลบตำแหน่ง",
+    "addChangeLocation": "เพิ่ม / เปลี่ยนตำแหน่ง",
+    "addMediaTitle": "เพิ่มรูปภาพ / วิดีโอ",
+    "saving": "กำลังบันทึก...",
+    "fetchingLocation": "กำลังดึงตำแหน่ง...",
+    "save": "บันทึก"
+  },
+
+  "createCircleModal": {
+    "invalidImageType": "โปรดเลือกไฟล์ภาพ JPG, PNG หรือ WEBP",
+    "imageTooLarge": "รูปภาพต้องมีขนาดไม่เกิน 5MB",
+    "nameRequired": "กรุณากรอกชื่อเซอร์เคิล",
+    "descriptionRequired": "กรุณากรอกคำอธิบาย",
+    "categoryRequired": "กรุณาเลือกหมวดหมู่",
+    "failedToCreate": "สร้างเซอร์เคิลไม่สำเร็จ",
+    "header": "สร้างเซอร์เคิล",
+    "subheading": "สร้างชุมชนตามความสนใจของคุณ",
+    "imageLabel": "รูปภาพเซอร์เคิล",
+    "coverPreviewAlt": "ตัวอย่างภาพปกเซอร์เคิล",
+    "clickToUpload": "คลิกเพื่ออัปโหลด",
+    "orDragAndDrop": " หรือลากและวาง",
+    "uploadHint": "PNG, JPG ขนาดไม่เกิน 5MB",
+    "nameLabel": "ชื่อเซอร์เคิล",
+    "namePlaceholder": "เช่น กลุ่มเดินป่าวันหยุด",
+    "descriptionLabel": "คำอธิบาย",
+    "descriptionPlaceholder": "เซอร์เคิลนี้เกี่ยวกับอะไร?",
+    "categoryLabel": "หมวดหมู่",
+    "selectCategory": "เลือกหมวดหมู่",
+    "uploadingImage": "กำลังอัปโหลดรูปภาพ...",
+    "creating": "กำลังสร้าง...",
+    "fetchingLocation": "กำลังดึงตำแหน่ง...",
+    "createCircle": "สร้างเซอร์เคิล"
+  },
+
+  "createPostModal": {
+    "failedToCreate": "สร้างโพสต์ไม่สำเร็จ",
+    "header": "สร้างโพสต์",
+    "inCircle": "ใน ",
+    "yourAvatarAlt": "รูปโปรไฟล์ของคุณ",
+    "you": "คุณ",
+    "postToCircle": "โพสต์ไปยังเซอร์เคิล",
+    "placeholder": "แชร์ประสบการณ์การวิ่ง เคล็ดลับ หรือถามคำถาม...",
+    "addMediaLabel": "เพิ่มรูปภาพและวิดีโอ ",
+    "addMediaHint": "(สูงสุด {{maxItems}}, วิดีโอไม่เกิน {{maxDuration}} วินาที)",
+    "videoBadge": "วิดีโอ",
+    "addPhotos": "เพิ่มรูปภาพ",
+    "addVideo": "เพิ่มวิดีโอ (ไม่เกิน {{maxDuration}} วินาที)",
+    "checkingVideo": "กำลังตรวจสอบวิดีโอ...",
+    "removeLocation": "ลบตำแหน่ง",
+    "addLocation": "เพิ่มตำแหน่ง",
+    "tags": "แท็ก",
+    "customTagPlaceholder": "ป้อนแท็กที่กำหนดเอง...",
+    "add": "เพิ่ม",
+    "cancel": "ยกเลิก",
+    "addCustomTag": "+ เพิ่มแท็กที่กำหนดเอง",
+    "addToYourPost": "เพิ่มลงในโพสต์ของคุณ",
+    "photo": "รูปภาพ",
+    "video": "วิดีโอ",
+    "posting": "กำลังโพสต์...",
+    "post": "โพสต์"
+  },
+
+  "postCard": {
+    "editPost": "แก้ไขโพสต์",
+    "share": "แชร์",
+    "deletePost": "ลบโพสต์",
+    "reportPost": "รายงานโพสต์"
+  },
+
+  "postMedia": {
+    "videoUnavailable": "ไม่สามารถแสดงวิดีโอได้",
+    "retry": "ลองอีกครั้ง",
+    "muteVideo": "ปิดเสียงวิดีโอ",
+    "unmuteVideo": "เปิดเสียงวิดีโอ",
+    "imageUnavailable": "ไม่สามารถแสดงรูปภาพได้"
+  }
+}

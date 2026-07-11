@@ -1,6 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import PostCard from "../components/post/PostCard";
@@ -13,6 +14,7 @@ import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 
 export default function PostDetailsPage() {
+  const { t } = useTranslation("circles");
   const { circleId, postId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -26,9 +28,11 @@ export default function PostDetailsPage() {
 
   const handleShare = () =>
     shareLink({
-      title: post?.authorName ? `${post.authorName}'s post` : "Circle post",
+      title: post?.authorName ? `${post.authorName}'s post` : t("common.circlePost"),
       text: post?.content || "",
       url: window.location.href,
+      copiedMessage: t("common.linkCopied"),
+      failedMessage: t("common.failedToShare"),
     });
 
   if (isLoading) {
@@ -38,12 +42,12 @@ export default function PostDetailsPage() {
   if (!post) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 text-gray-500 bg-gray-50">
-        <p>Post not found</p>
+        <p>{t("postDetails.notFoundTitle")}</p>
         <button
           onClick={() => navigate(-1)}
           className="text-primary font-semibold hover:underline"
         >
-          Go back
+          {t("postDetails.goBack")}
         </button>
       </div>
     );
@@ -68,10 +72,10 @@ export default function PostDetailsPage() {
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
           <div>
-            <h1 className="text-lg font-bold text-gray-800">Post</h1>
+            <h1 className="text-lg font-bold text-gray-800">{t("postDetails.header")}</h1>
             {(post.circleName || circle?.name) && (
               <p className="text-xs text-gray-500">
-                in{" "}
+                {t("postDetails.inCircle")}
                 <button
                   onClick={() => navigate(`/circles/${circleId}`)}
                   className="font-semibold text-primary hover:underline"
@@ -89,13 +93,13 @@ export default function PostDetailsPage() {
         <PostCard
           variant="circle"
           avatar={post.authorImage || DEFAULT_AVATAR}
-          name={post.authorName || "Anonymous"}
+          name={post.authorName || t("common.anonymous")}
           meta={<PostMeta post={post} />}
           body={post.content}
           media={post.media}
           tags={post.tags || []}
           onShare={handleShare}
-          onReport={() => alert("Post reported")}
+          onReport={() => alert(t("postDetails.postReportedAlert"))}
           actionsWrapperClassName="grid grid-cols-3 gap-2"
           actions={buildPostActions({
             isLiked,

@@ -10,12 +10,14 @@ import {
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
 import { useJoinCircle } from "../hooks/useMembership";
 import TopNav from "../../../components/Layout/TopNavigation";
 import NavBar from "../../../components/Layout/Navbar";
 
 export default function OnboardingPage({ onComplete, onBack }) {
+  const { t } = useTranslation("circles");
   const navigate = useNavigate();
   const { mutateAsync: joinCircle, isPending: isJoining } = useJoinCircle();
   const [selectedCircles, setSelectedCircles] = useState([]);
@@ -83,13 +85,13 @@ export default function OnboardingPage({ onComplete, onBack }) {
       );
 
       if (onComplete) {
-        toast.success("Your profile is ready");
+        toast.success(t("onboarding.profileReadyToast"));
         navigate("/home", { state: { profileJustCompleted: true } });
       } else {
         navigate("/circles");
       }
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(t("onboarding.genericErrorToast"));
     } finally {
       setIsCompleting(false);
     }
@@ -105,17 +107,17 @@ export default function OnboardingPage({ onComplete, onBack }) {
           <button
             onClick={step === 2 ? () => setStep(1) : (onBack || (() => navigate(-1)))}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors active:bg-gray-200 shrink-0"
-            aria-label="Go back"
+            aria-label={t("onboarding.goBack")}
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs font-medium text-gray-500">
-                {step === 1 ? "Select your circles" : "Confirm your choices"}
+                {step === 1 ? t("onboarding.stepSelect") : t("onboarding.stepConfirm")}
               </span>
               <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                {selectedCircles.length} selected
+                {t("onboarding.selectedCount", { count: selectedCircles.length })}
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-1.5">
@@ -141,17 +143,17 @@ export default function OnboardingPage({ onComplete, onBack }) {
                 <Sparkles className="w-8 h-8 text-primary" />
               </div>
               <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                Find Your People Through Activities
+                {t("onboarding.heading")}
               </h2>
               <p className="text-gray-600 max-w-md mx-auto px-4">
-                Select at least 3 circles based on what you love to do. Great way to meet new friends (and maybe more) naturally!
+                {t("onboarding.subheading")}
               </p>
             </div>
 
             {selectedCircles.length < 3 && selectedCircles.length > 0 && (
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-center">
                 <p className="text-amber-700 text-sm font-medium">
-                  Select at least {3 - selectedCircles.length} more circle{3 - selectedCircles.length > 1 ? 's' : ''} to continue
+                  {t("onboarding.selectMoreWarning", { count: 3 - selectedCircles.length, plural: 3 - selectedCircles.length === 1 ? '' : 's' })}
                 </p>
               </div>
             )}
@@ -160,7 +162,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search activities..."
+                placeholder={t("onboarding.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base"
@@ -169,7 +171,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
                 <button
                   onClick={() => setSearchQuery("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
-                  aria-label="Clear search"
+                  aria-label={t("common.clearSearch")}
                 >
                   <X className="w-4 h-4 text-gray-400" />
                 </button>
@@ -260,13 +262,13 @@ export default function OnboardingPage({ onComplete, onBack }) {
             {filteredCircles.length === 0 && (
               <div className="text-center py-12">
                 <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">No circles found</h3>
-                <p className="text-gray-500 mb-4">Try adjusting your search or filters</p>
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{t("common.noCirclesFound")}</h3>
+                <p className="text-gray-500 mb-4">{t("common.tryAdjustingSearch")}</p>
                 <button
                   onClick={clearFilters}
                   className="px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:shadow-md transition-all active:scale-95"
                 >
-                  Clear filters
+                  {t("common.clearFilters")}
                 </button>
               </div>
             )}
@@ -278,14 +280,14 @@ export default function OnboardingPage({ onComplete, onBack }) {
               <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
                 <Sparkles className="w-10 h-10 text-green-600" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Awesome Choices! 🎉</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">{t("onboarding.confirmHeading")}</h2>
               <p className="text-gray-600 max-w-md mx-auto px-4">
-                You're joining {selectedCircles.length} activity groups. Get ready to have fun and meet great people!
+                {t("onboarding.confirmSubheading", { count: selectedCircles.length })}
               </p>
             </div>
 
             <div className="space-y-4 mb-8">
-              <h3 className="text-lg font-bold text-gray-800 px-1">Your Activity Circles</h3>
+              <h3 className="text-lg font-bold text-gray-800 px-1">{t("onboarding.yourCircles")}</h3>
               {selectedCirclesData.map((circle, index) => {
                 const Icon = circle.icon;
                 return (
@@ -310,7 +312,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
                     <button
                       onClick={() => toggleCircle(circle.id)}
                       className="text-red-500 hover:text-red-600 p-2 hover:bg-red-50 rounded-full transition-colors active:bg-red-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
-                      aria-label="Remove circle"
+                      aria-label={t("onboarding.removeCircle")}
                     >
                       <X className="w-5 h-5" />
                     </button>
@@ -320,15 +322,15 @@ export default function OnboardingPage({ onComplete, onBack }) {
             </div>
 
             <div className="bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl p-5 sm:p-6 mb-8">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">What to Expect</h3>
+              <h3 className="text-lg font-bold text-gray-800 mb-4">{t("onboarding.whatToExpect")}</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
                   <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
                     <Heart className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Natural Connections</h4>
-                    <p className="text-sm text-gray-600">Meet people while doing activities you genuinely enjoy</p>
+                    <h4 className="font-semibold text-gray-800 text-sm sm:text-base">{t("onboarding.naturalConnections.title")}</h4>
+                    <p className="text-sm text-gray-600">{t("onboarding.naturalConnections.body")}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -336,8 +338,8 @@ export default function OnboardingPage({ onComplete, onBack }) {
                     <Calendar className="w-4 h-4 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 text-sm sm:text-base">Regular Meetups</h4>
-                    <p className="text-sm text-gray-600">Weekly events, outings, and social hours</p>
+                    <h4 className="font-semibold text-gray-800 text-sm sm:text-base">{t("onboarding.regularMeetups.title")}</h4>
+                    <p className="text-sm text-gray-600">{t("onboarding.regularMeetups.body")}</p>
                   </div>
                 </div>
               </div>
@@ -358,8 +360,8 @@ export default function OnboardingPage({ onComplete, onBack }) {
                 selectedCircles.length >= 3 ? "bg-primary text-white hover:shadow-xl" : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
             >
-              Continue with {selectedCircles.length} Circle{selectedCircles.length !== 1 ? 's' : ''}
-              {selectedCircles.length < 3 && ` (Need ${3 - selectedCircles.length} more)`}
+              {t("onboarding.continueWithCount", { count: selectedCircles.length, plural: selectedCircles.length !== 1 ? 's' : '' })}
+              {selectedCircles.length < 3 && t("onboarding.needMoreSuffix", { count: 3 - selectedCircles.length })}
             </button>
           ) : (
             <div className="space-y-3">
@@ -371,17 +373,17 @@ export default function OnboardingPage({ onComplete, onBack }) {
                 }`}
               >
                 {isJoining
-                  ? "Joining..."
+                  ? t("onboarding.joining")
                   : isCompleting
-                  ? "Setting up your profile..."
-                  : `Join ${selectedCircles.length} Circle${selectedCircles.length !== 1 ? "s" : ""} & Start Connecting`}
+                  ? t("onboarding.settingUpProfile")
+                  : t("onboarding.joinAndStart", { count: selectedCircles.length, plural: selectedCircles.length !== 1 ? "s" : "" })}
               </button>
               <button
                 onClick={() => setStep(1)}
                 disabled={isJoining || isCompleting}
                 className="w-full py-3 text-gray-600 font-medium hover:text-primary transition-colors active:bg-gray-100 rounded-xl disabled:opacity-50"
               >
-                Add More Circles
+                {t("onboarding.addMoreCircles")}
               </button>
             </div>
           )}

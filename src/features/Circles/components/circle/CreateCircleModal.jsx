@@ -9,6 +9,8 @@ import {
   useEffect
 } from "react";
 
+import { useTranslation } from "react-i18next";
+
 import {
   circleCategories
 } from "../../constants/circleCategories";
@@ -41,6 +43,7 @@ export default function CreateCircleModal({
   isOpen,
   onClose
 }) {
+  const { t } = useTranslation("circles");
   const [
     circleName,
     setCircleName
@@ -101,7 +104,7 @@ export default function CreateCircleModal({
         )
       ) {
         alert(
-          "Please select a JPG, PNG, or WEBP image"
+          t("createCircleModal.invalidImageType")
         );
         return;
       }
@@ -111,7 +114,7 @@ export default function CreateCircleModal({
         5 * 1024 * 1024
       ) {
         alert(
-          "Image must be under 5MB"
+          t("createCircleModal.imageTooLarge")
         );
         return;
       }
@@ -163,7 +166,7 @@ export default function CreateCircleModal({
           !circleName.trim()
         ) {
           alert(
-            "Circle name is required"
+            t("createCircleModal.nameRequired")
           );
           return;
         }
@@ -172,7 +175,7 @@ export default function CreateCircleModal({
           !description.trim()
         ) {
           alert(
-            "Description is required"
+            t("createCircleModal.descriptionRequired")
           );
           return;
         }
@@ -181,7 +184,7 @@ export default function CreateCircleModal({
           !category
         ) {
           alert(
-            "Please select category"
+            t("createCircleModal.categoryRequired")
           );
           return;
         }
@@ -272,7 +275,7 @@ export default function CreateCircleModal({
             ?.response
             ?.data
             ?.error ||
-            "Failed to create circle"
+            t("createCircleModal.failedToCreate")
         );
       }
     };
@@ -292,8 +295,7 @@ export default function CreateCircleModal({
         <div className="sticky top-0 bg-white p-6 pb-4 border-b border-gray-100 rounded-t-2xl">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold text-gray-800">
-              Create a
-              Circle
+              {t("createCircleModal.header")}
             </h2>
 
             <button
@@ -307,10 +309,7 @@ export default function CreateCircleModal({
           </div>
 
           <p className="text-sm text-gray-500 mt-1">
-            Create a
-            community
-            around your
-            interests
+            {t("createCircleModal.subheading")}
           </p>
         </div>
 
@@ -319,8 +318,7 @@ export default function CreateCircleModal({
           {/* Image Upload */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Circle
-              Image
+              {t("createCircleModal.imageLabel")}
             </label>
 
             <input
@@ -346,7 +344,7 @@ export default function CreateCircleModal({
                   src={
                     coverPreview
                   }
-                  alt="Circle cover preview"
+                  alt={t("createCircleModal.coverPreviewAlt")}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -355,20 +353,13 @@ export default function CreateCircleModal({
 
                   <p className="text-sm text-gray-500">
                     <span className="text-primary font-semibold">
-                      Click
-                      to
-                      upload
-                    </span>{" "}
-                    or drag
-                    and
-                    drop
+                      {t("createCircleModal.clickToUpload")}
+                    </span>
+                    {t("createCircleModal.orDragAndDrop")}
                   </p>
 
                   <p className="text-xs text-gray-400">
-                    PNG,
-                    JPG
-                    up to
-                    5MB
+                    {t("createCircleModal.uploadHint")}
                   </p>
                 </div>
               )}
@@ -378,8 +369,7 @@ export default function CreateCircleModal({
           {/* Name */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Circle
-              Name
+              {t("createCircleModal.nameLabel")}
             </label>
 
             <input
@@ -394,7 +384,7 @@ export default function CreateCircleModal({
                     .value
                 )
               }
-              placeholder="e.g., Weekend Hikers"
+              placeholder={t("createCircleModal.namePlaceholder")}
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
@@ -402,7 +392,7 @@ export default function CreateCircleModal({
           {/* Description */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Description
+              {t("createCircleModal.descriptionLabel")}
             </label>
 
             <textarea
@@ -416,7 +406,7 @@ export default function CreateCircleModal({
                     .value
                 )
               }
-              placeholder="What's this circle about?"
+              placeholder={t("createCircleModal.descriptionPlaceholder")}
               rows={
                 3
               }
@@ -427,7 +417,7 @@ export default function CreateCircleModal({
           {/* Category */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Category
+              {t("createCircleModal.categoryLabel")}
             </label>
 
             <select
@@ -444,9 +434,7 @@ export default function CreateCircleModal({
               className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all bg-white"
             >
               <option value="">
-                Select
-                a
-                category
+                {t("createCircleModal.selectCategory")}
               </option>
 
               {circleCategories.map(
@@ -484,7 +472,7 @@ export default function CreateCircleModal({
               }
               className="flex-1 px-6 py-3 border border-gray-200 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
 
             <button
@@ -499,12 +487,12 @@ export default function CreateCircleModal({
               className="flex-1 px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50"
             >
               {isUploadingImage
-                ? "Uploading image..."
+                ? t("createCircleModal.uploadingImage")
                 : createCircleMutation.isPending
-                ? "Creating..."
+                ? t("createCircleModal.creating")
                 : isEnrichingLocation
-                ? "Fetching location..."
-                : "Create Circle"}
+                ? t("createCircleModal.fetchingLocation")
+                : t("createCircleModal.createCircle")}
             </button>
           </div>
         </div>

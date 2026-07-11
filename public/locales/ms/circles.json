@@ -1,0 +1,229 @@
+{
+  "common": {
+    "anonymous": "Tanpa Nama",
+    "circlePost": "Hantaran bulatan",
+    "cancel": "Batal",
+    "postReported": "Hantaran telah dilaporkan",
+    "noCirclesFound": "Tiada bulatan dijumpai",
+    "tryAdjustingSearch": "Cuba laraskan carian atau penapis anda",
+    "clearFilters": "Kosongkan penapis",
+    "clearSearch": "Kosongkan carian",
+    "fetchingLocation": "Mendapatkan lokasi...",
+    "photo": "Foto",
+    "video": "Video",
+    "discover": "Terokai",
+    "forYou": "Untuk Anda",
+    "postsCount": "{{count}} hantaran",
+    "membersCount": "{{count}} ahli",
+    "linkCopied": "Pautan hantaran disalin ke papan keratan",
+    "failedToShare": "Gagal berkongsi hantaran"
+  },
+
+  "postDetails": {
+    "notFoundTitle": "Hantaran tidak dijumpai",
+    "goBack": "Kembali",
+    "header": "Hantaran",
+    "inCircle": "dalam ",
+    "postReportedAlert": "Hantaran telah dilaporkan"
+  },
+
+  "discoverCircles": {
+    "header": "Terokai Bulatan",
+    "allJoinedTitle": "Anda telah menyertai semua bulatan!",
+    "allJoinedBody": "Anda telah menyertai semua bulatan yang kami tawarkan buat masa ini.",
+    "searchPlaceholder": "Cari bulatan...",
+    "joining": "Menyertai...",
+    "joinCircle": "Sertai Bulatan"
+  },
+
+  "onboarding": {
+    "profileReadyToast": "Profil anda telah sedia",
+    "genericErrorToast": "Sesuatu tidak kena. Sila cuba lagi.",
+    "goBack": "Kembali",
+    "stepSelect": "Pilih bulatan anda",
+    "stepConfirm": "Sahkan pilihan anda",
+    "selectedCount": "{{count}} dipilih",
+    "heading": "Temui Orang Anda Melalui Aktiviti",
+    "subheading": "Pilih sekurang-kurangnya 3 bulatan berdasarkan perkara yang anda suka lakukan. Cara terbaik untuk berkenalan dengan rakan baharu (dan mungkin lebih) secara semula jadi!",
+    "selectMoreWarning": "Pilih sekurang-kurangnya {{count}} bulatan lagi untuk teruskan",
+    "searchPlaceholder": "Cari aktiviti...",
+    "confirmHeading": "Pilihan Yang Hebat! 🎉",
+    "confirmSubheading": "Anda menyertai {{count}} kumpulan aktiviti. Bersedia untuk berseronok dan berkenalan dengan orang yang hebat!",
+    "yourCircles": "Bulatan Aktiviti Anda",
+    "removeCircle": "Buang bulatan",
+    "whatToExpect": "Apa Yang Dijangka",
+    "naturalConnections": {
+      "title": "Perhubungan Semula Jadi",
+      "body": "Berkenalan dengan orang semasa melakukan aktiviti yang anda benar-benar gemari"
+    },
+    "regularMeetups": {
+      "title": "Pertemuan Berkala",
+      "body": "Acara mingguan, lawatan, dan sesi bersosial"
+    },
+    "continueWithCount": "Teruskan dengan {{count}} Bulatan",
+    "needMoreSuffix": " (Perlukan {{count}} lagi)",
+    "joining": "Menyertai...",
+    "settingUpProfile": "Menyediakan profil anda...",
+    "joinAndStart": "Sertai {{count}} Bulatan & Mula Berhubung",
+    "addMoreCircles": "Tambah Lagi Bulatan"
+  },
+
+  "circlesHome": {
+    "postToCircle": "Hantar ke Bulatan",
+    "new": "Baharu",
+    "whatsOnYourMind": "Apa yang anda fikirkan?",
+    "postsSuffix": "· {{count}} hantaran",
+    "viewCircle": "Lihat bulatan",
+    "noPostsYetTitle": "Belum ada hantaran",
+    "beFirstToPost": "Jadilah yang pertama menghantar di {{circleName}}",
+    "createAPost": "Cipta hantaran",
+    "matchRequestSent": "Permintaan padanan dihantar",
+    "feedQuietTitle": "Suapan anda agak sunyi",
+    "feedQuietBody": "Sertai lebih banyak bulatan untuk memenuhkannya",
+    "meanwhileIn": "Sementara itu di ",
+    "seeAll": "Lihat semua"
+  },
+
+  "circleDetails": {
+    "notFound": "Bulatan tidak dijumpai",
+    "failedToShare": "Gagal berkongsi hantaran",
+    "deletePostTitle": "Padam hantaran?",
+    "deletePostMessage": "Ini tidak boleh dibatalkan. Hantaran akan dialih keluar secara kekal.",
+    "share": "Kongsi",
+    "invite": "Jemput",
+    "joinCircle": "Sertai Bulatan",
+    "about": "Tentang",
+    "createdOn": "Dicipta {{date}}",
+    "circleRules": "Peraturan Bulatan",
+    "yourAvatarAlt": "Avatar anda",
+    "shareSomething": "Kongsi sesuatu dengan bulatan...",
+    "post": "Hantar",
+    "posts": "Hantaran",
+    "postsSuffix": "{{count}} hantaran",
+    "noPostsYetTitle": "Belum ada hantaran",
+    "noPostsYetSubtitle": "Jadilah yang pertama berkongsi sesuatu dengan bulatan ini!",
+    "createPost": "Cipta Hantaran",
+    "postReportedAlert": "Hantaran telah dilaporkan"
+  },
+
+  "sidebar": {
+    "menu": {
+      "home": "Laman Utama",
+      "myCircles": "Bulatan Saya",
+      "matches": "Padanan",
+      "likes": "Suka",
+      "messages": "Mesej",
+      "notifications": "Pemberitahuan"
+    },
+    "account": {
+      "profile": "Profil",
+      "settings": "Tetapan",
+      "privacy": "Privasi",
+      "helpCenter": "Pusat Bantuan"
+    },
+    "title": "Bulatan",
+    "subtitle": "Berhubung & Berkongsi",
+    "userAlt": "Pengguna",
+    "fallbackName": "Pengguna",
+    "mainMenu": "Menu Utama",
+    "accountSection": "Akaun",
+    "logOut": "Log Keluar",
+    "footer": "Versi 1.0.0 • © 2024 Circles"
+  },
+
+  "postMeta": {
+    "likedPercentage": "{{percent}}% menyukai"
+  },
+
+  "comments": {
+    "delete": "Padam",
+    "cancel": "Batal",
+    "reply": "Balas",
+    "header": "Komen",
+    "empty": "Belum ada komen. Jadilah yang pertama untuk mengulas!",
+    "youAlt": "Anda",
+    "replyPlaceholder": "Tulis balasan...",
+    "yourAvatarAlt": "Avatar anda",
+    "commentPlaceholder": "Tulis komen..."
+  },
+
+  "editPostModal": {
+    "header": "Edit Hantaran",
+    "placeholder": "Apa yang anda fikirkan?",
+    "removeLocation": "Buang Lokasi",
+    "addChangeLocation": "Tambah / Tukar Lokasi",
+    "addMediaTitle": "Tambah foto / video",
+    "saving": "Menyimpan...",
+    "fetchingLocation": "Mendapatkan lokasi...",
+    "save": "Simpan"
+  },
+
+  "createCircleModal": {
+    "invalidImageType": "Sila pilih imej JPG, PNG, atau WEBP",
+    "imageTooLarge": "Imej mesti kurang daripada 5MB",
+    "nameRequired": "Nama bulatan diperlukan",
+    "descriptionRequired": "Penerangan diperlukan",
+    "categoryRequired": "Sila pilih kategori",
+    "failedToCreate": "Gagal mencipta bulatan",
+    "header": "Cipta Bulatan",
+    "subheading": "Cipta komuniti berdasarkan minat anda",
+    "imageLabel": "Imej Bulatan",
+    "coverPreviewAlt": "Pratonton kulit bulatan",
+    "clickToUpload": "Klik untuk muat naik",
+    "orDragAndDrop": " atau seret dan lepas",
+    "uploadHint": "PNG, JPG sehingga 5MB",
+    "nameLabel": "Nama Bulatan",
+    "namePlaceholder": "cth., Pendaki Hujung Minggu",
+    "descriptionLabel": "Penerangan",
+    "descriptionPlaceholder": "Apakah bulatan ini tentang?",
+    "categoryLabel": "Kategori",
+    "selectCategory": "Pilih kategori",
+    "uploadingImage": "Memuat naik imej...",
+    "creating": "Mencipta...",
+    "fetchingLocation": "Mendapatkan lokasi...",
+    "createCircle": "Cipta Bulatan"
+  },
+
+  "createPostModal": {
+    "failedToCreate": "Gagal mencipta hantaran",
+    "header": "Cipta Hantaran",
+    "inCircle": "dalam ",
+    "yourAvatarAlt": "Avatar anda",
+    "you": "Anda",
+    "postToCircle": "Hantar ke bulatan",
+    "placeholder": "Kongsi pengalaman larian, tip anda, atau ajukan soalan...",
+    "addMediaLabel": "Tambah Foto & Video ",
+    "addMediaHint": "(Maks {{maxItems}}, video ≤ {{maxDuration}}s)",
+    "videoBadge": "Video",
+    "addPhotos": "Tambah Foto",
+    "addVideo": "Tambah Video (≤{{maxDuration}}s)",
+    "checkingVideo": "Menyemak video...",
+    "removeLocation": "Buang lokasi",
+    "addLocation": "Tambah lokasi",
+    "tags": "Tag",
+    "customTagPlaceholder": "Masukkan tag tersuai...",
+    "add": "Tambah",
+    "cancel": "Batal",
+    "addCustomTag": "+ Tambah tag tersuai",
+    "addToYourPost": "Tambah ke hantaran anda",
+    "photo": "Foto",
+    "video": "Video",
+    "posting": "Menghantar...",
+    "post": "Hantar"
+  },
+
+  "postCard": {
+    "editPost": "Edit Hantaran",
+    "share": "Kongsi",
+    "deletePost": "Padam Hantaran",
+    "reportPost": "Laporkan Hantaran"
+  },
+
+  "postMedia": {
+    "videoUnavailable": "Video tidak tersedia",
+    "retry": "Cuba lagi",
+    "muteVideo": "Senyapkan video",
+    "unmuteVideo": "Bunyikan video",
+    "imageUnavailable": "Imej tidak tersedia"
+  }
+}

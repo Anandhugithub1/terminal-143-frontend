@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronRight, Flag, MoreVertical, Pencil, Share2, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import PostMedia from "./PostMedia";
 import BottomSheetModal from "../common/BottomSheetModal";
 
@@ -25,6 +26,7 @@ export default function PostCard({
   actions = [],
   actionsWrapperClassName = "",
 }) {
+  const { t } = useTranslation("circles");
   const isFeed = variant === "feed";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const hasMedia = !!(media?.[0]?.url || image);
@@ -141,7 +143,7 @@ export default function PostCard({
             className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
           >
             <Pencil className="w-5 h-5 text-gray-500" />
-            Edit Post
+            {t("postCard.editPost")}
           </button>
         )}
         <button
@@ -149,7 +151,7 @@ export default function PostCard({
           className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors ${isAuthor ? "border-t border-gray-100" : ""}`}
         >
           <Share2 className="w-5 h-5 text-gray-500" />
-          Share
+          {t("postCard.share")}
         </button>
         {isAuthor && (
           <button
@@ -157,7 +159,7 @@ export default function PostCard({
             className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
           >
             <Trash2 className="w-5 h-5" />
-            Delete Post
+            {t("postCard.deletePost")}
           </button>
         )}
         {!isAuthor && (
@@ -166,7 +168,7 @@ export default function PostCard({
             className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
           >
             <Flag className="w-5 h-5" />
-            Report Post
+            {t("postCard.reportPost")}
           </button>
         )}
       </BottomSheetModal>
