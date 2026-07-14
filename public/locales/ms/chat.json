@@ -35,6 +35,15 @@
     "couldNotLoad": "Tidak dapat memuatkan perbualan ini",
     "checkConnection": "Sila semak sambungan anda dan cuba lagi.",
     "typeMessage": "Taip mesej anda",
-    "sendMessage": "Hantar mesej"
+    "sendMessage": "Hantar mesej",
+    "moreOptions": "Pilihan lain",
+    "blockUser": "Sekat {{name}}",
+    "unblockUser": "Nyahsekat {{name}}",
+    "blockConfirmTitle": "Sekat {{name}}?",
+    "blockConfirmBody": "Mereka tidak akan dapat menghantar mesej kepada anda, dan anda juga tidak akan dapat menghantar mesej kepada mereka.",
+    "blockConfirmAction": "Sekat",
+    "blockCancelAction": "Batal",
+    "youBlockedThisUser": "Anda telah menyekat pengguna ini. Nyahsekat untuk meneruskan perbualan.",
+    "youWereBlocked": "Anda tidak boleh membalas perbualan ini."
   }
 }

@@ -75,11 +75,15 @@ export default function ChatListPage() {
 
   // Matches you haven't messaged yet show in the top strip; once a
   // conversation starts, a match drops out of the strip and into the
-  // chat list below, most recent first.
+  // chat list below, most recent first. Conversations you've blocked are
+  // hidden from both — matches the standard pattern (WhatsApp, Instagram,
+  // dating apps): blocking implies "don't show me this thread," not just
+  // "stop delivering messages."
   const { newMatches, conversations } = useMemo(() => {
     const fresh = []
     const active = []
     for (const match of matches) {
+      if (previews[match.PK]?.blockedByMe) continue
       if (previews[match.PK]?.lastMessageAt) {
         active.push(match)
       } else {

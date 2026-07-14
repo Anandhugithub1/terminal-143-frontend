@@ -35,6 +35,15 @@
     "couldNotLoad": "无法加载此对话",
     "checkConnection": "请检查网络连接后重试。",
     "typeMessage": "输入消息",
-    "sendMessage": "发送消息"
+    "sendMessage": "发送消息",
+    "moreOptions": "更多选项",
+    "blockUser": "屏蔽 {{name}}",
+    "unblockUser": "取消屏蔽 {{name}}",
+    "blockConfirmTitle": "屏蔽 {{name}}？",
+    "blockConfirmBody": "对方将无法给您发送消息，您也无法给对方发送消息。",
+    "blockConfirmAction": "屏蔽",
+    "blockCancelAction": "取消",
+    "youBlockedThisUser": "您已屏蔽此用户。取消屏蔽即可继续对话。",
+    "youWereBlocked": "您无法回复此对话。"
   }
 }

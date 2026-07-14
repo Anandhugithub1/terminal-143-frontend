@@ -35,6 +35,15 @@
     "couldNotLoad": "이 대화를 불러올 수 없습니다",
     "checkConnection": "연결 상태를 확인하고 다시 시도해 주세요.",
     "typeMessage": "메시지를 입력하세요",
-    "sendMessage": "메시지 보내기"
+    "sendMessage": "메시지 보내기",
+    "moreOptions": "더 보기",
+    "blockUser": "{{name}}님 차단하기",
+    "unblockUser": "{{name}}님 차단 해제하기",
+    "blockConfirmTitle": "{{name}}님을 차단할까요?",
+    "blockConfirmBody": "상대방은 회원님에게 메시지를 보낼 수 없고, 회원님도 상대방에게 메시지를 보낼 수 없게 됩니다.",
+    "blockConfirmAction": "차단",
+    "blockCancelAction": "취소",
+    "youBlockedThisUser": "이 사용자를 차단했습니다. 대화를 계속하려면 차단을 해제하세요.",
+    "youWereBlocked": "이 대화에 답장할 수 없습니다."
   }
 }

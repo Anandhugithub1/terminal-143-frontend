@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Send } from 'lucide-react'
+import { ArrowLeft, MoreVertical, Send, ShieldOff } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import { useTranslation } from 'react-i18next'
 import { useMatches } from '../../UserHome/api'
-import { useConversationHistory, normalizeIncomingMessage } from '../api'
+import { useConversationHistory, normalizeIncomingMessage, useBlockUser, useUnblockUser } from '../api'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
-import { getCurrentUsername } from '../../../shared/utils/getCurrentUsername'
+import BottomSheetModal from '../../../shared/components/BottomSheetModal'
 
 // Sends fired within this window of the previous one get folded into the
 // same outgoing message/bubble instead of triggering a separate socket
@@ -29,14 +29,23 @@ export default function ChatConversationPage() {
   const { data: matches = [] } = useMatches()
   const match = useMemo(() => matches.find((m) => m.PK === matchId), [matches, matchId])
 
-  const { data: history = [], isLoading, isError } = useConversationHistory(matchId)
+  const { data: historyData, isLoading, isError } = useConversationHistory(matchId)
+  const history = historyData?.messages ?? []
+  const blockedByMe = !!historyData?.blockedByMe
+  const blockedByOther = !!historyData?.blockedByOther
+  const isBlocked = blockedByMe || blockedByOther
+
   const { send } = useSocket()
-  const { previews, markRead, recordSentMessage } = useConversationPreviews()
+  const { previews, markRead, recordSentMessage, setBlockedByMe } = useConversationPreviews()
+  const { mutate: blockUser, isPending: isBlocking } = useBlockUser(matchId)
+  const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser(matchId)
 
   // Live messages received/sent this session are kept separate from the
   // fetched history so a background history refetch never clobbers them.
   const [liveMessages, setLiveMessages] = useState([])
   const [draft, setDraft] = useState('')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isBlockConfirmOpen, setIsBlockConfirmOpen] = useState(false)
   const scrollRef = useRef(null)
   const hasScrolledRef = useRef(false)
 
@@ -63,6 +72,14 @@ export default function ChatConversationPage() {
       markRead(matchId)
     }
   }, [matchId, markRead, isLoading, messages.length])
+
+  // Keep the chat-list cache's blockedByMe in sync with the server on every
+  // load — covers the case where the block state changed elsewhere (e.g. a
+  // different device) since the list last saw it.
+  useEffect(() => {
+    if (isLoading || !historyData) return
+    setBlockedByMe(matchId, blockedByMe)
+  }, [matchId, isLoading, historyData, blockedByMe, setBlockedByMe])
 
   useSocketEvent('MESSAGE', (payload) => {
     const msg = normalizeIncomingMessage(payload)
@@ -98,7 +115,6 @@ export default function ChatConversationPage() {
     const text = pending.lines.join('\n')
     send({
       action: 'sendMessage',
-      senderId: getCurrentUsername(),
       recipientId: matchId,
       content: text,
     })
@@ -112,6 +128,7 @@ export default function ChatConversationPage() {
 
   function handleSend(e) {
     e.preventDefault()
+    if (isBlocked) return
     const text = draft.trim()
     if (!text) return
     setDraft('')
@@ -124,6 +141,21 @@ export default function ChatConversationPage() {
 
     if (batchTimerRef.current) clearTimeout(batchTimerRef.current)
     batchTimerRef.current = setTimeout(flushPending, SEND_BATCH_WINDOW_MS)
+  }
+
+  function handleConfirmBlock() {
+    blockUser(undefined, {
+      onSuccess: () => {
+        setBlockedByMe(matchId, true)
+        setIsBlockConfirmOpen(false)
+      },
+    })
+  }
+
+  function handleUnblock() {
+    unblockUser(undefined, {
+      onSuccess: () => setBlockedByMe(matchId, false),
+    })
   }
 
   return (
@@ -145,13 +177,20 @@ export default function ChatConversationPage() {
           <p className="text-[15px] font-semibold text-gray-900 truncate">
             {match?.name || t('conversation.chatFallback')}
           </p>
-          {online && (
+          {online && !isBlocked && (
             <span className="flex items-center gap-1.5 text-xs text-gray-400">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
               {t('conversation.online')}
             </span>
           )}
         </div>
+        <button
+          onClick={() => setIsMenuOpen(true)}
+          className="p-1.5 -mr-1.5 shrink-0 hover:bg-gray-100 rounded-full transition-colors"
+          aria-label={t('conversation.moreOptions')}
+        >
+          <MoreVertical className="w-5 h-5 text-gray-400" />
+        </button>
       </header>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
@@ -204,25 +243,97 @@ export default function ChatConversationPage() {
         )}
       </div>
 
-      <form
-        onSubmit={handleSend}
-        className="flex items-center gap-2 px-4 py-3 border-t border-gray-100 bg-white"
-      >
-        <input
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder={t('conversation.typeMessage')}
-          className="flex-1 bg-input rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-focus"
-        />
-        <button
-          type="submit"
-          disabled={!draft.trim()}
-          className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-gray-900 text-white disabled:opacity-40 active:scale-95 transition-transform"
-          aria-label={t('conversation.sendMessage')}
+      {isBlocked ? (
+        <div className="flex items-center gap-3 px-4 py-3 border-t border-gray-100 bg-white">
+          <ShieldOff className="w-5 h-5 text-gray-400 shrink-0" />
+          <p className="flex-1 text-sm text-gray-500">
+            {blockedByMe ? t('conversation.youBlockedThisUser') : t('conversation.youWereBlocked')}
+          </p>
+          {blockedByMe && (
+            <button
+              onClick={handleUnblock}
+              disabled={isUnblocking}
+              className="shrink-0 text-sm font-semibold text-primary disabled:opacity-40"
+            >
+              {t('conversation.unblockUser', { name: match?.name || '' })}
+            </button>
+          )}
+        </div>
+      ) : (
+        <form
+          onSubmit={handleSend}
+          className="flex items-center gap-2 px-4 py-3 border-t border-gray-100 bg-white"
         >
-          <Send className="w-4 h-4" />
-        </button>
-      </form>
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder={t('conversation.typeMessage')}
+            className="flex-1 bg-input rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-focus"
+          />
+          <button
+            type="submit"
+            disabled={!draft.trim()}
+            className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-gray-900 text-white disabled:opacity-40 active:scale-95 transition-transform"
+            aria-label={t('conversation.sendMessage')}
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </form>
+      )}
+
+      {/* Overflow menu */}
+      <BottomSheetModal
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        panelClassName="rounded-t-2xl sm:rounded-2xl sm:max-w-sm overflow-hidden"
+      >
+        {blockedByMe ? (
+          <button
+            onClick={() => { setIsMenuOpen(false); handleUnblock(); }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <ShieldOff className="w-5 h-5 text-gray-500" />
+            {t('conversation.unblockUser', { name: match?.name || '' })}
+          </button>
+        ) : (
+          <button
+            onClick={() => { setIsMenuOpen(false); setIsBlockConfirmOpen(true); }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors"
+          >
+            <ShieldOff className="w-5 h-5" />
+            {t('conversation.blockUser', { name: match?.name || '' })}
+          </button>
+        )}
+      </BottomSheetModal>
+
+      {/* Block confirmation */}
+      <BottomSheetModal
+        isOpen={isBlockConfirmOpen}
+        onClose={() => setIsBlockConfirmOpen(false)}
+        panelClassName="rounded-t-2xl sm:rounded-2xl sm:max-w-sm overflow-hidden p-5"
+      >
+        <h2 className="text-base font-semibold text-gray-900 mb-2">
+          {t('conversation.blockConfirmTitle', { name: match?.name || '' })}
+        </h2>
+        <p className="text-sm text-gray-500 mb-5">
+          {t('conversation.blockConfirmBody')}
+        </p>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={handleConfirmBlock}
+            disabled={isBlocking}
+            className="w-full py-3 rounded-full bg-rose-600 text-white text-sm font-semibold disabled:opacity-40"
+          >
+            {t('conversation.blockConfirmAction')}
+          </button>
+          <button
+            onClick={() => setIsBlockConfirmOpen(false)}
+            className="w-full py-3 rounded-full bg-gray-100 text-gray-700 text-sm font-semibold"
+          >
+            {t('conversation.blockCancelAction')}
+          </button>
+        </div>
+      </BottomSheetModal>
     </div>
   )
 }

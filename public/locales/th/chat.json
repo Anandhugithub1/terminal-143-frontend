@@ -35,6 +35,15 @@
     "couldNotLoad": "ไม่สามารถโหลดการสนทนานี้ได้",
     "checkConnection": "โปรดตรวจสอบการเชื่อมต่อของคุณแล้วลองอีกครั้ง",
     "typeMessage": "พิมพ์ข้อความของคุณ",
-    "sendMessage": "ส่งข้อความ"
+    "sendMessage": "ส่งข้อความ",
+    "moreOptions": "ตัวเลือกเพิ่มเติม",
+    "blockUser": "บล็อก {{name}}",
+    "unblockUser": "เลิกบล็อก {{name}}",
+    "blockConfirmTitle": "บล็อก {{name}}?",
+    "blockConfirmBody": "พวกเขาจะไม่สามารถส่งข้อความหาคุณได้ และคุณก็จะไม่สามารถส่งข้อความหาพวกเขาได้เช่นกัน",
+    "blockConfirmAction": "บล็อก",
+    "blockCancelAction": "ยกเลิก",
+    "youBlockedThisUser": "คุณบล็อกผู้ใช้นี้แล้ว เลิกบล็อกเพื่อสนทนาต่อ",
+    "youWereBlocked": "คุณไม่สามารถตอบกลับการสนทนานี้ได้"
   }
 }

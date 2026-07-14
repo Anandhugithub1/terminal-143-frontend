@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { chatApi } from '../../api/clients'
 import { getCurrentUsername } from '../../shared/utils/getCurrentUsername'
 
@@ -11,12 +11,16 @@ async function fetchConversationHistory(matchId) {
   })
   const myUsername = getCurrentUsername()
 
-  return (res.data?.messages || []).map((msg) => ({
-    id: msg.messageId,
-    text: msg.content,
-    sentAt: msg.sentAt,
-    mine: msg.senderId === myUsername,
-  }))
+  return {
+    messages: (res.data?.messages || []).map((msg) => ({
+      id: msg.messageId,
+      text: msg.content,
+      sentAt: msg.sentAt,
+      mine: msg.senderId === myUsername,
+    })),
+    blockedByMe: !!res.data?.blockedByMe,
+    blockedByOther: !!res.data?.blockedByOther,
+  }
 }
 
 export function useConversationHistory(matchId) {
@@ -26,7 +30,43 @@ export function useConversationHistory(matchId) {
     enabled: !!matchId,
     retry: 1,
     staleTime: 60 * 1000,
-    placeholderData: [],
+    placeholderData: { messages: [], blockedByMe: false, blockedByOther: false },
+  })
+}
+
+export function useBlockUser(matchId) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async () => {
+      const res = await chatApi.post(
+        '/block',
+        { otherUserId: matchId },
+        { withCredentials: true }
+      )
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['chatHistory', matchId] })
+    },
+  })
+}
+
+export function useUnblockUser(matchId) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async () => {
+      const res = await chatApi.post(
+        '/unblock',
+        { otherUserId: matchId },
+        { withCredentials: true }
+      )
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['chatHistory', matchId] })
+    },
   })
 }
 

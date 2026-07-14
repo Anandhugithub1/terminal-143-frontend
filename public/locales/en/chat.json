@@ -35,6 +35,15 @@
     "couldNotLoad": "Couldn't load this conversation",
     "checkConnection": "Please check your connection and try again.",
     "typeMessage": "Type your message",
-    "sendMessage": "Send message"
+    "sendMessage": "Send message",
+    "moreOptions": "More options",
+    "blockUser": "Block {{name}}",
+    "unblockUser": "Unblock {{name}}",
+    "blockConfirmTitle": "Block {{name}}?",
+    "blockConfirmBody": "They won't be able to send you messages, and you won't be able to send them messages either.",
+    "blockConfirmAction": "Block",
+    "blockCancelAction": "Cancel",
+    "youBlockedThisUser": "You blocked this user. Unblock to continue the conversation.",
+    "youWereBlocked": "You can't reply to this conversation."
   }
 }

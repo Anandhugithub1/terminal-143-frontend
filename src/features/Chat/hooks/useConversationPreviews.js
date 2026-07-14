@@ -113,5 +113,13 @@ export function useConversationPreviews() {
     }))
   }, [])
 
-  return { previews: state, markRead, recordSentMessage }
+  // Blocked conversations are hidden from the chat list (standard pattern —
+  // see ChatListPage). Only tracks blockedByMe, since that's the case a
+  // client can act on immediately; if the other side blocked you instead,
+  // the list catches up next time this conversation is opened/refetched.
+  const setBlockedByMe = useCallback((matchId, blocked) => {
+    updateMatch(matchId, () => ({ blockedByMe: blocked }))
+  }, [])
+
+  return { previews: state, markRead, recordSentMessage, setBlockedByMe }
 }
