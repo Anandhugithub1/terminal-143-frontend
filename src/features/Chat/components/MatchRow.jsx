@@ -1,24 +1,25 @@
 import { useState } from 'react'
 import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from 'react-icons/ai'
 import { MoreVertical } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 function getAge(dob) {
   if (!dob) return null
   return Math.floor((new Date() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000))
 }
 
-function formatTimestamp(iso) {
+function formatTimestamp(iso, t) {
   if (!iso) return ''
   const date = new Date(iso)
   const diffMs = Date.now() - date.getTime()
   const diffMin = diffMs / 60000
-  if (diffMin < 1) return 'now'
-  if (diffMin < 60) return `${Math.floor(diffMin)} min`
+  if (diffMin < 1) return t('matchRow.timeNow')
+  if (diffMin < 60) return t('matchRow.timeMinutes', { count: Math.floor(diffMin) })
   const diffHr = diffMin / 60
-  if (diffHr < 24) return `${Math.floor(diffHr)} hrs`
+  if (diffHr < 24) return t('matchRow.timeHours', { count: Math.floor(diffHr) })
   const diffDay = diffHr / 24
-  if (diffDay < 7) return `${Math.floor(diffDay)}d`
-  return 'Last week'
+  if (diffDay < 7) return t('matchRow.timeDays', { count: Math.floor(diffDay) })
+  return t('matchRow.timeLastWeek')
 }
 
 export default function MatchRow({
@@ -31,13 +32,14 @@ export default function MatchRow({
   onLike,
   onDislike,
 }) {
+  const { t } = useTranslation('chat')
   const [menuOpen, setMenuOpen] = useState(false)
 
   const hasConversation = !!preview?.lastMessage
   const unread = preview?.unreadCount || 0
   const preview_text = hasConversation
-    ? `${preview.lastMessageMine ? 'You: ' : ''}${preview.lastMessage}`
-    : 'Say hi 👋'
+    ? `${preview.lastMessageMine ? t('matchRow.youPrefix') : ''}${preview.lastMessage}`
+    : t('matchRow.sayHi')
   const age = getAge(match.dob)
 
   return (
@@ -45,7 +47,7 @@ export default function MatchRow({
       <button
         onClick={onOpenProfile}
         className="shrink-0"
-        aria-label={`View ${match.name}'s profile`}
+        aria-label={t('matchRow.viewProfileAria', { name: match.name })}
       >
         <img
           src={match.photos?.[0]?.url}
@@ -73,14 +75,14 @@ export default function MatchRow({
       </button>
 
       <span className="text-[11px] text-gray-400 shrink-0 self-start pt-0.5">
-        {formatTimestamp(preview?.lastMessageAt)}
+        {formatTimestamp(preview?.lastMessageAt, t)}
       </span>
 
       <div className="relative shrink-0">
         <button
           onClick={() => setMenuOpen((v) => !v)}
           className="p-1.5 -mr-1.5 text-gray-300 hover:text-gray-500 rounded-full transition-colors"
-          aria-label="More options"
+          aria-label={t('matchRow.moreOptions')}
         >
           <MoreVertical className="w-4 h-4" />
         </button>
@@ -96,7 +98,7 @@ export default function MatchRow({
                 }}
                 className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
               >
-                View profile
+                {t('matchRow.viewProfile')}
               </button>
               <div className="flex items-center gap-2 px-3 py-2">
                 <button

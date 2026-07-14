@@ -1,0 +1,40 @@
+{
+  "list": {
+    "loadingChats": "正在加载聊天...",
+    "couldNotLoadMatches": "无法加载匹配",
+    "noMatchesYet": "暂无匹配",
+    "tryAgainLater": "请稍后再试。",
+    "startSwiping": "开始滑动，寻找特别的人——你的匹配将以聊天形式显示在这里。",
+    "noConversationsYet": "暂无对话",
+    "tapMatchToStart": "点击上方的匹配对象打个招呼，开始聊天吧。",
+    "chatSectionLabel": "聊天"
+  },
+
+  "matchesStrip": {
+    "label": "匹配"
+  },
+
+  "matchRow": {
+    "sayHi": "打个招呼 👋",
+    "youPrefix": "你: ",
+    "timeNow": "刚刚",
+    "timeMinutes": "{{count}} 分钟前",
+    "timeHours": "{{count}} 小时前",
+    "timeDays": "{{count}} 天前",
+    "timeLastWeek": "上周",
+    "viewProfile": "查看资料",
+    "viewProfileAria": "查看 {{name}} 的资料",
+    "moreOptions": "更多选项"
+  },
+
+  "conversation": {
+    "back": "返回",
+    "online": "在线",
+    "chatFallback": "聊天",
+    "yourMatchFallback": "你的匹配对象",
+    "couldNotLoad": "无法加载此对话",
+    "checkConnection": "请检查网络连接后重试。",
+    "typeMessage": "输入消息",
+    "sendMessage": "发送消息"
+  }
+}

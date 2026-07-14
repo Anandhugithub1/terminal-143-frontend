@@ -1,0 +1,40 @@
+{
+  "list": {
+    "loadingChats": "กำลังโหลดแชท...",
+    "couldNotLoadMatches": "ไม่สามารถโหลดแมตช์ได้",
+    "noMatchesYet": "ยังไม่มีแมตช์",
+    "tryAgainLater": "โปรดลองอีกครั้งในภายหลัง",
+    "startSwiping": "เริ่มปัดเพื่อค้นหาคนพิเศษ — แมตช์ของคุณจะปรากฏที่นี่เป็นแชท",
+    "noConversationsYet": "ยังไม่มีการสนทนา",
+    "tapMatchToStart": "แตะแมตช์ด้านบนเพื่อทักทายและเริ่มแชท",
+    "chatSectionLabel": "แชท"
+  },
+
+  "matchesStrip": {
+    "label": "แมตช์"
+  },
+
+  "matchRow": {
+    "sayHi": "ทักทาย 👋",
+    "youPrefix": "คุณ: ",
+    "timeNow": "เมื่อสักครู่",
+    "timeMinutes": "{{count}} นาที",
+    "timeHours": "{{count}} ชั่วโมง",
+    "timeDays": "{{count}} วัน",
+    "timeLastWeek": "สัปดาห์ที่แล้ว",
+    "viewProfile": "ดูโปรไฟล์",
+    "viewProfileAria": "ดูโปรไฟล์ของ {{name}}",
+    "moreOptions": "ตัวเลือกเพิ่มเติม"
+  },
+
+  "conversation": {
+    "back": "ย้อนกลับ",
+    "online": "ออนไลน์",
+    "chatFallback": "แชท",
+    "yourMatchFallback": "แมตช์ของคุณ",
+    "couldNotLoad": "ไม่สามารถโหลดการสนทนานี้ได้",
+    "checkConnection": "โปรดตรวจสอบการเชื่อมต่อของคุณแล้วลองอีกครั้ง",
+    "typeMessage": "พิมพ์ข้อความของคุณ",
+    "sendMessage": "ส่งข้อความ"
+  }
+}

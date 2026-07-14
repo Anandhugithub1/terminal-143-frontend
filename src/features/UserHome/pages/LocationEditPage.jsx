@@ -11,8 +11,10 @@ const LocationInput = lazy(() =>
 );
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile"
 import { updateMyProfile } from "../../UserProfile/api/profile"
+import { useTranslation } from "react-i18next"
 
 const LocationEditPage = () => {
+  const { t } = useTranslation("location")
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 const detailsPromiseRef = useRef(null)
@@ -33,11 +35,11 @@ const detailsPromiseRef = useRef(null)
       queryClient.invalidateQueries({ queryKey: ["my-profile"] })
           queryClient.invalidateQueries({ queryKey: ["profiles"] })
 
-      toast.success("Location updated successfully")
+      toast.success(t("locationEdit.updateSuccess"))
       navigate(-1)
     },
     onError: (err) => {
-      toast.error(err?.message || "Failed to update location")
+      toast.error(err?.message || t("locationEdit.updateFailed"))
     },
     onSettled: () => {
       setSaving(false)
@@ -50,7 +52,7 @@ const detailsPromiseRef = useRef(null)
 
 const handleSave = useCallback(async () => {
   if (!selectedLoc) {
-    toast.error("Please select a location")
+    toast.error(t("locationEdit.selectLocationError"))
     return
   }
 
@@ -97,10 +99,10 @@ const handleSave = useCallback(async () => {
       return
     }
 
-    toast.error(err?.message || "Failed to update location")
+    toast.error(err?.message || t("locationEdit.updateFailed"))
     setSaving(false)
   }
-}, [selectedLoc, mutation])
+}, [selectedLoc, mutation, t])
 
 
 
@@ -124,9 +126,9 @@ const handleSave = useCallback(async () => {
           </button>
 
           <div className="flex-1">
-            <h1 className="text-xl font-bold text-gray-900">Edit Location</h1>
+            <h1 className="text-xl font-bold text-gray-900">{t("locationEdit.pageTitle")}</h1>
             <p className="text-sm text-gray-500 mt-1">
-              Update where you're based
+              {t("locationEdit.pageSubtitle")}
             </p>
           </div>
         </div>
@@ -136,10 +138,10 @@ const handleSave = useCallback(async () => {
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 mb-4">
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-2">
-              Search for your location
+              {t("locationEdit.searchHeading")}
             </h2>
             <p className="text-sm text-gray-600">
-              Start typing your city, neighborhood, or area name
+              {t("locationEdit.searchSubtitle")}
             </p>
           </div>
 
@@ -162,13 +164,11 @@ onSelect={async (loc, detailsPromise) => {
   } catch (err) {
     // only real errors reach here now
     if (err?.code === "OUT_OF_REGION") {
-      toast.error(
-        "This location is not supported. Please select a South East Asia location."
-      )
+      toast.error(t("locationEdit.outOfRegion"))
       setSelectedLoc(null)
       detailsPromiseRef.current = null
     } else {
-      toast.error("Failed to fetch location details")
+      toast.error(t("locationEdit.fetchDetailsFailed"))
     }
   }
 }}
@@ -183,8 +183,7 @@ onSelect={async (loc, detailsPromise) => {
           <div className="mt-3 flex items-start gap-2 text-xs text-gray-500">
             <FiInfo className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <span>
-              Select your location from the dropdown suggestions for best
-              accuracy
+              {t("locationEdit.accuracyHint")}
             </span>
           </div>
         </div>

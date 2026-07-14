@@ -1,0 +1,49 @@
+{
+  "locationFallback": "ตำแหน่ง",
+  "genderFemale": "หญิง",
+  "genderMale": "ชาย",
+  "unknown": "ไม่ทราบ",
+
+  "caughtUp": {
+    "message": "คุณดูครบทุกโปรไฟล์แล้ว รีเฟรชเพื่อค้นหาโปรไฟล์ใหม่",
+    "refreshing": "กำลังรีเฟรช...",
+    "refreshProfiles": "รีเฟรชโปรไฟล์"
+  },
+  "unexpectedError": {
+    "title": "เกิดข้อผิดพลาดที่ไม่คาดคิด",
+    "tryAgain": "ลองอีกครั้ง"
+  },
+  "noPool": {
+    "title": "ไม่พบแมตช์ใกล้เคียง",
+    "subtitle": "ลองขยายรัศมีการค้นหาหรืออัปเดตการตั้งค่าของคุณ"
+  },
+  "allSeen": {
+    "title": "คุณดูครบทุกโปรไฟล์แล้ว",
+    "subtitle": "คุณได้ดูโปรไฟล์ใกล้เคียงทั้งหมดแล้ว"
+  },
+
+  "requests": {
+    "couldNotLoad": "ไม่สามารถโหลดคำขอได้ โปรดลองอีกครั้งในภายหลัง",
+    "noRequestsYetTitle": "ยังไม่มีคำขอ",
+    "noRequestsYetSubtitle": "คุณดูครบทุกอย่างแล้ว",
+    "pageTitle": "คำขอจับคู่",
+    "accepted": "ยอมรับคำขอจับคู่แล้ว",
+    "rejected": "ปฏิเสธคำขอจับคู่แล้ว",
+    "genericError": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
+  },
+
+  "confirmation": {
+    "titlePrefix": "ยืนยัน",
+    "body": "คุณแน่ใจหรือไม่ว่าต้องการ{{action}}คำขอจับคู่จาก {{name}}?",
+    "fallbackName": "ผู้ใช้นี้",
+    "cancel": "ยกเลิก",
+    "confirm": "ยืนยัน"
+  },
+
+  "userProfileById": {
+    "couldNotLoad": "ไม่สามารถโหลดโปรไฟล์ผู้ใช้ได้",
+    "goBack": "ย้อนกลับ",
+    "profileNotFound": "ไม่พบโปรไฟล์",
+    "unknown": "ไม่ทราบ"
+  }
+}

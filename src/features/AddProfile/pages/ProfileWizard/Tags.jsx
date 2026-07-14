@@ -11,10 +11,12 @@ import {
 } from "../../../UserProfile/api/profile";
 import { ensureNormalizedImage } from "../../../../utils/imageConversion";
 import OnboardingPage from "../../../Circles/pages/OnboardingPage";
+import { useTranslation } from "react-i18next";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM"];
 
 export default function Tags() {
+  const { t } = useTranslation("common");
   const { formData, clearFormData } = useWizard();
   const navigate = useNavigate();
 
@@ -36,27 +38,27 @@ export default function Tags() {
 
   const validateRequiredFields = () => {
     const missing = [];
-    if (!formData.name?.trim()) missing.push("Name");
-    if (!formData.bio?.trim()) missing.push("Bio");
+    if (!formData.name?.trim()) missing.push(t("wizard.tags.missingName"));
+    if (!formData.bio?.trim()) missing.push(t("wizard.tags.missingBio"));
     if (!formData.dob) {
-      missing.push("Date of birth");
+      missing.push(t("wizard.tags.missingDob"));
     } else if (calculateAge(formData.dob) < 18) {
-      missing.push("Valid age (18+)");
+      missing.push(t("wizard.tags.missingValidAge"));
     }
-    if (!formData.preferences?.length) missing.push("At least one preference");
+    if (!formData.preferences?.length) missing.push(t("wizard.tags.missingPreference"));
     if (!formData.socialMediaLinks?.length)
-      missing.push("At least one social link");
+      missing.push(t("wizard.tags.missingSocialLink"));
     const loc = formData.location;
     if (
       !loc?.coordinates ||
       loc.coordinates.lat == null ||
       loc.coordinates.lon == null
     )
-      missing.push("Location");
+      missing.push(t("wizard.tags.missingLocation"));
     const files = isSinglePhoto
       ? [formData.profilePhoto].filter(Boolean)
       : (formData.profilePhotos || []).filter(Boolean);
-    if (!files.length) missing.push("At least one photo");
+    if (!files.length) missing.push(t("wizard.tags.missingPhoto"));
     return missing;
   };
 
@@ -65,7 +67,7 @@ export default function Tags() {
     onError: () => {
       submittingRef.current = false;
       setIsSubmitting(false);
-      toast.error("Profile completion failed");
+      toast.error(t("wizard.tags.completionFailed"));
     },
     onSettled: () => {
       submittingRef.current = false;
@@ -92,7 +94,7 @@ export default function Tags() {
 
     const missingFields = validateRequiredFields();
     if (missingFields.length > 0) {
-      toast.error(`Please complete: ${missingFields.join(", ")}`);
+      toast.error(t("wizard.tags.pleaseComplete", { fields: missingFields.join(", ") }));
       return;
     }
 
@@ -135,7 +137,7 @@ export default function Tags() {
     } catch {
       submittingRef.current = false;
       setIsSubmitting(false);
-      toast.error("Something went wrong");
+      toast.error(t("wizard.tags.somethingWentWrong"));
     }
   };
 

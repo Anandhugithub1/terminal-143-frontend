@@ -1,0 +1,49 @@
+{
+  "locationFallback": "Lokasi",
+  "genderFemale": "Perempuan",
+  "genderMale": "Lelaki",
+  "unknown": "Tidak diketahui",
+
+  "caughtUp": {
+    "message": "Anda sudah lihat semua profil. Muat semula untuk terokai profil baharu.",
+    "refreshing": "Memuat semula...",
+    "refreshProfiles": "Muat Semula Profil"
+  },
+  "unexpectedError": {
+    "title": "Ralat tidak dijangka",
+    "tryAgain": "Cuba lagi"
+  },
+  "noPool": {
+    "title": "Tiada padanan dijumpai berhampiran",
+    "subtitle": "Cuba luaskan jejari carian anda atau kemas kini keutamaan anda."
+  },
+  "allSeen": {
+    "title": "Anda sudah lihat semua profil",
+    "subtitle": "Anda telah melihat semua profil berhampiran."
+  },
+
+  "requests": {
+    "couldNotLoad": "Tidak dapat memuatkan permintaan. Sila cuba lagi kemudian.",
+    "noRequestsYetTitle": "Belum Ada Permintaan",
+    "noRequestsYetSubtitle": "Anda sudah lihat semuanya.",
+    "pageTitle": "Permintaan Padanan",
+    "accepted": "Permintaan padanan diterima",
+    "rejected": "Permintaan padanan ditolak",
+    "genericError": "Sesuatu tidak kena. Sila cuba lagi."
+  },
+
+  "confirmation": {
+    "titlePrefix": "Sahkan ",
+    "body": "Anda pasti mahu {{action}} permintaan padanan daripada {{name}}?",
+    "fallbackName": "pengguna ini",
+    "cancel": "Batal",
+    "confirm": "Sahkan"
+  },
+
+  "userProfileById": {
+    "couldNotLoad": "Tidak dapat memuatkan profil pengguna.",
+    "goBack": "Kembali",
+    "profileNotFound": "Profil tidak dijumpai.",
+    "unknown": "Tidak diketahui"
+  }
+}

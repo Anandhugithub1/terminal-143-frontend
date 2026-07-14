@@ -1,15 +1,18 @@
+import { useTranslation } from 'react-i18next'
+
 function getAge(dob) {
   if (!dob) return null
   return Math.floor((new Date() - new Date(dob)) / (365.25 * 24 * 60 * 60 * 1000))
 }
 
 export default function NewMatchesStrip({ matches, onOpenChat }) {
+  const { t } = useTranslation('chat')
   if (matches.length === 0) return null
 
   return (
     <div className="bg-white pt-3 pb-4">
       <p className="px-4 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
-        Matches
+        {t('matchesStrip.label')}
       </p>
       <div className="flex gap-4 overflow-x-auto px-4 pt-2 scrollbar-hide">
         {matches.map((match) => {

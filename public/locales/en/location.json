@@ -29,5 +29,27 @@
   "cancel": "Cancel",
   "clearLocation": "Clear location",
   "suggestionsLabel": "Suggestions",
-  "noResults": "No results found"
+  "noResults": "No results found",
+
+  "locationEdit": {
+    "pageTitle": "Edit Location",
+    "pageSubtitle": "Update where you're based",
+    "updateSuccess": "Location updated successfully",
+    "updateFailed": "Failed to update location",
+    "selectLocationError": "Please select a location",
+    "outOfRegion": "This location is not supported. Please select a South East Asia location.",
+    "fetchDetailsFailed": "Failed to fetch location details",
+    "searchHeading": "Search for your location",
+    "searchSubtitle": "Start typing your city, neighborhood, or area name",
+    "accuracyHint": "Select your location from the dropdown suggestions for best accuracy",
+    "selectedLocationHeading": "Selected Location",
+    "unsavedChanges": "Unsaved changes",
+    "noLocationSelected": "No location selected yet",
+    "searchAboveHint": "Search above to find your location",
+    "proTipLabel": "Pro tip:",
+    "proTipBody": "Include your neighborhood for the best match.",
+    "cancel": "Cancel",
+    "saveLocation": "Save Location",
+    "saving": "Saving"
+  }
 }

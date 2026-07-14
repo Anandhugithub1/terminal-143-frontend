@@ -34,6 +34,43 @@
   "socialLabel": "Tambah Pautan Media Sosial",
   "socialOptional": "(pilihan)",
   "continue": "Teruskan",
-  "invalidLink": "Pautan tidak sah. Mesti bermula dengan https:// atau hanya nama pengguna."
+  "invalidLink": "Pautan tidak sah. Mesti bermula dengan https:// atau hanya nama pengguna.",
+
+  "regionGate": {
+    "brand": "Pass or Match",
+    "heading": "Akan datang tidak lama lagi di kawasan anda",
+    "body": "Kami belum tersedia di kawasan anda, tetapi kami sedang berusaha ke arah itu. Sila semak semula tidak lama lagi."
+  },
+
+  "wizard": {
+    "stepOf": "Langkah {{step}} daripada {{totalSteps}}",
+    "back": "Kembali",
+    "next": "Seterusnya",
+    "bio": {
+      "yourStory": "Kisah Anda",
+      "placeholder": "Saya minat dalam...",
+      "required": "Bio diperlukan untuk meneruskan",
+      "languagesKnown": "Bahasa Yang Anda Tahu (pilihan)",
+      "healthDisclosures": "Pendedahan Kesihatan",
+      "optional": "(pilihan)",
+      "selectIfShare": "Pilih jika anda ingin kongsikan",
+      "preferNotToSay": "Tidak Mahu Menyatakan",
+      "removeLabel": "Buang {{label}}",
+      "multiSelectHint": "Anda boleh pilih lebih daripada satu pilihan"
+    },
+    "tags": {
+      "missingName": "Nama",
+      "missingBio": "Bio",
+      "missingDob": "Tarikh lahir",
+      "missingValidAge": "Umur yang sah (18+)",
+      "missingPreference": "Sekurang-kurangnya satu keutamaan",
+      "missingSocialLink": "Sekurang-kurangnya satu pautan sosial",
+      "missingLocation": "Lokasi",
+      "missingPhoto": "Sekurang-kurangnya satu gambar",
+      "pleaseComplete": "Sila lengkapkan: {{fields}}",
+      "completionFailed": "Gagal melengkapkan profil",
+      "somethingWentWrong": "Sesuatu tidak kena"
+    }
+  }
   }
   

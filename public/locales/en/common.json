@@ -70,5 +70,42 @@
   "rangeNearby": "Nearby",
   "rangeCity": "Within city",
   "rangeRegion": "Regional",
-  "rangeAnywhere": "Anywhere"
+  "rangeAnywhere": "Anywhere",
+
+  "regionGate": {
+    "brand": "Pass or Match",
+    "heading": "Coming soon to your region",
+    "body": "We're not available in your region yet, but we're working on it. Check back soon."
+  },
+
+  "wizard": {
+    "stepOf": "Step {{step}} of {{totalSteps}}",
+    "back": "Back",
+    "next": "Next",
+    "bio": {
+      "yourStory": "Your Story",
+      "placeholder": "I'm passionate about...",
+      "required": "Bio is required to continue",
+      "languagesKnown": "Languages You Know (optional)",
+      "healthDisclosures": "Health Disclosures",
+      "optional": "(optional)",
+      "selectIfShare": "Select if you'd like to share",
+      "preferNotToSay": "Prefer Not to Say",
+      "removeLabel": "Remove {{label}}",
+      "multiSelectHint": "You can select multiple options"
+    },
+    "tags": {
+      "missingName": "Name",
+      "missingBio": "Bio",
+      "missingDob": "Date of birth",
+      "missingValidAge": "Valid age (18+)",
+      "missingPreference": "At least one preference",
+      "missingSocialLink": "At least one social link",
+      "missingLocation": "Location",
+      "missingPhoto": "At least one photo",
+      "pleaseComplete": "Please complete: {{fields}}",
+      "completionFailed": "Profile completion failed",
+      "somethingWentWrong": "Something went wrong"
+    }
+  }
 }

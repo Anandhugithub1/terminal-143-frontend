@@ -22,6 +22,7 @@ import { useLocation } from "react-router-dom";
 import { subscribeToPush } from "../utlis/subscribeToPush";
 
 import BravePushHelpModal from "../components/Modals/BravePushHelpModal";
+import { useTranslation } from "react-i18next";
 const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"));
 const DetailSection = lazy(() => import("../components/Details/Details"));
 const ActionControls = lazy(
@@ -31,6 +32,7 @@ const AlertMessage = lazy(() => import("../../../components/Ui/Alerts"));
 const SwipeDeck = lazy(() => import("../components/Actions/SwipeDeck"));
 import ReportUserModal from "../components/Modals/ReportUserModal";
 export default function UserHomePage() {
+  const { t } = useTranslation("swipe");
   const { data: myProfile } = useMyProfile();
 const { mutate: reportUser } = useReportUser();
   const {
@@ -156,14 +158,14 @@ const [showReport, setShowReport] = useState(false);
       : [];
 
     profile = {
-      name: rawProfile.name || "Unknown",
+      name: rawProfile.name || t("unknown"),
       age: computeAge(rawProfile.dob),
       about: rawProfile.bio || "",
       gender:
         rawProfile.gender === "F"
-          ? "Female"
+          ? t("genderFemale")
           : rawProfile.gender === "M"
-            ? "Male"
+            ? t("genderMale")
             : rawProfile.gender,
       images,
       location: rawProfile.location
@@ -171,8 +173,8 @@ const [showReport, setShowReport] = useState(false);
         : "",
       popularity: rawProfile.popularity || 0,
       healthStatus: rawProfile.healthStatus || {
-        status: "Unknown",
-        lastTestedDate: "Unknown",
+        status: t("unknown"),
+        lastTestedDate: t("unknown"),
       },
       lastSeen: formatLastSeen(rawProfile.lastSeen),
       job: rawProfile.jobTitle || "",
@@ -191,7 +193,7 @@ const [showReport, setShowReport] = useState(false);
     <PageLayout className="relative bg-white">
 
       <LocationBar
-        title={myProfile?.location?.placeName || "Location"}
+        title={myProfile?.location?.placeName || t("locationFallback")}
         subtitle={
           myProfile?.location
             ? `${myProfile.location.placeName}, ${myProfile.location.countryCode}`
@@ -203,7 +205,7 @@ const [showReport, setShowReport] = useState(false);
       {exhausted && canRefresh && (
         <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
           <div className="text-sm text-gray-500 mb-4">
-            You're all caught up. Refresh to discover new profiles.
+            {t("caughtUp.message")}
           </div>
 
           <button
@@ -215,7 +217,7 @@ const [showReport, setShowReport] = useState(false);
                 : "bg-primary text-white hover:opacity-90 active:scale-95"
             }`}
           >
-            {isRefreshing ? "Refreshing..." : "Refresh Profiles"}
+            {isRefreshing ? t("caughtUp.refreshing") : t("caughtUp.refreshProfiles")}
           </button>
         </div>
       )}
@@ -227,27 +229,27 @@ const [showReport, setShowReport] = useState(false);
           <ComputingLoading />
         ) : suggestionError ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-            <h2 className="text-xl font-semibold">Unexpected error</h2>
+            <h2 className="text-xl font-semibold">{t("unexpectedError.title")}</h2>
             <p className="mt-2 text-gray-500">{suggestionError}</p>
             <button
               onClick={handleRefresh}
               className="mt-6 px-6 py-2 bg-primary text-white rounded-full"
             >
-              Try again
+              {t("unexpectedError.tryAgain")}
             </button>
           </div>
         ) : isNoPool ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-            <h2 className="text-xl font-semibold">No matches found nearby</h2>
+            <h2 className="text-xl font-semibold">{t("noPool.title")}</h2>
             <p className="mt-2 text-gray-500">
-              Try expanding your search radius or updating your preferences.
+              {t("noPool.subtitle")}
             </p>
           </div>
         ) : isEnd ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
-            <h2 className="text-xl font-semibold">You are all caught up</h2>
+            <h2 className="text-xl font-semibold">{t("allSeen.title")}</h2>
             <p className="mt-2 text-gray-500">
-              You’ve seen all nearby profiles.
+              {t("allSeen.subtitle")}
             </p>
           </div>
         ) : isBuffering ? (

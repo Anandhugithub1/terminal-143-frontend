@@ -3,6 +3,7 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useNavigate } from 'react-router-dom'
 import { MessageCircle } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useInfiniteMatches, SendProfileFeeback } from '../../UserHome/api'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import PageLayout from '../../../shared/components/PageLayout'
@@ -11,6 +12,7 @@ import MatchRow from '../components/MatchRow'
 import NewMatchesStrip from '../components/NewMatchesStrip'
 
 export default function ChatListPage() {
+  const { t } = useTranslation('chat')
   const {
     matches,
     isLoading,
@@ -94,7 +96,7 @@ export default function ChatListPage() {
     return (
       <PageLayout className="bg-white">
         <div className="p-4 pt-6 space-y-4">
-          <h1 className="text-2xl font-bold">Loading chats...</h1>
+          <h1 className="text-2xl font-bold">{t('list.loadingChats')}</h1>
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="flex gap-3 items-center">
               <Skeleton circle width={56} height={56} />
@@ -115,12 +117,8 @@ export default function ChatListPage() {
         <div className="flex-1 flex items-center justify-center">
           <EmptyState
             icon={MessageCircle}
-            title={isError ? 'Could not load matches' : 'No matches yet'}
-            subtitle={
-              isError
-                ? 'Please try again later.'
-                : 'Start swiping to find someone special — your matches will show up here as chats.'
-            }
+            title={isError ? t('list.couldNotLoadMatches') : t('list.noMatchesYet')}
+            subtitle={isError ? t('list.tryAgainLater') : t('list.startSwiping')}
           />
         </div>
       </PageLayout>
@@ -142,14 +140,14 @@ export default function ChatListPage() {
         <div className="flex-1 flex items-center justify-center">
           <EmptyState
             icon={MessageCircle}
-            title="No conversations yet"
-            subtitle="Tap a match above to say hi and start chatting."
+            title={t('list.noConversationsYet')}
+            subtitle={t('list.tapMatchToStart')}
           />
         </div>
       ) : (
         <div className="flex-1">
           <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
-            Chat
+            {t('list.chatSectionLabel')}
           </p>
           {conversations.map((match) => (
             <MatchRow

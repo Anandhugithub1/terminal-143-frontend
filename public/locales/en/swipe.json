@@ -1,0 +1,49 @@
+{
+  "locationFallback": "Location",
+  "genderFemale": "Female",
+  "genderMale": "Male",
+  "unknown": "Unknown",
+
+  "caughtUp": {
+    "message": "You're all caught up. Refresh to discover new profiles.",
+    "refreshing": "Refreshing...",
+    "refreshProfiles": "Refresh Profiles"
+  },
+  "unexpectedError": {
+    "title": "Unexpected error",
+    "tryAgain": "Try again"
+  },
+  "noPool": {
+    "title": "No matches found nearby",
+    "subtitle": "Try expanding your search radius or updating your preferences."
+  },
+  "allSeen": {
+    "title": "You are all caught up",
+    "subtitle": "You’ve seen all nearby profiles."
+  },
+
+  "requests": {
+    "couldNotLoad": "Could not load requests. Please try again later.",
+    "noRequestsYetTitle": "No Requests Yet",
+    "noRequestsYetSubtitle": "You're all caught up.",
+    "pageTitle": "Match Requests",
+    "accepted": "Match request accepted",
+    "rejected": "Match request rejected",
+    "genericError": "Something went wrong. Please try again."
+  },
+
+  "confirmation": {
+    "titlePrefix": "Confirm ",
+    "body": "Are you sure you want to {{action}} the match request from {{name}}?",
+    "fallbackName": "this user",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+
+  "userProfileById": {
+    "couldNotLoad": "Could not load user profile.",
+    "goBack": "Go Back",
+    "profileNotFound": "Profile not found.",
+    "unknown": "Unknown"
+  }
+}

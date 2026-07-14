@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { ProgressBar } from "./Progess";
 import PhotoGrid from "../../components/PhotoGrid";
 import { Button } from "../../../../shared/Button";
+import { useTranslation } from "react-i18next";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM", "OT"];
 
 const Photo = () => {
+  const { t } = useTranslation("common");
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();
   const inputRef = useRef(null);
@@ -98,14 +100,14 @@ const Photo = () => {
     hover:bg-gray-50
     active:scale-95"
         >
-          Back
+          {t("wizard.back")}
         </Button>
 
         <Button
           onClick={() => navigate("/complete/tags")}
           className="flex-1 py-3 transition-all hover:bg-pink-600 active:scale-95"
         >
-          Next
+          {t("wizard.next")}
         </Button>
       </div>
     </div>

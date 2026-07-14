@@ -1,0 +1,40 @@
+{
+  "list": {
+    "loadingChats": "Loading chats...",
+    "couldNotLoadMatches": "Could not load matches",
+    "noMatchesYet": "No matches yet",
+    "tryAgainLater": "Please try again later.",
+    "startSwiping": "Start swiping to find someone special — your matches will show up here as chats.",
+    "noConversationsYet": "No conversations yet",
+    "tapMatchToStart": "Tap a match above to say hi and start chatting.",
+    "chatSectionLabel": "Chat"
+  },
+
+  "matchesStrip": {
+    "label": "Matches"
+  },
+
+  "matchRow": {
+    "sayHi": "Say hi 👋",
+    "youPrefix": "You: ",
+    "timeNow": "now",
+    "timeMinutes": "{{count}} min",
+    "timeHours": "{{count}} hrs",
+    "timeDays": "{{count}}d",
+    "timeLastWeek": "Last week",
+    "viewProfile": "View profile",
+    "viewProfileAria": "View {{name}}'s profile",
+    "moreOptions": "More options"
+  },
+
+  "conversation": {
+    "back": "Back",
+    "online": "Online",
+    "chatFallback": "Chat",
+    "yourMatchFallback": "Your match",
+    "couldNotLoad": "Couldn't load this conversation",
+    "checkConnection": "Please check your connection and try again.",
+    "typeMessage": "Type your message",
+    "sendMessage": "Send message"
+  }
+}

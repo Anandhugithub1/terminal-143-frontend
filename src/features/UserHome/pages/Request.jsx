@@ -10,9 +10,11 @@ import RequestItem from '../components/Actions/RequestItem';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 
 
 export default function RequestsPage() {
+  const { t } = useTranslation('swipe');
   const navigate = useNavigate();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -61,14 +63,14 @@ const confirmAction = () => {
       onSuccess: () => {
         toast.success(
           action === 'accept'
-            ? 'Match request accepted'
-            : 'Match request rejected'
+            ? t('requests.accepted')
+            : t('requests.rejected')
         );
         refetch();
       },
       onError: (err) => {
         console.error('Match request action failed', err);
-        toast.error('Something went wrong. Please try again.');
+        toast.error(t('requests.genericError'));
       },
       onSettled: () => {
         setProcessingRequests(prev => {
@@ -113,7 +115,7 @@ const confirmAction = () => {
       return (
         <div className="flex-1 flex items-center justify-center p-4">
           <p className="text-red-500 text-center">
-            Could not load requests. Please try again later.
+            {t('requests.couldNotLoad')}
           </p>
         </div>
       );
@@ -122,7 +124,7 @@ const confirmAction = () => {
     if (!requests.length) {
       return (
         <div className="flex-1 flex items-center justify-center">
-          <EmptyState title="No Requests Yet" subtitle="You're all caught up." />
+          <EmptyState title={t('requests.noRequestsYetTitle')} subtitle={t('requests.noRequestsYetSubtitle')} />
         </div>
       );
     }
@@ -131,7 +133,7 @@ const confirmAction = () => {
       <div className="flex-1">
         <div className="max-w-md w-full mx-auto px-4 pt-5 pb-4">
           <div className="flex items-center gap-2 mb-4">
-            <h1 className="text-xl font-bold text-gray-900">Match Requests</h1>
+            <h1 className="text-xl font-bold text-gray-900">{t('requests.pageTitle')}</h1>
             <span className="text-xs font-semibold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
               {requests.length}
             </span>

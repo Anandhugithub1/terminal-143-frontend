@@ -34,7 +34,44 @@
       "socialLabel": "Добавить ссылки на соцсети",
       "socialOptional": "(необязательно)",
       "continue": "Продолжить",
-      "invalidLink": "Неверная ссылка. Должна начинаться с https:// или быть именем пользователя."
-    
+      "invalidLink": "Неверная ссылка. Должна начинаться с https:// или быть именем пользователя.",
+
+      "regionGate": {
+        "brand": "Pass or Match",
+        "heading": "Скоро будет доступно в вашем регионе",
+        "body": "Пока мы недоступны в вашем регионе, но уже работаем над этим. Загляните позже."
+      },
+
+      "wizard": {
+        "stepOf": "Шаг {{step}} из {{totalSteps}}",
+        "back": "Назад",
+        "next": "Далее",
+        "bio": {
+          "yourStory": "Ваша история",
+          "placeholder": "Я увлечён(а)...",
+          "required": "Чтобы продолжить, заполните раздел «О себе»",
+          "languagesKnown": "Языки, которыми вы владеете (необязательно)",
+          "healthDisclosures": "Сведения о здоровье",
+          "optional": "(необязательно)",
+          "selectIfShare": "Отметьте, если хотите поделиться",
+          "preferNotToSay": "Предпочитаю не указывать",
+          "removeLabel": "Удалить {{label}}",
+          "multiSelectHint": "Можно выбрать несколько вариантов"
+        },
+        "tags": {
+          "missingName": "Имя",
+          "missingBio": "О себе",
+          "missingDob": "Дата рождения",
+          "missingValidAge": "Действительный возраст (18+)",
+          "missingPreference": "Хотя бы одно предпочтение",
+          "missingSocialLink": "Хотя бы одна ссылка на соцсеть",
+          "missingLocation": "Местоположение",
+          "missingPhoto": "Хотя бы одна фотография",
+          "pleaseComplete": "Пожалуйста, заполните: {{fields}}",
+          "completionFailed": "Не удалось завершить заполнение профиля",
+          "somethingWentWrong": "Что-то пошло не так"
+        }
+      }
+
   }
   

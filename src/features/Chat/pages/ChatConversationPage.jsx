@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Send } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
+import { useTranslation } from 'react-i18next'
 import { useMatches } from '../../UserHome/api'
 import { useConversationHistory, normalizeIncomingMessage } from '../api'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
@@ -22,6 +23,7 @@ function formatMessageTime(iso) {
 }
 
 export default function ChatConversationPage() {
+  const { t } = useTranslation('chat')
   const { matchId } = useParams()
   const navigate = useNavigate()
   const { data: matches = [] } = useMatches()
@@ -130,7 +132,7 @@ export default function ChatConversationPage() {
         <button
           onClick={() => navigate(-1)}
           className="p-1.5 -ml-1.5 hover:bg-gray-100 rounded-full transition-colors shrink-0"
-          aria-label="Back"
+          aria-label={t('conversation.back')}
         >
           <ArrowLeft className="w-5 h-5 text-primary" />
         </button>
@@ -141,12 +143,12 @@ export default function ChatConversationPage() {
         />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-gray-900 truncate">
-            {match?.name || 'Chat'}
+            {match?.name || t('conversation.chatFallback')}
           </p>
           {online && (
             <span className="flex items-center gap-1.5 text-xs text-gray-400">
               <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-              Online
+              {t('conversation.online')}
             </span>
           )}
         </div>
@@ -161,8 +163,8 @@ export default function ChatConversationPage() {
           </div>
         ) : isError ? (
           <div className="h-full flex flex-col items-center justify-center text-center py-16">
-            <p className="text-gray-800 font-semibold text-sm">Couldn't load this conversation</p>
-            <p className="text-gray-400 text-xs mt-1">Please check your connection and try again.</p>
+            <p className="text-gray-800 font-semibold text-sm">{t('conversation.couldNotLoad')}</p>
+            <p className="text-gray-400 text-xs mt-1">{t('conversation.checkConnection')}</p>
           </div>
         ) : messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center px-6 py-16">
@@ -172,7 +174,7 @@ export default function ChatConversationPage() {
               className="w-24 h-24 rounded-full object-cover mb-4 border-4 border-white shadow-md"
             />
             <p className="text-gray-900 font-semibold text-base">
-              {match?.name || 'Your match'}
+              {match?.name || t('conversation.yourMatchFallback')}
             </p>
           </div>
         ) : (
@@ -209,14 +211,14 @@ export default function ChatConversationPage() {
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="Type your message"
+          placeholder={t('conversation.typeMessage')}
           className="flex-1 bg-input rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-focus"
         />
         <button
           type="submit"
           disabled={!draft.trim()}
           className="w-11 h-11 shrink-0 flex items-center justify-center rounded-full bg-gray-900 text-white disabled:opacity-40 active:scale-95 transition-transform"
-          aria-label="Send message"
+          aria-label={t('conversation.sendMessage')}
         >
           <Send className="w-4 h-4" />
         </button>

@@ -13,8 +13,10 @@ import {
   Transition
 } from "@headlessui/react"
 import { healthDisclosureOptions } from "../../utlis"
+import { useTranslation } from "react-i18next"
 
 export default function Bio() {
+  const { t } = useTranslation("common")
   const { formData, setFormData } = useWizard()
   const navigate = useNavigate()
   const charLimit = 500
@@ -82,7 +84,7 @@ const handleNext = () => {
       {/* Bio */}
       <section className="space-y-1">
         <h2 className="text-3xl font-bold text-gray-900">
-          Your Story
+          {t("wizard.bio.yourStory")}
         </h2>
 
         <textarea
@@ -92,14 +94,14 @@ const handleNext = () => {
               bio: e.target.value.slice(0, charLimit)
             })
           }
-          placeholder="I'm passionate about..."
+          placeholder={t("wizard.bio.placeholder")}
           className="w-full p-4 bg-gray-50 rounded-xl focus:ring-2 focus:ring-pink-500 min-h-[160px]"
         />
 
         <div className="flex justify-between text-sm">
           {!isBioValid && (
             <span className="text-gray-400">
-              Bio is required to continue
+              {t("wizard.bio.required")}
             </span>
           )}
           <span className="text-gray-400 ml-auto">
@@ -111,7 +113,7 @@ const handleNext = () => {
       {/* Languages */}
       <section>
         <h3 className="mb-2 font-semibold">
-          Languages You Know (optional)
+          {t("wizard.bio.languagesKnown")}
         </h3>
 
         <LanguagePicker
@@ -127,7 +129,7 @@ const handleNext = () => {
 {/* Health Disclosures — dropdown + selected pills (like LanguagePicker) */}
 <section className="space-y-2">
   <h3 className="font-semibold text-gray-900">
-    Health Disclosures <span className="text-gray-400">(optional)</span>
+    {t("wizard.bio.healthDisclosures")} <span className="text-gray-400">{t("wizard.bio.optional")}</span>
   </h3>
 
   <Listbox
@@ -147,9 +149,9 @@ const handleNext = () => {
       <ListboxButton className="w-full px-4 py-3 rounded-xl bg-white border border-gray-300 text-left text-sm text-gray-700 focus:ring-2 focus:ring-pink-500">
         <span className="block truncate">
           {disclosures.length === 0
-            ? "Select if you’d like to share"
+            ? t("wizard.bio.selectIfShare")
             : disclosures.includes("PNS")
-              ? "Prefer Not to Say"
+              ? t("wizard.bio.preferNotToSay")
               : disclosures
                   .map(disclosureLabel)
                   .filter(Boolean)
@@ -215,7 +217,7 @@ const handleNext = () => {
                 })
               }
               className="ml-1 text-pink-500 hover:text-pink-700"
-              aria-label={`Remove ${label}`}
+              aria-label={t("wizard.bio.removeLabel", { label })}
             >
               ×
             </button>
@@ -226,7 +228,7 @@ const handleNext = () => {
   )}
 
   <p className="text-xs text-gray-400">
-    You can select multiple options
+    {t("wizard.bio.multiSelectHint")}
   </p>
 </section>
 
@@ -237,7 +239,7 @@ const handleNext = () => {
           textColor="black"
           className="flex-1 py-3 px-6 border border-gray-200 bg-white hover:bg-gray-50 active:scale-95"
         >
-          Back
+          {t("wizard.back")}
         </Button>
 
         <Button
@@ -249,7 +251,7 @@ const handleNext = () => {
               : "hover:bg-pink-600 active:scale-95"
           }`}
         >
-          Next
+          {t("wizard.next")}
         </Button>
       </div>
     </div>

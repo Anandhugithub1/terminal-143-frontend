@@ -9,7 +9,9 @@ import placeholderImage from '../../../assets/woman.png';
 const ProfileCard =lazy(()=> import('../components/Cards/ProfileCard'))
 const DetailSection =lazy(()=>import('../components/Details/Details'))
 import { computeAge } from '../../../Utlis/utlis';
+import { useTranslation } from 'react-i18next';
 export default function UserProfilePage() {
+  const { t } = useTranslation('swipe');
   const { pk, sk } = useParams();
   const navigate = useNavigate();
 
@@ -22,12 +24,12 @@ export default function UserProfilePage() {
   if (error)
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center">
-        <p className="text-red-500 mb-4">Could not load user profile.</p>
+        <p className="text-red-500 mb-4">{t('userProfileById.couldNotLoad')}</p>
         <button
           onClick={() => navigate(-1)}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow"
         >
-          Go Back
+          {t('userProfileById.goBack')}
         </button>
       </div>
     );
@@ -35,7 +37,7 @@ export default function UserProfilePage() {
   if (!profile)
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-center">
-        <p className="text-gray-600">Profile not found.</p>
+        <p className="text-gray-600">{t('userProfileById.profileNotFound')}</p>
       </div>
     );
 
@@ -51,7 +53,7 @@ export default function UserProfilePage() {
 
   // ---- final normalized profile object ----
   const normalized = {
-    name: profile.name || 'Unknown',
+    name: profile.name || t('userProfileById.unknown'),
     age: computeAge(profile.dob),
     about: profile.bio || '',
     gender: profile.gender || '',

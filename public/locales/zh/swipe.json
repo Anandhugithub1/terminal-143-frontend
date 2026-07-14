@@ -1,0 +1,49 @@
+{
+  "locationFallback": "位置",
+  "genderFemale": "女",
+  "genderMale": "男",
+  "unknown": "未知",
+
+  "caughtUp": {
+    "message": "您已经看完所有推荐了。刷新以查看新的资料。",
+    "refreshing": "正在刷新...",
+    "refreshProfiles": "刷新资料"
+  },
+  "unexpectedError": {
+    "title": "出现意外错误",
+    "tryAgain": "重试"
+  },
+  "noPool": {
+    "title": "附近没有找到匹配",
+    "subtitle": "试试扩大搜索范围或更新您的偏好设置。"
+  },
+  "allSeen": {
+    "title": "您已经看完所有推荐了",
+    "subtitle": "您已经浏览了附近所有的资料。"
+  },
+
+  "requests": {
+    "couldNotLoad": "无法加载请求，请稍后重试。",
+    "noRequestsYetTitle": "暂无请求",
+    "noRequestsYetSubtitle": "您已经看完所有请求了。",
+    "pageTitle": "匹配请求",
+    "accepted": "已接受匹配请求",
+    "rejected": "已拒绝匹配请求",
+    "genericError": "出了点问题，请重试。"
+  },
+
+  "confirmation": {
+    "titlePrefix": "确认",
+    "body": "您确定要{{action}}来自 {{name}} 的匹配请求吗？",
+    "fallbackName": "该用户",
+    "cancel": "取消",
+    "confirm": "确认"
+  },
+
+  "userProfileById": {
+    "couldNotLoad": "无法加载用户资料。",
+    "goBack": "返回",
+    "profileNotFound": "未找到该资料。",
+    "unknown": "未知"
+  }
+}

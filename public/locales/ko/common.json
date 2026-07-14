@@ -35,7 +35,44 @@
     "socialLabel": "소셜 미디어 링크 추가",
     "socialOptional": "(선택사항)",
     "continue": "계속",
-    "invalidLink": "잘못된 링크입니다. https:// 또는 사용자 이름이어야 합니다."
+    "invalidLink": "잘못된 링크입니다. https:// 또는 사용자 이름이어야 합니다.",
+
+    "regionGate": {
+      "brand": "Pass or Match",
+      "heading": "곧 이 지역에서도 만나요",
+      "body": "아직 해당 지역에서는 서비스를 이용하실 수 없지만, 준비 중입니다. 곧 다시 확인해 주세요."
+    },
+
+    "wizard": {
+      "stepOf": "{{totalSteps}}단계 중 {{step}}단계",
+      "back": "이전",
+      "next": "다음",
+      "bio": {
+        "yourStory": "나의 이야기",
+        "placeholder": "저는 ...에 열정을 가지고 있어요",
+        "required": "계속하려면 자기소개를 입력해 주세요",
+        "languagesKnown": "구사 가능한 언어 (선택사항)",
+        "healthDisclosures": "건강 정보 공개",
+        "optional": "(선택사항)",
+        "selectIfShare": "공유하고 싶으시면 선택해 주세요",
+        "preferNotToSay": "알리고 싶지 않음",
+        "removeLabel": "{{label}} 삭제",
+        "multiSelectHint": "여러 항목을 선택할 수 있어요"
+      },
+      "tags": {
+        "missingName": "이름",
+        "missingBio": "자기소개",
+        "missingDob": "생년월일",
+        "missingValidAge": "유효한 나이 (18세 이상)",
+        "missingPreference": "최소 하나의 선호 설정",
+        "missingSocialLink": "최소 하나의 소셜 링크",
+        "missingLocation": "위치",
+        "missingPhoto": "최소 한 장의 사진",
+        "pleaseComplete": "다음을 완료해 주세요: {{fields}}",
+        "completionFailed": "프로필 작성을 완료하지 못했습니다",
+        "somethingWentWrong": "문제가 발생했습니다"
+      }
+    }
   }
-  
+
   

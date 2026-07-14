@@ -1,0 +1,40 @@
+{
+  "list": {
+    "loadingChats": "Memuatkan sembang...",
+    "couldNotLoadMatches": "Tidak dapat memuatkan padanan",
+    "noMatchesYet": "Belum ada padanan",
+    "tryAgainLater": "Sila cuba lagi kemudian.",
+    "startSwiping": "Mula leret untuk mencari seseorang yang istimewa — padanan anda akan dipaparkan di sini sebagai sembang.",
+    "noConversationsYet": "Belum ada perbualan",
+    "tapMatchToStart": "Ketik padanan di atas untuk menyapa dan mula bersembang.",
+    "chatSectionLabel": "Sembang"
+  },
+
+  "matchesStrip": {
+    "label": "Padanan"
+  },
+
+  "matchRow": {
+    "sayHi": "Sapa 👋",
+    "youPrefix": "Anda: ",
+    "timeNow": "sekarang",
+    "timeMinutes": "{{count}} minit",
+    "timeHours": "{{count}} jam",
+    "timeDays": "{{count}}h",
+    "timeLastWeek": "Minggu lepas",
+    "viewProfile": "Lihat profil",
+    "viewProfileAria": "Lihat profil {{name}}",
+    "moreOptions": "Pilihan lain"
+  },
+
+  "conversation": {
+    "back": "Kembali",
+    "online": "Dalam talian",
+    "chatFallback": "Sembang",
+    "yourMatchFallback": "Padanan anda",
+    "couldNotLoad": "Tidak dapat memuatkan perbualan ini",
+    "checkConnection": "Sila semak sambungan anda dan cuba lagi.",
+    "typeMessage": "Taip mesej anda",
+    "sendMessage": "Hantar mesej"
+  }
+}

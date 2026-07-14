@@ -3,12 +3,14 @@ import { InputField } from '../../../shared/common';
 import { Button } from '../../../shared/Button';
 import PasswordInput from '../../../shared/Passinput';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   useForgotPassword,
   useConfirmForgotPassword,
 } from '../useAuth';
 
 export const ForgotAndResetPassword = () => {
+  const { t } = useTranslation('auth');
   const [step, setStep] = useState('forgot');
   const [email, setEmail] = useState('');
   const [ConfirmationCode, setConfirmationCode] = useState('');
@@ -27,7 +29,7 @@ export const ForgotAndResetPassword = () => {
     e.preventDefault();
 
     if (!email) {
-      setError('Please enter your email.');
+      setError(t('resetPasswordFlow.enterEmail'));
       return;
     }
 
@@ -38,12 +40,12 @@ export const ForgotAndResetPassword = () => {
       { email },
       {
         onSuccess: () => {
-          setMessage('Reset code sent successfully. Please check your email.');
+          setMessage(t('resetPasswordFlow.resetCodeSent'));
           setTimeout(() => setStep('reset'), 1500);
         },
         onError: (err) => {
           setError(
-            err?.response?.data?.error || 'Failed to send reset code.'
+            err?.response?.data?.error || t('resetPasswordFlow.failedToSendCode')
           );
         },
       }
@@ -55,12 +57,12 @@ export const ForgotAndResetPassword = () => {
     e.preventDefault();
 
     if (!email || !ConfirmationCode || !newPassword || !confirmPassword) {
-      setError('Please fill in all fields.');
+      setError(t('resetPasswordFlow.fillAllFields'));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError(t('resetPasswordFlow.passwordsDoNotMatch'));
       return;
     }
 
@@ -75,12 +77,12 @@ export const ForgotAndResetPassword = () => {
       },
       {
         onSuccess: () => {
-          setMessage('Password has been reset successfully.');
+          setMessage(t('resetPasswordFlow.resetSuccess'));
           setTimeout(() => navigate('/login'), 2000);
         },
         onError: (err) => {
           setError(
-            err?.response?.data?.error || 'Password reset failed.'
+            err?.response?.data?.error || t('resetPasswordFlow.resetFailed')
           );
         },
       }
@@ -112,28 +114,28 @@ export const ForgotAndResetPassword = () => {
         {step === 'forgot' ? (
           <>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-              Reset Password
+              {t('resetPasswordFlow.resetPasswordTitle')}
             </h1>
 
             <form onSubmit={handleForgotSubmit} className="space-y-4">
               <InputField
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder={t('resetPasswordFlow.emailPlaceholder')}
               />
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
               {message && <p className="text-green-500 text-sm">{message}</p>}
 
               <Button type="submit" className="text-white">
-                Send Reset Code
+                {t('resetPasswordFlow.sendResetCode')}
               </Button>
             </form>
           </>
         ) : (
           <>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-              Reset Password
+              {t('resetPasswordFlow.resetPasswordTitle')}
             </h1>
 
             <form onSubmit={handleResetSubmit} className="space-y-4">
@@ -142,26 +144,26 @@ export const ForgotAndResetPassword = () => {
               <InputField
                 value={ConfirmationCode}
                 onChange={(e) => setConfirmationCode(e.target.value)}
-                placeholder="Enter confirmation code"
+                placeholder={t('resetPasswordFlow.confirmationCodePlaceholder')}
               />
 
               <PasswordInput
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Enter new password"
+                placeholder={t('resetPasswordFlow.newPasswordPlaceholder')}
               />
 
               <PasswordInput
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm new password"
+                placeholder={t('resetPasswordFlow.confirmPasswordPlaceholder')}
               />
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
               {message && <p className="text-green-500 text-sm">{message}</p>}
 
               <Button type="submit">
-                Reset Password
+                {t('resetPasswordFlow.resetPasswordButton')}
               </Button>
             </form>
           </>
@@ -172,7 +174,7 @@ export const ForgotAndResetPassword = () => {
             onClick={() => navigate(-1)}
             className="text-pink-600 font-semibold text-sm hover:underline"
           >
-            Go Back
+            {t('resetPasswordFlow.goBack')}
           </button>
         </div>
       </div>

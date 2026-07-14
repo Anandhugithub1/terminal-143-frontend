@@ -1,0 +1,40 @@
+{
+  "list": {
+    "loadingChats": "Загрузка чатов...",
+    "couldNotLoadMatches": "Не удалось загрузить совпадения",
+    "noMatchesYet": "Пока нет совпадений",
+    "tryAgainLater": "Пожалуйста, попробуйте позже.",
+    "startSwiping": "Начните листать анкеты, чтобы найти особенного человека — ваши совпадения появятся здесь в виде чатов.",
+    "noConversationsYet": "Пока нет разговоров",
+    "tapMatchToStart": "Нажмите на совпадение выше, чтобы поздороваться и начать общение.",
+    "chatSectionLabel": "Чат"
+  },
+
+  "matchesStrip": {
+    "label": "Совпадения"
+  },
+
+  "matchRow": {
+    "sayHi": "Поздороваться 👋",
+    "youPrefix": "Вы: ",
+    "timeNow": "сейчас",
+    "timeMinutes": "{{count}} мин",
+    "timeHours": "{{count}} ч",
+    "timeDays": "{{count}} дн",
+    "timeLastWeek": "На прошлой неделе",
+    "viewProfile": "Посмотреть профиль",
+    "viewProfileAria": "Посмотреть профиль {{name}}",
+    "moreOptions": "Дополнительные параметры"
+  },
+
+  "conversation": {
+    "back": "Назад",
+    "online": "В сети",
+    "chatFallback": "Чат",
+    "yourMatchFallback": "Ваше совпадение",
+    "couldNotLoad": "Не удалось загрузить этот разговор",
+    "checkConnection": "Проверьте подключение и попробуйте снова.",
+    "typeMessage": "Введите сообщение",
+    "sendMessage": "Отправить сообщение"
+  }
+}

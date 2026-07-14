@@ -32,6 +32,43 @@
     "socialLabel": "添加社交媒体链接",
     "socialOptional": "（可选）",
     "continue": "继续",
-    "invalidLink": "无效的链接。必须以 https:// 开头或为用户名。"
+    "invalidLink": "无效的链接。必须以 https:// 开头或为用户名。",
+
+    "regionGate": {
+      "brand": "Pass or Match",
+      "heading": "即将登陆您所在的地区",
+      "body": "目前该服务尚未在您所在的地区开放，我们正在努力开通中，请稍后再来看看。"
+    },
+
+    "wizard": {
+      "stepOf": "第 {{step}} 步，共 {{totalSteps}} 步",
+      "back": "上一步",
+      "next": "下一步",
+      "bio": {
+        "yourStory": "你的故事",
+        "placeholder": "我热衷于...",
+        "required": "请填写个人简介以继续",
+        "languagesKnown": "您会的语言（可选）",
+        "healthDisclosures": "健康信息披露",
+        "optional": "（可选）",
+        "selectIfShare": "如果您愿意分享，请选择",
+        "preferNotToSay": "不愿透露",
+        "removeLabel": "移除 {{label}}",
+        "multiSelectHint": "您可以选择多个选项"
+      },
+      "tags": {
+        "missingName": "姓名",
+        "missingBio": "个人简介",
+        "missingDob": "出生日期",
+        "missingValidAge": "有效年龄（18岁以上）",
+        "missingPreference": "至少一项偏好设置",
+        "missingSocialLink": "至少一个社交媒体链接",
+        "missingLocation": "位置",
+        "missingPhoto": "至少一张照片",
+        "pleaseComplete": "请完善：{{fields}}",
+        "completionFailed": "资料完善失败",
+        "somethingWentWrong": "出了点问题"
+      }
+    }
   }
   

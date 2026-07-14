@@ -4,8 +4,10 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button } from '../../../shared/Button'
 import { useVerifyOtp, useResendOtp } from '../useAuth'
 import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
 const EmailOTPVerification = () => {
+  const { t } = useTranslation('auth')
   const [code, setCode] = useState('')
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -22,12 +24,12 @@ const EmailOTPVerification = () => {
 
   useEffect(() => {
   if (verifyOtp.isSuccess) {
-    toast.success('OTP verified successfully')
+    toast.success(t('otp.verifiedSuccess'))
     setTimeout(() => {
       navigate('/login')
     }, 1200)
   }
-}, [verifyOtp.isSuccess, navigate])
+}, [verifyOtp.isSuccess, navigate, t])
 
   const handleVerify = (e) => {
     e.preventDefault()
@@ -45,11 +47,11 @@ const isPhone = email && /^\+?\d+$/.test(email);
     <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-  {isPhone ? "Verify Your Phone Number" : "Verify Your Email"}
+  {isPhone ? t('otp.verifyPhoneTitle') : t('otp.verifyEmailTitle')}
 </h1>
 
 <p className="text-center text-sm text-gray-500 mb-4">
-  {isPhone ? "OTP sent to phone number" : "OTP sent to email"}{" "}
+  {isPhone ? t('otp.sentToPhone') : t('otp.sentToEmail')}{" "}
   <span className="font-semibold">{email}</span>
 </p>
 
@@ -57,7 +59,7 @@ const isPhone = email && /^\+?\d+$/.test(email);
           <InputField
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Enter OTP"
+            placeholder={t('otp.placeholder')}
           />
 
           {verifyOtp.isError && (
@@ -71,7 +73,7 @@ const isPhone = email && /^\+?\d+$/.test(email);
             type="submit"
             disabled={verifyOtp.isPending || !email}
           >
-            {verifyOtp.isPending ? 'Verifying...' : 'Verify OTP'}
+            {verifyOtp.isPending ? t('otp.verifying') : t('otp.verify')}
           </Button>
         </form>
 
@@ -82,16 +84,16 @@ const isPhone = email && /^\+?\d+$/.test(email);
             disabled={resendOtp.isPending || !email}
             className="text-sm font-medium text-pink-500 hover:text-pink-600 hover:underline disabled:text-pink-300 disabled:cursor-not-allowed transition-colors"
           >
-            {resendOtp.isPending ? 'Resending...' : 'Resend OTP'}
+            {resendOtp.isPending ? t('otp.resending') : t('otp.resend')}
           </button>
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-500">
-          Already verified?{' '}
+          {t('otp.alreadyVerified')}{' '}
           <Link
             to="/login"
             className="text-pink-600 font-semibold hover:underline">
-            Sign in
+            {t('otp.signIn')}
           </Link>
         </p>
       </div>
