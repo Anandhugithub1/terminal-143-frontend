@@ -73,9 +73,8 @@
   "rangeAnywhere": "Anywhere",
 
   "regionGate": {
-    "brand": "Pass or Match",
-    "heading": "Coming soon to your region",
-    "body": "We're not available in your region yet, but we're working on it. Check back soon."
+    "availableIn": "Our app is available across Southeast Asia",
+    "availableInDetail": "Now available in Thailand, Philippines, Indonesia, Cambodia, Vietnam, Malaysia — and more SEA countries"
   },
 
   "wizard": {

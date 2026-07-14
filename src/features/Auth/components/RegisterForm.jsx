@@ -11,6 +11,7 @@ import ReactCountryFlag from "react-country-flag";
 
 const RegisterForm = () => {
   const { t, ready } = useTranslation("auth");
+  const { t: tCommon } = useTranslation("common");
 
   const [emailPhone, setEmailPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -131,7 +132,7 @@ useEffect(() => {
       </Button>
 <div className="mt-4 text-center text-sm text-gray-500">
   <p className="font-medium">
-    {"Our app is available across Southeast Asia"}
+    {tCommon("regionGate.availableIn")}
   </p>
 
   <div className="mt-2 flex justify-center items-center gap-3">
@@ -144,7 +145,7 @@ useEffect(() => {
   </div>
 
   <p className="mt-2 text-xs text-gray-400">
-    {"Now available in Thailand, Philippines, Indonesia, Cambodia, Vietnam, Malaysia — and more SEA countries"}
+    {tCommon("regionGate.availableInDetail")}
   </p>
 </div>
 

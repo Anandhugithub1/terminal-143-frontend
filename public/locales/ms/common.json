@@ -37,9 +37,8 @@
   "invalidLink": "Pautan tidak sah. Mesti bermula dengan https:// atau hanya nama pengguna.",
 
   "regionGate": {
-    "brand": "Pass or Match",
-    "heading": "Akan datang tidak lama lagi di kawasan anda",
-    "body": "Kami belum tersedia di kawasan anda, tetapi kami sedang berusaha ke arah itu. Sila semak semula tidak lama lagi."
+    "availableIn": "Aplikasi kami tersedia di seluruh Asia Tenggara",
+    "availableInDetail": "Kini tersedia di Thailand, Filipina, Indonesia, Kemboja, Vietnam, Malaysia — dan lebih banyak negara Asia Tenggara"
   },
 
   "wizard": {

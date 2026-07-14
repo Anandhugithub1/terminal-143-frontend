@@ -35,9 +35,8 @@
     "invalidLink": "无效的链接。必须以 https:// 开头或为用户名。",
 
     "regionGate": {
-      "brand": "Pass or Match",
-      "heading": "即将登陆您所在的地区",
-      "body": "目前该服务尚未在您所在的地区开放，我们正在努力开通中，请稍后再来看看。"
+      "availableIn": "我们的应用已覆盖东南亚地区",
+      "availableInDetail": "目前已在泰国、菲律宾、印度尼西亚、柬埔寨、越南、马来西亚等更多东南亚国家上线"
     },
 
     "wizard": {

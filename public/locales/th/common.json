@@ -35,5 +35,41 @@
   "socialLabel": "เพิ่มลิงก์โซเชียลมีเดีย",
   "socialOptional": "(ไม่จำเป็น)",
   "continue": "ดำเนินการต่อ",
-  "invalidLink": "ลิงก์ไม่ถูกต้อง ต้องเป็น https:// หรือชื่อผู้ใช้ธรรมดา"
+  "invalidLink": "ลิงก์ไม่ถูกต้อง ต้องเป็น https:// หรือชื่อผู้ใช้ธรรมดา",
+
+  "regionGate": {
+    "availableIn": "แอปของเราให้บริการทั่วเอเชียตะวันออกเฉียงใต้",
+    "availableInDetail": "พร้อมให้บริการแล้วในไทย ฟิลิปปินส์ อินโดนีเซีย กัมพูชา เวียดนาม มาเลเซีย และประเทศอื่น ๆ ในเอเชียตะวันออกเฉียงใต้"
+  },
+
+  "wizard": {
+    "stepOf": "ขั้นตอนที่ {{step}} จาก {{totalSteps}}",
+    "back": "ย้อนกลับ",
+    "next": "ถัดไป",
+    "bio": {
+      "yourStory": "เรื่องราวของคุณ",
+      "placeholder": "ฉันหลงใหลใน...",
+      "required": "จำเป็นต้องกรอกประวัติย่อเพื่อดำเนินการต่อ",
+      "languagesKnown": "ภาษาที่คุณรู้ (ไม่จำเป็น)",
+      "healthDisclosures": "การเปิดเผยข้อมูลสุขภาพ",
+      "optional": "(ไม่จำเป็น)",
+      "selectIfShare": "เลือกหากคุณต้องการแบ่งปัน",
+      "preferNotToSay": "ไม่ต้องการระบุ",
+      "removeLabel": "ลบ {{label}}",
+      "multiSelectHint": "คุณสามารถเลือกได้หลายตัวเลือก"
+    },
+    "tags": {
+      "missingName": "ชื่อ",
+      "missingBio": "ประวัติย่อ",
+      "missingDob": "วันเกิด",
+      "missingValidAge": "อายุที่ถูกต้อง (18 ปีขึ้นไป)",
+      "missingPreference": "อย่างน้อยหนึ่งตัวเลือก",
+      "missingSocialLink": "ลิงก์โซเชียลอย่างน้อยหนึ่งลิงก์",
+      "missingLocation": "ตำแหน่ง",
+      "missingPhoto": "รูปภาพอย่างน้อยหนึ่งรูป",
+      "pleaseComplete": "โปรดกรอกให้ครบ: {{fields}}",
+      "completionFailed": "การกรอกโปรไฟล์ไม่สำเร็จ",
+      "somethingWentWrong": "เกิดข้อผิดพลาด"
+    }
+  }
 }
