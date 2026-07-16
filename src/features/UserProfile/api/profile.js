@@ -26,12 +26,24 @@ export const updateMyProfile = async (payload) => {
 
 
 export const getProfileByLink = async (username) => {
-  const res = await userProfilesApi.get("v0.2/user/by-link", {
-    params: { username },
-    withCredentials: true
-  })
+  try {
+    const res = await userProfilesApi.get("v0.2/user/by-link", {
+      params: { username },
+      withCredentials: true
+    })
 
-  return res.data.profile
+    return res.data.profile
+  } catch (err) {
+    // Surface the HTTP status so callers can distinguish "unavailable"
+    // (404 — missing OR blocked; the backend deliberately doesn't reveal
+    // which) from real errors, and render an appropriate empty state.
+    const status = err?.response?.status
+    const wrapped = new Error(
+      status === 404 ? "Profile unavailable" : (err?.message || "Could not load profile")
+    )
+    wrapped.status = status
+    throw wrapped
+  }
 }
 
 
