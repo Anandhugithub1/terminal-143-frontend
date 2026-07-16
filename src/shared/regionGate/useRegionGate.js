@@ -43,6 +43,15 @@ export function useRegionGate() {
   const [checked, setChecked] = useState(false)
 
   useEffect(() => {
+    // Dev-only: import.meta.env.DEV is a build-time constant, so this
+    // branch is stripped from production bundles — it cannot be toggled
+    // at runtime or leak into prod.
+    if (import.meta.env.DEV) {
+      setBlocked(false)
+      setChecked(true)
+      return
+    }
+
     let cancelled = false
 
     const cached = readCache()
