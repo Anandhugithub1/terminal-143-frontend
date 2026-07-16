@@ -4,17 +4,12 @@ import {
   MapPin,
   Send,
   Hash,
-  Video,
-  Play,
-  Pause,
-  Clock,
-  Loader2,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { suggestedTags } from "../../constants/postOptions";
-import { MAX_MEDIA_ITEMS, MAX_VIDEO_DURATION_SEC } from "../../constants/mediaConfig";
+import { MAX_MEDIA_ITEMS } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
 import { createPost } from "../../api/postsApi";
 import { getPresignedUrl } from "../../api/imageupload";
@@ -34,8 +29,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
 
   const profileLocation = myProfile?.location ?? null;
 
-  const videoRef = useRef(null);
-  const [playingVideo, setPlayingVideo] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { media, addFiles, removeMedia, reset: resetMedia, isValidating } = useMediaAttachments();
 
@@ -63,25 +56,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   };
 
   const handleRemoveMedia = (id) => {
-    if (playingVideo === id) setPlayingVideo(null);
     removeMedia(id);
-  };
-
-  // Toggle video play/pause for preview
-  const toggleVideoPlay = (id) => {
-    if (playingVideo === id) {
-      videoRef.current?.pause();
-      setPlayingVideo(null);
-    } else {
-      setPlayingVideo(id);
-    }
-  };
-
-  // Format duration
-  const formatDuration = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   // Handle submit
@@ -202,7 +177,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
               {/* Media Upload Area */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t("createPostModal.addMediaLabel")}<span className="text-gray-400 font-normal">{t("createPostModal.addMediaHint", { maxItems: MAX_MEDIA_ITEMS, maxDuration: MAX_VIDEO_DURATION_SEC })}</span>
+                  {t("createPostModal.addMediaLabel")}<span className="text-gray-400 font-normal">{t("createPostModal.addMediaHint", { maxItems: MAX_MEDIA_ITEMS })}</span>
                 </label>
 
                 {/* Media Preview Grid */}
@@ -219,44 +194,11 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                           exit={{ opacity: 0, scale: 0.85 }}
                           transition={{ duration: 0.2 }}
                         >
-                          {item.type === "image" ? (
-                            <img
-                              src={item.url}
-                              alt="Upload preview"
-                              className="w-full h-24 object-cover rounded-lg"
-                            />
-                          ) : (
-                            <div className="relative w-full h-24 bg-gray-900 rounded-lg overflow-hidden">
-                              <video
-                                ref={playingVideo === item.id ? videoRef : null}
-                                src={item.url}
-                                className="w-full h-full object-cover"
-                                muted
-                              />
-                              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                                {item.status === "validating" ? (
-                                  <Loader2 className="w-5 h-5 text-white animate-spin" />
-                                ) : (
-                                  <button
-                                    onClick={() => toggleVideoPlay(item.id)}
-                                    className="p-2 bg-white/90 rounded-full hover:bg-white transition-colors"
-                                  >
-                                    {playingVideo === item.id ? (
-                                      <Pause className="w-4 h-4 text-gray-800" />
-                                    ) : (
-                                      <Play className="w-4 h-4 text-gray-800" />
-                                    )}
-                                  </button>
-                                )}
-                              </div>
-                              {item.durationSec > 0 && (
-                                <div className="absolute bottom-1 right-1 px-1.5 py-0.5 bg-black/70 rounded text-xs text-white flex items-center gap-1">
-                                  <Clock className="w-3 h-3" />
-                                  {formatDuration(item.durationSec)}
-                                </div>
-                              )}
-                            </div>
-                          )}
+                          <img
+                            src={item.url}
+                            alt="Upload preview"
+                            className="w-full h-24 object-cover rounded-lg"
+                          />
 
                           {/* Remove button */}
                           <button
@@ -265,57 +207,27 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                           >
                             <X className="w-3 h-3" />
                           </button>
-
-                          {/* Video indicator */}
-                          {item.type === "video" && (
-                            <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-purple-500/90 rounded text-xs text-white flex items-center gap-1">
-                              <Video className="w-3 h-3" />
-                              {t("createPostModal.videoBadge")}
-                            </div>
-                          )}
                         </motion.div>
                       ))}
                     </AnimatePresence>
                   </div>
                 )}
 
-                {/* Upload Buttons */}
+                {/* Upload Button — images only */}
                 {media.length < MAX_MEDIA_ITEMS && (
-                  <div className="flex gap-2">
-                    <label className="flex-1 cursor-pointer">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handleMediaUpload}
-                        className="hidden"
-                      />
-                      <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-primary hover:bg-gray-50 transition-colors">
-                        <Image className="w-6 h-6 text-gray-400" />
-                        <span className="text-xs text-gray-500">{t("createPostModal.addPhotos")}</span>
-                      </div>
-                    </label>
-
-                    <label className="flex-1 cursor-pointer">
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={handleMediaUpload}
-                        className="hidden"
-                      />
-                      <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-purple-500 hover:bg-purple-50 transition-colors">
-                        <Video className="w-6 h-6 text-gray-400" />
-                        <span className="text-xs text-gray-500">{t("createPostModal.addVideo", { maxDuration: MAX_VIDEO_DURATION_SEC })}</span>
-                      </div>
-                    </label>
-                  </div>
-                )}
-
-                {isValidating && (
-                  <p className="text-xs text-primary mt-2 flex items-center gap-1.5">
-                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    {t("createPostModal.checkingVideo")}
-                  </p>
+                  <label className="block cursor-pointer">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleMediaUpload}
+                      className="hidden"
+                    />
+                    <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-1 hover:border-primary hover:bg-gray-50 transition-colors">
+                      <Image className="w-6 h-6 text-gray-400" />
+                      <span className="text-xs text-gray-500">{t("createPostModal.addPhotos")}</span>
+                    </div>
+                  </label>
                 )}
               </div>
 

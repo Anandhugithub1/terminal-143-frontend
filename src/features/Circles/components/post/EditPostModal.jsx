@@ -149,7 +149,7 @@ export default function EditPostModal({ isOpen, onClose, post, circleId, circleN
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*,video/*"
+          accept="image/*"
           multiple
           className="hidden"
           onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }}

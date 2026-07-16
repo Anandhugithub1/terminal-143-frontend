@@ -1,6 +1,6 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { useParams, useNavigate } from "react-router-dom"
-import { FiLock } from "react-icons/fi"
+import { FiLock, FiSlash } from "react-icons/fi"
 
 import { useMyProfile } from "../Hooks/useMyProfile"
 import { useProfileByLink } from "../Hooks/getProfileByLink"
@@ -76,9 +76,33 @@ const normalized = {
   if (isProfileLoading || isMyProfileLoading) return <LoadingSpinner />
 
   if (profileError) {
+    // A 404 here means the profile is missing OR the two users are blocked —
+    // the backend deliberately doesn't distinguish the two (privacy), so we
+    // show one neutral "unavailable" state rather than a raw error string.
+    const isUnavailable = profileError.status === 404
+
     return (
-      <div className="text-center mt-10 text-red-500">
-        {profileError.message}
+      <div className="relative bg-gray-50 min-h-screen">
+        {myProfile ? <TopBar /> : <PublicTopbar />}
+
+        <div className="max-w-md mx-auto px-4 pt-16 text-center">
+          <div className="mx-auto w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+            <FiSlash size={24} className="text-gray-400" />
+          </div>
+          <h2 className="text-lg font-semibold text-gray-800 mb-1">
+            {isUnavailable ? "Profile unavailable" : "Something went wrong"}
+          </h2>
+          <p className="text-sm text-gray-500 mb-6">
+            {isUnavailable
+              ? "This profile can't be shown. It may no longer exist, or it isn't available to you."
+              : (profileError.message || "We couldn't load this profile. Please try again.")}
+          </p>
+          <Button onClick={() => navigate(myProfile ? "/matches" : "/")} className="px-6">
+            {myProfile ? "Back to matches" : "Go home"}
+          </Button>
+        </div>
+
+        {myProfile && <BottomNav />}
       </div>
     )
   }
