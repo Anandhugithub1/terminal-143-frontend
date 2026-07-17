@@ -159,7 +159,7 @@ export default function ChatConversationPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="h-[100dvh] flex flex-col bg-gray-50">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white">
         <button
           onClick={() => navigate(-1)}
@@ -244,7 +244,7 @@ export default function ChatConversationPage() {
       </div>
 
       {isBlocked ? (
-        <div className="flex items-center gap-3 px-4 py-3 border-t border-gray-100 bg-white">
+        <div className="flex items-center gap-3 px-4 py-3 border-t border-gray-100 bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <ShieldOff className="w-5 h-5 text-gray-400 shrink-0" />
           <p className="flex-1 text-sm text-gray-500">
             {blockedByMe ? t('conversation.youBlockedThisUser') : t('conversation.youWereBlocked')}
@@ -262,7 +262,7 @@ export default function ChatConversationPage() {
       ) : (
         <form
           onSubmit={handleSend}
-          className="flex items-center gap-2 px-4 py-3 border-t border-gray-100 bg-white"
+          className="flex items-center gap-2 px-4 py-3 border-t border-gray-100 bg-white pb-[max(0.75rem,env(safe-area-inset-bottom))]"
         >
           <input
             value={draft}
