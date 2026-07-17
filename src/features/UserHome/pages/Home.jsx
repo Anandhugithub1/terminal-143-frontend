@@ -202,28 +202,26 @@ const [showReport, setShowReport] = useState(false);
         onChange={() => {}}
       />
 
-      {exhausted && canRefresh && (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-          <div className="text-sm text-gray-500 mb-4">
-            {t("caughtUp.message")}
-          </div>
-
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className={`px-6 py-2 rounded-full shadow-md transition duration-200 ${
-              isRefreshing
-                ? "bg-primary/70 text-white cursor-wait"
-                : "bg-primary text-white hover:opacity-90 active:scale-95"
-            }`}
-          >
-            {isRefreshing ? t("caughtUp.refreshing") : t("caughtUp.refreshProfiles")}
-          </button>
-        </div>
-      )}
-
       <div className="relative flex-1">
-        {isLoading && profiles.length === 0 && !exhausted ? (
+        {exhausted && canRefresh ? (
+          <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+            <div className="text-sm text-gray-500 mb-4">
+              {t("caughtUp.message")}
+            </div>
+
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className={`px-6 py-2 rounded-full shadow-md transition duration-200 ${
+                isRefreshing
+                  ? "bg-primary/70 text-white cursor-wait"
+                  : "bg-primary text-white hover:opacity-90 active:scale-95"
+              }`}
+            >
+              {isRefreshing ? t("caughtUp.refreshing") : t("caughtUp.refreshProfiles")}
+            </button>
+          </div>
+        ) : isLoading && profiles.length === 0 && !exhausted ? (
           <ProfileSkeleton />
         ) : computing ? (
           <ComputingLoading />
@@ -254,7 +252,7 @@ const [showReport, setShowReport] = useState(false);
           </div>
         ) : isBuffering ? (
           <ProfileSkeleton />
-        ) : profiles.length === 0 || (exhausted && canRefresh) ? null : (
+        ) : profiles.length === 0 ? null : (
           <Suspense fallback={<ProfileSkeleton />}>
             <SwipeDeck
               idx={idx}
