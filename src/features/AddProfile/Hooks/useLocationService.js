@@ -129,9 +129,12 @@ const autocompleteMutation = useMutation({
 
       const position = await new Promise((resolve, reject) =>
         navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0,
+          // City-level accuracy is enough for reverse geocoding, and
+          // high-accuracy (GPS) frequently times out on desktops / devices
+          // without a GPS radio. Prefer the faster network-based fix.
+          enableHighAccuracy: false,
+          timeout: 20000,
+          maximumAge: 60000,
         })
       )
 

@@ -188,9 +188,18 @@ const handleAutoDetect = useCallback(async () => {
       return
     }
 
-    setError(
-      t("locationDetectionFailed") || "Unable to detect your location"
-    )
+    // The hook throws the specific failure as err.message (a translation key).
+    // Map it to the matching message so the user sees WHY detection failed —
+    // "permission denied" and "timeout" are actionable, "detection failed" isn't.
+    const codeToKey = {
+      locationPermissionDenied: "locationPermissionDenied",
+      locationUnavailable: "locationUnavailable",
+      locationTimeout: "locationTimeout",
+      geoNotSupported: "geoNotSupported",
+    }
+    const key = codeToKey[err?.message] || "locationDetectionFailed"
+
+    setError(t(key) || "Unable to detect your location")
   }
 }, [getCurrentLocation, locale, onSelect, clearSuggestions, t])
 
