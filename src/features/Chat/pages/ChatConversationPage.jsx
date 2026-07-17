@@ -344,7 +344,8 @@ export default function ChatConversationPage() {
       <BottomSheetModal
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
-        panelClassName="rounded-t-2xl sm:rounded-2xl sm:max-w-sm overflow-hidden"
+        centered
+        panelClassName="rounded-2xl overflow-hidden"
       >
         {blockedByMe ? (
           <button
