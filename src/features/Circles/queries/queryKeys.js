@@ -42,5 +42,11 @@ export const queryKeys =
     query => [
       'circleSearch',
       query
+    ],
+
+  postTagSearch:
+    tag => [
+      'postTagSearch',
+      tag
     ]
 };

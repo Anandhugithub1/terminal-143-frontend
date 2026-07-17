@@ -187,12 +187,17 @@ export default function CirclesHomePage() {
 
       <TopNav />
 
-      {/* Search any circle (server-side, not just the ones you're in) */}
+      {/* Search circles and posts (server-side, not just what you're in) */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-3xl mx-auto px-3 py-2.5">
           <CircleSearchBar
             joinedCircleIds={joinedCircleIds}
             onSelect={(circle) => navigate(`/circles/${circle.circleId}`)}
+            onSelectPost={(post) =>
+              navigate(
+                `/circles/${post.circleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`
+              )
+            }
           />
         </div>
       </div>

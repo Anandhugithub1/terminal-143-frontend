@@ -37,9 +37,22 @@ export const updateCircle =
 export const searchCircles =
 (
   q,
-  { limit = 20, offset = 0 } = {}
+  { limit = 20, offset = 0, signal } = {}
 ) =>
   api.get(
     `${BASE}search`,
-    { params: { q, limit, offset } }
+    { params: { q, limit, offset }, signal }
+  );
+
+// Posts carrying a tag, ranked by engagement + freshness. Unlike circle
+// search this is an EXACT tag match, not a prefix — "hik" will not find
+// "hiking". Returns { tag, count, posts, nextOffset }.
+export const searchPostsByTag =
+(
+  tag,
+  { limit = 20, offset = 0, signal } = {}
+) =>
+  api.get(
+    `${BASE}search/posts`,
+    { params: { tag, limit, offset }, signal }
   );

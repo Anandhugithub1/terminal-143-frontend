@@ -200,7 +200,8 @@
     "photo": "Foto",
     "video": "Video",
     "posting": "Menghantar...",
-    "post": "Hantar"
+    "post": "Hantar",
+    "tagsHint": "Tambah tag supaya orang boleh jumpa siaran ini"
   },
   "postCard": {
     "editPost": "Edit Hantaran",
@@ -217,5 +218,12 @@
   },
   "circleSearch": {
     "joinedBadge": "Disertai"
+  },
+  "search": {
+    "placeholder": "Cari circle dan siaran...",
+    "tabCircles": "Circle",
+    "tabPosts": "Siaran",
+    "noPostsTagged": "Tiada siaran bertag \"{{tag}}\"",
+    "postNoText": "Siaran foto/video"
   }
 }

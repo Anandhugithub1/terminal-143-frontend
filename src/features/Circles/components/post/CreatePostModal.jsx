@@ -170,8 +170,13 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 maxLength={1000}
                 className="w-full px-4 py-3 bg-white text-gray-800 placeholder-gray-400 border border-gray-300 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none text-sm"
               />
-              <div className="flex justify-end">
-                <span className={`text-xs ${postContent.length > 900 ? "text-red-500" : "text-gray-400"}`}>
+              <div className="flex items-center justify-between gap-2">
+                {/* Nudge toward tags while they're writing — tags are a
+                    separate field, never parsed out of the text below. */}
+                <span className="text-xs text-gray-400">
+                  {selectedTags.length === 0 ? t("createPostModal.tagsHint") : " "}
+                </span>
+                <span className={`text-xs shrink-0 ${postContent.length > 900 ? "text-red-500" : "text-gray-400"}`}>
                   {postContent.length}/1000
                 </span>
               </div>

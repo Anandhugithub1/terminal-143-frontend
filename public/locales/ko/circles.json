@@ -200,7 +200,8 @@
     "photo": "사진",
     "video": "동영상",
     "posting": "게시 중...",
-    "post": "게시"
+    "post": "게시",
+    "tagsHint": "태그를 추가하면 사람들이 이 게시물을 찾을 수 있어요"
   },
   "postCard": {
     "editPost": "게시물 수정",
@@ -217,5 +218,12 @@
   },
   "circleSearch": {
     "joinedBadge": "가입함"
+  },
+  "search": {
+    "placeholder": "서클과 게시물 검색...",
+    "tabCircles": "서클",
+    "tabPosts": "게시물",
+    "noPostsTagged": "\"{{tag}}\" 태그가 달린 게시물이 없습니다",
+    "postNoText": "사진/동영상 게시물"
   }
 }

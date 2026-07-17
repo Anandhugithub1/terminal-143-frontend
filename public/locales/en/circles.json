@@ -200,7 +200,8 @@
     "photo": "Photo",
     "video": "Video",
     "posting": "Posting...",
-    "post": "Post"
+    "post": "Post",
+    "tagsHint": "Add tags so people can find this post"
   },
   "postCard": {
     "editPost": "Edit Post",
@@ -217,5 +218,12 @@
   },
   "circleSearch": {
     "joinedBadge": "Joined"
+  },
+  "search": {
+    "placeholder": "Search circles and posts...",
+    "tabCircles": "Circles",
+    "tabPosts": "Posts",
+    "noPostsTagged": "No posts tagged \"{{tag}}\"",
+    "postNoText": "Photo/video post"
   }
 }

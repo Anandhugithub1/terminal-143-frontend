@@ -200,7 +200,8 @@
     "photo": "照片",
     "video": "视频",
     "posting": "发布中...",
-    "post": "发布"
+    "post": "发布",
+    "tagsHint": "添加标签，让其他人更容易找到这条帖子"
   },
   "postCard": {
     "editPost": "编辑动态",
@@ -217,5 +218,12 @@
   },
   "circleSearch": {
     "joinedBadge": "已加入"
+  },
+  "search": {
+    "placeholder": "搜索圈子和帖子...",
+    "tabCircles": "圈子",
+    "tabPosts": "帖子",
+    "noPostsTagged": "没有带“{{tag}}”标签的帖子",
+    "postNoText": "图片/视频帖子"
   }
 }

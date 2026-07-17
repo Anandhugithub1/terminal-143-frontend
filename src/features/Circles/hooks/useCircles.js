@@ -10,7 +10,8 @@ import {
   listUserCircles,
   createCircle,
   getCircle,
-  searchCircles
+  searchCircles,
+  searchPostsByTag
 } from '../api/circlesApi';
 
 import {
@@ -23,21 +24,30 @@ import {
 const SEARCH_DEBOUNCE_MS = 300;
 const MIN_QUERY_LENGTH = 2;
 
-export function useCircleSearch(query, { limit = 20 } = {}) {
+// One shared timer so the circle and post searches fire off the same keystroke
+// rather than each running its own debounce and landing at different times.
+export function useDebouncedSearchTerm(query, delay = SEARCH_DEBOUNCE_MS) {
   const [debounced, setDebounced] = useState('');
 
   useEffect(() => {
     const trimmed = (query || '').trim();
-    const timer = setTimeout(() => setDebounced(trimmed), SEARCH_DEBOUNCE_MS);
+    const timer = setTimeout(() => setDebounced(trimmed), delay);
     return () => clearTimeout(timer);
-  }, [query]);
+  }, [query, delay]);
 
+  return debounced;
+}
+
+export function useCircleSearch(query, { limit = 20 } = {}) {
+  const debounced = useDebouncedSearchTerm(query);
   const enabled = debounced.length >= MIN_QUERY_LENGTH;
 
   const result = useQuery({
     queryKey: queryKeys.circleSearch(debounced),
-    queryFn: async () => {
-      const res = await searchCircles(debounced, { limit });
+    // Forward React Query's AbortSignal so a superseded search (user kept
+    // typing) is cancelled in-flight instead of racing to land out of order.
+    queryFn: async ({ signal }) => {
+      const res = await searchCircles(debounced, { limit, signal });
       return res.data;
     },
     enabled,
@@ -52,6 +62,34 @@ export function useCircleSearch(query, { limit = 20 } = {}) {
     isSearching: enabled && result.isFetching,
     isActive: enabled,
     circles: result.data?.circles || [],
+  };
+}
+
+// Posts carrying the typed tag. NOTE this is an EXACT match, unlike circle
+// search's prefix: "hik" finds nothing, "hiking" finds #hiking. The UI says so
+// in its empty state rather than leaving the user to guess.
+export function usePostTagSearch(query, { limit = 20 } = {}) {
+  const debounced = useDebouncedSearchTerm(query);
+  const tag = debounced.toLowerCase();
+  const enabled = tag.length >= MIN_QUERY_LENGTH;
+
+  const result = useQuery({
+    queryKey: queryKeys.postTagSearch(tag),
+    // Forward React Query's AbortSignal so a superseded search is cancelled.
+    queryFn: async ({ signal }) => {
+      const res = await searchPostsByTag(tag, { limit, signal });
+      return res.data;
+    },
+    enabled,
+    staleTime: 1000 * 60,
+    placeholderData: (prev) => prev,
+  });
+
+  return {
+    ...result,
+    isSearching: enabled && result.isFetching,
+    isActive: enabled,
+    posts: result.data?.posts || [],
   };
 }
 
