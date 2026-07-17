@@ -27,7 +27,11 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
       address.locality ||
       address.name ||
       "",
-    countryCode: (address.country_code || address.country || "")
+    // Only ever use a real ISO code. Never fall back to the country NAME —
+    // truncating it to 2 chars silently produces wrong codes ("Indonesia" →
+    // "IN", which is India; "Vietnam" → "VI"; "Singapore" → "SI"), and this
+    // value is persisted on the profile and drives the SEA region gate.
+    countryCode: (address.country_code || "")
       .toString()
       .toUpperCase()
       .slice(0, 2),
@@ -218,9 +222,13 @@ const searchLocations = useCallback((query) => {
           predictions.map((p, idx) => ({
             id: p.placeId || `${idx}`,
             name: p.placeName || "",
-            country: p.country || "",
+            // The autocomplete endpoint returns `countryName` (it has no
+            // `country` field), so read that — reading `country` left the
+            // suggestion subtitle permanently blank.
+            country: p.countryName || p.country || "",
             placeId: p.placeId,
-            h3Index: p.h3Index || "",
+            // Autocomplete carries no coordinates, so no h3 — it's resolved
+            // later by getPlaceDetails() once a suggestion is picked.
             _raw: p
           }))
         )
