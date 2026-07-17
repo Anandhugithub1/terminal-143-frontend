@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, MoreVertical, Send, ShieldOff } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import { useTranslation } from 'react-i18next'
@@ -36,6 +37,7 @@ export default function ChatConversationPage() {
   const isBlocked = blockedByMe || blockedByOther
 
   const { send } = useSocket()
+  const queryClient = useQueryClient()
   const { previews, markRead, recordSentMessage, setBlockedByMe } = useConversationPreviews()
   const { mutate: blockUser, isPending: isBlocking } = useBlockUser(matchId)
   const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser(matchId)
@@ -67,11 +69,25 @@ export default function ChatConversationPage() {
     return () => flushPendingRef.current()
   }, [matchId])
 
+  // Mark the conversation read both locally (instant badge clear) and on the
+  // SERVER (advance lastRead via a socket readReceipt) so the unread count
+  // doesn't reappear on refresh. Then drop the cached /chat/unread so a
+  // refetch reflects the cleared state.
+  function markConversationRead() {
+    markRead(matchId)
+    const newest = messages[messages.length - 1]
+    if (newest?.id) {
+      send({ action: 'readReceipt', otherUserId: matchId, messageId: newest.id })
+    }
+    queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
+  }
+
   useEffect(() => {
     if (!isLoading && messages.length > 0) {
-      markRead(matchId)
+      markConversationRead()
     }
-  }, [matchId, markRead, isLoading, messages.length])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [matchId, isLoading, messages.length])
 
   // Keep the chat-list cache's blockedByMe in sync with the server on every
   // load — covers the case where the block state changed elsewhere (e.g. a
@@ -85,7 +101,11 @@ export default function ChatConversationPage() {
     const msg = normalizeIncomingMessage(payload)
     if (!msg || msg.matchId !== matchId) return
     setLiveMessages((prev) => [...prev, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }])
+    // Received while viewing this conversation → immediately read, on the
+    // server too (advance lastRead to this message).
     markRead(matchId)
+    if (msg.id) send({ action: 'readReceipt', otherUserId: matchId, messageId: msg.id })
+    queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
   })
 
   useEffect(() => {

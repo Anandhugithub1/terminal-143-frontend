@@ -63,20 +63,29 @@ export default function MatchRow({
             {match.name}
             {age != null && <span className="font-normal text-gray-500">, {age}</span>}
           </span>
-          {unread > 0 && <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />}
         </div>
         <p
           className={`truncate text-[13px] mt-0.5 ${
-            unread > 0 ? 'text-gray-600 font-medium' : 'text-gray-400'
+            unread > 0 ? 'text-gray-800 font-semibold' : 'text-gray-400'
           }`}
         >
           {preview_text}
         </p>
       </button>
 
-      <span className="text-[11px] text-gray-400 shrink-0 self-start pt-0.5">
-        {formatTimestamp(preview?.lastMessageAt, t)}
-      </span>
+      <div className="shrink-0 self-start flex flex-col items-end gap-1 pt-0.5">
+        <span className={`text-[11px] ${unread > 0 ? 'text-primary font-semibold' : 'text-gray-400'}`}>
+          {formatTimestamp(preview?.lastMessageAt, t)}
+        </span>
+        {unread > 0 && (
+          <span
+            className="min-w-[18px] h-[18px] px-1.5 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center leading-none"
+            aria-label={`${unread} unread`}
+          >
+            {unread > 99 ? '99+' : unread}
+          </span>
+        )}
+      </div>
 
       <div className="relative shrink-0">
         <button

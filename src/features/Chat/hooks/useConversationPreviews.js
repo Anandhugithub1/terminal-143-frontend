@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useSocketEvent } from '../../../shared/socket/useSocket'
-import { normalizeIncomingMessage } from '../api'
+import { normalizeIncomingMessage, useUnreadCounts } from '../api'
 
 const STORAGE_KEY = 'chat.conversationPreviews'
 
@@ -66,8 +66,54 @@ function withDerivedOnline(rawPreviews) {
 // Tracks last-message/unread-count/online state per matchId, keyed off
 // socket events, and persists it locally since the backend doesn't yet
 // expose a conversations-list endpoint with this data baked in.
+// Seed previews from the server-authoritative source (fetchUnreadCounts):
+// unread count AND lastMessage/lastMessageAt. This makes the chat list
+// recognise active conversations from the server — not just local state — so a
+// conversation shows up after a reload / on a new device even if localStorage
+// has no record of it. Live socket events layer on top while the app is open.
+function hydrateFromServer(conversations) {
+  setPreviews((prev) => {
+    const next = { ...prev }
+    const seen = new Set()
+    for (const [matchId, info] of Object.entries(conversations || {})) {
+      next[matchId] = {
+        ...next[matchId],
+        unreadCount: info.unreadCount || 0,
+        // Only fill lastMessage/At from the server when we don't already have a
+        // fresher local one (local may hold a just-sent message not yet in the
+        // server summary). Prefer the newer timestamp.
+        ...(shouldTakeServerLastMessage(next[matchId], info) && {
+          lastMessage: info.lastMessage,
+          lastMessageAt: info.lastMessageAt,
+          lastMessageMine: false,
+        }),
+      }
+      seen.add(matchId)
+    }
+    // Conversations the server didn't report have no unread.
+    for (const matchId of Object.keys(next)) {
+      if (!seen.has(matchId) && next[matchId]?.unreadCount) {
+        next[matchId] = { ...next[matchId], unreadCount: 0 }
+      }
+    }
+    return next
+  })
+}
+
+function shouldTakeServerLastMessage(local, server) {
+  if (!server?.lastMessageAt) return false
+  if (!local?.lastMessageAt) return true
+  return new Date(server.lastMessageAt) > new Date(local.lastMessageAt)
+}
+
 export function useConversationPreviews() {
   const [state, setState] = useState(() => withDerivedOnline(previews))
+  const { data: unread } = useUnreadCounts()
+
+  // Hydrate from the server whenever fresh data arrives (load / refocus).
+  useEffect(() => {
+    if (unread?.conversations) hydrateFromServer(unread.conversations)
+  }, [unread])
 
   useEffect(() => {
     const onRawChange = (rawPreviews) => setState(withDerivedOnline(rawPreviews))

@@ -2,6 +2,30 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { chatApi } from '../../api/clients'
 import { getCurrentUsername } from '../../shared/utils/getCurrentUsername'
 
+// Server-authoritative per-conversation summary: unread count + last message.
+// Computed on the backend (ULID key-range count, no per-message counter), so it
+// survives reload / new device / being offline, unlike the socket-only local
+// tally. Shape: { total, conversations: { <otherUsername>: { unreadCount,
+// lastMessage, lastMessageAt } } }, keyed by the other user's username (= the
+// value the app treats as matchId).
+export async function fetchUnreadCounts() {
+  const res = await chatApi.get('/unread', { withCredentials: true })
+  return {
+    total: res.data?.total || 0,
+    conversations: res.data?.conversations || {},
+  }
+}
+
+export function useUnreadCounts() {
+  return useQuery({
+    queryKey: ['chatUnreadCounts'],
+    queryFn: fetchUnreadCounts,
+    staleTime: 30 * 1000,
+    refetchOnWindowFocus: true,
+    placeholderData: { total: 0, conversations: {} },
+  })
+}
+
 // Message history for a conversation. `matchId` here is the other user's
 // username (see useMatches() — each match row's PK is their username), which
 // is what chat-service's /chat/conversations/{otherUserId}/messages expects.
