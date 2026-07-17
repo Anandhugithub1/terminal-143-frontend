@@ -105,7 +105,18 @@
       "selectIfShare": "Select if you'd like to share",
       "preferNotToSay": "Prefer Not to Say",
       "removeLabel": "Remove {{label}}",
-      "multiSelectHint": "You can select multiple options"
+      "multiSelectHint": "You can select multiple options",
+      "disclosureOptions": {
+        "SHC": "Sexual Health Condition",
+        "MHC": "Mental Health Condition",
+        "ADHD": "ADHD",
+        "ASD": "Autism",
+        "LPC": "Long-Term Physical Condition",
+        "SUR": "Substance Use Recovery",
+        "AN": "Accessibility Needs",
+        "PNS": "Prefer Not to Say",
+        "HTD": "Happy to Discuss"
+      }
     },
     "tags": {
       "missingName": "Name",

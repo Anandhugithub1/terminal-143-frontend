@@ -67,7 +67,18 @@
         "selectIfShare": "如果您愿意分享，请选择",
         "preferNotToSay": "不愿透露",
         "removeLabel": "移除 {{label}}",
-        "multiSelectHint": "您可以选择多个选项"
+        "multiSelectHint": "您可以选择多个选项",
+        "disclosureOptions": {
+          "SHC": "性健康状况",
+          "MHC": "心理健康状况",
+          "ADHD": "注意力缺陷多动障碍",
+          "ASD": "自闭症",
+          "LPC": "长期身体状况",
+          "SUR": "物质使用康复",
+          "AN": "无障碍需求",
+          "PNS": "不愿透露",
+          "HTD": "乐意讨论"
+        }
       },
       "tags": {
         "missingName": "姓名",

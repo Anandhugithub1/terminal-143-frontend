@@ -69,7 +69,18 @@
       "selectIfShare": "Pilih jika anda ingin kongsikan",
       "preferNotToSay": "Tidak Mahu Menyatakan",
       "removeLabel": "Buang {{label}}",
-      "multiSelectHint": "Anda boleh pilih lebih daripada satu pilihan"
+      "multiSelectHint": "Anda boleh pilih lebih daripada satu pilihan",
+      "disclosureOptions": {
+        "SHC": "Keadaan Kesihatan Seksual",
+        "MHC": "Keadaan Kesihatan Mental",
+        "ADHD": "ADHD",
+        "ASD": "Autisme",
+        "LPC": "Keadaan Fizikal Jangka Panjang",
+        "SUR": "Pemulihan Penggunaan Bahan",
+        "AN": "Keperluan Kebolehcapaian",
+        "PNS": "Tidak Mahu Nyatakan",
+        "HTD": "Sedia Berbincang"
+      }
     },
     "tags": {
       "missingName": "Nama",

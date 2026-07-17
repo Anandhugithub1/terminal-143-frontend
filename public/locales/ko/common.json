@@ -70,7 +70,18 @@
         "selectIfShare": "공유하고 싶으시면 선택해 주세요",
         "preferNotToSay": "알리고 싶지 않음",
         "removeLabel": "{{label}} 삭제",
-        "multiSelectHint": "여러 항목을 선택할 수 있어요"
+        "multiSelectHint": "여러 항목을 선택할 수 있어요",
+        "disclosureOptions": {
+          "SHC": "성 건강 상태",
+          "MHC": "정신 건강 상태",
+          "ADHD": "ADHD",
+          "ASD": "자폐",
+          "LPC": "장기적 신체 질환",
+          "SUR": "약물 사용 회복",
+          "AN": "접근성 요구 사항",
+          "PNS": "밝히지 않음",
+          "HTD": "이야기 나눌 의향 있음"
+        }
       },
       "tags": {
         "missingName": "이름",

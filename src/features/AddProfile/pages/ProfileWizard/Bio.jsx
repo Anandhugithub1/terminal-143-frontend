@@ -58,8 +58,13 @@ const disclosures = Array.isArray(formData.healthDisclosures)
   : []
 
 
-  const disclosureLabel = value =>
-    healthDisclosureOptions.find(o => o.value === value)?.label
+  // Translate by the stable option value; fall back to the English label from
+  // the static options list for anything not yet in the locale files.
+  const disclosureLabel = value => {
+    const fallback = healthDisclosureOptions.find(o => o.value === value)?.label
+    if (!fallback) return undefined
+    return t(`wizard.bio.disclosureOptions.${value}`, fallback)
+  }
 
   /* ---------------- handlers ---------------- */
 
@@ -185,7 +190,7 @@ const handleNext = () => {
             >
               {({ selected }) => (
                 <>
-                  <span>{opt.label}</span>
+                  <span>{disclosureLabel(opt.value)}</span>
                   {selected && <span>✓</span>}
                 </>
               )}
