@@ -8,6 +8,7 @@ const PreferencesPage = lazy(() => import("../pages/Settings/Preference"))
 const InfoPage = lazy(() => import("../pages/Settings/Info"))
 const HelpCenterPage = lazy(() => import("../pages/Settings/HelpCenterPage"))
 const RatingPage = lazy(() => import("../pages/Settings/Rating.jsx"))
+const DeleteAccountPage = lazy(() => import("../pages/Settings/DeleteAccount.jsx"))
 import ProtectedRoute from './ProtectedRoute.jsx'
 
 export const SettingsRoutes = (
@@ -67,6 +68,18 @@ export const SettingsRoutes = (
         </Suspense>
                 </ProtectedRoute>
 
+      }
+    />
+
+    {/* Destructive — always behind auth (matches the Settings hub link) */}
+    <Route
+      path="delete-account"
+      element={
+        <ProtectedRoute>
+          <Suspense fallback={<LazyFallback />}>
+            <DeleteAccountPage />
+          </Suspense>
+        </ProtectedRoute>
       }
     />
   </>

@@ -47,6 +47,30 @@ export const getProfileByLink = async (username) => {
 }
 
 
+/**
+ * Schedule the current user's account for deletion (soft delete).
+ * The account is hidden everywhere immediately and permanently removed after
+ * a grace period; it can be restored until then via restoreMyAccount().
+ * Returns { message, deletionDate, deleteAt }.
+ */
+export const deleteMyAccount = async () => {
+  const res = await userProfilesApi.delete(
+    "v0.2/user/delete",
+    { withCredentials: true }
+  )
+  return res.data
+}
+
+/** Undo a scheduled deletion during the grace period. */
+export const restoreMyAccount = async () => {
+  const res = await userProfilesApi.post(
+    "v0.2/user/restore",
+    {},
+    { withCredentials: true }
+  )
+  return res.data
+}
+
 /** Get presigned URL for image upload */
 export const getPresignedUrl = async ({ fileType, photoIndex }) => {
   const res = await userProfilesApi.post(
