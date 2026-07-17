@@ -4,6 +4,7 @@ import {
   MapPin,
   Send,
   Hash,
+  Loader2,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
@@ -351,16 +352,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                       type="file"
                       accept="image/*"
                       multiple
-                      onChange={handleMediaUpload}
-                      className="hidden"
-                    />
-                  </label>
-                  <label className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer">
-                    <Video className="w-4 h-4 text-purple-500" />
-                    {t("createPostModal.video")}
-                    <input
-                      type="file"
-                      accept="video/*"
                       onChange={handleMediaUpload}
                       className="hidden"
                     />
