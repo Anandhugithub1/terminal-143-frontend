@@ -16,6 +16,7 @@ import PostCard from "../components/post/PostCard";
 import PostMeta from "../components/post/PostMeta";
 import PostSeenObserver from "../components/post/PostSeenObserver";
 import BottomSheetModal from "../components/common/BottomSheetModal";
+import CircleSearchBar from "../components/circle/CircleSearchBar";
 import { useCircles } from "../hooks/useCircles";
 import { useFeed, usePosts } from "../hooks/usePosts";
 import { useSeenTracker } from "../hooks/useSeenTracker";
@@ -76,6 +77,8 @@ export default function CirclesHomePage() {
 
   const { data: circlesData, isLoading: isLoadingCircles } = useCircles();
   const myCircles = circlesData?.circles || [];
+  // Lets search results badge the circles you're already in.
+  const joinedCircleIds = new Set(myCircles.map((c) => c.circleId));
 
   const { data: feedData, isLoading: isLoadingFeed } = useFeed();
   const feed = (feedData?.posts || []).filter((p) => p.status !== "deleted");
@@ -183,6 +186,16 @@ export default function CirclesHomePage() {
       )}
 
       <TopNav />
+
+      {/* Search any circle (server-side, not just the ones you're in) */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-3xl mx-auto px-3 py-2.5">
+          <CircleSearchBar
+            joinedCircleIds={joinedCircleIds}
+            onSelect={(circle) => navigate(`/circles/${circle.circleId}`)}
+          />
+        </div>
+      </div>
 
       {/* Sticky story strip */}
       <div className="sticky top-[65px] z-10 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">

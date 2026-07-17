@@ -36,5 +36,11 @@ export const queryKeys =
 
   feed: [
     'feed'
-  ]
+  ],
+
+  circleSearch:
+    query => [
+      'circleSearch',
+      query
+    ]
 };

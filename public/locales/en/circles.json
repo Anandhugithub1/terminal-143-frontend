@@ -18,7 +18,6 @@
     "linkCopied": "Post link copied to clipboard",
     "failedToShare": "Failed to share post"
   },
-
   "postDetails": {
     "notFoundTitle": "Post not found",
     "goBack": "Go back",
@@ -26,16 +25,16 @@
     "inCircle": "in ",
     "postReportedAlert": "Post reported"
   },
-
   "discoverCircles": {
     "header": "Discover Circles",
     "allJoinedTitle": "You're in every circle!",
     "allJoinedBody": "You've already joined all the circles we have to offer right now.",
     "searchPlaceholder": "Search circles...",
     "joining": "Joining...",
-    "joinCircle": "Join Circle"
+    "joinCircle": "Join Circle",
+    "searching": "Searching…",
+    "memberCount": "{{count}} members"
   },
-
   "onboarding": {
     "profileReadyToast": "Your profile is ready",
     "genericErrorToast": "Something went wrong. Please try again.",
@@ -67,7 +66,6 @@
     "joinAndStart": "Join {{count}} Circle{{plural}} & Start Connecting",
     "addMoreCircles": "Add More Circles"
   },
-
   "circlesHome": {
     "postToCircle": "Post to a Circle",
     "new": "New",
@@ -83,7 +81,6 @@
     "meanwhileIn": "Meanwhile in ",
     "seeAll": "See all"
   },
-
   "circleDetails": {
     "notFound": "Circle not found",
     "failedToShare": "Failed to share post",
@@ -105,7 +102,6 @@
     "createPost": "Create Post",
     "postReportedAlert": "Post reported"
   },
-
   "sidebar": {
     "menu": {
       "home": "Home",
@@ -130,11 +126,9 @@
     "logOut": "Log Out",
     "footer": "Version 1.0.0 • © 2024 Circles"
   },
-
   "postMeta": {
     "likedPercentage": "{{percent}}% liked"
   },
-
   "comments": {
     "delete": "Delete",
     "cancel": "Cancel",
@@ -146,7 +140,6 @@
     "yourAvatarAlt": "Your avatar",
     "commentPlaceholder": "Write a comment..."
   },
-
   "editPostModal": {
     "header": "Edit Post",
     "placeholder": "What's on your mind?",
@@ -157,7 +150,6 @@
     "fetchingLocation": "Fetching location...",
     "save": "Save"
   },
-
   "createCircleModal": {
     "invalidImageType": "Please select a JPG, PNG, or WEBP image",
     "imageTooLarge": "Image must be under 5MB",
@@ -183,7 +175,6 @@
     "fetchingLocation": "Fetching location...",
     "createCircle": "Create Circle"
   },
-
   "createPostModal": {
     "failedToCreate": "Failed to create post",
     "header": "Create Post",
@@ -211,19 +202,20 @@
     "posting": "Posting...",
     "post": "Post"
   },
-
   "postCard": {
     "editPost": "Edit Post",
     "share": "Share",
     "deletePost": "Delete Post",
     "reportPost": "Report Post"
   },
-
   "postMedia": {
     "videoUnavailable": "Video unavailable",
     "retry": "Retry",
     "muteVideo": "Mute video",
     "unmuteVideo": "Unmute video",
     "imageUnavailable": "Image unavailable"
+  },
+  "circleSearch": {
+    "joinedBadge": "Joined"
   }
 }

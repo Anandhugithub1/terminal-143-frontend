@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
-import { useCircles } from "../hooks/useCircles";
+import { useCircles, useCircleSearch } from "../hooks/useCircles";
 import { useJoinCircle } from "../hooks/useMembership";
 import { queryKeys } from "../queries/queryKeys";
 
@@ -21,16 +21,27 @@ export default function DiscoverCirclesPage() {
   const [joiningId, setJoiningId] = useState(null);
   const [imageErrors, setImageErrors] = useState(new Set());
 
+  // Typing searches ALL circles server-side (Redis prefix index) rather than
+  // filtering the hardcoded starter list — that list can't surface circles
+  // other users created.
+  const { circles: searchResults, isSearching, isActive: isSearchActive } =
+    useCircleSearch(searchQuery);
+
   const joinedCircleIds = new Set((circlesData?.circles || []).map((circle) => circle.circleId));
   const discoverableCircles = availableCircles.filter((circle) => !joinedCircleIds.has(circle.circleId));
 
-  const filteredCircles = discoverableCircles.filter((circle) => {
-    const matchesSearch =
-      circle.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      circle.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || circle.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Search results come from the server already scoped to public+active
+  // circles; drop the ones the user is already in, and honour the category
+  // chip so the two filters compose the way they look like they should.
+  const searchCircleResults = searchResults
+    .filter((circle) => !joinedCircleIds.has(circle.circleId))
+    .filter((circle) => selectedCategory === "All" || circle.category === selectedCategory);
+
+  const browseCircles = discoverableCircles.filter(
+    (circle) => selectedCategory === "All" || circle.category === selectedCategory
+  );
+
+  const filteredCircles = isSearchActive ? searchCircleResults : browseCircles;
 
   const handleImageError = (circleId) => {
     setImageErrors((prev) => new Set(prev).add(circleId));
@@ -119,26 +130,35 @@ export default function DiscoverCirclesPage() {
               </div>
             </div>
 
-            {/* Circles Grid */}
+            {/* Circles Grid — renders both the curated starter list (icon +
+                description) and server search results (coverPhoto +
+                memberCount), which carry different fields. */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {filteredCircles.map((circle) => {
+                const key = circle.id ?? circle.circleId;
                 const Icon = circle.icon;
                 const isJoining = joiningId === circle.circleId;
+                const image = circle.image || circle.coverPhoto;
+                const showFallback = !image || imageErrors.has(key);
                 return (
-                  <div key={circle.id} className={`${circle.bgColor} rounded-2xl p-3`}>
+                  <div key={key} className={`${circle.bgColor || "bg-white border border-gray-200"} rounded-2xl p-3`}>
                     <div className="relative mb-3">
-                      {imageErrors.has(circle.id) ? (
-                        <div className={`w-full h-24 rounded-xl flex items-center justify-center ${circle.iconBg}`}>
-                          <Icon className={`w-8 h-8 ${circle.iconColor}`} />
+                      {showFallback ? (
+                        <div className={`w-full h-24 rounded-xl flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
+                          {Icon ? (
+                            <Icon className={`w-8 h-8 ${circle.iconColor}`} />
+                          ) : (
+                            <Compass className="w-8 h-8 text-primary" />
+                          )}
                         </div>
                       ) : (
                         <img
-                          src={circle.image}
+                          src={image}
                           alt={circle.name}
                           loading="lazy"
                           decoding="async"
                           className="w-full h-24 object-cover rounded-xl"
-                          onError={() => handleImageError(circle.id)}
+                          onError={() => handleImageError(key)}
                         />
                       )}
                       <span className="absolute bottom-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-black/40 text-white backdrop-blur-sm">
@@ -146,7 +166,10 @@ export default function DiscoverCirclesPage() {
                       </span>
                     </div>
                     <h3 className="font-bold text-sm text-gray-800 mb-1 line-clamp-1">{circle.name}</h3>
-                    <p className="text-xs text-gray-600 line-clamp-2 mb-3">{circle.description}</p>
+                    <p className="text-xs text-gray-600 line-clamp-2 mb-3 min-h-[2rem]">
+                      {circle.description ||
+                        t("discoverCircles.memberCount", { count: circle.memberCount ?? 0 })}
+                    </p>
                     <button
                       onClick={() => handleJoin(circle)}
                       disabled={isJoining}
@@ -159,7 +182,13 @@ export default function DiscoverCirclesPage() {
               })}
             </div>
 
-            {filteredCircles.length === 0 && (
+            {isSearching && filteredCircles.length === 0 && (
+              <div className="text-center py-12 text-sm text-gray-400">
+                {t("discoverCircles.searching")}
+              </div>
+            )}
+
+            {!isSearching && filteredCircles.length === 0 && (
               <div className="text-center py-12">
                 <Search className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">{t("common.noCirclesFound")}</h3>

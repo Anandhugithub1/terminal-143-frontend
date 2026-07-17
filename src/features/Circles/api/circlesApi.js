@@ -30,3 +30,16 @@ export const updateCircle =
     `${BASE}${circleId}`,
     payload
   );
+
+// Prefix search over circle names, served from the Redis index (never scans
+// DynamoDB). Returns { query, count, circles, nextOffset } — page by echoing
+// nextOffset back as `offset`.
+export const searchCircles =
+(
+  q,
+  { limit = 20, offset = 0 } = {}
+) =>
+  api.get(
+    `${BASE}search`,
+    { params: { q, limit, offset } }
+  );

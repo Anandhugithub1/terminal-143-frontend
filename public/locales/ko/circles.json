@@ -18,7 +18,6 @@
     "linkCopied": "게시물 링크가 클립보드에 복사되었습니다",
     "failedToShare": "게시물 공유에 실패했습니다"
   },
-
   "postDetails": {
     "notFoundTitle": "게시물을 찾을 수 없습니다",
     "goBack": "뒤로 가기",
@@ -26,16 +25,16 @@
     "inCircle": "위치: ",
     "postReportedAlert": "게시물이 신고되었습니다"
   },
-
   "discoverCircles": {
     "header": "서클 탐색",
     "allJoinedTitle": "모든 서클에 가입했습니다!",
     "allJoinedBody": "현재 제공되는 모든 서클에 이미 가입하셨습니다.",
     "searchPlaceholder": "서클 검색...",
     "joining": "가입 중...",
-    "joinCircle": "서클 가입"
+    "joinCircle": "서클 가입",
+    "searching": "검색 중…",
+    "memberCount": "멤버 {{count}}명"
   },
-
   "onboarding": {
     "profileReadyToast": "프로필이 준비되었습니다",
     "genericErrorToast": "문제가 발생했습니다. 다시 시도해 주세요.",
@@ -67,7 +66,6 @@
     "joinAndStart": "{{count}}개 서클 가입하고 시작하기",
     "addMoreCircles": "서클 더 추가하기"
   },
-
   "circlesHome": {
     "postToCircle": "서클에 게시하기",
     "new": "신규",
@@ -83,7 +81,6 @@
     "meanwhileIn": "한편, ",
     "seeAll": "전체 보기"
   },
-
   "circleDetails": {
     "notFound": "서클을 찾을 수 없습니다",
     "failedToShare": "게시물 공유에 실패했습니다",
@@ -105,7 +102,6 @@
     "createPost": "게시물 작성",
     "postReportedAlert": "게시물이 신고되었습니다"
   },
-
   "sidebar": {
     "menu": {
       "home": "홈",
@@ -130,11 +126,9 @@
     "logOut": "로그아웃",
     "footer": "버전 1.0.0 • © 2024 Circles"
   },
-
   "postMeta": {
     "likedPercentage": "{{percent}}% 좋아요"
   },
-
   "comments": {
     "delete": "삭제",
     "cancel": "취소",
@@ -146,7 +140,6 @@
     "yourAvatarAlt": "내 아바타",
     "commentPlaceholder": "댓글을 작성하세요..."
   },
-
   "editPostModal": {
     "header": "게시물 수정",
     "placeholder": "무슨 생각을 하고 계신가요?",
@@ -157,7 +150,6 @@
     "fetchingLocation": "위치 가져오는 중...",
     "save": "저장"
   },
-
   "createCircleModal": {
     "invalidImageType": "JPG, PNG 또는 WEBP 이미지를 선택해 주세요",
     "imageTooLarge": "이미지는 5MB 이하여야 합니다",
@@ -183,7 +175,6 @@
     "fetchingLocation": "위치 가져오는 중...",
     "createCircle": "서클 만들기"
   },
-
   "createPostModal": {
     "failedToCreate": "게시물 생성에 실패했습니다",
     "header": "게시물 작성",
@@ -211,19 +202,20 @@
     "posting": "게시 중...",
     "post": "게시"
   },
-
   "postCard": {
     "editPost": "게시물 수정",
     "share": "공유",
     "deletePost": "게시물 삭제",
     "reportPost": "게시물 신고"
   },
-
   "postMedia": {
     "videoUnavailable": "동영상을 사용할 수 없습니다",
     "retry": "다시 시도",
     "muteVideo": "동영상 음소거",
     "unmuteVideo": "동영상 음소거 해제",
     "imageUnavailable": "이미지를 사용할 수 없습니다"
+  },
+  "circleSearch": {
+    "joinedBadge": "가입함"
   }
 }
