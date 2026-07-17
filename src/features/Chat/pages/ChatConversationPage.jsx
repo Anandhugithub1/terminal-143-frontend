@@ -245,7 +245,7 @@ export default function ChatConversationPage() {
       </header>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
-        {isLoading ? (
+        {isLoading || isMatchLoading ? (
           <div className="space-y-3">
             {[
               { w: '60%', mine: false },
