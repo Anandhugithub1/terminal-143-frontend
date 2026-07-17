@@ -15,6 +15,7 @@
   },
 
   "matchRow": {
+    "blocked": "ถูกบล็อก",
     "sayHi": "ทักทาย 👋",
     "youPrefix": "คุณ: ",
     "timeNow": "เมื่อสักครู่",

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AiOutlineLike, AiOutlineDislike, AiFillLike, AiFillDislike } from 'react-icons/ai'
-import { MoreVertical } from 'lucide-react'
+import { MoreVertical, ShieldOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 function getAge(dob) {
@@ -35,11 +35,17 @@ export default function MatchRow({
   const { t } = useTranslation('chat')
   const [menuOpen, setMenuOpen] = useState(false)
 
+  const blocked = !!preview?.blockedByMe
   const hasConversation = !!preview?.lastMessage
-  const unread = preview?.unreadCount || 0
-  const preview_text = hasConversation
-    ? `${preview.lastMessageMine ? t('matchRow.youPrefix') : ''}${preview.lastMessage}`
-    : t('matchRow.sayHi')
+  // A blocked thread shows "Blocked" instead of the last message: the point of
+  // keeping it listed is to offer a way back in, not to surface its content.
+  // Unread is suppressed for the same reason (the server also zeroes it).
+  const unread = blocked ? 0 : preview?.unreadCount || 0
+  const preview_text = blocked
+    ? t('matchRow.blocked')
+    : hasConversation
+      ? `${preview.lastMessageMine ? t('matchRow.youPrefix') : ''}${preview.lastMessage}`
+      : t('matchRow.sayHi')
   const age = getAge(match.dob)
 
   return (
@@ -52,7 +58,9 @@ export default function MatchRow({
         <img
           src={match.photos?.[0]?.url}
           alt={match.name}
-          className="w-12 h-12 rounded-full object-cover bg-gray-100"
+          className={`w-12 h-12 rounded-full object-cover bg-gray-100 ${
+            blocked ? 'grayscale opacity-60' : ''
+          }`}
           loading="lazy"
         />
       </button>
@@ -65,17 +73,18 @@ export default function MatchRow({
           </span>
         </div>
         <p
-          className={`truncate text-[13px] mt-0.5 ${
+          className={`truncate text-[13px] mt-0.5 flex items-center gap-1 ${
             unread > 0 ? 'text-gray-800 font-semibold' : 'text-gray-400'
           }`}
         >
+          {blocked && <ShieldOff className="w-3 h-3 shrink-0" />}
           {preview_text}
         </p>
       </button>
 
       <div className="shrink-0 self-start flex flex-col items-end gap-1 pt-0.5">
         <span className={`text-[11px] ${unread > 0 ? 'text-primary font-semibold' : 'text-gray-400'}`}>
-          {formatTimestamp(preview?.lastMessageAt, t)}
+          {blocked ? '' : formatTimestamp(preview?.lastMessageAt, t)}
         </span>
         {unread > 0 && (
           <span

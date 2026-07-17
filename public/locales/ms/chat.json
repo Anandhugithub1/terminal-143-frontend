@@ -15,6 +15,7 @@
   },
 
   "matchRow": {
+    "blocked": "Disekat",
     "sayHi": "Sapa 👋",
     "youPrefix": "Anda: ",
     "timeNow": "sekarang",

@@ -15,6 +15,7 @@
   },
 
   "matchRow": {
+    "blocked": "차단됨",
     "sayHi": "인사하기 👋",
     "youPrefix": "나: ",
     "timeNow": "방금",

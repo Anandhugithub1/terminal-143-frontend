@@ -15,6 +15,7 @@
   },
 
   "matchRow": {
+    "blocked": "已屏蔽",
     "sayHi": "打个招呼 👋",
     "youPrefix": "你: ",
     "timeNow": "刚刚",

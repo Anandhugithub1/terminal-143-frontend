@@ -15,6 +15,7 @@
   },
 
   "matchRow": {
+    "blocked": "Заблокирован",
     "sayHi": "Поздороваться 👋",
     "youPrefix": "Вы: ",
     "timeNow": "сейчас",

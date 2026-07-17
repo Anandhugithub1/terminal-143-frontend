@@ -75,24 +75,36 @@ export default function ChatListPage() {
 
   // Matches you haven't messaged yet show in the top strip; once a
   // conversation starts, a match drops out of the strip and into the
-  // chat list below, most recent first. Conversations you've blocked are
-  // hidden from both — matches the standard pattern (WhatsApp, Instagram,
-  // dating apps): blocking implies "don't show me this thread," not just
-  // "stop delivering messages."
+  // chat list below, most recent first.
+  //
+  // Threads you've blocked stay in the list (marked "Blocked", muted, sorted
+  // last) rather than disappearing: unblock lives inside the conversation, so
+  // hiding the thread left no way to reach it. They're kept out of the
+  // new-matches strip, which is a prompt to start chatting.
   const { newMatches, conversations } = useMemo(() => {
     const fresh = []
     const active = []
     for (const match of matches) {
-      if (previews[match.PK]?.blockedByMe) continue
-      if (previews[match.PK]?.lastMessageAt) {
+      const preview = previews[match.PK]
+      if (preview?.blockedByMe) {
+        active.push(match)
+      } else if (preview?.lastMessageAt) {
         active.push(match)
       } else {
         fresh.push(match)
       }
     }
-    active.sort(
-      (a, b) => new Date(previews[b.PK].lastMessageAt) - new Date(previews[a.PK].lastMessageAt)
-    )
+    active.sort((a, b) => {
+      // Blocked threads sink below live conversations; they're for going back
+      // to, not for reading.
+      const aBlocked = !!previews[a.PK]?.blockedByMe
+      const bBlocked = !!previews[b.PK]?.blockedByMe
+      if (aBlocked !== bBlocked) return aBlocked ? 1 : -1
+      return (
+        new Date(previews[b.PK]?.lastMessageAt || 0) -
+        new Date(previews[a.PK]?.lastMessageAt || 0)
+      )
+    })
     return { newMatches: fresh, conversations: active }
   }, [matches, previews])
 
