@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, MoreVertical, Send, ShieldOff } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 import { useTranslation } from 'react-i18next'
 import { useMatches } from '../../UserHome/api'
 import { useConversationHistory, normalizeIncomingMessage, useBlockUser, useUnblockUser } from '../api'
@@ -27,8 +28,20 @@ export default function ChatConversationPage() {
   const { t } = useTranslation('chat')
   const { matchId } = useParams()
   const navigate = useNavigate()
-  const { data: matches = [] } = useMatches()
+  const { data: matches = [], isLoading: isMatchLoading } = useMatches()
   const match = useMemo(() => matches.find((m) => m.PK === matchId), [matches, matchId])
+
+  // Open the matched user's public profile from the chat header, mirroring
+  // how the chat list opens a profile (tolerant of an absolute-URL link).
+  function goToProfile() {
+    const link = match?.profileLink
+    if (!link) return
+    try {
+      navigate(new URL(link).pathname)
+    } catch {
+      navigate(link)
+    }
+  }
 
   const { data: historyData, isLoading, isError } = useConversationHistory(matchId)
   const history = historyData?.messages ?? []
@@ -188,22 +201,40 @@ export default function ChatConversationPage() {
         >
           <ArrowLeft className="w-5 h-5 text-primary" />
         </button>
-        <img
-          src={match?.photos?.[0]?.url}
-          alt={match?.name}
-          className="w-9 h-9 rounded-full object-cover bg-gray-100 shrink-0"
-        />
-        <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-gray-900 truncate">
-            {match?.name || t('conversation.chatFallback')}
-          </p>
-          {online && !isBlocked && (
-            <span className="flex items-center gap-1.5 text-xs text-gray-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-              {t('conversation.online')}
-            </span>
-          )}
-        </div>
+        {isMatchLoading ? (
+          <>
+            <Skeleton circle width={36} height={36} />
+            <div className="flex-1 min-w-0">
+              <Skeleton height={14} width="45%" />
+              <Skeleton height={11} width="30%" />
+            </div>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={goToProfile}
+            disabled={!match?.profileLink}
+            className="flex items-center gap-3 flex-1 min-w-0 text-left rounded-full -my-1 py-1 pr-2 hover:bg-gray-50 disabled:hover:bg-transparent transition-colors"
+            aria-label={t('conversation.viewProfileAria', { name: match?.name || '' })}
+          >
+            <img
+              src={match?.photos?.[0]?.url}
+              alt={match?.name}
+              className="w-9 h-9 rounded-full object-cover bg-gray-100 shrink-0"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="text-[15px] font-semibold text-gray-900 truncate">
+                {match?.name || t('conversation.chatFallback')}
+              </p>
+              {online && !isBlocked && (
+                <span className="flex items-center gap-1.5 text-xs text-gray-400">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                  {t('conversation.online')}
+                </span>
+              )}
+            </div>
+          </button>
+        )}
         <button
           onClick={() => setIsMenuOpen(true)}
           className="p-1.5 -mr-1.5 shrink-0 hover:bg-gray-100 rounded-full transition-colors"
@@ -216,9 +247,17 @@ export default function ChatConversationPage() {
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
         {isLoading ? (
           <div className="space-y-3">
-            <Skeleton height={36} width="60%" borderRadius={16} />
-            <Skeleton height={36} width="45%" borderRadius={16} style={{ marginLeft: 'auto' }} />
-            <Skeleton height={36} width="55%" borderRadius={16} />
+            {[
+              { w: '60%', mine: false },
+              { w: '45%', mine: true },
+              { w: '70%', mine: false },
+              { w: '38%', mine: true },
+              { w: '52%', mine: false },
+            ].map((b, i) => (
+              <div key={i} className={`flex ${b.mine ? 'justify-end' : 'justify-start'}`}>
+                <Skeleton height={40} width={160} borderRadius={16} containerClassName="block" style={{ width: b.w, maxWidth: 260 }} />
+              </div>
+            ))}
           </div>
         ) : isError ? (
           <div className="h-full flex flex-col items-center justify-center text-center py-16">
@@ -330,7 +369,8 @@ export default function ChatConversationPage() {
       <BottomSheetModal
         isOpen={isBlockConfirmOpen}
         onClose={() => setIsBlockConfirmOpen(false)}
-        panelClassName="rounded-t-2xl sm:rounded-2xl sm:max-w-sm overflow-hidden p-5"
+        centered
+        panelClassName="rounded-2xl overflow-hidden p-5"
       >
         <h2 className="text-base font-semibold text-gray-900 mb-2">
           {t('conversation.blockConfirmTitle', { name: match?.name || '' })}
