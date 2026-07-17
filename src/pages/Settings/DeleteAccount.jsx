@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import PageHeader from '../../shared/components/PageHeader';
-import { PrimaryButton, SecondaryButton } from '../../shared/Button';
+import { SecondaryButton } from '../../shared/Button';
 import { deleteMyAccount } from '../../features/UserProfile/api/profile';
+import { signOut } from '../../features/Auth/authApi';
 import { socketManager } from '../../shared/socket/socketManager';
 import '@fontsource-variable/inter';
 
@@ -14,17 +15,30 @@ const CONFIRM_WORD = 'DELETE';
 
 export default function DeleteAccountPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [confirmText, setConfirmText] = useState('');
   const [error, setError] = useState('');
 
   const deleteMutation = useMutation({
-    mutationFn: deleteMyAccount,
+    mutationFn: async () => {
+      const result = await deleteMyAccount();
+      // Auth is an HttpOnly cookie — clearing localStorage does NOT sign the
+      // user out. Only the server can drop the cookie, so hit signout the same
+      // way the logout flow does; otherwise the session survives the deletion.
+      // Never let a signout failure strand the user on a deleted account:
+      // the local teardown below still runs.
+      try {
+        await signOut('signout');
+      } catch (err) {
+        console.warn('Signout after account deletion failed', err);
+      }
+      return result;
+    },
     onSuccess: () => {
-      // Account is gone from every surface — tear down the session the same
-      // way logout does so nothing keeps using stale credentials/sockets.
       socketManager.closeSession();
       localStorage.clear();
       sessionStorage.clear();
+      queryClient.clear();
       navigate('/login', { replace: true });
     },
     onError: (err) => {
@@ -61,8 +75,8 @@ export default function DeleteAccountPage() {
             <li>Your matches and conversations are no longer reachable.</li>
           </ul>
           <p className="text-gray-500">
-            Your data is kept for a short grace period before it is permanently
-            removed, so support can restore your account if you change your mind.
+            Your data is kept for 60 days before it is permanently removed, so
+            your account can be restored if you change your mind.
           </p>
         </div>
 
