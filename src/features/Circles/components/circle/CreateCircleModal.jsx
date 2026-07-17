@@ -147,6 +147,10 @@ export default function CreateCircleModal({
         {
           fileType:
             uploadFile.type,
+          // Size of the NORMALIZED file — the one actually PUT — since the
+          // signed ContentLength must match the bytes on the wire.
+          fileSize:
+            uploadFile.size,
           kind:
             'circleCover',
           circleName:

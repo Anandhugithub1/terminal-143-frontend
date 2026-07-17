@@ -28,6 +28,7 @@ export default function EditPostModal({ isOpen, onClose, post, circleId, circleN
         newMedia.map(async (item, index) => {
           const { data: { presignedUrl, publicUrl } } = await getPresignedUrl({
             fileType: item.file.type,
+            fileSize: item.file.size,
             kind: "postMedia",
             circleName,
             postId: post.postId,

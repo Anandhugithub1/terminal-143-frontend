@@ -77,6 +77,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
             data: { presignedUrl, publicUrl },
           } = await getPresignedUrl({
             fileType: item.file.type,
+            fileSize: item.file.size,
             kind: "postMedia",
             circleName,
             postId,
