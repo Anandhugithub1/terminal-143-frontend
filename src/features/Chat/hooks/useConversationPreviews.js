@@ -79,6 +79,10 @@ function hydrateFromServer(conversations) {
       next[matchId] = {
         ...next[matchId],
         unreadCount: info.unreadCount || 0,
+        // Server is authoritative for block state — it knows about blocks made
+        // on another device, and about threads this client has never opened.
+        blockedByMe: !!info.blockedByMe,
+        blockedByOther: !!info.blockedByOther,
         // Only fill lastMessage/At from the server when we don't already have a
         // fresher local one (local may hold a just-sent message not yet in the
         // server summary). Prefer the newer timestamp.
