@@ -36,6 +36,13 @@
     "socialOptional": "(선택사항)",
     "continue": "계속",
     "invalidLink": "잘못된 링크입니다. https:// 또는 사용자 이름이어야 합니다.",
+    "dobRequired": "생년월일을 입력해 주세요.",
+    "maxTwoPreferences": "최대 5개까지 선택할 수 있습니다.",
+    "socialRequired": "소셜 미디어 링크를 하나 이상 추가해 주세요.",
+    "socialPrivacyNote": "소셜 링크는 비공개로 유지되며 매칭된 경우에만 공유됩니다.",
+    "socialChoosePlatform": "플랫폼 선택",
+    "socialUsernameOrLink": "사용자 이름 또는 링크",
+    "socialAdd": "추가",
 
     "regionGate": {
       "availableIn": "저희 앱은 동남아시아 전역에서 이용하실 수 있어요",

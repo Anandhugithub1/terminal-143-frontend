@@ -33,6 +33,13 @@
     "socialOptional": "（可选）",
     "continue": "继续",
     "invalidLink": "无效的链接。必须以 https:// 开头或为用户名。",
+    "dobRequired": "请填写出生日期。",
+    "maxTwoPreferences": "最多只能选择 5 项。",
+    "socialRequired": "至少需要一个社交媒体链接。",
+    "socialPrivacyNote": "您的社交链接将保持私密，仅在配对成功时才会分享。",
+    "socialChoosePlatform": "选择平台",
+    "socialUsernameOrLink": "用户名或链接",
+    "socialAdd": "添加",
 
     "regionGate": {
       "availableIn": "我们的应用已覆盖东南亚地区",

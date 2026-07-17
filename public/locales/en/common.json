@@ -50,6 +50,13 @@
   "socialOptional": "(optional)",
   "continue": "Continue",
   "invalidLink": "Invalid link. Must be https:// or plain username.",
+  "dobRequired": "Date of birth is required.",
+  "maxTwoPreferences": "You can select up to 5 preferences only.",
+  "socialRequired": "At least one social media link is required.",
+  "socialPrivacyNote": "Your social links stay private and are shared only when there’s a match.",
+  "socialChoosePlatform": "Choose platform",
+  "socialUsernameOrLink": "Username or Link",
+  "socialAdd": "Add",
 
 
   "locationRequired": "Please select a location",

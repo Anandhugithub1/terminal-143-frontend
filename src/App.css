@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
 
+html,
+body {
+  /* Fill the full dynamic viewport so no white gap appears below page
+     content when the mobile on-screen keyboard shrinks the viewport. */
+  min-height: 100dvh;
+  background-color: #f5f3ff; /* matches the light end of app gradients */
+}
+
 body {
   font-family: 'Inter', sans-serif;
 }

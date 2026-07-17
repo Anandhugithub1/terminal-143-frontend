@@ -35,6 +35,13 @@
   "socialOptional": "(pilihan)",
   "continue": "Teruskan",
   "invalidLink": "Pautan tidak sah. Mesti bermula dengan https:// atau hanya nama pengguna.",
+  "dobRequired": "Tarikh lahir diperlukan.",
+  "maxTwoPreferences": "Anda hanya boleh memilih sehingga 5 pilihan sahaja.",
+  "socialRequired": "Sekurang-kurangnya satu pautan media sosial diperlukan.",
+  "socialPrivacyNote": "Pautan sosial anda kekal peribadi dan hanya dikongsi apabila ada padanan.",
+  "socialChoosePlatform": "Pilih platform",
+  "socialUsernameOrLink": "Nama pengguna atau Pautan",
+  "socialAdd": "Tambah",
 
   "regionGate": {
     "availableIn": "Aplikasi kami tersedia di seluruh Asia Tenggara",
