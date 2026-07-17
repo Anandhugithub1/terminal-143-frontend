@@ -31,6 +31,13 @@
   "dobError": "Anda mesti berumur sekurang-kurangnya 18 tahun untuk meneruskan.",
   "nameError": "Nama penuh diperlukan.",
   "preferencesTitle": "Siapakah yang anda minati?",
+  "preferences": {
+    "M": "Lelaki",
+    "F": "Perempuan",
+    "TF": "Wanita Trans",
+    "TM": "Lelaki Trans",
+    "Ot": "Lain-lain"
+  },
   "socialLabel": "Tambah Pautan Media Sosial",
   "socialOptional": "(pilihan)",
   "continue": "Teruskan",

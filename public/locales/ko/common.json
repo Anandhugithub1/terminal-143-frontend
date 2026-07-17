@@ -32,6 +32,13 @@
     "dobError": "계속하려면 만 18세 이상이어야 합니다.",
     "nameError": "성명은 필수 항목입니다.",
     "preferencesTitle": "어떤 사람에게 관심이 있나요?",
+    "preferences": {
+      "M": "남성",
+      "F": "여성",
+      "TF": "트랜스 여성",
+      "TM": "트랜스 남성",
+      "Ot": "기타"
+    },
     "socialLabel": "소셜 미디어 링크 추가",
     "socialOptional": "(선택사항)",
     "continue": "계속",

@@ -29,6 +29,13 @@
     "dobError": "您必须年满18岁才能继续。",
     "nameError": "全名是必填项。",
     "preferencesTitle": "您对谁感兴趣？",
+    "preferences": {
+      "M": "男性",
+      "F": "女性",
+      "TF": "跨性别女性",
+      "TM": "跨性别男性",
+      "Ot": "其他"
+    },
     "socialLabel": "添加社交媒体链接",
     "socialOptional": "（可选）",
     "continue": "继续",

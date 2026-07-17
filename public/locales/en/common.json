@@ -46,6 +46,13 @@
   "dobError": "You must be at least 18 years old to continue.",
   "nameError": "Full name is required.",
   "preferencesTitle": "Who are you interested in?",
+  "preferences": {
+    "M": "Male",
+    "F": "Female",
+    "TF": "Trans Women",
+    "TM": "Trans Men",
+    "Ot": "Others"
+  },
   "socialLabel": "Add Social Media Links",
   "socialOptional": "(optional)",
   "continue": "Continue",

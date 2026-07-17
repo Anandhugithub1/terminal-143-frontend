@@ -1,15 +1,40 @@
 // src/hooks/useLanguages.js
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+
+// The S3 list uses ISO 639-1 codes with English names. Rather than maintain a
+// translated name per language per locale, we localise the display name at
+// runtime with Intl.DisplayNames (keyed on the active i18n language), falling
+// back to the English name from S3 for anything the platform can't resolve.
+function makeLocaliser(locale) {
+  try {
+    const dn = new Intl.DisplayNames([locale || 'en'], { type: 'language' });
+    return (code, fallback) => {
+      try {
+        const name = dn.of(code);
+        return name && name !== code ? name : fallback;
+      } catch {
+        return fallback;
+      }
+    };
+  } catch {
+    return (_code, fallback) => fallback;
+  }
+}
 
 /**
  * useLanguages
  * - Fetches a JSON list of languages and normalises + sorts them.
+ * - Localises each language name into the active UI locale via Intl.DisplayNames.
  * - Supports aborting the fetch when the component unmounts.
  * - Returns { languagesList, loading, error } and accepts an optional URL.
  */
 export default function useLanguages(
   url = 'https://d36zx1g74mcorc.cloudfront.net/website_files/languages/languages.json'
 ) {
+  const { i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage || i18n.language;
+
   const [languagesList, setLanguagesList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +42,7 @@ export default function useLanguages(
   useEffect(() => {
     const controller = new AbortController();
     let mounted = true;
+    const localise = makeLocaliser(locale);
 
     const load = async () => {
       setLoading(true);
@@ -34,7 +60,7 @@ export default function useLanguages(
         }
 
         const normalised = data.map((item, index) => {
-          if (typeof item === 'string') return { value: item, label: item };
+          if (typeof item === 'string') return { value: item, label: localise(item, item) };
 
           const value =
             item.value ||
@@ -43,14 +69,18 @@ export default function useLanguages(
             item.languageCode ||
             `lang-${index}`;
 
-          const label =
+          const englishName =
             item.label || item.name || item.language || item.nativeName || value;
+
+          // `value` is an ISO 639-1 code for the S3 list — localise from that;
+          // fall back to the English name for non-standard/custom entries.
+          const label = localise(value, englishName);
 
           return { value, label };
         });
 
         normalised.sort((a, b) =>
-          a.label.localeCompare(b.label, undefined, { sensitivity: 'base' })
+          a.label.localeCompare(b.label, locale || undefined, { sensitivity: 'base' })
         );
 
         if (mounted) setLanguagesList(normalised);
@@ -70,7 +100,7 @@ export default function useLanguages(
       mounted = false;
       controller.abort();
     };
-  }, [url]);
+  }, [url, locale]);
 
   return { languagesList, loading, error };
 }

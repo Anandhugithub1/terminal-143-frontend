@@ -231,7 +231,7 @@ const Step1BasicInfo = () => {
                       : 'bg-gray-100 hover:bg-gray-200'
                   }`}
                 >
-                  {label}
+                  {t(`preferences.${value}`, label)}
                 </button>
               )
             })}
