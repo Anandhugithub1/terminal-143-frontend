@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useSocketEvent } from '../../../shared/socket/useSocket'
+import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { normalizeIncomingMessage, useUnreadCounts } from '../api'
 
 const STORAGE_KEY = 'chat.conversationPreviews'
@@ -109,6 +109,12 @@ function shouldTakeServerLastMessage(local, server) {
 export function useConversationPreviews() {
   const [state, setState] = useState(() => withDerivedOnline(previews))
   const { data: unread } = useUnreadCounts()
+
+  // Hold the socket open for as long as anything shows previews. useSocketEvent
+  // only subscribes — it never acquires — so without this the chat list has no
+  // connection at all (the socket is ref-counted and closes at zero), and MESSAGE
+  // never arrives: no live last-message, no unread badge, until a refetch.
+  useSocket()
 
   // Hydrate from the server whenever fresh data arrives (load / refocus).
   useEffect(() => {
