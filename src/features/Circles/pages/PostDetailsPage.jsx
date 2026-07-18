@@ -41,7 +41,7 @@ export default function PostDetailsPage() {
 
   if (!post) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-3 text-gray-500 bg-gray-50">
+      <div className="min-h-[100dvh] flex flex-col items-center justify-center gap-3 text-gray-500 bg-gray-50">
         <p>{t("postDetails.notFoundTitle")}</p>
         <button
           onClick={() => navigate(-1)}
@@ -54,7 +54,7 @@ export default function PostDetailsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-[100dvh] bg-gray-50 pb-20">
       {/* Comment Sheet */}
       <CommentSection
         isOpen={showComments}

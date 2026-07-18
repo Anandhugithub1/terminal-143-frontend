@@ -48,7 +48,7 @@ const SettingsPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-inter relative">
+    <div className="min-h-[100dvh] bg-white font-inter relative">
       <PageHeader title={t('settings')} />
 
       <div className="p-4">

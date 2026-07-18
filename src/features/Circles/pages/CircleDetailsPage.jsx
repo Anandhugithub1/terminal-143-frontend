@@ -62,7 +62,7 @@ export default function CircleDetailsPage() {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-[100dvh] bg-gray-50 flex items-center justify-center">
         <p className="text-gray-400 text-sm">{t("circleDetails.notFound")}</p>
       </div>
     );
@@ -129,7 +129,7 @@ export default function CircleDetailsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-24">
+    <div className="min-h-[100dvh] bg-gray-50 pb-24">
       <CreatePostModal
         isOpen={isCreatePostModalOpen}
         onClose={() => setIsCreatePostModalOpen(false)}

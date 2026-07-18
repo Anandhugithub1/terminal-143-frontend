@@ -2,7 +2,7 @@ import ReactCountryFlag from 'react-country-flag'
 
 export default function ComingSoonScreen() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 bg-white">
+    <div className="min-h-[100dvh] flex flex-col items-center justify-center text-center px-6 bg-white">
       <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-5">
         <span className="text-3xl">💗</span>
       </div>

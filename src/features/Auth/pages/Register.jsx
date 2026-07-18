@@ -21,7 +21,7 @@ const RegisterSkeleton = () => (
 
 const Register = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-pink-100 to-purple-200">
+    <div className="min-h-[100dvh] flex flex-col bg-gradient-to-b from-pink-100 to-purple-200">
       
       {/* Navbar */}
       <Suspense fallback={null}>

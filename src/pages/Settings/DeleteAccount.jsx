@@ -51,7 +51,7 @@ export default function DeleteAccountPage() {
   const canDelete = confirmText.trim().toUpperCase() === CONFIRM_WORD && !deleteMutation.isPending;
 
   return (
-    <div className="min-h-screen bg-white font-inter">
+    <div className="min-h-[100dvh] bg-white font-inter">
       <PageHeader title="Delete account" />
 
       <div className="p-4 max-w-md mx-auto">

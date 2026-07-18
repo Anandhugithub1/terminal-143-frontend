@@ -114,7 +114,7 @@ const handleSave = useCallback(async () => {
     selectedLoc && JSON.stringify(selectedLoc) !== JSON.stringify(initial)
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-[100dvh] bg-gray-50 flex flex-col">
       <div className="bg-white p-4 border-b border-gray-200 sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-3 max-w-2xl mx-auto w-full">
           <button

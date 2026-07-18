@@ -47,7 +47,7 @@ export default function EditPhotosPage() {
 
   if (isLoading || !profile) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-white">
+      <div className="flex flex-col items-center justify-center h-[100dvh] bg-white">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         <p className="mt-4 text-gray-500">Loading your photos...</p>
       </div>
@@ -102,7 +102,7 @@ export default function EditPhotosPage() {
   )
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-[100dvh] bg-white">
       <PageHeader title="Edit Photos" action={saveAction} />
 
       <main className="flex-1 px-5 pt-6">

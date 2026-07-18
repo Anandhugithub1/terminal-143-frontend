@@ -134,7 +134,7 @@ export default function CirclesHomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-[100dvh] bg-gray-50 pb-20">
       {/* Modals */}
       <CreateCircleModal isOpen={isCreateCircleOpen} onClose={() => setIsCreateCircleOpen(false)} />
       <CommentSection isOpen={!!commentPost} onClose={() => setCommentPost(null)} post={commentPost} />

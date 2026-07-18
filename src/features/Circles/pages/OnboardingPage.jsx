@@ -98,7 +98,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white overflow-x-hidden">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-gray-50 to-white overflow-x-hidden">
       {onComplete ? <NavBar /> : <TopNav />}
 
       {/* Progress sub-bar */}

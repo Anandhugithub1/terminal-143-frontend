@@ -23,7 +23,7 @@ export default function UserProfilePage() {
   if (isLoading) return <ProfileSkeleton />;
   if (error)
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-center">
+      <div className="flex flex-col items-center justify-center min-h-[100dvh] text-center">
         <p className="text-red-500 mb-4">{t('userProfileById.couldNotLoad')}</p>
         <button
           onClick={() => navigate(-1)}
@@ -36,7 +36,7 @@ export default function UserProfilePage() {
 
   if (!profile)
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-center">
+      <div className="flex flex-col items-center justify-center min-h-[100dvh] text-center">
         <p className="text-gray-600">{t('userProfileById.profileNotFound')}</p>
       </div>
     );

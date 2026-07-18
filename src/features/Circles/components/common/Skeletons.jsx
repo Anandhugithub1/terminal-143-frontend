@@ -72,7 +72,7 @@ export function CommentSkeleton() {
 // Cover image + about section skeleton for the Circle Details page header.
 export function CircleHeaderSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-[100dvh] bg-gray-50 pb-20">
       <Skeleton height={192} className="!rounded-none" />
 
       <div className="max-w-3xl mx-auto px-4 -mt-6 relative z-10">

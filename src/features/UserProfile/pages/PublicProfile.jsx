@@ -82,7 +82,7 @@ const normalized = {
     const isUnavailable = profileError.status === 404
 
     return (
-      <div className="relative bg-gray-50 min-h-screen">
+      <div className="relative bg-gray-50 min-h-[100dvh]">
         {myProfile ? <TopBar /> : <PublicTopbar />}
 
         <div className="max-w-md mx-auto px-4 pt-16 text-center">
@@ -108,7 +108,7 @@ const normalized = {
   }
 
   return (
-    <div className="relative bg-gray-50 min-h-screen">
+    <div className="relative bg-gray-50 min-h-[100dvh]">
       {/* top bar */}
       {hasAccess ? <TopBar /> : <PublicTopbar />}
 

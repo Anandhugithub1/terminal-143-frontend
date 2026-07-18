@@ -19,7 +19,7 @@ export default function NotificationsPage() {
   }, [data]);
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-[100dvh] bg-white">
       <PageHeader title="Notifications" />
 
       {isLoading && (

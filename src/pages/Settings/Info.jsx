@@ -26,7 +26,7 @@ const Infopage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white font-inter">
+    <div className="min-h-[100dvh] bg-white font-inter">
       <PageHeader title={t('aboutApp')} />
 
       <div className="p-4 space-y-6">

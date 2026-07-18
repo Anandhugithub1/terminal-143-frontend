@@ -4,7 +4,7 @@ import "react-loading-skeleton/dist/skeleton.css"
 
 const LocationEditSkeleton = () => {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-[100dvh] bg-gray-50 flex flex-col">
       {/* Header */}
       <div className="bg-white p-4 border-b border-gray-200 sticky top-0 z-10">
         <div className="flex items-center gap-3 max-w-2xl mx-auto">

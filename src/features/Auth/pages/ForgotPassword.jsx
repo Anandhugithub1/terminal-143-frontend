@@ -90,7 +90,7 @@ export const ForgotAndResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-6 sm:p-8">
 
         <div className="flex justify-center mb-6">

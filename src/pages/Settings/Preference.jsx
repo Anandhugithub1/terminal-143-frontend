@@ -90,7 +90,7 @@ const PreferencesPage = () => {
   const isBusy = isLoading || mutation.isLoading
 
   return (
-    <div className="min-h-screen bg-white font-inter flex flex-col justify-between">
+    <div className="min-h-[100dvh] bg-white font-inter flex flex-col justify-between">
       <PageHeader title="Preferences" />
 
       {/* Content */}

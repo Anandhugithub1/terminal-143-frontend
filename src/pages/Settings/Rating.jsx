@@ -59,7 +59,7 @@ export default function ReviewPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex flex-col">
+    <div className="min-h-[100dvh] bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex flex-col">
       <PageHeader
         title="Rate the App"
         className="sticky top-0 z-10 backdrop-blur-md bg-white/90 border-gray-200/50 shadow-sm"

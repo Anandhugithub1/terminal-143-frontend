@@ -20,7 +20,7 @@ import { demoReviews } from '../../../pages/Global/Review';
 
 
  </Suspense>
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-pink-100 via-pink-50 to-purple-200">
+    <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-pink-100 via-pink-50 to-purple-200">
       {/* Top spacing for better breathing room */}
       <div className="flex-grow flex items-start justify-center pt-20 sm:pt-28 pb-12 px-4">
         <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-md p-8 sm:p-10 transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.12)]">

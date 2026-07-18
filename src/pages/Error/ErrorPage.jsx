@@ -29,7 +29,7 @@ export default function ErrorPage() {
     : "Something didn’t load properly. Please try again."
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-[100dvh] flex flex-col bg-gray-50">
       <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
         <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
           <span className="text-3xl">

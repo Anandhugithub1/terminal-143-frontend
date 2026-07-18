@@ -47,7 +47,7 @@
 
     if (isLoading || !profile) {
       return (
-        <div className="flex flex-col h-screen bg-gray-100 font-inter">
+        <div className="flex flex-col h-[100dvh] bg-gray-100 font-inter">
           <TopNav title="Profile" />
           <main className="flex-1 flex flex-col items-center justify-center">
             <Skeleton circle width={96} height={96} />
@@ -62,7 +62,7 @@
 
     if (isError) {
       return (
-        <div className="flex flex-col h-screen items-center justify-center">
+        <div className="flex flex-col h-[100dvh] items-center justify-center">
           Failed to load profile
         </div>
       )
@@ -88,7 +88,7 @@ const menuItems = [
   { label: "Share QR Code", icon: <Share2 size={16} />, route: "/share-qr" }
 ]
     return (
-      <div className="flex flex-col h-screen bg-white font-inter">
+      <div className="flex flex-col h-[100dvh] bg-white font-inter">
         <TopNav title="Back" />
 
         <main className="flex-1 overflow-y-auto pb-24">

@@ -42,7 +42,7 @@ const NotFoundPage = () => {
   const handleHome = useCallback(() => navigate('/home'), [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center p-4">
       <motion.div
         className="relative overflow-hidden bg-white rounded-2xl shadow-xl w-full max-w-sm sm:max-w-md p-8 sm:p-10"
         variants={containerVariants}

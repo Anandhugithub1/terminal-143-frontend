@@ -96,7 +96,7 @@ export default function ProfileEditPage() {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-white font-inter relative overflow-hidden">
+    <div className="flex flex-col h-[100dvh] bg-white font-inter relative overflow-hidden">
       <main className="flex-1 overflow-y-auto pb-20">
         <PageHeader title={t("profileEdit.title")} />
 
