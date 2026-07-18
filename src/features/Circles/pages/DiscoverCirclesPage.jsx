@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import BottomNav from "../../../components/Layout/BottomNavigation";
+import TopNav from "../../../components/Layout/TopNavigation";
 import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
 import { useCircles, useCircleSearch } from "../hooks/useCircles";
 import { useJoinCircle } from "../hooks/useMembership";
@@ -64,6 +65,8 @@ export default function DiscoverCirclesPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
+      <TopNav />
+
       {/* Header */}
       <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-border-clr px-4 py-3">
         <div className="flex items-center gap-3">
