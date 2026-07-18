@@ -57,8 +57,8 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
        
-                   <a href="/" className="text-2xl font-bold tracking-tight text-[#D2449D]">Pass<span className="text-gray-800">or</span>Match 
-                  <span className="text-gray-800">.com</span> 
+                   <a href="/" className="text-base sm:text-xl font-bold tracking-tight text-[#D2449D] whitespace-nowrap">Pass<span className="text-gray-800">or</span>Match
+                  <span className="text-gray-800">.com</span>
                    </a>
 
           </div>

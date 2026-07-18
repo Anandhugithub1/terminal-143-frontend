@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useNotifications } from "../../features/Notifications/Hooks/useNotifications";
 import ReactCountryFlag from "react-country-flag";
-import Logo from "../../assets/images/logo.png";
 
 const LANGUAGES = [
   { code: "en", countryCode: "US" },
@@ -43,33 +42,13 @@ const TopNav = () => {
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white sticky top-0 z-40">
 
-      {/* LEFT: Logo + App Name */}
-   {/* LEFT: Logo + App Name */}
-{/* LEFT: Logo + App Name */}
-<Link to="/home" className="flex items-center h-10 min-w-0 group">
-  <img
-    src={Logo}
-    alt="Logo"
-    className="h-9 w-auto object-contain shrink-0"
-  />
-
-  <span
-    className="
-      -ml-1
-      text-base sm:text-lg md:text-xl
-      font-semibold
-      tracking-tight
-      text-gray-800
-      leading-none
-      transition-colors duration-150
-      group-hover:text-indigo-600
-    "
-  >
-    {t("common:appName")}
-  </span>
-</Link>
-
-
+      {/* LEFT: App Name */}
+      <Link to="/home" className="flex items-center h-10 min-w-0 group">
+        <span className="text-base sm:text-xl font-bold tracking-tight text-[#D2449D] whitespace-nowrap">
+          Pass<span className="text-gray-800">or</span>Match
+          <span className="text-gray-800">.com</span>
+        </span>
+      </Link>
 
 
       {/* RIGHT SIDE */}
