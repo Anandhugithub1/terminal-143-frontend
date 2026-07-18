@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import TopNav from "../../../components/Layout/TopNavigation";
 import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
-import { useCircles, useCircleSearch } from "../hooks/useCircles";
+import { useCircles, useCircleSearch, useCircleTagSearch } from "../hooks/useCircles";
 import { useJoinCircle } from "../hooks/useMembership";
 import { queryKeys } from "../queries/queryKeys";
 
@@ -22,11 +22,18 @@ export default function DiscoverCirclesPage() {
   const [joiningId, setJoiningId] = useState(null);
   const [imageErrors, setImageErrors] = useState(new Set());
 
-  // Typing searches ALL circles server-side (Redis prefix index) rather than
+  // A query starting with "#" searches by exact tag instead of name prefix —
+  // same convention post tag search already uses elsewhere in Circles.
+  const isTagQuery = searchQuery.trim().startsWith("#");
+  const tagQuery = isTagQuery ? searchQuery.trim().slice(1) : "";
+
+  // Typing searches ALL circles server-side (Redis-backed) rather than
   // filtering the hardcoded starter list — that list can't surface circles
   // other users created.
+  const nameSearch = useCircleSearch(isTagQuery ? "" : searchQuery);
+  const tagSearch = useCircleTagSearch(isTagQuery ? tagQuery : "");
   const { circles: searchResults, isSearching, isActive: isSearchActive } =
-    useCircleSearch(searchQuery);
+    isTagQuery ? tagSearch : nameSearch;
 
   const joinedCircleIds = new Set((circlesData?.circles || []).map((circle) => circle.circleId));
   const discoverableCircles = availableCircles.filter((circle) => !joinedCircleIds.has(circle.circleId));
@@ -64,7 +71,7 @@ export default function DiscoverCirclesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pb-20">
+    <div className="min-h-[100dvh] bg-gradient-to-b from-gray-50 to-white pb-20">
       <TopNav />
 
       {/* Header */}
@@ -98,7 +105,7 @@ export default function DiscoverCirclesPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
-                placeholder={t("discoverCircles.searchPlaceholder")}
+                placeholder={t("discoverCircles.searchPlaceholderWithTags")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm"

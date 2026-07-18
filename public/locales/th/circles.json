@@ -30,6 +30,7 @@
     "allJoinedTitle": "คุณเข้าร่วมทุกเซอร์เคิลแล้ว!",
     "allJoinedBody": "คุณเข้าร่วมเซอร์เคิลทั้งหมดที่เรามีในตอนนี้แล้ว",
     "searchPlaceholder": "ค้นหาเซอร์เคิล...",
+    "searchPlaceholderWithTags": "ค้นหาแวดวงหรือ #แท็ก...",
     "joining": "กำลังเข้าร่วม...",
     "joinCircle": "เข้าร่วมเซอร์เคิล",
     "searching": "กำลังค้นหา…",

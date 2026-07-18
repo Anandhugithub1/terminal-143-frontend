@@ -44,6 +44,12 @@ export const queryKeys =
       query
     ],
 
+  circleTagSearch:
+    tag => [
+      'circleTagSearch',
+      tag
+    ],
+
   postTagSearch:
     tag => [
       'postTagSearch',

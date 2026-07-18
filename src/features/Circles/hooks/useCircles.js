@@ -11,6 +11,7 @@ import {
   createCircle,
   getCircle,
   searchCircles,
+  searchCirclesByTag,
   searchPostsByTag
 } from '../api/circlesApi';
 
@@ -59,6 +60,32 @@ export function useCircleSearch(query, { limit = 20 } = {}) {
     ...result,
     // True only while a search is actually in flight for a usable query —
     // lets the UI distinguish "searching" from "nothing typed yet".
+    isSearching: enabled && result.isFetching,
+    isActive: enabled,
+    circles: result.data?.circles || [],
+  };
+}
+
+// Circles carrying the typed tag. NOTE this is an EXACT match, unlike
+// useCircleSearch's prefix: "hik" finds nothing, "hiking" finds #hiking.
+export function useCircleTagSearch(query, { limit = 20 } = {}) {
+  const debounced = useDebouncedSearchTerm(query);
+  const tag = debounced.toLowerCase();
+  const enabled = tag.length >= MIN_QUERY_LENGTH;
+
+  const result = useQuery({
+    queryKey: queryKeys.circleTagSearch(tag),
+    queryFn: async ({ signal }) => {
+      const res = await searchCirclesByTag(tag, { limit, signal });
+      return res.data;
+    },
+    enabled,
+    staleTime: 1000 * 60,
+    placeholderData: (prev) => prev,
+  });
+
+  return {
+    ...result,
     isSearching: enabled && result.isFetching,
     isActive: enabled,
     circles: result.data?.circles || [],

@@ -30,6 +30,7 @@
     "allJoinedTitle": "You're in every circle!",
     "allJoinedBody": "You've already joined all the circles we have to offer right now.",
     "searchPlaceholder": "Search circles...",
+    "searchPlaceholderWithTags": "Search circles or #tag...",
     "joining": "Joining...",
     "joinCircle": "Join Circle",
     "searching": "Searching…",

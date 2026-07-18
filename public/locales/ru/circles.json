@@ -30,6 +30,7 @@
     "allJoinedTitle": "Вы уже во всех кругах!",
     "allJoinedBody": "Вы уже присоединились ко всем доступным кругам.",
     "searchPlaceholder": "Поиск кругов...",
+    "searchPlaceholderWithTags": "Поиск кругов или #тег...",
     "joining": "Вступление...",
     "joinCircle": "Вступить в круг",
     "searching": "Поиск…",

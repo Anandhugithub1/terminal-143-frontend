@@ -30,6 +30,7 @@
     "allJoinedTitle": "你已加入所有圈子！",
     "allJoinedBody": "你已经加入了我们目前提供的所有圈子。",
     "searchPlaceholder": "搜索圈子...",
+    "searchPlaceholderWithTags": "搜索圈子或 #标签...",
     "joining": "加入中...",
     "joinCircle": "加入圈子",
     "searching": "搜索中…",

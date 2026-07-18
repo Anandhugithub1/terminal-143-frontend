@@ -44,6 +44,19 @@ export const searchCircles =
     { params: { q, limit, offset }, signal }
   );
 
+// Circles carrying a tag — same /search endpoint as name search, but keyed
+// by `tag` instead of `q`. Like post tag search, this is an EXACT match, not
+// a prefix. Returns { tag, count, circles, nextOffset }.
+export const searchCirclesByTag =
+(
+  tag,
+  { limit = 20, offset = 0, signal } = {}
+) =>
+  api.get(
+    `${BASE}search`,
+    { params: { tag, limit, offset }, signal }
+  );
+
 // Posts carrying a tag, ranked by engagement + freshness. Unlike circle
 // search this is an EXACT tag match, not a prefix — "hik" will not find
 // "hiking". Returns { tag, count, posts, nextOffset }.
