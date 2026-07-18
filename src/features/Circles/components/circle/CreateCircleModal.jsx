@@ -1,6 +1,7 @@
 import {
   X,
-  Upload
+  Upload,
+  Hash
 } from "lucide-react";
 
 import {
@@ -59,6 +60,16 @@ export default function CreateCircleModal({
     setCategory
   ] = useState("");
 
+  const [
+    tags,
+    setTags
+  ] = useState([]);
+
+  const [
+    tagInput,
+    setTagInput
+  ] = useState("");
+
   const { location, setLocation, isEnrichingLocation, handleLocationSelect, resetLocation } = useLocationState();
 
   const { data: myProfile } = useMyProfile();
@@ -90,6 +101,25 @@ export default function CreateCircleModal({
 
   const createCircleMutation =
     useCreateCircle();
+
+  const handleAddTag = () => {
+    const trimmed = tagInput.trim().toLowerCase();
+    if (trimmed && !tags.includes(trimmed)) {
+      setTags([...tags, trimmed]);
+    }
+    setTagInput("");
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
+
+  const handleTagInputKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      handleAddTag();
+    }
+  };
 
   const handleImageChange =
     e => {
@@ -213,6 +243,19 @@ export default function CreateCircleModal({
           }
         }
 
+        const locationTag =
+          location.placeName
+            ? location
+                .placeName
+                .trim()
+                .toLowerCase()
+            : null;
+
+        const combinedTags =
+          locationTag && !tags.includes(locationTag)
+            ? [...tags, locationTag]
+            : tags;
+
         const payload =
           {
             name:
@@ -227,14 +270,7 @@ export default function CreateCircleModal({
               "public",
 
             tags:
-              location.placeName
-                ? [
-                    location
-                      .placeName
-                      .trim()
-                      .toLowerCase(),
-                  ]
-                : [],
+              combinedTags,
 
             location,
 
@@ -254,6 +290,13 @@ export default function CreateCircleModal({
         );
 
         setCategory(
+          ""
+        );
+
+        setTags(
+          []
+        );
+        setTagInput(
           ""
         );
 
@@ -445,19 +488,67 @@ export default function CreateCircleModal({
                 cat => (
                   <option
                     key={
-                      cat
+                      cat.value
                     }
                     value={
-                      cat
+                      cat.value
                     }
                   >
                     {
-                      cat
+                      cat.label
                     }
                   </option>
                 )
               )}
             </select>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              {t("createCircleModal.tagsLabel")}
+            </label>
+
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-3">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium"
+                  >
+                    <Hash className="w-3 h-3" />
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTag(tag)}
+                      className="hover:text-primary/70"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagInputKeyDown}
+                placeholder={t("createCircleModal.tagsPlaceholder")}
+                className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+              />
+
+              <button
+                type="button"
+                onClick={handleAddTag}
+                disabled={!tagInput.trim()}
+                className="px-4 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                {t("createCircleModal.addTag")}
+              </button>
+            </div>
           </div>
 
           {/* Location */}

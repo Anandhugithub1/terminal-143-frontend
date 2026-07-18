@@ -1,25 +1,50 @@
-import { Heart, Plane, Utensils, Dumbbell, BookOpen, Film, Music, Palette, Camera, PenTool } from "lucide-react";
+import {
+  Palette,
+  Briefcase,
+  Leaf,
+  Music2,
+  Gamepad2,
+  HeartPulse,
+  Sparkles,
+  Globe2,
+  Megaphone,
+  Music,
+  PawPrint,
+  Church,
+  GraduationCap,
+  Users,
+  Dumbbell,
+  LifeBuoy,
+  Mountain,
+} from "lucide-react";
 import onboardingCirclesData from "./onboarding-circles.json";
 
 // Activity-based communities shown during circle onboarding, sourced from
 // onboarding-circles.json – great for social / dating contexts.
 const categoryMeta = {
-  dating: { label: "Dating", icon: Heart, bgColor: "bg-pink-50", iconBg: "bg-pink-100", iconColor: "text-pink-600" },
-  travel: { label: "Travel", icon: Plane, bgColor: "bg-blue-50", iconBg: "bg-blue-100", iconColor: "text-blue-600" },
-  food: { label: "Food", icon: Utensils, bgColor: "bg-orange-50", iconBg: "bg-orange-100", iconColor: "text-orange-600" },
-  fitness: { label: "Fitness", icon: Dumbbell, bgColor: "bg-emerald-50", iconBg: "bg-emerald-100", iconColor: "text-emerald-600" },
-  books: { label: "Books", icon: BookOpen, bgColor: "bg-purple-50", iconBg: "bg-purple-100", iconColor: "text-purple-600" },
-  movies: { label: "Movies", icon: Film, bgColor: "bg-amber-50", iconBg: "bg-amber-100", iconColor: "text-amber-600" },
+  art_culture: { label: "Art & Culture", icon: Palette, bgColor: "bg-rose-50", iconBg: "bg-rose-100", iconColor: "text-rose-600" },
+  career_business: { label: "Career & Business", icon: Briefcase, bgColor: "bg-slate-50", iconBg: "bg-slate-100", iconColor: "text-slate-600" },
+  environment: { label: "Environment", icon: Leaf, bgColor: "bg-green-50", iconBg: "bg-green-100", iconColor: "text-green-600" },
+  dancing: { label: "Dancing", icon: Music2, bgColor: "bg-fuchsia-50", iconBg: "bg-fuchsia-100", iconColor: "text-fuchsia-600" },
+  games: { label: "Games", icon: Gamepad2, bgColor: "bg-violet-50", iconBg: "bg-violet-100", iconColor: "text-violet-600" },
+  health_wellbeing: { label: "Health & Wellbeing", icon: HeartPulse, bgColor: "bg-emerald-50", iconBg: "bg-emerald-100", iconColor: "text-emerald-600" },
+  hobbies_passions: { label: "Hobbies & Passions", icon: Sparkles, bgColor: "bg-amber-50", iconBg: "bg-amber-100", iconColor: "text-amber-600" },
+  identity_language: { label: "Identity & Language", icon: Globe2, bgColor: "bg-blue-50", iconBg: "bg-blue-100", iconColor: "text-blue-600" },
+  movements_politics: { label: "Movements & Politics", icon: Megaphone, bgColor: "bg-red-50", iconBg: "bg-red-100", iconColor: "text-red-600" },
   music: { label: "Music", icon: Music, bgColor: "bg-indigo-50", iconBg: "bg-indigo-100", iconColor: "text-indigo-600" },
-  arts: { label: "Arts", icon: Palette, bgColor: "bg-rose-50", iconBg: "bg-rose-100", iconColor: "text-rose-600" },
-  photography: { label: "Photography", icon: Camera, bgColor: "bg-slate-50", iconBg: "bg-slate-100", iconColor: "text-slate-600" },
-  writing: { label: "Writing", icon: PenTool, bgColor: "bg-teal-50", iconBg: "bg-teal-100", iconColor: "text-teal-600" },
+  pets_animals: { label: "Pets & Animals", icon: PawPrint, bgColor: "bg-orange-50", iconBg: "bg-orange-100", iconColor: "text-orange-600" },
+  religion_spirituality: { label: "Religion & Spirituality", icon: Church, bgColor: "bg-purple-50", iconBg: "bg-purple-100", iconColor: "text-purple-600" },
+  science_education: { label: "Science & Education", icon: GraduationCap, bgColor: "bg-cyan-50", iconBg: "bg-cyan-100", iconColor: "text-cyan-600" },
+  social_activities: { label: "Social Activities", icon: Users, bgColor: "bg-pink-50", iconBg: "bg-pink-100", iconColor: "text-pink-600" },
+  sports_fitness: { label: "Sports & Fitness", icon: Dumbbell, bgColor: "bg-teal-50", iconBg: "bg-teal-100", iconColor: "text-teal-600" },
+  support_health: { label: "Support & Health", icon: LifeBuoy, bgColor: "bg-sky-50", iconBg: "bg-sky-100", iconColor: "text-sky-600" },
+  travel_outdoor: { label: "Travel & Outdoor", icon: Mountain, bgColor: "bg-lime-50", iconBg: "bg-lime-100", iconColor: "text-lime-600" },
 };
 
 export const availableCircles = onboardingCirclesData.circles
   .filter((circle) => circle.visibility === "public")
   .map((circle, index) => {
-    const meta = categoryMeta[circle.category] ?? categoryMeta.fitness;
+    const meta = categoryMeta[circle.category] ?? categoryMeta.hobbies_passions;
     return {
       id: index + 1,
       circleId: circle.circleId,
