@@ -5,13 +5,14 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import TopNav from "../../../components/Layout/TopNavigation";
-import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
+import { useOnboardingCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
 import { useCircles, useCircleSearch, useCircleTagSearch } from "../hooks/useCircles";
 import { useJoinCircle } from "../hooks/useMembership";
 import { queryKeys } from "../queries/queryKeys";
 
 export default function DiscoverCirclesPage() {
   const { t } = useTranslation("circles");
+  const availableCircles = useOnboardingCircles();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: circlesData } = useCircles();

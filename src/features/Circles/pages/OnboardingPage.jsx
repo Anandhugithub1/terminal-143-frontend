@@ -11,13 +11,14 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { availableCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
+import { useOnboardingCircles, onboardingCategories as categories } from "../constants/onboardingCircles";
 import { useJoinCircle } from "../hooks/useMembership";
 import TopNav from "../../../components/Layout/TopNavigation";
 import NavBar from "../../../components/Layout/Navbar";
 
 export default function OnboardingPage({ onComplete, onBack }) {
   const { t } = useTranslation("circles");
+  const availableCircles = useOnboardingCircles();
   const navigate = useNavigate();
   const { mutateAsync: joinCircle, isPending: isJoining } = useJoinCircle();
   const [selectedCircles, setSelectedCircles] = useState([]);

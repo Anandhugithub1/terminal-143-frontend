@@ -26,7 +26,7 @@ i18n
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
 
-    ns: ['common', 'home', 'nav' ,'auth','settings','location','circles','chat','swipe'],
+    ns: ['common', 'home', 'nav' ,'auth','settings','location','circles','chat','swipe','onboardingCircles'],
     defaultNS: 'common',
 
     // turn on/react options

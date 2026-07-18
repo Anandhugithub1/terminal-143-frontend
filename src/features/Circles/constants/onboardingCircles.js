@@ -17,6 +17,7 @@ import {
   LifeBuoy,
   Mountain,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import onboardingCirclesData from "./onboarding-circles.json";
 
 // Activity-based communities shown during circle onboarding, sourced from
@@ -41,6 +42,8 @@ const categoryMeta = {
   travel_outdoor: { label: "Travel & Outdoor", icon: Mountain, bgColor: "bg-lime-50", iconBg: "bg-lime-100", iconColor: "text-lime-600" },
 };
 
+// English fallback list — use useOnboardingCircles() in components so
+// name/description come through i18next instead.
 export const availableCircles = onboardingCirclesData.circles
   .filter((circle) => circle.visibility === "public")
   .map((circle, index) => {
@@ -64,3 +67,17 @@ export const onboardingCategories = [
   "All",
   ...new Set(availableCircles.map((circle) => circle.category)),
 ];
+
+// Same list as availableCircles, but name/description are translated via the
+// onboardingCircles namespace (public/locales/{lng}/onboardingCircles.json,
+// keyed by circleId), falling back to the English seed data in
+// onboarding-circles.json for any circle a locale file hasn't caught up on yet.
+export function useOnboardingCircles() {
+  const { t } = useTranslation("onboardingCircles");
+
+  return availableCircles.map((circle) => ({
+    ...circle,
+    name: t(`${circle.circleId}.name`, circle.name),
+    description: t(`${circle.circleId}.description`, circle.description),
+  }));
+}
