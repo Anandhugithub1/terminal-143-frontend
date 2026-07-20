@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Combobox,
   ComboboxInput,
@@ -37,11 +37,6 @@ export default function LocationInput({ formData, onSelect }) {
     getCurrentLocation,
     getPlaceDetails,
   } = useLocationService();
-
-  const locale = useMemo(() => {
-    if (typeof navigator === "undefined") return "en";
-    return (navigator.language || "en").split("-")[0];
-  }, []);
 
   /* ---------------- sync initial value ---------------- */
 
@@ -164,7 +159,7 @@ const handleAutoDetect = useCallback(async () => {
   setTouched(true)
 
   try {
-    const loc = await getCurrentLocation(locale)
+    const loc = await getCurrentLocation()
     if (!loc) throw new Error("No location detected")
 
     const finalLoc = {
@@ -202,7 +197,7 @@ const handleAutoDetect = useCallback(async () => {
 
     setError(t(key) || "Unable to detect your location")
   }
-}, [getCurrentLocation, locale, onSelect, clearSuggestions, t])
+}, [getCurrentLocation, onSelect, clearSuggestions, t])
 
 
   /* ---------------- clear ---------------- */
@@ -314,7 +309,7 @@ const handleAutoDetect = useCallback(async () => {
           )}
         </button>
       </div>
-{formData?.location?.placeName && !error && (
+{formData?.location?.placeName && (
   <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
     <p className="text-xs text-gray-500">
       Selected location

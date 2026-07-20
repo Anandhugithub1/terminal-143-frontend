@@ -118,7 +118,7 @@ const handleNext = () => {
       {/* Languages */}
       <section>
         <h3 className="mb-2 font-semibold">
-          {t("wizard.bio.languagesKnown")}
+          {t("wizard.bio.languagesKnown")} <span className="text-gray-400">{t("wizard.bio.optional")}</span>
         </h3>
 
         <LanguagePicker

@@ -34,6 +34,7 @@
   "rangeAnywhere": "不限",
   "back": "返回",
   "continue": "继续",
+  "locating": "正在定位...",
   "save": "保存",
   "cancel": "取消",
   "clearLocation": "清除位置",

@@ -30,6 +30,15 @@ export default function LanguagePicker({
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open]);
+
   const toggle = (lang) => {
     const exists = selected.find((l) => l.value === lang.value);
     if (exists) onChange(selected.filter((l) => l.value !== lang.value));

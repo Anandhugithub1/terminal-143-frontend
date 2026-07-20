@@ -34,6 +34,7 @@
   "rangeAnywhere": "제한 없음",
   "back": "뒤로 가기",
   "continue": "계속하기",
+  "locating": "위치 확인 중...",
   "save": "저장",
   "cancel": "취소",
   "clearLocation": "위치 지우기",

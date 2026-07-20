@@ -13,7 +13,7 @@ import { ensureNormalizedImage } from "../../../../utils/imageConversion";
 import OnboardingPage from "../../../Circles/pages/OnboardingPage";
 import { useTranslation } from "react-i18next";
 
-const SINGLE_PHOTO_GENDERS = ["M", "TM"];
+const SINGLE_PHOTO_GENDERS = ["M", "TM", "OT"];
 
 export default function Tags() {
   const { t } = useTranslation("common");

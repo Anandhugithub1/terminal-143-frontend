@@ -112,10 +112,6 @@ const Step1BasicInfo = () => {
       }
 
       if (prefs.length >= MAX_PREFERENCES) {
-        setError(
-          t('maxTwoPreferences') ||
-            'You can select up to 2 preferences only'
-        )
         return prev
       }
 
@@ -218,6 +214,13 @@ const Step1BasicInfo = () => {
             {t('preferencesTitle')}
           </label>
 
+          {preferences.length >= MAX_PREFERENCES && (
+            <p className="text-xs text-gray-400 mb-2">
+              {t('maxTwoPreferences') ||
+                'You can select up to 2 preferences only'}
+            </p>
+          )}
+
           <div className="flex flex-wrap gap-3">
             {Object.entries(PREFERENCES).map(([label, value]) => {
               const selected = preferences.includes(value)
@@ -229,6 +232,7 @@ const Step1BasicInfo = () => {
                   key={value}
                   type="button"
                   disabled={disabled}
+                  aria-pressed={selected}
                   onClick={() => togglePreference(value)}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition ${
                     selected
@@ -254,6 +258,12 @@ const Step1BasicInfo = () => {
   {t('socialPrivacyNote') ||
     'Your social links stay private and are shared only when there’s a match'}
 </p>
+
+{!hasSocial && (
+  <p className="text-xs text-gray-400 mb-2">
+    {t('socialRequired') || 'At least one social link is required'}
+  </p>
+)}
           <SocialLinkInput
             platforms={SOCIAL_PLATFORMS}
             selectedPlatform={socialPlatform}

@@ -19,8 +19,9 @@ const Location = () => {
   const { t } = useTranslation('location')
 
   const [error, setError] = useState('')
+  const [enriching, setEnriching] = useState(false)
 
-  const setGeo = useCallback((payload) => {
+  const setGeo = useCallback((payload, detailsPromise) => {
     if (!payload) {
       setFormData({
         location: {
@@ -46,6 +47,11 @@ const Location = () => {
         h3: { r4: payload.h3Index || "" }
       }
     })
+
+    if (detailsPromise) {
+      setEnriching(true)
+      detailsPromise.finally(() => setEnriching(false))
+    }
   }, [setFormData])
 
   const validate = useCallback(
@@ -57,6 +63,8 @@ const Location = () => {
   )
 
   const handleNext = useCallback(() => {
+    if (enriching) return
+
     const v = validate()
     if (v) {
       setError(v)
@@ -64,7 +72,7 @@ const Location = () => {
     }
     setError('')
     navigate('/complete/bio')
-  }, [navigate, validate])
+  }, [navigate, validate, enriching])
 
   const handleBack = useCallback(
     () => navigate('/complete/basic'),
@@ -141,15 +149,16 @@ const Location = () => {
       <Button
         onClick={handleNext}
         type="button"
-        className="
+        disabled={enriching}
+        className={`
           flex-1 py-3
           font-semibold
           transition-all duration-150
-          hover:bg-pink-600
           active:scale-95
-        "
+          ${enriching ? 'opacity-60 cursor-not-allowed' : 'hover:bg-pink-600'}
+        `}
       >
-        {t('continue') || 'Continue'}
+        {enriching ? (t('locating') || 'Locating...') : (t('continue') || 'Continue')}
       </Button>
     </div>
   </div>
