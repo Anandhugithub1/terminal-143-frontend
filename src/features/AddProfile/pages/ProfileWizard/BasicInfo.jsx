@@ -189,9 +189,16 @@ const Step1BasicInfo = () => {
               value={formData?.dob || ''}
               min={minDob}
               max={maxDob}
-              onChange={(e) =>
-                setFormData((p) => ({ ...p, dob: e.target.value }))
-              }
+              onChange={(e) => {
+                const dob = e.target.value
+                setFormData((p) => ({ ...p, dob }))
+
+                if (dob && calculateAge(dob) < 18) {
+                  setError(t('dobError'))
+                } else {
+                  setError('')
+                }
+              }}
             />
 
             <button
