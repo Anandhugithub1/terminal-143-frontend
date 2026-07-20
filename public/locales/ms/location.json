@@ -8,6 +8,7 @@
   "typeOrSearchLocation": "Cari bandar atau kawasan anda...",
   "locationPlaceholder": "Mula menaip nama bandar, kawasan atau tempat",
   "useMyCurrentLocation": "Guna Lokasi Semasa Saya",
+  "locationBlocked": "Lokasi disekat",
   "useCurrentLocation": "Guna Lokasi Semasa",
   "locationHelpText": "Mula menaip atau ketik 'Guna Lokasi Semasa Saya'",
   "locationDetectError": "Tidak dapat mengesan lokasi anda. Sila cuba lagi atau pilih lokasi secara manual.",

@@ -8,6 +8,7 @@
   "typeOrSearchLocation": "도시 또는 지역 검색...",
   "locationPlaceholder": "도시, 지역 또는 장소 이름을 입력하세요",
   "useMyCurrentLocation": "현재 위치 사용",
+  "locationBlocked": "위치 차단됨",
   "useCurrentLocation": "현재 위치 사용",
   "locationHelpText": "입력을 시작하거나 '현재 위치 사용'을 눌러보세요",
   "locationDetectError": "위치를 감지할 수 없습니다. 다시 시도하거나 직접 위치를 선택해 주세요.",

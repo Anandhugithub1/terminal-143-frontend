@@ -6,6 +6,7 @@ export const useLocationService = ({ debounceMs = 300 } = {}) => {
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
   const [detecting, setDetecting] = useState(false)
+  const [permissionDenied, setPermissionDenied] = useState(false)
 
   const userLang = (navigator?.language?.split('-')[0]) || 'en'
 
@@ -127,6 +128,25 @@ const autocompleteMutation = useMutation({
     try {
       if (!navigator?.geolocation) throw new Error('geolocationNotSupported')
 
+      // Once a user denies geolocation, browsers never show the native
+      // prompt again for that site — getCurrentPosition just instantly
+      // fails with code 1 every time. Checking the Permissions API first
+      // lets us short-circuit that dead-end call and point the user at
+      // their browser's site settings instead of retrying silently.
+      if (navigator.permissions?.query) {
+        try {
+          const status = await navigator.permissions.query({ name: 'geolocation' })
+          if (status.state === 'denied') {
+            setPermissionDenied(true)
+            throw new Error('locationPermissionDenied')
+          }
+        } catch (permErr) {
+          if (permErr?.message === 'locationPermissionDenied') throw permErr
+          // Permissions API unsupported/erroring for 'geolocation' in this
+          // browser (e.g. older Safari) — fall through to the normal call.
+        }
+      }
+
       const position = await new Promise((resolve, reject) =>
         navigator.geolocation.getCurrentPosition(resolve, reject, {
           // City-level accuracy is enough for reverse geocoding, and
@@ -153,6 +173,7 @@ const autocompleteMutation = useMutation({
         h3Index: data.h3Index || '',
       }
 
+      setPermissionDenied(false)
       return buildLocationObject(data.lat, data.lng, address)
 
     } catch (error) {
@@ -164,7 +185,12 @@ const autocompleteMutation = useMutation({
 
       let message = 'geoError'
 
-      if (error?.code === 1) message = 'locationPermissionDenied'
+      if (error?.message === 'locationPermissionDenied') {
+        message = 'locationPermissionDenied'
+      } else if (error?.code === 1) {
+        message = 'locationPermissionDenied'
+        setPermissionDenied(true)
+      }
       else if (error?.code === 2) message = 'locationUnavailable'
       else if (error?.code === 3) message = 'locationTimeout'
       else if (error?.message === 'geolocationNotSupported') message = 'geoNotSupported'
@@ -273,6 +299,7 @@ const searchLocations = useCallback((query) => {
     suggestions,
     loading,
     detecting,
+    permissionDenied,
     getCurrentLocation,
     searchLocations,
     clearSuggestions,

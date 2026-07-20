@@ -8,6 +8,7 @@
   "typeOrSearchLocation": "Search for your city or area...",
   "locationPlaceholder": "Start typing a city, area or place name",
   "useMyCurrentLocation": "Use My Current Location",
+  "locationBlocked": "Location blocked",
   "useCurrentLocation": "Use Current Location",
   "locationHelpText": "Start typing or tap 'Use My Current Location'",
   "locationDetectError": "Unable to detect your location. Please try again or select your location manually.",

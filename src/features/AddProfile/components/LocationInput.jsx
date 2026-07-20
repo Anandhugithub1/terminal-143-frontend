@@ -31,6 +31,7 @@ export default function LocationInput({ formData, onSelect }) {
     suggestions = [],
     loading,
     detecting,
+    permissionDenied,
     searchLocations,
     clearSuggestions,
     getCurrentLocation,
@@ -292,14 +293,23 @@ const handleAutoDetect = useCallback(async () => {
           type="button"
           onClick={handleAutoDetect}
           disabled={detecting}
-          className="px-4 py-4 rounded-xl border text-sm font-medium"
+          title={
+            permissionDenied
+              ? t("locationPermissionDenied") || undefined
+              : undefined
+          }
+          className={`px-4 py-4 rounded-xl border text-sm font-medium ${
+            permissionDenied ? "border-red-300 text-red-600" : ""
+          }`}
         >
           {detecting ? (
-            "Detecting..."
+            t("detecting") || "Detecting..."
           ) : (
             <>
               <HiLocationMarker className="inline mr-1" />
-              {t("useMyCurrentLocation") || "Use My Location"}
+              {permissionDenied
+                ? t("locationBlocked") || "Location blocked"
+                : t("useMyCurrentLocation") || "Use My Location"}
             </>
           )}
         </button>

@@ -8,6 +8,7 @@
   "typeOrSearchLocation": "搜索您的城市或地区...",
   "locationPlaceholder": "开始输入城市、地区或地点名称",
   "useMyCurrentLocation": "使用我的当前位置",
+  "locationBlocked": "位置已被阻止",
   "useCurrentLocation": "使用当前位置",
   "locationHelpText": "开始输入，或点击“使用我的当前位置”",
   "locationDetectError": "无法检测到您的位置，请重试或手动选择位置。",
