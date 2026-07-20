@@ -9,6 +9,7 @@ import {
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { suggestedTags } from "../../constants/postOptions";
 import { MAX_MEDIA_ITEMS } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
@@ -113,7 +114,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       onClose();
     } catch (err) {
       console.error(err);
-      alert(err?.response?.data?.error || t("createPostModal.failedToCreate"));
+      toast.error(err?.response?.data?.error || t("createPostModal.failedToCreate"));
     } finally {
       setIsSubmitting(false);
     }

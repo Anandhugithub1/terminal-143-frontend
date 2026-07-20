@@ -23,6 +23,7 @@ export const mapProfile = (data) => {
     languagesKnown: data?.languagesKnown || [],
     preferences: data?.preferences || [],
     interest: data?.interest || [],
+    socialMediaLinks: data?.socialMediaLinks || [],
     location: data?.location || null,
     qrCodeUrl: data?.qrCodeUrl || null,
     profileCompleted: Boolean(data?.profileCompleted),

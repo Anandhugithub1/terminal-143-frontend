@@ -1,22 +1,15 @@
+import { notificationsApi } from "../../../api/clients"
+
 export async function listNotifications({ limit = 10, lastKey }) {
-  const params = new URLSearchParams({
-    limit
+  const params = { limit }
+  if (lastKey) {
+    params.lastKey = lastKey
+  }
+
+  const res = await notificationsApi.get("/list", {
+    params,
+    withCredentials: true
   })
 
-  if (lastKey) {
-    params.set("lastKey", lastKey)
-  }
-
-  const res = await fetch(
-    `https://api.passormatch.com/notifications/list?${params.toString()}`,
-    {
-      credentials: "include"
-    }
-  )
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch notifications")
-  }
-
-  return res.json()
+  return res.data
 }

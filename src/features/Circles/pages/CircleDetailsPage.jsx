@@ -3,7 +3,6 @@ import {
   Users,
   Calendar,
   Image,
-  Video,
   MessageSquare,
 } from "lucide-react";
 import { useState } from "react";
@@ -17,7 +16,8 @@ import EditPostModal from "../components/post/EditPostModal";
 import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import ConfirmDialog from "../components/common/ConfirmDialog";
-import { useCircle } from "../hooks/useCircles";
+import { useCircle, useCircles } from "../hooks/useCircles";
+import { useJoinCircle } from "../hooks/useMembership";
 import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
@@ -28,6 +28,7 @@ import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
 import EmptyState from "../../../shared/components/EmptyState";
+import { toast } from "sonner";
 
 export default function CircleDetailsPage() {
   const { t } = useTranslation("circles");
@@ -35,7 +36,6 @@ export default function CircleDetailsPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [isJoined, setIsJoined] = useState(true);
   const [likedPosts, setLikedPosts] = useState(new Set());
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [commentPost, setCommentPost] = useState(null);
@@ -45,13 +45,19 @@ export default function CircleDetailsPage() {
   const queryClient = useQueryClient();
 
   const { data: fetchedCircle, isLoading } = useCircle(circleId);
+  const { data: circlesData } = useCircles();
   const { data: postsData, isLoading: isLoadingPosts } = usePosts(circleId);
   const { data: myProfile } = useMyProfile();
   const updatePostMutation = useUpdatePost(circleId);
   const deletePostMutation = useDeletePost(circleId);
   const { send: sendMatchRequest } = useSendMatchRequest();
+  const { mutate: joinCircle, isPending: isJoining } = useJoinCircle();
 
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
+
+  const isJoined = (circlesData?.circles || []).some(
+    (c) => c.circleId === circleId
+  );
 
   const data = fetchedCircle || location.state?.circleData;
   const posts = (postsData?.items || []).filter((p) => p.status !== "deleted");
@@ -78,6 +84,18 @@ export default function CircleDetailsPage() {
     });
   };
 
+  const handleJoinCircle = () => {
+    joinCircle(circleId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: queryKeys.circles });
+        toast.success(t("circleDetails.joinedToast", { name: data.name }));
+      },
+      onError: () => {
+        toast.error(t("circleDetails.joinFailedToast"));
+      },
+    });
+  };
+
   const handleSharePost = async (post) => {
     try {
       const { data: postDetail } = await getPost(circleId, post.createdAtEpoch, post.postId);
@@ -91,7 +109,7 @@ export default function CircleDetailsPage() {
       });
     } catch (err) {
       console.error(err);
-      alert(t("circleDetails.failedToShare"));
+      toast.error(t("circleDetails.failedToShare"));
     }
   };
 
@@ -218,26 +236,19 @@ export default function CircleDetailsPage() {
         <div className="bg-white rounded-2xl shadow-lg p-3">
           <div className="flex gap-2">
             {isJoined ? (
-              <>
-                <button
-                  onClick={handleShareCircle}
-                  className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
-                >
-                  {t("circleDetails.share")}
-                </button>
-                <button
-                  onClick={handleShareCircle}
-                  className="flex-1 btn-outlined rounded-xl py-2.5 text-sm"
-                >
-                  {t("circleDetails.invite")}
-                </button>
-              </>
+              <button
+                onClick={handleShareCircle}
+                className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
+              >
+                {t("circleDetails.share")}
+              </button>
             ) : (
               <button
-                onClick={() => setIsJoined(true)}
-                className="flex-1 btn-filled rounded-xl py-3"
+                onClick={handleJoinCircle}
+                disabled={isJoining}
+                className="flex-1 btn-filled rounded-xl py-3 disabled:opacity-60"
               >
-                {t("circleDetails.joinCircle")}
+                {isJoining ? t("circleDetails.joining") : t("circleDetails.joinCircle")}
               </button>
             )}
           </div>
@@ -311,13 +322,6 @@ export default function CircleDetailsPage() {
               onClick={() => setIsCreatePostModalOpen(true)}
               className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
             >
-              <Video className="w-4 h-4 text-purple-500" />
-              <span className="text-sm font-medium text-gray-600">{t("common.video")}</span>
-            </button>
-            <button
-              onClick={() => setIsCreatePostModalOpen(true)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors"
-            >
               <MessageSquare className="w-4 h-4 text-blue-500" />
               <span className="text-sm font-medium text-gray-600">{t("circleDetails.post")}</span>
             </button>
@@ -376,7 +380,7 @@ export default function CircleDetailsPage() {
                   onEdit={() => setEditPost(post)}
                   onDelete={() => handleDeletePost(post)}
                   onShare={() => handleSharePost(post)}
-                  onReport={() => alert(t("circleDetails.postReportedAlert"))}
+                  onReport={() => toast.success(t("circleDetails.postReportedAlert"))}
                   onAuthorClick={
                     post.authorId
                       ? () => navigate(`/profile/${post.authorId}`)

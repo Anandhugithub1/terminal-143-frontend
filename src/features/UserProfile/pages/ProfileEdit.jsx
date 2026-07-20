@@ -3,6 +3,7 @@ import "@fontsource-variable/inter";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { ChevronLeft } from "lucide-react";
 
 import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import { interestMap, getProfileFields } from "../../../Utlis/utlis";
@@ -24,7 +25,7 @@ export default function ProfileEditPage() {
   const [activeField, setActiveField] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const { profile, status, isUploading, isFetching, updateProfileData } =
+  const { profile, status, isFetching, updateProfileData } =
     useEditableProfile();
 
   const [socialLinks, setSocialLinks] = useState(
@@ -89,7 +90,6 @@ export default function ProfileEditPage() {
     status === "idle" ||
     status === "loading" ||
     !profile ||
-    isUploading ||
     isFetching
   ) {
     return <LoadingSpinner />;

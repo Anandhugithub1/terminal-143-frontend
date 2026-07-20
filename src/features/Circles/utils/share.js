@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 export async function shareLink({
   title,
   text,
@@ -10,12 +12,12 @@ export async function shareLink({
       await navigator.share({ title, text, url });
     } else {
       await navigator.clipboard.writeText(url);
-      alert(copiedMessage);
+      toast.success(copiedMessage);
     }
   } catch (err) {
     if (err?.name !== "AbortError") {
       console.error(err);
-      alert(failedMessage);
+      toast.error(failedMessage);
     }
   }
 }

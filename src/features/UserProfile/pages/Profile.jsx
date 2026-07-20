@@ -22,7 +22,7 @@
   export default function ProfilePage() {
     const navigate = useNavigate()
 
-    const {  uploadImage } = useEditableProfile()
+    const { uploadImage, updateProfileData } = useEditableProfile()
     const {
       data: profile,
       isLoading,
@@ -39,7 +39,7 @@
   handleFileChange,
   handleRemovePhoto,
   localPreview
-} = useAvatarUpload(uploadImage)
+} = useAvatarUpload(uploadImage, profile, updateProfileData)
 
 
     const avatarimage =

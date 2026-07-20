@@ -99,7 +99,12 @@ export default function CommentSection({ isOpen, onClose, post }) {
         </div>
 
         {/* Comments List */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+          className="flex-1 overflow-y-auto p-4 space-y-4"
+        >
           {isLoading && (
             <>
               <CommentSkeleton />

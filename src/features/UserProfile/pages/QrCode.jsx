@@ -42,8 +42,14 @@ export default function ShareQRCodePage() {
       } catch {
         showToast("Share cancelled")
       }
-    } else {
-      showToast("Sharing not supported")
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(profile.profileLink)
+      showToast("Link copied to clipboard")
+    } catch {
+      showToast("Unable to copy link")
     }
   }
 

@@ -12,6 +12,7 @@ import { useCircle } from "../hooks/useCircles";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
+import { toast } from "sonner";
 
 export default function PostDetailsPage() {
   const { t } = useTranslation("circles");
@@ -99,7 +100,7 @@ export default function PostDetailsPage() {
           media={post.media}
           tags={post.tags || []}
           onShare={handleShare}
-          onReport={() => alert(t("postDetails.postReportedAlert"))}
+          onReport={() => toast.success(t("postDetails.postReportedAlert"))}
           actionsWrapperClassName="grid grid-cols-3 gap-2"
           actions={buildPostActions({
             isLiked,

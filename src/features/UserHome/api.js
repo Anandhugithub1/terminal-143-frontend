@@ -94,7 +94,6 @@ export function useMatchRequestResponse() {
     },
     onError: (error) => {
       console.error('Action failed', error);
-      alert(`Could not perform action. Please try again.`);
     },
   });
 }

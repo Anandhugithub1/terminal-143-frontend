@@ -11,6 +11,7 @@ import {
 } from "react";
 
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 import {
   circleCategories
@@ -133,7 +134,7 @@ export default function CreateCircleModal({
           file.type
         )
       ) {
-        alert(
+        toast.error(
           t("createCircleModal.invalidImageType")
         );
         return;
@@ -143,7 +144,7 @@ export default function CreateCircleModal({
         file.size >
         5 * 1024 * 1024
       ) {
-        alert(
+        toast.error(
           t("createCircleModal.imageTooLarge")
         );
         return;
@@ -199,7 +200,7 @@ export default function CreateCircleModal({
         if (
           !circleName.trim()
         ) {
-          alert(
+          toast.error(
             t("createCircleModal.nameRequired")
           );
           return;
@@ -208,7 +209,7 @@ export default function CreateCircleModal({
         if (
           !description.trim()
         ) {
-          alert(
+          toast.error(
             t("createCircleModal.descriptionRequired")
           );
           return;
@@ -217,7 +218,7 @@ export default function CreateCircleModal({
         if (
           !category
         ) {
-          alert(
+          toast.error(
             t("createCircleModal.categoryRequired")
           );
           return;
@@ -317,7 +318,7 @@ export default function CreateCircleModal({
           err
         );
 
-        alert(
+        toast.error(
           err
             ?.response
             ?.data

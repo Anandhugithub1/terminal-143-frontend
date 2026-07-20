@@ -244,7 +244,13 @@ export default function ChatConversationPage() {
         </button>
       </header>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
+      <div
+        ref={scrollRef}
+        role="log"
+        aria-live="polite"
+        aria-relevant="additions"
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-2"
+      >
         {isLoading || isMatchLoading ? (
           <div className="space-y-3">
             {[

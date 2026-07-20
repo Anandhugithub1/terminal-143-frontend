@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { ChevronLeft, ChevronDownIcon } from "lucide-react"
-import { interestMap } from "../../../Utlis/utlis"
+import { interestMap, calculateAge } from "../../../Utlis/utlis"
+
+const CURRENT_YEAR = new Date().getFullYear()
+const MIN_DOB = "1950-01-01"
+const MAX_DOB = `${CURRENT_YEAR}-12-31`
 
 const LANGUAGES_CDN_URL =
   "https://d36zx1g74mcorc.cloudfront.net/website_files/languages/languages.json"
@@ -17,6 +21,7 @@ export default function FieldEditPage({
   const [languagesList, setLanguagesList] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
   const [openLanguagePicker, setOpenLanguagePicker] = useState(false)
+  const [dobError, setDobError] = useState("")
 
   const allInterests = useMemo(
     () =>
@@ -102,6 +107,19 @@ export default function FieldEditPage({
 
 
   /* ---------- Helpers ---------- */
+  const validateDob = dob => {
+    if (!dob) return "Date of birth is required"
+    if (dob > MAX_DOB) return "Date of birth cannot be in the future"
+    if (dob < MIN_DOB) return "Please enter a valid date of birth"
+    if (calculateAge(dob) < 18) return "You must be at least 18 years old"
+    return ""
+  }
+
+  const handleDobChange = dob => {
+    setInputValue(dob)
+    setDobError(validateDob(dob))
+  }
+
   const toggleInterest = key => {
     if (isSaving) return
     setSelectedInterests(prev =>
@@ -128,6 +146,11 @@ export default function FieldEditPage({
         selectedLanguages.map(l => l.value)
       )
     } else if (field.key === "age") {
+      const error = validateDob(inputValue.trim())
+      if (error) {
+        setDobError(error)
+        return
+      }
       onSave("dob", inputValue.trim())
     } else {
       onSave(inputValue.trim())
@@ -162,10 +185,10 @@ export default function FieldEditPage({
 
         <button
           onClick={handleSave}
-          disabled={isSaving}
+          disabled={isSaving || (isAgeField && !!dobError)}
           className={`px-4 py-1.5 rounded-lg text-sm font-medium flex items-center justify-center min-w-[72px]
             ${
-              isSaving
+              isSaving || (isAgeField && !!dobError)
                 ? "bg-pink-300 cursor-not-allowed"
                 : "bg-[#FF3366] text-white hover:bg-[#e52b5d]"
             }
@@ -259,13 +282,20 @@ export default function FieldEditPage({
             className="w-full border rounded-lg p-3 resize-none"
           />
         ) : isAgeField ? (
-          <input
-            disabled={isSaving}
-            type="date"
-            value={inputValue}
-            onChange={e => setInputValue(e.target.value)}
-            className="w-full border rounded-lg p-3"
-          />
+          <>
+            <input
+              disabled={isSaving}
+              type="date"
+              min={MIN_DOB}
+              max={MAX_DOB}
+              value={inputValue}
+              onChange={e => handleDobChange(e.target.value)}
+              className="w-full border rounded-lg p-3"
+            />
+            {dobError && (
+              <p className="mt-2 text-sm text-red-600">{dobError}</p>
+            )}
+          </>
         ) : (
           <input
             disabled={isSaving}

@@ -191,11 +191,11 @@ onSelect={async (loc, detailsPromise) => {
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-semibold text-gray-900">
-              Selected Location
+              {t("locationEdit.selectedLocationHeading")}
             </h3>
             {hasChanges && (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                Unsaved changes
+                {t("locationEdit.unsavedChanges")}
               </span>
             )}
           </div>
@@ -216,9 +216,9 @@ onSelect={async (loc, detailsPromise) => {
           ) : (
             <div className="text-center py-8 px-4 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50">
               <FiMapPin className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500 text-sm">No location selected yet</p>
+              <p className="text-gray-500 text-sm">{t("locationEdit.noLocationSelected")}</p>
               <p className="text-gray-400 text-xs mt-1">
-                Search above to find your location
+                {t("locationEdit.searchAboveHint")}
               </p>
             </div>
           )}
@@ -228,8 +228,7 @@ onSelect={async (loc, detailsPromise) => {
           <div className="flex items-start gap-3">
             <FiZap className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
             <div className="text-sm text-primary">
-              <strong className="font-semibold">Pro tip:</strong> Include your
-              neighborhood for the best match.
+              <strong className="font-semibold">{t("locationEdit.proTipLabel")}</strong> {t("locationEdit.proTipBody")}
             </div>
           </div>
         </div>
@@ -243,7 +242,7 @@ onSelect={async (loc, detailsPromise) => {
               disabled={saving}
               className="flex-1 py-3 px-4 rounded-xl border border-gray-300 text-gray-700 font-semibold hover:bg-gray-50 transition disabled:opacity-50"
             >
-              Cancel
+              {t("locationEdit.cancel")}
             </button>
 
             <button
@@ -258,10 +257,10 @@ onSelect={async (loc, detailsPromise) => {
               {saving ? (
                 <span className="flex items-center justify-center gap-2">
                   <ImSpinner2 className="h-4 w-4 animate-spin" />
-                  Saving
+                  {t("locationEdit.saving")}
                 </span>
               ) : (
-                "Save Location"
+                t("locationEdit.saveLocation")
               )}
             </button>
           </div>

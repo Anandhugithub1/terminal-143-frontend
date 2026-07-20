@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react"
 import { toast } from "sonner"
 
-export function useAvatarUpload(uploadImage) {
+export function useAvatarUpload(uploadImage, profile, updateProfileData) {
 
   const [showUpload, setShowUpload] = useState(false)
   const [localPreview, setLocalPreview] = useState(null)
   const [currentOrder, setCurrentOrder] = useState(0)
+  const [removing, setRemoving] = useState(false)
 
   const galleryRef = useRef(null)
   const cameraRef = useRef(null)
@@ -63,14 +64,32 @@ export function useAvatarUpload(uploadImage) {
     }
   }
 
-  const handleRemovePhoto = () => {
+  const handleRemovePhoto = async () => {
 
     if (localPreview) {
       URL.revokeObjectURL(localPreview)
     }
-
     setLocalPreview(null)
     setShowUpload(false)
+
+    const currentPhotos = profile?.photos || []
+    const remainingPhotos = currentPhotos.filter(p => p.order !== currentOrder)
+
+    if (remainingPhotos.length === currentPhotos.length) return
+
+    setRemoving(true)
+    try {
+      await updateProfileData("photos", remainingPhotos)
+      toast.success("Photo removed")
+    } catch (err) {
+      const message =
+        err?.response?.data?.error ||
+        err?.message ||
+        "Unable to remove photo. Please try again."
+      toast.error(message)
+    } finally {
+      setRemoving(false)
+    }
   }
 
   useEffect(() => {
@@ -90,6 +109,7 @@ export function useAvatarUpload(uploadImage) {
     cameraRef,
     handleFileChange,
     handleRemovePhoto,
+    removing,
     localPreview
   }
 }
