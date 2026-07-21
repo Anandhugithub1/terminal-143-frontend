@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { ArrowLeft, MoreVertical, Send, ShieldOff } from 'lucide-react'
+import { AlertCircle, ArrowLeft, MoreVertical, Send, ShieldOff } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useTranslation } from 'react-i18next'
@@ -17,6 +17,11 @@ import BottomSheetModal from '../../../shared/components/BottomSheetModal'
 // send — avoids spamming chat-service when someone fires off a quick burst.
 const SEND_BATCH_WINDOW_MS = 1800
 
+// How long to wait for chat-service's SENT_ACK before treating a send as
+// failed. Generous — this only fires for a genuinely stuck/lost frame, not
+// normal latency (an open socket's ack is typically near-instant).
+const ACK_TIMEOUT_MS = 10000
+
 function formatMessageTime(iso) {
   if (!iso) return ''
   return new Date(iso).toLocaleTimeString(undefined, {
@@ -28,15 +33,31 @@ function formatMessageTime(iso) {
 // Long-press (any message, mine or theirs) opens the delete-for-me confirm
 // sheet in the parent. Split out from the message list purely so useLongPress
 // — a hook — isn't called inside the .map() loop.
-function MessageBubble({ msg, onLongPress }) {
+function MessageBubble({ msg, onLongPress, onRetry, t }) {
   const longPressHandlers = useLongPress(onLongPress)
+  const failed = msg.status === 'failed'
+  const pending = msg.status === 'pending'
 
   return (
     <div className={`flex ${msg.mine ? 'justify-end' : 'justify-start'}`}>
+      {failed && (
+        <button
+          type="button"
+          onClick={() => onRetry(msg)}
+          className="self-end mr-1.5 mb-1 shrink-0 text-rose-500"
+          aria-label={t('conversation.retrySend')}
+        >
+          <AlertCircle className="w-4 h-4" />
+        </button>
+      )}
       <div
         {...longPressHandlers}
-        className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm select-none touch-none ${
-          msg.mine
+        className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm select-none touch-none transition-opacity ${
+          pending ? 'opacity-60' : ''
+        } ${
+          failed
+            ? 'bg-rose-50 text-rose-900 border border-rose-200 rounded-br-sm'
+            : msg.mine
             ? 'bg-primary text-white rounded-br-sm'
             : 'bg-white text-gray-800 border border-gray-100 rounded-bl-sm'
         }`}
@@ -44,10 +65,10 @@ function MessageBubble({ msg, onLongPress }) {
         <p className="whitespace-pre-wrap break-words">{msg.text}</p>
         <p
           className={`text-[10px] mt-1 text-right ${
-            msg.mine ? 'text-white/70' : 'text-gray-400'
+            failed ? 'text-rose-500' : msg.mine ? 'text-white/70' : 'text-gray-400'
           }`}
         >
-          {formatMessageTime(msg.sentAt)}
+          {failed ? t('conversation.sendFailed') : pending ? t('conversation.sending') : formatMessageTime(msg.sentAt)}
         </p>
       </div>
     </div>
@@ -79,7 +100,7 @@ export default function ChatConversationPage() {
   const blockedByOther = !!historyData?.blockedByOther
   const isBlocked = blockedByMe || blockedByOther
 
-  const { send } = useSocket()
+  const { send, sendWithAck } = useSocket()
   const queryClient = useQueryClient()
   const { previews, markRead, recordSentMessage, setBlockedByMe } = useConversationPreviews()
   const { mutate: blockUser, isPending: isBlocking } = useBlockUser(matchId)
@@ -102,6 +123,10 @@ export default function ChatConversationPage() {
   const pendingRef = useRef(null) // { id, lines: string[] }
   const batchTimerRef = useRef(null)
   const flushPendingRef = useRef(() => {})
+  // clientMessageId -> setTimeout handle, so an ack/failure that arrives
+  // before ACK_TIMEOUT_MS can cancel the fallback timer that would
+  // otherwise mark the same message failed a second time.
+  const ackTimersRef = useRef(new Map())
 
   const messages = useMemo(() => [...history, ...liveMessages], [history, liveMessages])
 
@@ -154,6 +179,47 @@ export default function ChatConversationPage() {
     queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
   })
 
+  // Confirms a bubble sent from THIS device actually reached createMessage —
+  // see sendMessage.js. Swaps the client-local id/sentAt for the server's
+  // real ones so later actions (delete-for-me, readReceipt) target the
+  // right message.
+  useSocketEvent('SENT_ACK', (payload) => {
+    const { clientMessageId, messageId, sentAt } = payload || {}
+    if (!clientMessageId) return
+    const timer = ackTimersRef.current.get(clientMessageId)
+    if (timer) {
+      clearTimeout(timer)
+      ackTimersRef.current.delete(clientMessageId)
+    }
+    setLiveMessages((prev) =>
+      prev.map((m) =>
+        m.clientMessageId === clientMessageId
+          ? { ...m, id: messageId || m.id, sentAt: sentAt || m.sentAt, status: 'sent' }
+          : m
+      )
+    )
+  })
+
+  // The socket layer's own signal that a queued frame never reached the
+  // server at all (connection torn down while it was still waiting to
+  // flush) — see socketManager's _teardown(). Same outcome as an ack
+  // timeout, just faster/more certain when it applies.
+  useSocketEvent('SEND_FAILED', (payload) => {
+    if (payload?.clientMessageId) markSendFailed(payload.clientMessageId)
+  })
+
+  // Fallback timers must not outlive the component (or a conversation
+  // switch — a stale timer firing for the wrong matchId's now-unmounted
+  // bubbles is harmless since setLiveMessages targets state that's already
+  // been reset, but leaking the timers themselves is not).
+  useEffect(() => {
+    const timers = ackTimersRef.current
+    return () => {
+      timers.forEach((timer) => clearTimeout(timer))
+      timers.clear()
+    }
+  }, [matchId])
+
   useEffect(() => {
     if (!scrollRef.current) return
     scrollRef.current.scrollTo({
@@ -164,6 +230,41 @@ export default function ChatConversationPage() {
   }, [messages])
 
   const online = !!previews[matchId]?.online
+
+  // Marks a locally-sent bubble failed (both on ack timeout and on the
+  // socket layer's own SEND_FAILED for a torn-down queue entry) and clears
+  // whichever fallback timer is still tracking it.
+  function markSendFailed(clientMessageId) {
+    const timer = ackTimersRef.current.get(clientMessageId)
+    if (timer) {
+      clearTimeout(timer)
+      ackTimersRef.current.delete(clientMessageId)
+    }
+    setLiveMessages((prev) =>
+      prev.map((m) => (m.clientMessageId === clientMessageId && m.status === 'pending' ? { ...m, status: 'failed' } : m))
+    )
+  }
+
+  // Sends one already-composed bubble over the socket, tracking it as
+  // pending until SENT_ACK confirms persistence (or it times out / the
+  // socket layer reports it as dropped). Shared by flushPending (new
+  // batches) and the retry action on a failed bubble.
+  function sendBubble(localId, text) {
+    const clientMessageId = sendWithAck({
+      action: 'sendMessage',
+      recipientId: matchId,
+      content: text,
+    })
+
+    const timer = setTimeout(() => markSendFailed(clientMessageId), ACK_TIMEOUT_MS)
+    ackTimersRef.current.set(clientMessageId, timer)
+
+    setLiveMessages((prev) => [
+      ...prev,
+      { id: localId, clientMessageId, text, sentAt: new Date().toISOString(), mine: true, status: 'pending' },
+    ])
+    recordSentMessage(matchId, text)
+  }
 
   // Flush the pending batch: send whatever's accumulated as one socket
   // message and append it as one bubble. Captures the matchId it was
@@ -178,19 +279,14 @@ export default function ChatConversationPage() {
     }
     if (!pending) return
 
-    const text = pending.lines.join('\n')
-    send({
-      action: 'sendMessage',
-      recipientId: matchId,
-      content: text,
-    })
-    setLiveMessages((prev) => [
-      ...prev,
-      { id: pending.id, text, sentAt: new Date().toISOString(), mine: true },
-    ])
-    recordSentMessage(matchId, text)
+    sendBubble(pending.id, pending.lines.join('\n'))
   }
   flushPendingRef.current = flushPending
+
+  function handleRetry(msg) {
+    setLiveMessages((prev) => prev.filter((m) => m.id !== msg.id))
+    sendBubble(msg.id, msg.text)
+  }
 
   function handleSend(e) {
     e.preventDefault()
@@ -227,6 +323,16 @@ export default function ChatConversationPage() {
   function handleConfirmDelete() {
     if (!messageToDelete) return
     const id = messageToDelete.id
+
+    // A pending/failed bubble hasn't been assigned a real server messageId
+    // yet (still using its client-local id) — nothing to call the delete
+    // endpoint with, just drop it locally.
+    if (messageToDelete.status && messageToDelete.status !== 'sent') {
+      setLiveMessages((prev) => prev.filter((m) => m.id !== id))
+      setMessageToDelete(null)
+      return
+    }
+
     deleteMessage(id, {
       onSuccess: () => {
         // useDeleteMessage already patches the ['chatHistory', matchId]
@@ -330,7 +436,13 @@ export default function ChatConversationPage() {
           </div>
         ) : (
           messages.map((msg) => (
-            <MessageBubble key={msg.id} msg={msg} onLongPress={() => setMessageToDelete(msg)} />
+            <MessageBubble
+              key={msg.clientMessageId || msg.id}
+              msg={msg}
+              onLongPress={() => setMessageToDelete(msg)}
+              onRetry={handleRetry}
+              t={t}
+            />
           ))
         )}
       </div>

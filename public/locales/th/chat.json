@@ -45,6 +45,9 @@
     "youWereBlocked": "คุณไม่สามารถตอบกลับการสนทนานี้ได้",
     "deleteMessageTitle": "ลบข้อความนี้หรือไม่?",
     "deleteMessageBody": "การลบนี้จะลบออกจากมุมมองของคุณเท่านั้น อีกฝ่ายจะยังคงเห็นข้อความอยู่",
-    "deleteMessageAction": "ลบสำหรับฉัน"
+    "deleteMessageAction": "ลบสำหรับฉัน",
+    "sending": "กำลังส่ง…",
+    "sendFailed": "ส่งไม่สำเร็จ",
+    "retrySend": "แตะเพื่อลองอีกครั้ง"
   }
 }

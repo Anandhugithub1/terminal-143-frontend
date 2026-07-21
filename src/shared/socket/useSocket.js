@@ -18,8 +18,9 @@ export function useSocket() {
   }, []);
 
   const send = useCallback((payload) => socketManager.send(payload), []);
+  const sendWithAck = useCallback((payload) => socketManager.sendWithAck(payload), []);
 
-  return { state, send, isConnected: state === SocketState.OPEN };
+  return { state, send, sendWithAck, isConnected: state === SocketState.OPEN };
 }
 
 // Subscribes to one message type (e.g. "newMessage", "readReceipt") for the

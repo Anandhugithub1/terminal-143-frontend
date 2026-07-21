@@ -195,8 +195,21 @@ class SocketManager {
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(data);
     } else {
-      this.sendQueue.push(data);
+      // clientMessageId (present on sendMessage frames — see sendWithAck)
+      // rides along so a queued-but-never-flushed entry can be reported back
+      // as failed by id rather than just vanishing — see _teardown().
+      this.sendQueue.push({ data, clientMessageId: payload?.clientMessageId ?? null });
     }
+  }
+
+  // Like send(), but stamps a client-generated id onto the payload so the
+  // caller can correlate chat-service's SENT_ACK response (or a synthetic
+  // "SEND_FAILED" dispatched locally if the payload never made it out — see
+  // _teardown()) back to this specific call. Returns the id.
+  sendWithAck(payload) {
+    const clientMessageId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    this.send({ ...payload, clientMessageId });
+    return clientMessageId;
   }
 
   // handler receives the parsed message payload from the server.
@@ -227,7 +240,7 @@ class SocketManager {
 
   _flushQueue() {
     while (this.sendQueue.length && this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(this.sendQueue.shift());
+      this.ws.send(this.sendQueue.shift().data);
     }
   }
 
@@ -274,7 +287,17 @@ class SocketManager {
       this.ws.close();
       this.ws = null;
     }
+    // Anything still queued here never reached the server — previously this
+    // just silently dropped it, so a message typed right before a logout/
+    // backgrounding/explicit-release event would show as "sent" in the UI
+    // forever with nothing behind it. Tell whoever's listening it failed,
+    // by id, instead — see sendWithAck() and ChatConversationPage's
+    // SEND_FAILED handler.
+    const dropped = this.sendQueue;
     this.sendQueue = [];
+    dropped.forEach(({ clientMessageId }) => {
+      if (clientMessageId) this._dispatch({ type: 'SEND_FAILED', clientMessageId });
+    });
   }
 }
 

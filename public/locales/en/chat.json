@@ -45,6 +45,9 @@
     "youWereBlocked": "You can't reply to this conversation.",
     "deleteMessageTitle": "Delete this message?",
     "deleteMessageBody": "This only removes it from your view. The other person will still see it.",
-    "deleteMessageAction": "Delete for me"
+    "deleteMessageAction": "Delete for me",
+    "sending": "Sending…",
+    "sendFailed": "Not sent",
+    "retrySend": "Tap to retry"
   }
 }

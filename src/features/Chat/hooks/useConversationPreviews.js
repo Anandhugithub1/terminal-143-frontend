@@ -71,14 +71,31 @@ function withDerivedOnline(rawPreviews) {
 // recognise active conversations from the server — not just local state — so a
 // conversation shows up after a reload / on a new device even if localStorage
 // has no record of it. Live socket events layer on top while the app is open.
-function hydrateFromServer(conversations) {
+// `requestedAt` is stamped right before the /chat/unread fetch fires — it's
+// what proves the server's count reflects a snapshot no older than "now".
+// See the comment below for why that's needed to safely apply it.
+function hydrateFromServer(conversations, requestedAt) {
   setPreviews((prev) => {
     const next = { ...prev }
     const seen = new Set()
+
+    // A live MESSAGE event bumps unreadCount locally (and stamps
+    // unreadBumpedAt) the instant it arrives. A server count fetched around
+    // the same time may have been computed by a query that ran BEFORE that
+    // message became countable — applying it unconditionally would silently
+    // revert the badge. Only trust the server's unreadCount for a
+    // conversation once a fetch was *issued* after the local bump; that
+    // fetch's result is guaranteed to reflect a state at least that fresh.
+    const canTrustServerUnread = (matchId) => {
+      const bumpedAt = next[matchId]?.unreadBumpedAt || 0
+      return !bumpedAt || requestedAt >= bumpedAt
+    }
+
     for (const [matchId, info] of Object.entries(conversations || {})) {
+      const trustServerUnread = canTrustServerUnread(matchId)
       next[matchId] = {
         ...next[matchId],
-        unreadCount: info.unreadCount || 0,
+        ...(trustServerUnread && { unreadCount: info.unreadCount || 0, unreadBumpedAt: 0 }),
         // Server is authoritative for block state — it knows about blocks made
         // on another device, and about threads this client has never opened.
         blockedByMe: !!info.blockedByMe,
@@ -94,10 +111,11 @@ function hydrateFromServer(conversations) {
       }
       seen.add(matchId)
     }
-    // Conversations the server didn't report have no unread.
+    // Conversations the server didn't report have no unread — unless a local
+    // bump happened after this fetch was issued, same rule as above.
     for (const matchId of Object.keys(next)) {
-      if (!seen.has(matchId) && next[matchId]?.unreadCount) {
-        next[matchId] = { ...next[matchId], unreadCount: 0 }
+      if (!seen.has(matchId) && next[matchId]?.unreadCount && canTrustServerUnread(matchId)) {
+        next[matchId] = { ...next[matchId], unreadCount: 0, unreadBumpedAt: 0 }
       }
     }
     return next
@@ -112,7 +130,7 @@ function shouldTakeServerLastMessage(local, server) {
 
 export function useConversationPreviews() {
   const [state, setState] = useState(() => withDerivedOnline(previews))
-  const { data: unread } = useUnreadCounts()
+  const { data: unread, dataUpdatedAt } = useUnreadCounts()
 
   // Hold the socket open for as long as anything shows previews. useSocketEvent
   // only subscribes — it never acquires — so without this the chat list has no
@@ -121,9 +139,12 @@ export function useConversationPreviews() {
   useSocket()
 
   // Hydrate from the server whenever fresh data arrives (load / refocus).
+  // dataUpdatedAt (when the RESPONSE was received) is a safe, conservative
+  // stand-in for "server snapshot no older than" — the actual DynamoDB query
+  // ran strictly before this, so it's never later than the true request time.
   useEffect(() => {
-    if (unread?.conversations) hydrateFromServer(unread.conversations)
-  }, [unread])
+    if (unread?.conversations) hydrateFromServer(unread.conversations, dataUpdatedAt)
+  }, [unread, dataUpdatedAt])
 
   useEffect(() => {
     const onRawChange = (rawPreviews) => setState(withDerivedOnline(rawPreviews))
@@ -147,6 +168,9 @@ export function useConversationPreviews() {
       lastMessageAt: msg.sentAt,
       lastMessageMine: false,
       unreadCount: (prev?.unreadCount || 0) + 1,
+      // See hydrateFromServer: marks this bump as newer than any /chat/unread
+      // fetch already in flight, so that response can't revert it.
+      unreadBumpedAt: Date.now(),
     }))
   })
 
@@ -158,7 +182,7 @@ export function useConversationPreviews() {
 
   const markRead = useCallback((matchId) => {
     if (!previews[matchId]?.unreadCount) return
-    updateMatch(matchId, () => ({ unreadCount: 0 }))
+    updateMatch(matchId, () => ({ unreadCount: 0, unreadBumpedAt: 0 }))
   }, [])
 
   const recordSentMessage = useCallback((matchId, text) => {
