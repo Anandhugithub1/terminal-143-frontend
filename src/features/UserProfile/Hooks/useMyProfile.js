@@ -10,7 +10,7 @@ export const mapProfile = (data) => {
   const sortedPhotos = [...photos].sort((a, b) => a.order - b.order)
 
   const profilePhoto =
-    photos.find(p => p.isProfile)?.url ||
+    photos.find(p => p.role === "profile")?.url ||
     sortedPhotos[0]?.url ||
     null
 
