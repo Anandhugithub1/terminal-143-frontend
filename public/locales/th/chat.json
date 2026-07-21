@@ -9,11 +9,9 @@
     "tapMatchToStart": "แตะแมตช์ด้านบนเพื่อทักทายและเริ่มแชท",
     "chatSectionLabel": "แชท"
   },
-
   "matchesStrip": {
     "label": "แมตช์"
   },
-
   "matchRow": {
     "blocked": "ถูกบล็อก",
     "sayHi": "ทักทาย 👋",
@@ -27,7 +25,6 @@
     "viewProfileAria": "ดูโปรไฟล์ของ {{name}}",
     "moreOptions": "ตัวเลือกเพิ่มเติม"
   },
-
   "conversation": {
     "back": "ย้อนกลับ",
     "online": "ออนไลน์",
@@ -45,6 +42,9 @@
     "blockConfirmAction": "บล็อก",
     "blockCancelAction": "ยกเลิก",
     "youBlockedThisUser": "คุณบล็อกผู้ใช้นี้แล้ว เลิกบล็อกเพื่อสนทนาต่อ",
-    "youWereBlocked": "คุณไม่สามารถตอบกลับการสนทนานี้ได้"
+    "youWereBlocked": "คุณไม่สามารถตอบกลับการสนทนานี้ได้",
+    "deleteMessageTitle": "ลบข้อความนี้หรือไม่?",
+    "deleteMessageBody": "การลบนี้จะลบออกจากมุมมองของคุณเท่านั้น อีกฝ่ายจะยังคงเห็นข้อความอยู่",
+    "deleteMessageAction": "ลบสำหรับฉัน"
   }
 }

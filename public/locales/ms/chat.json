@@ -9,11 +9,9 @@
     "tapMatchToStart": "Ketik padanan di atas untuk menyapa dan mula bersembang.",
     "chatSectionLabel": "Sembang"
   },
-
   "matchesStrip": {
     "label": "Padanan"
   },
-
   "matchRow": {
     "blocked": "Disekat",
     "sayHi": "Sapa 👋",
@@ -27,7 +25,6 @@
     "viewProfileAria": "Lihat profil {{name}}",
     "moreOptions": "Pilihan lain"
   },
-
   "conversation": {
     "back": "Kembali",
     "online": "Dalam talian",
@@ -45,6 +42,9 @@
     "blockConfirmAction": "Sekat",
     "blockCancelAction": "Batal",
     "youBlockedThisUser": "Anda telah menyekat pengguna ini. Nyahsekat untuk meneruskan perbualan.",
-    "youWereBlocked": "Anda tidak boleh membalas perbualan ini."
+    "youWereBlocked": "Anda tidak boleh membalas perbualan ini.",
+    "deleteMessageTitle": "Padam mesej ini?",
+    "deleteMessageBody": "Ini hanya membuangnya daripada paparan anda. Pihak satu lagi masih boleh melihatnya.",
+    "deleteMessageAction": "Padam untuk saya"
   }
 }

@@ -94,6 +94,33 @@ export function useUnblockUser(matchId) {
   })
 }
 
+// "Delete for me" only — hides the message from this device/account, the
+// other party still sees it. Removes it from the cached history immediately
+// (no refetch needed to see the effect) rather than invalidating, since a
+// deleted message never comes back from the server for this viewer anyway.
+export function useDeleteMessage(matchId) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (messageId) => {
+      const res = await chatApi.delete(
+        `/conversations/${matchId}/messages/${messageId}`,
+        { withCredentials: true }
+      )
+      return res.data
+    },
+    onSuccess: (_data, messageId) => {
+      queryClient.setQueryData(['chatHistory', matchId], (old) => {
+        if (!old) return old
+        return {
+          ...old,
+          messages: old.messages.filter((msg) => msg.id !== messageId),
+        }
+      })
+    },
+  })
+}
+
 // Both the preview list and the open conversation need to interpret the
 // same incoming socket payload the same way — keep it in one place so a
 // backend field-name change only needs updating here.

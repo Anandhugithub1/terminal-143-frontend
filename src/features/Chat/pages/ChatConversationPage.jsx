@@ -6,9 +6,10 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useTranslation } from 'react-i18next'
 import { useMatches } from '../../UserHome/api'
-import { useConversationHistory, normalizeIncomingMessage, useBlockUser, useUnblockUser } from '../api'
+import { useConversationHistory, normalizeIncomingMessage, useBlockUser, useUnblockUser, useDeleteMessage } from '../api'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
+import { useLongPress } from '../hooks/useLongPress'
 import BottomSheetModal from '../../../shared/components/BottomSheetModal'
 
 // Sends fired within this window of the previous one get folded into the
@@ -22,6 +23,35 @@ function formatMessageTime(iso) {
     hour: 'numeric',
     minute: '2-digit',
   })
+}
+
+// Long-press (any message, mine or theirs) opens the delete-for-me confirm
+// sheet in the parent. Split out from the message list purely so useLongPress
+// — a hook — isn't called inside the .map() loop.
+function MessageBubble({ msg, onLongPress }) {
+  const longPressHandlers = useLongPress(onLongPress)
+
+  return (
+    <div className={`flex ${msg.mine ? 'justify-end' : 'justify-start'}`}>
+      <div
+        {...longPressHandlers}
+        className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm select-none touch-none ${
+          msg.mine
+            ? 'bg-primary text-white rounded-br-sm'
+            : 'bg-white text-gray-800 border border-gray-100 rounded-bl-sm'
+        }`}
+      >
+        <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+        <p
+          className={`text-[10px] mt-1 text-right ${
+            msg.mine ? 'text-white/70' : 'text-gray-400'
+          }`}
+        >
+          {formatMessageTime(msg.sentAt)}
+        </p>
+      </div>
+    </div>
+  )
 }
 
 export default function ChatConversationPage() {
@@ -54,6 +84,7 @@ export default function ChatConversationPage() {
   const { previews, markRead, recordSentMessage, setBlockedByMe } = useConversationPreviews()
   const { mutate: blockUser, isPending: isBlocking } = useBlockUser(matchId)
   const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser(matchId)
+  const { mutate: deleteMessage, isPending: isDeleting } = useDeleteMessage(matchId)
 
   // Live messages received/sent this session are kept separate from the
   // fetched history so a background history refetch never clobbers them.
@@ -61,6 +92,8 @@ export default function ChatConversationPage() {
   const [draft, setDraft] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isBlockConfirmOpen, setIsBlockConfirmOpen] = useState(false)
+  // The message a long-press picked, awaiting a delete-for-me confirmation.
+  const [messageToDelete, setMessageToDelete] = useState(null)
   const scrollRef = useRef(null)
   const hasScrolledRef = useRef(false)
 
@@ -191,6 +224,20 @@ export default function ChatConversationPage() {
     })
   }
 
+  function handleConfirmDelete() {
+    if (!messageToDelete) return
+    const id = messageToDelete.id
+    deleteMessage(id, {
+      onSuccess: () => {
+        // useDeleteMessage already patches the ['chatHistory', matchId]
+        // cache; a message that hasn't landed there yet (just sent/received
+        // this session) only exists in liveMessages, so drop it there too.
+        setLiveMessages((prev) => prev.filter((m) => m.id !== id))
+        setMessageToDelete(null)
+      },
+    })
+  }
+
   return (
     <div className="h-[100dvh] flex flex-col bg-gray-50">
       <header className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white">
@@ -283,27 +330,7 @@ export default function ChatConversationPage() {
           </div>
         ) : (
           messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex ${msg.mine ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm ${
-                  msg.mine
-                    ? 'bg-primary text-white rounded-br-sm'
-                    : 'bg-white text-gray-800 border border-gray-100 rounded-bl-sm'
-                }`}
-              >
-                <p className="whitespace-pre-wrap break-words">{msg.text}</p>
-                <p
-                  className={`text-[10px] mt-1 text-right ${
-                    msg.mine ? 'text-white/70' : 'text-gray-400'
-                  }`}
-                >
-                  {formatMessageTime(msg.sentAt)}
-                </p>
-              </div>
-            </div>
+            <MessageBubble key={msg.id} msg={msg} onLongPress={() => setMessageToDelete(msg)} />
           ))
         )}
       </div>
@@ -395,6 +422,36 @@ export default function ChatConversationPage() {
           </button>
           <button
             onClick={() => setIsBlockConfirmOpen(false)}
+            className="w-full py-3 rounded-full bg-gray-100 text-gray-700 text-sm font-semibold"
+          >
+            {t('conversation.blockCancelAction')}
+          </button>
+        </div>
+      </BottomSheetModal>
+
+      {/* Delete-for-me confirmation */}
+      <BottomSheetModal
+        isOpen={!!messageToDelete}
+        onClose={() => setMessageToDelete(null)}
+        centered
+        panelClassName="rounded-2xl overflow-hidden p-5"
+      >
+        <h2 className="text-base font-semibold text-gray-900 mb-2">
+          {t('conversation.deleteMessageTitle')}
+        </h2>
+        <p className="text-sm text-gray-500 mb-5">
+          {t('conversation.deleteMessageBody')}
+        </p>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={handleConfirmDelete}
+            disabled={isDeleting}
+            className="w-full py-3 rounded-full bg-rose-600 text-white text-sm font-semibold disabled:opacity-40"
+          >
+            {t('conversation.deleteMessageAction')}
+          </button>
+          <button
+            onClick={() => setMessageToDelete(null)}
             className="w-full py-3 rounded-full bg-gray-100 text-gray-700 text-sm font-semibold"
           >
             {t('conversation.blockCancelAction')}

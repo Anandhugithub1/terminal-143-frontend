@@ -9,11 +9,9 @@
     "tapMatchToStart": "Нажмите на совпадение выше, чтобы поздороваться и начать общение.",
     "chatSectionLabel": "Чат"
   },
-
   "matchesStrip": {
     "label": "Совпадения"
   },
-
   "matchRow": {
     "blocked": "Заблокирован",
     "sayHi": "Поздороваться 👋",
@@ -27,7 +25,6 @@
     "viewProfileAria": "Посмотреть профиль {{name}}",
     "moreOptions": "Дополнительные параметры"
   },
-
   "conversation": {
     "back": "Назад",
     "online": "В сети",
@@ -45,6 +42,9 @@
     "blockConfirmAction": "Заблокировать",
     "blockCancelAction": "Отмена",
     "youBlockedThisUser": "Вы заблокировали этого пользователя. Разблокируйте, чтобы продолжить разговор.",
-    "youWereBlocked": "Вы не можете ответить в этом разговоре."
+    "youWereBlocked": "Вы не можете ответить в этом разговоре.",
+    "deleteMessageTitle": "Удалить это сообщение?",
+    "deleteMessageBody": "Оно исчезнет только из вашего чата. Собеседник по-прежнему будет его видеть.",
+    "deleteMessageAction": "Удалить у себя"
   }
 }

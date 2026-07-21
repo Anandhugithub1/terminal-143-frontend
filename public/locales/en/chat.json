@@ -9,11 +9,9 @@
     "tapMatchToStart": "Tap a match above to say hi and start chatting.",
     "chatSectionLabel": "Chat"
   },
-
   "matchesStrip": {
     "label": "Matches"
   },
-
   "matchRow": {
     "blocked": "Blocked",
     "sayHi": "Say hi 👋",
@@ -27,7 +25,6 @@
     "viewProfileAria": "View {{name}}'s profile",
     "moreOptions": "More options"
   },
-
   "conversation": {
     "back": "Back",
     "online": "Online",
@@ -45,6 +42,9 @@
     "blockConfirmAction": "Block",
     "blockCancelAction": "Cancel",
     "youBlockedThisUser": "You blocked this user. Unblock to continue the conversation.",
-    "youWereBlocked": "You can't reply to this conversation."
+    "youWereBlocked": "You can't reply to this conversation.",
+    "deleteMessageTitle": "Delete this message?",
+    "deleteMessageBody": "This only removes it from your view. The other person will still see it.",
+    "deleteMessageAction": "Delete for me"
   }
 }

@@ -9,11 +9,9 @@
     "tapMatchToStart": "点击上方的匹配对象打个招呼，开始聊天吧。",
     "chatSectionLabel": "聊天"
   },
-
   "matchesStrip": {
     "label": "匹配"
   },
-
   "matchRow": {
     "blocked": "已屏蔽",
     "sayHi": "打个招呼 👋",
@@ -27,7 +25,6 @@
     "viewProfileAria": "查看 {{name}} 的资料",
     "moreOptions": "更多选项"
   },
-
   "conversation": {
     "back": "返回",
     "online": "在线",
@@ -45,6 +42,9 @@
     "blockConfirmAction": "屏蔽",
     "blockCancelAction": "取消",
     "youBlockedThisUser": "您已屏蔽此用户。取消屏蔽即可继续对话。",
-    "youWereBlocked": "您无法回复此对话。"
+    "youWereBlocked": "您无法回复此对话。",
+    "deleteMessageTitle": "删除这条消息？",
+    "deleteMessageBody": "这只会从你的视图中删除它，对方仍然可以看到。",
+    "deleteMessageAction": "为我删除"
   }
 }
