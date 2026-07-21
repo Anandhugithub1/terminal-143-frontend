@@ -65,7 +65,7 @@ export default function ShareQRCodePage() {
     <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-pink-50 to-purple-50 font-inter">
       <Header onBack={() => navigate(-1)} />
 
-      <main className="flex-grow flex items-center justify-center px-4 py-8">
+      <main className="flex-grow flex items-start justify-center px-4 py-8">
         {isLoading && renderSkeleton()}
 
         {!isLoading && profile && (

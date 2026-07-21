@@ -14,7 +14,7 @@ const AddDetails = () => {
   <>
         <NavBar />
 
-    <div className="min-h-[calc(100dvh-4rem)] bg-gradient-to-b from-pink-100 to-purple-200 flex items-center justify-center px-4 py-8">
+    <div className="min-h-[calc(100dvh-4rem)] bg-gradient-to-b from-pink-100 to-purple-200 flex items-start justify-center px-4 py-8">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 sm:p-8 relative">
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
