@@ -75,11 +75,13 @@ export function useEditableProfile() {
       order: order
     }
 
-    // Remove existing photo with same order, add new one
-    const updatedPhotos = currentPhotos.filter(p => p.order !== order).concat(newPhoto)
+    // Replace in place at `order` instead of appending — appending would
+    // put e.g. a slot-1 upload after an existing slot-2 photo.
+    const updatedPhotos = [...currentPhotos]
+    updatedPhotos[order] = newPhoto
 
     await updateMutation.mutateAsync({
-      photos: updatedPhotos
+      photos: updatedPhotos.filter(Boolean)
     })
 
     queryClient.invalidateQueries(["my-profile"])

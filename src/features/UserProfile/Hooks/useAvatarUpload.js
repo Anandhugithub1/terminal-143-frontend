@@ -77,6 +77,11 @@ export function useAvatarUpload(uploadImage, profile, updateProfileData) {
 
     if (remainingPhotos.length === currentPhotos.length) return
 
+    if (remainingPhotos.length === 0) {
+      toast.error("You need at least one photo")
+      return
+    }
+
     setRemoving(true)
     try {
       await updateProfileData("photos", remainingPhotos)
