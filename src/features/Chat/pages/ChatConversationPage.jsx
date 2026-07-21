@@ -5,6 +5,7 @@ import { AlertCircle, ArrowLeft, MoreVertical, Send, ShieldOff } from 'lucide-re
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { useMatches } from '../../UserHome/api'
 import { useConversationHistory, normalizeIncomingMessage, useBlockUser, useUnblockUser, useDeleteMessage } from '../api'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
@@ -12,15 +13,17 @@ import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import { useLongPress } from '../hooks/useLongPress'
 import BottomSheetModal from '../../../shared/components/BottomSheetModal'
 
-// Sends fired within this window of the previous one get folded into the
-// same outgoing message/bubble instead of triggering a separate socket
-// send — avoids spamming chat-service when someone fires off a quick burst.
-const SEND_BATCH_WINDOW_MS = 1800
-
 // How long to wait for chat-service's SENT_ACK before treating a send as
 // failed. Generous — this only fires for a genuinely stuck/lost frame, not
 // normal latency (an open socket's ack is typically near-instant).
 const ACK_TIMEOUT_MS = 10000
+
+// Minimum spacing between actual socket dispatches when several messages
+// are sent in quick succession. Each message still gets its own bubble/
+// content/ack the instant it's submitted — this only paces the underlying
+// sendMessage frames so a rapid burst doesn't hit chat-service all at once
+// (mirrors how Discord/Twitch-style clients smooth out bursty sends).
+const SEND_SPACING_MS = 350
 
 function formatMessageTime(iso) {
   if (!iso) return ''
@@ -118,15 +121,16 @@ export default function ChatConversationPage() {
   const scrollRef = useRef(null)
   const hasScrolledRef = useRef(false)
 
-  // Sends that land inside SEND_BATCH_WINDOW_MS of each other are folded
-  // into one pending bubble/socket send instead of firing one per submit.
-  const pendingRef = useRef(null) // { id, lines: string[] }
-  const batchTimerRef = useRef(null)
-  const flushPendingRef = useRef(() => {})
   // clientMessageId -> setTimeout handle, so an ack/failure that arrives
   // before ACK_TIMEOUT_MS can cancel the fallback timer that would
   // otherwise mark the same message failed a second time.
   const ackTimersRef = useRef(new Map())
+
+  // { localId, text } entries waiting to actually hit the socket — see
+  // sendBubble/drainSendQueue. The bubble for each already exists in
+  // liveMessages by the time it's queued here; this only paces dispatch.
+  const sendQueueRef = useRef([])
+  const isDrainingRef = useRef(false)
 
   // A message that arrives while this conversation is open can land in BOTH
   // `history` (useConversationPreviews's MESSAGE listener patches the
@@ -148,11 +152,6 @@ export default function ChatConversationPage() {
   useEffect(() => {
     setLiveMessages([])
     hasScrolledRef.current = false
-    // Switching conversations (or leaving the page) should flush whatever
-    // was pending for the *previous* matchId, not silently drop it. The ref
-    // indirection ensures this always calls the closure for the matchId
-    // that was active when the batch was queued, not the incoming one.
-    return () => flushPendingRef.current()
   }, [matchId])
 
   // Mark the conversation read both locally (instant badge clear) and on the
@@ -272,11 +271,10 @@ export default function ChatConversationPage() {
     )
   }
 
-  // Sends one already-composed bubble over the socket, tracking it as
-  // pending until SENT_ACK confirms persistence (or it times out / the
-  // socket layer reports it as dropped). Shared by flushPending (new
-  // batches) and the retry action on a failed bubble.
-  function sendBubble(localId, text) {
+  // Actually dispatches ONE already-bubbled message over the socket. Split
+  // out from sendBubble so the send-queue drain loop below can call it on a
+  // delay without re-appending the bubble (that already happened up front).
+  function dispatchMessage(localId, text) {
     const clientMessageId = sendWithAck({
       action: 'sendMessage',
       recipientId: matchId,
@@ -286,35 +284,55 @@ export default function ChatConversationPage() {
     const timer = setTimeout(() => markSendFailed(clientMessageId), ACK_TIMEOUT_MS)
     ackTimersRef.current.set(clientMessageId, timer)
 
-    setLiveMessages((prev) => [
-      ...prev,
-      { id: localId, clientMessageId, text, sentAt: new Date().toISOString(), mine: true, status: 'pending' },
-    ])
+    // The bubble was appended with a bare localId as its clientMessageId
+    // placeholder (see sendBubble) so it's identifiable before dispatch —
+    // swap in the real one now so SENT_ACK/SEND_FAILED can find it.
+    setLiveMessages((prev) =>
+      prev.map((m) => (m.id === localId ? { ...m, clientMessageId } : m))
+    )
     recordSentMessage(matchId, text)
   }
 
-  // Flush the pending batch: send whatever's accumulated as one socket
-  // message and append it as one bubble. Captures the matchId it was
-  // queued under via closure, so a flush triggered by switching
-  // conversations still targets the right recipient.
-  const flushPending = () => {
-    const pending = pendingRef.current
-    pendingRef.current = null
-    if (batchTimerRef.current) {
-      clearTimeout(batchTimerRef.current)
-      batchTimerRef.current = null
+  // Drains sendQueueRef one entry at a time, spaced SEND_SPACING_MS apart —
+  // a burst of quick sends still hits chat-service as a smoothed trickle
+  // instead of all at once, without merging their content or delaying the
+  // bubbles themselves (those already appeared in sendBubble).
+  function drainSendQueue() {
+    if (isDrainingRef.current) return
+    const next = sendQueueRef.current.shift()
+    if (!next) {
+      isDrainingRef.current = false
+      return
     }
-    if (!pending) return
-
-    sendBubble(pending.id, pending.lines.join('\n'))
+    isDrainingRef.current = true
+    dispatchMessage(next.localId, next.text)
+    setTimeout(() => {
+      isDrainingRef.current = false
+      drainSendQueue()
+    }, SEND_SPACING_MS)
   }
-  flushPendingRef.current = flushPending
+
+  // Entry point for a new outgoing message: the bubble appears immediately
+  // (own content, own eventual timestamp/ack — never merged with anything
+  // else), while the underlying socket dispatch is queued and paced by
+  // drainSendQueue so a rapid burst doesn't hit chat-service all at once.
+  function sendBubble(localId, text) {
+    setLiveMessages((prev) => [
+      ...prev,
+      { id: localId, clientMessageId: localId, text, sentAt: new Date().toISOString(), mine: true, status: 'pending' },
+    ])
+    sendQueueRef.current.push({ localId, text })
+    drainSendQueue()
+  }
 
   function handleRetry(msg) {
     setLiveMessages((prev) => prev.filter((m) => m.id !== msg.id))
     sendBubble(msg.id, msg.text)
   }
 
+  // Each send goes out immediately as its own message/bubble — no batching.
+  // A quick burst of short messages sends as that many individual messages
+  // in quick succession, matching how WhatsApp/iMessage/Telegram behave.
   function handleSend(e) {
     e.preventDefault()
     if (isBlocked) return
@@ -322,14 +340,7 @@ export default function ChatConversationPage() {
     if (!text) return
     setDraft('')
 
-    if (!pendingRef.current) {
-      pendingRef.current = { id: `${Date.now()}-${Math.random()}`, lines: [text] }
-    } else {
-      pendingRef.current.lines.push(text)
-    }
-
-    if (batchTimerRef.current) clearTimeout(batchTimerRef.current)
-    batchTimerRef.current = setTimeout(flushPending, SEND_BATCH_WINDOW_MS)
+    sendBubble(`${Date.now()}-${Math.random()}`, text)
   }
 
   function handleConfirmBlock() {
@@ -357,6 +368,7 @@ export default function ChatConversationPage() {
     if (messageToDelete.status && messageToDelete.status !== 'sent') {
       setLiveMessages((prev) => prev.filter((m) => m.id !== id))
       setMessageToDelete(null)
+      toast.success(t('conversation.messageDeleted'))
       return
     }
 
@@ -367,6 +379,7 @@ export default function ChatConversationPage() {
         // this session) only exists in liveMessages, so drop it there too.
         setLiveMessages((prev) => prev.filter((m) => m.id !== id))
         setMessageToDelete(null)
+        toast.success(t('conversation.messageDeleted'))
       },
     })
   }
@@ -464,7 +477,7 @@ export default function ChatConversationPage() {
         ) : (
           messages.map((msg) => (
             <MessageBubble
-              key={msg.clientMessageId || msg.id}
+              key={msg.id}
               msg={msg}
               onLongPress={() => setMessageToDelete(msg)}
               onRetry={handleRetry}
