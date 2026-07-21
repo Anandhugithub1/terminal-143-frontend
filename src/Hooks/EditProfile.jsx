@@ -67,7 +67,14 @@ export function useEditableProfile() {
   const uploadImage = async (file, order = 0) => {
     const publicUrl = await uploadToS3(file, order)
 
-    const currentPhotos = profile?.photos || []
+    // The backend treats whatever `photos` we send as the complete,
+    // authoritative set (see updateUser's comment server-side) — so this
+    // must be the freshest known photos, not this hook's own `profile`
+    // snapshot, which can be behind if another upload just landed in the
+    // same session and this component hasn't re-rendered with it yet.
+    // Reading straight from the query cache avoids that stale-closure race.
+    const latestProfile = queryClient.getQueryData(["my-profile"])
+    const currentPhotos = latestProfile?.photos || profile?.photos || []
     const newPhoto = {
       url: publicUrl,
       isProfile: order === 0,
