@@ -109,6 +109,7 @@ const Location = () => {
             setFormData={setFormData}
             t={t}
             onSelect={setGeo}
+            showAutoDetect={false}
           />
         </Suspense>
       </div>
