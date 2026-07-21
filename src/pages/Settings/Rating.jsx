@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Star, FileText, Loader2, User, Check, Sparkles, ThumbsUp, MessageCircle } from "lucide-react";
 import PageHeader from '../../shared/components/PageHeader';
 import { toast } from "sonner";
+import { submitAppReview } from "./api";
 
 export default function ReviewPage() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function ReviewPage() {
     5: "Excellent"
   };
 
-  const submitReview = () => {
+  const submitReview = async () => {
     if (rating < 1 || rating > 5) {
       toast.error("Please select a rating (1–5)", {
         icon: "⭐",
@@ -39,23 +40,27 @@ export default function ReviewPage() {
     }
 
     setIsSubmitting(true);
-    
-    setTimeout(() => {
-      const reviewData = {
+
+    try {
+      await submitAppReview({
         rating,
         text: text.trim(),
         isAnonymous,
-        timestamp: new Date().toISOString(),
-      };
-      
-      console.log("Review submitted:", reviewData);
+      });
+
       toast.success("Thank you for your feedback! 🎉", {
         icon: "❤️",
         position: "top-center",
       });
-      setIsSubmitting(false);
       setTimeout(() => navigate(-1), 500);
-    }, 800);
+    } catch (error) {
+      toast.error(error.message || "Failed to submit review", {
+        icon: "⚠️",
+        position: "top-center",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
