@@ -1,4 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMemo } from 'react'
 import { chatApi } from '../../api/clients'
 import { getCurrentUsername } from '../../shared/utils/getCurrentUsername'
 
@@ -26,11 +27,18 @@ export function useUnreadCounts() {
   })
 }
 
-// Message history for a conversation. `matchId` here is the other user's
-// username (see useMatches() — each match row's PK is their username), which
-// is what chat-service's /chat/conversations/{otherUserId}/messages expects.
-async function fetchConversationHistory(matchId) {
+// One page of message history for a conversation. `matchId` here is the
+// other user's username (see useMatches() — each match row's PK is their
+// username), which is what chat-service's
+// /chat/conversations/{otherUserId}/messages expects.
+//
+// `pageParam` is the backend's opaque lastKey cursor (already
+// URI-encoded — see getConversationHistory.js) for the page OLDER than
+// whatever's already loaded; omitted for the first page, which is the most
+// recent messages. Each page comes back oldest-first internally.
+async function fetchConversationHistoryPage(matchId, pageParam) {
   const res = await chatApi.get(`/conversations/${matchId}/messages`, {
+    params: pageParam ? { lastKey: pageParam } : undefined,
     withCredentials: true,
   })
   const myUsername = getCurrentUsername()
@@ -42,20 +50,41 @@ async function fetchConversationHistory(matchId) {
       sentAt: msg.sentAt,
       mine: msg.senderId === myUsername,
     })),
+    lastKey: res.data?.lastKey || null,
     blockedByMe: !!res.data?.blockedByMe,
     blockedByOther: !!res.data?.blockedByOther,
   }
 }
 
+// Paginated message history: the first page is the most recent messages,
+// and fetchNextPage() loads the next OLDER page via the backend's lastKey
+// cursor (chat-service defaults to 20 messages/page — see
+// messageService.listMessages). Older pages must be flattened BEFORE newer
+// ones (React Query's own `pages` array is newest-page-first, since that's
+// fetch order) so the combined list still reads oldest-to-newest top to
+// bottom, matching how each individual page is already ordered.
 export function useConversationHistory(matchId) {
-  return useQuery({
+  const query = useInfiniteQuery({
     queryKey: ['chatHistory', matchId],
-    queryFn: () => fetchConversationHistory(matchId),
+    queryFn: ({ pageParam }) => fetchConversationHistoryPage(matchId, pageParam),
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => lastPage.lastKey,
     enabled: !!matchId,
     retry: 1,
     staleTime: 60 * 1000,
-    placeholderData: { messages: [], blockedByMe: false, blockedByOther: false },
   })
+
+  const data = useMemo(() => {
+    const pages = query.data?.pages ?? []
+    const latestPage = pages[0]
+    return {
+      messages: [...pages].reverse().flatMap((page) => page.messages),
+      blockedByMe: !!latestPage?.blockedByMe,
+      blockedByOther: !!latestPage?.blockedByOther,
+    }
+  }, [query.data])
+
+  return { ...query, data }
 }
 
 export function useBlockUser(matchId) {
@@ -110,11 +139,16 @@ export function useDeleteMessage(matchId) {
       return res.data
     },
     onSuccess: (_data, messageId) => {
+      // ['chatHistory', matchId] is an infinite-query cache: { pages, pageParams }
+      // — the deleted message could be on any page, not just the newest.
       queryClient.setQueryData(['chatHistory', matchId], (old) => {
         if (!old) return old
         return {
           ...old,
-          messages: old.messages.filter((msg) => msg.id !== messageId),
+          pages: old.pages.map((page) => ({
+            ...page,
+            messages: page.messages.filter((msg) => msg.id !== messageId),
+          })),
         }
       })
     },

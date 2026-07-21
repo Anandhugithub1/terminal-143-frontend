@@ -183,10 +183,22 @@ export function useConversationPreviews() {
     // ['chatHistory', matchId] entry already exists (nothing to patch if
     // the user has never opened this conversation this session — it'll
     // fetch fresh on first open anyway).
+    //
+    // ['chatHistory', matchId] is an infinite-query cache: { pages, pageParams }.
+    // pages[0] is always the NEWEST page (the first one fetched) — a live
+    // message belongs there, never on an older page appended later via
+    // fetchNextPage().
     queryClient.setQueryData(['chatHistory', msg.matchId], (old) => {
-      if (!old) return old
-      if (old.messages.some((m) => m.id === msg.id)) return old
-      return { ...old, messages: [...old.messages, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }] }
+      if (!old?.pages?.length) return old
+      const newestPage = old.pages[0]
+      if (newestPage.messages.some((m) => m.id === msg.id)) return old
+      return {
+        ...old,
+        pages: [
+          { ...newestPage, messages: [...newestPage.messages, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }] },
+          ...old.pages.slice(1),
+        ],
+      }
     })
   })
 

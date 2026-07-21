@@ -97,7 +97,14 @@ export default function ChatConversationPage() {
     }
   }
 
-  const { data: historyData, isLoading, isError } = useConversationHistory(matchId)
+  const {
+    data: historyData,
+    isLoading,
+    isError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useConversationHistory(matchId)
   const history = historyData?.messages ?? []
   const blockedByMe = !!historyData?.blockedByMe
   const blockedByOther = !!historyData?.blockedByOther
@@ -120,6 +127,14 @@ export default function ChatConversationPage() {
   const [messageToDelete, setMessageToDelete] = useState(null)
   const scrollRef = useRef(null)
   const hasScrolledRef = useRef(false)
+  // Set right before fetchNextPage() prepends an older page, so the effect
+  // below can tell "older messages were added above" (restore position,
+  // don't jump) apart from "a new message arrived/was sent" (scroll to
+  // bottom) — both change `messages`, but should scroll oppositely.
+  const pendingOlderPageRef = useRef(false)
+  const prevScrollHeightRef = useRef(0)
+  const prevScrollTopRef = useRef(0)
+  const topSentinelRef = useRef(null)
 
   // clientMessageId -> setTimeout handle, so an ack/failure that arrives
   // before ACK_TIMEOUT_MS can cancel the fallback timer that would
@@ -179,12 +194,16 @@ export default function ChatConversationPage() {
     queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
   }
 
+  // Keyed on the newest message's id rather than messages.length — length
+  // also grows when an OLDER page loads via pagination, which shouldn't
+  // re-send a read receipt for a message that was already marked read.
+  const newestMessageId = messages[messages.length - 1]?.id
   useEffect(() => {
     if (!isLoading && messages.length > 0) {
       markConversationRead()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [matchId, isLoading, messages.length])
+  }, [matchId, isLoading, newestMessageId])
 
   // Keep the chat-list cache's blockedByMe in sync with the server on every
   // load — covers the case where the block state changed elsewhere (e.g. a
@@ -248,12 +267,49 @@ export default function ChatConversationPage() {
 
   useEffect(() => {
     if (!scrollRef.current) return
+
+    // An older page just got prepended above what's currently in view —
+    // jumping to the bottom (or leaving scrollTop untouched, which browsers
+    // interpret as "stay at the same offset from the top" and would yank
+    // the view down to wherever the new content pushed the old messages)
+    // would both be wrong. Restore the user's visual position instead: the
+    // height added above is exactly how much scrollTop needs to increase by
+    // to keep the same message under the same point on screen.
+    if (pendingOlderPageRef.current) {
+      pendingOlderPageRef.current = false
+      const addedHeight = scrollRef.current.scrollHeight - prevScrollHeightRef.current
+      scrollRef.current.scrollTop = prevScrollTopRef.current + addedHeight
+      return
+    }
+
     scrollRef.current.scrollTo({
       top: scrollRef.current.scrollHeight,
       behavior: hasScrolledRef.current ? 'smooth' : 'auto',
     })
     hasScrolledRef.current = true
   }, [messages])
+
+  // Load the next OLDER page when the sentinel above the oldest loaded
+  // message scrolls into view — mirrors ChatListPage's IntersectionObserver
+  // pattern, just anchored to the top instead of the bottom of the list.
+  useEffect(() => {
+    const node = topSentinelRef.current
+    if (!node || !hasNextPage) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !isFetchingNextPage) {
+          prevScrollHeightRef.current = scrollRef.current?.scrollHeight || 0
+          prevScrollTopRef.current = scrollRef.current?.scrollTop || 0
+          pendingOlderPageRef.current = true
+          fetchNextPage()
+        }
+      },
+      { root: scrollRef.current, rootMargin: '100px' }
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage])
 
   const online = !!previews[matchId]?.online
 
@@ -475,15 +531,22 @@ export default function ChatConversationPage() {
             </p>
           </div>
         ) : (
-          messages.map((msg) => (
-            <MessageBubble
-              key={msg.id}
-              msg={msg}
-              onLongPress={() => setMessageToDelete(msg)}
-              onRetry={handleRetry}
-              t={t}
-            />
-          ))
+          <>
+            {hasNextPage && (
+              <div ref={topSentinelRef} className="py-2 flex justify-center">
+                {isFetchingNextPage && <Skeleton circle width={20} height={20} />}
+              </div>
+            )}
+            {messages.map((msg) => (
+              <MessageBubble
+                key={msg.id}
+                msg={msg}
+                onLongPress={() => setMessageToDelete(msg)}
+                onRetry={handleRetry}
+                t={t}
+              />
+            ))}
+          </>
         )}
       </div>
 
