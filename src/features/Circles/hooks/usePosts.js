@@ -8,6 +8,7 @@ from
 
 import {
   listPosts,
+  listMyPosts,
   createPost,
   getPost,
   updatePost,
@@ -118,6 +119,51 @@ usePost(
 
     staleTime:
       1000 * 30
+  });
+}
+
+export function
+useMyPosts() {
+  return useQuery({
+    queryKey:
+      queryKeys.myPosts,
+
+    queryFn:
+      async () => {
+        const res =
+          await listMyPosts();
+
+        return res.data;
+      },
+
+    staleTime:
+      1000 * 30
+  });
+}
+
+export function
+useUpdateMyPost() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ circleId, postId, createdAtEpoch, payload }) =>
+      updatePost(circleId, postId, createdAtEpoch, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.myPosts });
+    },
+  });
+}
+
+export function
+useDeleteMyPost() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ circleId, postId, createdAtEpoch }) =>
+      deletePost(circleId, postId, createdAtEpoch),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.myPosts });
+    },
   });
 }
 

@@ -83,7 +83,8 @@
     "seeAll": "查看全部",
     "loadFailedTitle": "加载圈子失败",
     "loadFailedBody": "请检查网络连接后重试。",
-    "retry": "重试"
+    "retry": "重试",
+    "myPosts": "我的动态"
   },
   "circleDetails": {
     "notFound": "未找到圈子",
@@ -107,6 +108,20 @@
     "noPostsYetSubtitle": "成为第一个与此圈子分享内容的人！",
     "createPost": "发布动态",
     "postReportedAlert": "已举报该动态"
+  },
+  "myPosts": {
+    "header": "我的动态",
+    "noPostsYetTitle": "暂无动态",
+    "noPostsYetSubtitle": "您在任何圈子分享的动态都会显示在这里。",
+    "loadFailedTitle": "加载动态失败",
+    "loadFailedBody": "请检查网络连接后重试。",
+    "deletePostTitle": "删除动态？",
+    "deletePostMessage": "此操作无法撤销，该动态将被永久删除。",
+    "postUpdated": "动态已更新",
+    "updateFailed": "更新动态失败",
+    "postDeleted": "动态已删除",
+    "deleteFailed": "删除动态失败",
+    "shareTitle": "{{circleName}} 的动态"
   },
   "sidebar": {
     "menu": {

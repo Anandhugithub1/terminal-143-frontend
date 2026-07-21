@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Compass, MapPin, PenLine, Plus, Rss } from "lucide-react";
+import { Compass, FileText, MapPin, PenLine, Plus, Rss } from "lucide-react";
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -276,6 +276,19 @@ export default function CirclesHomePage() {
                 </StoryAvatar>
               );
             })}
+
+            {/* My Posts */}
+            {!isLoadingCircles && (
+              <StoryAvatar
+                isActive={false}
+                onClick={() => navigate("/circles/my-posts")}
+                label={t("circlesHome.myPosts")}
+              >
+                <div className="w-full h-full rounded-full bg-gray-100 flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-gray-400" />
+                </div>
+              </StoryAvatar>
+            )}
 
             {/* Discover */}
             {!isLoadingCircles && (

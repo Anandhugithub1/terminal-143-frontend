@@ -83,7 +83,8 @@
     "seeAll": "ดูทั้งหมด",
     "loadFailedTitle": "โหลดเซอร์เคิลของคุณไม่สำเร็จ",
     "loadFailedBody": "โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง",
-    "retry": "ลองอีกครั้ง"
+    "retry": "ลองอีกครั้ง",
+    "myPosts": "โพสต์ของฉัน"
   },
   "circleDetails": {
     "notFound": "ไม่พบเซอร์เคิล",
@@ -107,6 +108,20 @@
     "noPostsYetSubtitle": "เป็นคนแรกที่แชร์อะไรบางอย่างกับเซอร์เคิลนี้!",
     "createPost": "สร้างโพสต์",
     "postReportedAlert": "รายงานโพสต์แล้ว"
+  },
+  "myPosts": {
+    "header": "โพสต์ของฉัน",
+    "noPostsYetTitle": "ยังไม่มีโพสต์",
+    "noPostsYetSubtitle": "โพสต์ที่คุณแชร์ในเซอร์เคิลใด ๆ จะแสดงที่นี่",
+    "loadFailedTitle": "โหลดโพสต์ของคุณไม่สำเร็จ",
+    "loadFailedBody": "โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง",
+    "deletePostTitle": "ลบโพสต์?",
+    "deletePostMessage": "การกระทำนี้ไม่สามารถย้อนกลับได้ โพสต์จะถูกลบอย่างถาวร",
+    "postUpdated": "อัปเดตโพสต์แล้ว",
+    "updateFailed": "อัปเดตโพสต์ไม่สำเร็จ",
+    "postDeleted": "ลบโพสต์แล้ว",
+    "deleteFailed": "ลบโพสต์ไม่สำเร็จ",
+    "shareTitle": "โพสต์ใน {{circleName}}"
   },
   "sidebar": {
     "menu": {

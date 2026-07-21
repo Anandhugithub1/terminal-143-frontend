@@ -184,10 +184,6 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
 
               {/* Media Upload Area */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  {t("createPostModal.addMediaLabel")}<span className="text-gray-400 font-normal">{t("createPostModal.addMediaHint", { maxItems: MAX_MEDIA_ITEMS })}</span>
-                </label>
-
                 {/* Media Preview Grid */}
                 {media.length > 0 && (
                   <div className="grid grid-cols-3 gap-2 mb-3">

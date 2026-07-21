@@ -4,7 +4,8 @@
     Edit2,
     Sliders,
     User,
-    Share2,Camera
+    Share2,Camera,
+    FileText
   } from "lucide-react"
 
   import TopNav from "../../../components/Layout/TopNavigation"
@@ -85,7 +86,8 @@ const menuItems = [
   ...(showExtraPhotos
     ? [{ label: "Photos", icon: <Camera size={16} />, route: "/edit-photos" }]
     : []),
-  { label: "Share QR Code", icon: <Share2 size={16} />, route: "/share-qr" }
+  { label: "Share QR Code", icon: <Share2 size={16} />, route: "/share-qr" },
+  { label: "My Posts", icon: <FileText size={16} />, route: "/circles/my-posts" }
 ]
     return (
       <div className="flex flex-col h-[100dvh] bg-white font-inter">

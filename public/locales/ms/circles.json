@@ -83,7 +83,8 @@
     "seeAll": "Lihat semua",
     "loadFailedTitle": "Gagal memuatkan bulatan anda",
     "loadFailedBody": "Semak sambungan anda dan cuba lagi.",
-    "retry": "Cuba lagi"
+    "retry": "Cuba lagi",
+    "myPosts": "Hantaran Saya"
   },
   "circleDetails": {
     "notFound": "Bulatan tidak dijumpai",
@@ -107,6 +108,20 @@
     "noPostsYetSubtitle": "Jadilah yang pertama berkongsi sesuatu dengan bulatan ini!",
     "createPost": "Cipta Hantaran",
     "postReportedAlert": "Hantaran telah dilaporkan"
+  },
+  "myPosts": {
+    "header": "Hantaran Saya",
+    "noPostsYetTitle": "Belum ada hantaran",
+    "noPostsYetSubtitle": "Hantaran yang anda kongsi dalam mana-mana bulatan akan dipaparkan di sini.",
+    "loadFailedTitle": "Gagal memuatkan hantaran anda",
+    "loadFailedBody": "Semak sambungan anda dan cuba lagi.",
+    "deletePostTitle": "Padam hantaran?",
+    "deletePostMessage": "Ini tidak boleh dibatalkan. Hantaran akan dialih keluar secara kekal.",
+    "postUpdated": "Hantaran dikemas kini",
+    "updateFailed": "Gagal mengemas kini hantaran",
+    "postDeleted": "Hantaran dipadam",
+    "deleteFailed": "Gagal memadam hantaran",
+    "shareTitle": "Hantaran di {{circleName}}"
   },
   "sidebar": {
     "menu": {

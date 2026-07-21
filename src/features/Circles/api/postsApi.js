@@ -19,6 +19,13 @@ circleId =>
     `${BASE}/${circleId}/posts`
   );
 
+export const listMyPosts =
+({ limit, lastKey } = {}) =>
+  api.get(
+    `${BASE}/me/posts`,
+    { params: { limit, lastKey } }
+  );
+
 export const getPost =
 (
   circleId,

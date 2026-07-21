@@ -83,7 +83,8 @@
     "seeAll": "See all",
     "loadFailedTitle": "Couldn't load your circles",
     "loadFailedBody": "Check your connection and try again.",
-    "retry": "Retry"
+    "retry": "Retry",
+    "myPosts": "My Posts"
   },
   "circleDetails": {
     "notFound": "Circle not found",
@@ -107,6 +108,20 @@
     "noPostsYetSubtitle": "Be the first to share something with this circle!",
     "createPost": "Create Post",
     "postReportedAlert": "Post reported"
+  },
+  "myPosts": {
+    "header": "My Posts",
+    "noPostsYetTitle": "No posts yet",
+    "noPostsYetSubtitle": "Posts you share in any circle will show up here.",
+    "loadFailedTitle": "Couldn't load your posts",
+    "loadFailedBody": "Check your connection and try again.",
+    "deletePostTitle": "Delete post?",
+    "deletePostMessage": "This cannot be undone. The post will be permanently removed.",
+    "postUpdated": "Post updated",
+    "updateFailed": "Failed to update post",
+    "postDeleted": "Post deleted",
+    "deleteFailed": "Failed to delete post",
+    "shareTitle": "Post in {{circleName}}"
   },
   "sidebar": {
     "menu": {

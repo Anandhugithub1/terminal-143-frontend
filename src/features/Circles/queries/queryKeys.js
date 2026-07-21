@@ -16,6 +16,10 @@ export const queryKeys =
       circleId
     ],
 
+  myPosts: [
+    'myPosts'
+  ],
+
   post:
     (
       circleId,
