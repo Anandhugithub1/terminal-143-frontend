@@ -1,18 +1,20 @@
-import { useState } from "react";
-import ConfirmDialog from "../../../../shared/components/ConfirmDialog";
+// import { useState } from "react";
+// import ConfirmDialog from "../../../../shared/components/ConfirmDialog";
 
 export const UploadOptions = ({
-  onRemove,
+  // onRemove,
   onCamera,
   onGallery,
-  onCancel,
+  // onCancel,
   cameraLabel = "Take Photo",
   galleryLabel = "Choose from Gallery",
-  removeLabel = "Remove Photo",
-  modalTitle = "Remove Profile Photo?",
-  modalDescription = "Are you sure you want to remove your profile picture? This cannot be undone.",
+  // removeLabel = "Remove Photo",
+  // modalTitle = "Remove Profile Photo?",
+  // modalDescription = "Are you sure you want to remove your profile picture? This cannot be undone.",
 }) => {
-  const [showConfirm, setShowConfirm] = useState(false);
+  // Remove Photo is disabled for now — re-enable by restoring this block
+  // (button + ConfirmDialog + showConfirm state) once it's needed again.
+  // const [showConfirm, setShowConfirm] = useState(false);
 
   return (
     <>
@@ -29,15 +31,15 @@ export const UploadOptions = ({
         >
           {galleryLabel}
         </button>
-        <button
+        {/* <button
           onClick={() => setShowConfirm(true)}
           className="w-full py-2 mb-2 bg-red-100 rounded-lg hover:bg-red-200"
         >
           {removeLabel}
-        </button>
+        </button> */}
       </div>
 
-      <ConfirmDialog
+      {/* <ConfirmDialog
         isOpen={showConfirm}
         onClose={() => {
           setShowConfirm(false);
@@ -47,7 +49,7 @@ export const UploadOptions = ({
         title={modalTitle}
         message={modalDescription}
         confirmLabel="Remove"
-      />
+      /> */}
     </>
   );
 };

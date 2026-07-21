@@ -6,7 +6,7 @@ import {
   MAX_MEDIA_ITEMS,
   NORMALIZED_IMAGE_TYPE,
 } from "../constants/mediaConfig";
-import { convertImageToWebp } from "../../../utils/imageConversion";
+import { ensureNormalizedImage } from "../../../utils/imageConversion";
 
 let nextId = 0;
 const createId = () => `media-${Date.now()}-${nextId++}`;
@@ -47,7 +47,7 @@ export function useMediaAttachments() {
       let outputFile = file;
       if (file.type !== NORMALIZED_IMAGE_TYPE) {
         try {
-          outputFile = await convertImageToWebp(file);
+          outputFile = await ensureNormalizedImage(file);
         } catch {
           toast.error(`"${file.name}" couldn't be processed on this device`);
           continue;

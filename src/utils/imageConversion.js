@@ -4,6 +4,35 @@ export const NORMALIZED_IMAGE_TYPE = "image/webp";
 export const NORMALIZED_IMAGE_EXT = "webp";
 export const IMAGE_CONVERT_QUALITY = 0.85;
 
+// <img>/canvas can't decode HEIC/HEIF outside Safari, so those files never
+// reach convertImageToWebp's img.onload — they'd previously fail decode and
+// fall through to being "converted" as their original (rejected) type. iOS
+// camera photos are HEIC by default, so this is the common mobile upload
+// path, not an edge case. file.type is sometimes blank for HEIC on iOS, so
+// also check the extension.
+const HEIC_TYPES = ["image/heic", "image/heif"];
+const isHeicFile = (file) =>
+  HEIC_TYPES.includes(file.type) || /\.hei[cf]$/i.test(file.name || "");
+
+// Lazy-loaded: only fetched when a HEIC file is actually selected, so users
+// who never hit this path don't pay for the (large, WASM-based) decoder.
+const convertHeicToJpeg = async (file) => {
+  const heic2any = (await import("heic2any")).default;
+
+  const result = await heic2any({
+    blob: file,
+    toType: "image/jpeg",
+    quality: IMAGE_CONVERT_QUALITY,
+  });
+
+  // heic2any can return an array of blobs for multi-image HEIC containers
+  // (e.g. Live Photos) — only the first frame is relevant for a profile photo.
+  const blob = Array.isArray(result) ? result[0] : result;
+  const newName = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+
+  return new File([blob], newName, { type: "image/jpeg" });
+};
+
 // canvas.toBlob("image/webp") silently falls back to PNG on browsers that
 // can't encode WebP (e.g. iOS Safari < 14). Detect that once up front so we
 // can fall back to JPEG instead of mislabeling PNG bytes as WebP.
@@ -20,8 +49,10 @@ export const supportsWebpEncoding = () => {
 
 // Re-encodes an image file to NORMALIZED_IMAGE_TYPE (WebP), or JPEG on
 // devices that can't encode WebP, via canvas so every browser/device ends up
-// with a consistent, widely-decodable format. Formats the browser itself
-// can't decode (e.g. HEIC on non-Safari) fail at img.onerror.
+// with a consistent, widely-decodable format. HEIC/HEIF is routed through
+// convertHeicToJpeg before reaching here (see ensureNormalizedImage) since
+// <img> can't decode it outside Safari; any other format the browser can't
+// decode still fails at img.onerror.
 export const convertImageToWebp = (file) =>
   new Promise((resolve, reject) => {
     const objectUrl = URL.createObjectURL(file);
@@ -68,16 +99,23 @@ export const convertImageToWebp = (file) =>
     img.src = objectUrl;
   });
 
-// Converts an image file to the normalized format, returning the original
-// file unchanged if it's already in that format or conversion fails.
+// Converts an image file to the normalized format. Throws if the file can't
+// be turned into something the backend accepts — callers already show an
+// error toast on a thrown upload, so silently uploading a doomed file (the
+// old behavior) just traded a clear error for a confusing one downstream.
 export const ensureNormalizedImage = async (file) => {
-  if (!file.type.startsWith("image") || file.type === NORMALIZED_IMAGE_TYPE) {
+  if (file.type === NORMALIZED_IMAGE_TYPE) {
     return file;
   }
 
-  try {
-    return await convertImageToWebp(file);
-  } catch {
-    return file;
+  if (isHeicFile(file)) {
+    const jpeg = await convertHeicToJpeg(file);
+    return convertImageToWebp(jpeg);
   }
+
+  if (!file.type.startsWith("image")) {
+    throw new Error("Unsupported file type");
+  }
+
+  return convertImageToWebp(file);
 };
