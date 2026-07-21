@@ -80,7 +80,10 @@
     "feedQuietTitle": "Your feed is quiet",
     "feedQuietBody": "Join more circles to fill it up",
     "meanwhileIn": "Meanwhile in ",
-    "seeAll": "See all"
+    "seeAll": "See all",
+    "loadFailedTitle": "Couldn't load your circles",
+    "loadFailedBody": "Check your connection and try again.",
+    "retry": "Retry"
   },
   "circleDetails": {
     "notFound": "Circle not found",

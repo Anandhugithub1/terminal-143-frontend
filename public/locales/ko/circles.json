@@ -80,7 +80,10 @@
     "feedQuietTitle": "피드가 조용하네요",
     "feedQuietBody": "더 많은 서클에 가입해서 채워보세요",
     "meanwhileIn": "한편, ",
-    "seeAll": "전체 보기"
+    "seeAll": "전체 보기",
+    "loadFailedTitle": "서클을 불러오지 못했습니다",
+    "loadFailedBody": "연결 상태를 확인하고 다시 시도해 주세요.",
+    "retry": "다시 시도"
   },
   "circleDetails": {
     "notFound": "서클을 찾을 수 없습니다",

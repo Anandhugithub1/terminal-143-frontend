@@ -27,6 +27,8 @@ import { DEFAULT_AVATAR } from "../utils/postDisplay";
 import { shareLink } from "../utils/share";
 import { PostCardSkeleton, CircleAvatarSkeleton } from "../components/common/Skeletons";
 import { queryKeys } from "../queries/queryKeys";
+import EmptyState from "../../../shared/components/EmptyState";
+import { AlertTriangle } from "lucide-react";
 
 const RING_GRADIENTS = [
   "from-pink-400 to-rose-500",
@@ -75,7 +77,7 @@ export default function CirclesHomePage() {
   const [commentPost, setCommentPost] = useState(null);
   const [selectedCircleId, setSelectedCircleId] = useState(null);
 
-  const { data: circlesData, isLoading: isLoadingCircles } = useCircles();
+  const { data: circlesData, isLoading: isLoadingCircles, isError: isCirclesError, refetch: refetchCircles } = useCircles();
   const myCircles = circlesData?.circles || [];
   // Lets search results badge the circles you're already in.
   const joinedCircleIds = new Set(myCircles.map((c) => c.circleId));
@@ -101,6 +103,30 @@ export default function CirclesHomePage() {
 
   const markPostSeen = useSeenTracker();
   const { send: sendMatchRequest } = useSendMatchRequest();
+
+  if (isCirclesError) {
+    return (
+      <div className="min-h-[100dvh] bg-gray-50 flex flex-col">
+        <TopNav />
+        <div className="flex-1 flex items-center justify-center">
+          <EmptyState
+            icon={AlertTriangle}
+            title={t("circlesHome.loadFailedTitle")}
+            subtitle={t("circlesHome.loadFailedBody")}
+            action={
+              <button
+                onClick={() => refetchCircles()}
+                className="px-6 py-2.5 btn-filled text-sm rounded-full"
+              >
+                {t("circlesHome.retry")}
+              </button>
+            }
+          />
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
 
   if (!isLoadingCircles && myCircles.length === 0) {
     return <Navigate to="/circles/onboarding" replace />;

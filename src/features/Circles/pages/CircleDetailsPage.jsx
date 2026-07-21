@@ -22,6 +22,7 @@ import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
+import { useReportUser } from "../../UserHome/api";
 import { queryKeys } from "../queries/queryKeys";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
@@ -52,6 +53,7 @@ export default function CircleDetailsPage() {
   const deletePostMutation = useDeletePost(circleId);
   const { send: sendMatchRequest } = useSendMatchRequest();
   const { mutate: joinCircle, isPending: isJoining } = useJoinCircle();
+  const { mutate: reportUser } = useReportUser();
 
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
 
@@ -111,6 +113,11 @@ export default function CircleDetailsPage() {
       console.error(err);
       toast.error(t("circleDetails.failedToShare"));
     }
+  };
+
+  const handleReportPost = (post) => {
+    if (!post.authorId) return;
+    reportUser({ reportedUsername: post.authorId, reason: "other" });
   };
 
   const toggleLike = (post) => {
@@ -380,7 +387,7 @@ export default function CircleDetailsPage() {
                   onEdit={() => setEditPost(post)}
                   onDelete={() => handleDeletePost(post)}
                   onShare={() => handleSharePost(post)}
-                  onReport={() => toast.success(t("circleDetails.postReportedAlert"))}
+                  onReport={() => handleReportPost(post)}
                   onAuthorClick={
                     post.authorId
                       ? () => navigate(`/profile/${post.authorId}`)

@@ -12,7 +12,7 @@ import { useCircle } from "../hooks/useCircles";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
-import { toast } from "sonner";
+import { useReportUser } from "../../UserHome/api";
 
 export default function PostDetailsPage() {
   const { t } = useTranslation("circles");
@@ -26,6 +26,7 @@ export default function PostDetailsPage() {
 
   const { data: post, isLoading } = usePost(circleId, postId, createdAtEpoch);
   const { data: circle } = useCircle(circleId);
+  const { mutate: reportUser } = useReportUser();
 
   const handleShare = () =>
     shareLink({
@@ -35,6 +36,11 @@ export default function PostDetailsPage() {
       copiedMessage: t("common.linkCopied"),
       failedMessage: t("common.failedToShare"),
     });
+
+  const handleReportPost = () => {
+    if (!post?.authorId) return;
+    reportUser({ reportedUsername: post.authorId, reason: "other" });
+  };
 
   if (isLoading) {
     return <LoadingSpinner />;
@@ -100,7 +106,7 @@ export default function PostDetailsPage() {
           media={post.media}
           tags={post.tags || []}
           onShare={handleShare}
-          onReport={() => toast.success(t("postDetails.postReportedAlert"))}
+          onReport={handleReportPost}
           actionsWrapperClassName="grid grid-cols-3 gap-2"
           actions={buildPostActions({
             isLiked,

@@ -80,7 +80,10 @@
     "feedQuietTitle": "你的动态很安静",
     "feedQuietBody": "加入更多圈子来丰富你的动态",
     "meanwhileIn": "与此同时，在 ",
-    "seeAll": "查看全部"
+    "seeAll": "查看全部",
+    "loadFailedTitle": "加载圈子失败",
+    "loadFailedBody": "请检查网络连接后重试。",
+    "retry": "重试"
   },
   "circleDetails": {
     "notFound": "未找到圈子",

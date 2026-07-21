@@ -80,7 +80,10 @@
     "feedQuietTitle": "Suapan anda agak sunyi",
     "feedQuietBody": "Sertai lebih banyak bulatan untuk memenuhkannya",
     "meanwhileIn": "Sementara itu di ",
-    "seeAll": "Lihat semua"
+    "seeAll": "Lihat semua",
+    "loadFailedTitle": "Gagal memuatkan bulatan anda",
+    "loadFailedBody": "Semak sambungan anda dan cuba lagi.",
+    "retry": "Cuba lagi"
   },
   "circleDetails": {
     "notFound": "Bulatan tidak dijumpai",
