@@ -163,14 +163,16 @@ export default function DiscoverCirclesPage() {
                           )}
                         </div>
                       ) : (
-                        <img
-                          src={image}
-                          alt={circle.name}
-                          loading="lazy"
-                          decoding="async"
-                          className="w-full h-24 object-cover rounded-xl"
-                          onError={() => handleImageError(key)}
-                        />
+                        <div className="w-full h-24 rounded-xl bg-gray-100 overflow-hidden">
+                          <img
+                            src={image}
+                            alt={circle.name}
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-contain"
+                            onError={() => handleImageError(key)}
+                          />
+                        </div>
                       )}
                       <span className="absolute bottom-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-black/40 text-white backdrop-blur-sm">
                         {circle.category}

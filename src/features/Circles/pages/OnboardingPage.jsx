@@ -225,13 +225,15 @@ export default function OnboardingPage({ onComplete, onBack }) {
                           <Icon className={`w-8 h-8 ${isSelected ? "text-white" : circle.iconColor}`} />
                         </div>
                       ) : (
-                        <img
-                          src={circle.image}
-                          alt={circle.name}
-                          className={`w-full h-28 sm:h-32 object-cover rounded-xl ${isSelected ? "opacity-90" : ""}`}
-                          loading="lazy"
-                          onError={() => handleImageError(circle.id)}
-                        />
+                        <div className={`w-full h-28 sm:h-32 rounded-xl bg-gray-100 overflow-hidden ${isSelected ? "opacity-90" : ""}`}>
+                          <img
+                            src={circle.image}
+                            alt={circle.name}
+                            className="w-full h-full object-contain"
+                            loading="lazy"
+                            onError={() => handleImageError(circle.id)}
+                          />
+                        </div>
                       )}
                       <span className={`absolute bottom-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full backdrop-blur-sm ${isSelected ? "bg-white/20 text-white" : "bg-black/40 text-white"}`}>
                         {circle.category}
