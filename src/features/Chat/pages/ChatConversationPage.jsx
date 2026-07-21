@@ -128,7 +128,22 @@ export default function ChatConversationPage() {
   // otherwise mark the same message failed a second time.
   const ackTimersRef = useRef(new Map())
 
-  const messages = useMemo(() => [...history, ...liveMessages], [history, liveMessages])
+  // A message that arrives while this conversation is open can land in BOTH
+  // `history` (useConversationPreviews's MESSAGE listener patches the
+  // ['chatHistory', matchId] cache directly — see that hook) and
+  // `liveMessages` (this page's own MESSAGE listener below) — both listeners
+  // are active at once since ChatConversationPage also calls
+  // useConversationPreviews(). Dedupe by id so it renders once either way.
+  const messages = useMemo(() => {
+    const seen = new Set()
+    const combined = []
+    for (const msg of [...history, ...liveMessages]) {
+      if (seen.has(msg.id)) continue
+      seen.add(msg.id)
+      combined.push(msg)
+    }
+    return combined
+  }, [history, liveMessages])
 
   useEffect(() => {
     setLiveMessages([])

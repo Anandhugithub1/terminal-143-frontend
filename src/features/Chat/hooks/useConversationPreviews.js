@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { normalizeIncomingMessage, useUnreadCounts } from '../api'
 
@@ -131,6 +132,7 @@ function shouldTakeServerLastMessage(local, server) {
 export function useConversationPreviews() {
   const [state, setState] = useState(() => withDerivedOnline(previews))
   const { data: unread, dataUpdatedAt } = useUnreadCounts()
+  const queryClient = useQueryClient()
 
   // Hold the socket open for as long as anything shows previews. useSocketEvent
   // only subscribes — it never acquires — so without this the chat list has no
@@ -172,6 +174,20 @@ export function useConversationPreviews() {
       // fetch already in flight, so that response can't revert it.
       unreadBumpedAt: Date.now(),
     }))
+
+    // ChatConversationPage keeps its own MESSAGE listener, but it's only
+    // mounted while that specific conversation is open — a message arriving
+    // while sitting on the list page never reaches it, so the cache below
+    // goes stale and the conversation opens without its newest message
+    // until staleTime (60s) elapses. Patch it here too, whenever a
+    // ['chatHistory', matchId] entry already exists (nothing to patch if
+    // the user has never opened this conversation this session — it'll
+    // fetch fresh on first open anyway).
+    queryClient.setQueryData(['chatHistory', msg.matchId], (old) => {
+      if (!old) return old
+      if (old.messages.some((m) => m.id === msg.id)) return old
+      return { ...old, messages: [...old.messages, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }] }
+    })
   })
 
   useSocketEvent('PRESENCE', (payload) => {
