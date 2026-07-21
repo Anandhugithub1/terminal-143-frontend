@@ -150,6 +150,7 @@ const handleSave = useCallback(async () => {
 
  <LocationInput
   formData={{ location: initial || {} }}
+  showAutoDetect={false}
 onSelect={async (loc, detailsPromise) => {
   setSelectedLoc(loc)
 

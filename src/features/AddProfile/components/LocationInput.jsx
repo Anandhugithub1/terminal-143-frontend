@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 
 const LISTBOX_ID = "location-listbox";
 
-export default function LocationInput({ formData, onSelect }) {
+export default function LocationInput({ formData, onSelect, showAutoDetect = true }) {
   const { t } = useTranslation("location");
 
   const [query, setQuery] = useState("");
@@ -284,30 +284,32 @@ const handleAutoDetect = useCallback(async () => {
           </ComboboxOptions>
         </Combobox>
 
-        <button
-          type="button"
-          onClick={handleAutoDetect}
-          disabled={detecting}
-          title={
-            permissionDenied
-              ? t("locationPermissionDenied") || undefined
-              : undefined
-          }
-          className={`px-4 py-4 rounded-xl border text-sm font-medium ${
-            permissionDenied ? "border-red-300 text-red-600" : ""
-          }`}
-        >
-          {detecting ? (
-            t("detecting") || "Detecting..."
-          ) : (
-            <>
-              <HiLocationMarker className="inline mr-1" />
-              {permissionDenied
-                ? t("locationBlocked") || "Location blocked"
-                : t("useMyCurrentLocation") || "Use My Location"}
-            </>
-          )}
-        </button>
+        {showAutoDetect && (
+          <button
+            type="button"
+            onClick={handleAutoDetect}
+            disabled={detecting}
+            title={
+              permissionDenied
+                ? t("locationPermissionDenied") || undefined
+                : undefined
+            }
+            className={`px-4 py-4 rounded-xl border text-sm font-medium ${
+              permissionDenied ? "border-red-300 text-red-600" : ""
+            }`}
+          >
+            {detecting ? (
+              t("detecting") || "Detecting..."
+            ) : (
+              <>
+                <HiLocationMarker className="inline mr-1" />
+                {permissionDenied
+                  ? t("locationBlocked") || "Location blocked"
+                  : t("useMyCurrentLocation") || "Use My Location"}
+              </>
+            )}
+          </button>
+        )}
       </div>
 {formData?.location?.placeName && (
   <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3">
