@@ -161,9 +161,21 @@ export default function ChatConversationPage() {
   // refetch reflects the cleared state.
   function markConversationRead() {
     markRead(matchId)
-    const newest = messages[messages.length - 1]
-    if (newest?.id) {
-      send({ action: 'readReceipt', otherUserId: matchId, messageId: newest.id })
+    // Must be the newest INCOMING message, never one of ours — this fires on
+    // every messages.length change, including right after we send one, and
+    // a just-sent message hasn't been assigned its real server messageId yet
+    // (still carries its client-local id/clientMessageId until SENT_ACK
+    // swaps it in). Using that fabricated id as a readReceipt messageId
+    // upserts a phantom, content-less row server-side (markRead's
+    // Message.update creates the item if that SK doesn't exist) — it
+    // doesn't correspond to anything and renders as a blank bubble.
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const candidate = messages[i]
+      if (candidate.mine) continue
+      if (candidate.id) {
+        send({ action: 'readReceipt', otherUserId: matchId, messageId: candidate.id })
+      }
+      break
     }
     queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
   }
