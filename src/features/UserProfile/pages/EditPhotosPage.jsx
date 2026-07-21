@@ -44,6 +44,12 @@ export default function EditPhotosPage() {
   const [selectedFile, setSelectedFile] = useState(null)
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [previewMap, setPreviewMap] = useState({})
+  // Bumped on every pick to force the <input type="file"> to remount (via
+  // `key`) instead of being reused. On mobile, resetting and re-clicking the
+  // SAME input node right after a pick is unreliable — the next change event
+  // can silently fail to fire, so re-picking a photo for the same slot
+  // before saving looked like it "did nothing". A fresh node sidesteps that.
+  const [inputKey, setInputKey] = useState(0)
 
   if (isLoading || !profile) {
     return (
@@ -65,9 +71,16 @@ export default function EditPhotosPage() {
   const handleFileChange = (e) => {
     const file = e.target.files?.[0]
     if (!file || selectedOrder == null) return
-    e.target.value = ""
+
     setSelectedFile(file)
-    setPreviewMap((prev) => ({ ...prev, [selectedOrder]: URL.createObjectURL(file) }))
+    setPreviewMap((prev) => {
+      const prevUrl = prev[selectedOrder]
+      if (prevUrl) URL.revokeObjectURL(prevUrl)
+      return { ...prev, [selectedOrder]: URL.createObjectURL(file) }
+    })
+    // Remount the input for the next pick instead of resetting this node's
+    // value — see inputKey's comment above.
+    setInputKey((k) => k + 1)
   }
 
   const handleSave = async () => {
@@ -113,6 +126,7 @@ export default function EditPhotosPage() {
         </div>
 
         <input
+          key={inputKey}
           ref={galleryRef}
           type="file"
           accept="image/*"
