@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useCallback, lazy, Suspense, useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import PageLayout from "../../../shared/components/PageLayout";
 import ProfileSkeleton from "../components/ProfileSkeleton";
@@ -12,10 +12,12 @@ import { useSuggestions } from "../Hooks/useSuggestions";
 import placeholderImage from "../../../assets/woman.png";
 import LocationBar from "../components/Actions/LocationBar";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
+import { restoreMyAccount } from "../../UserProfile/api/profile";
 import { formatLastSeen } from "../../Profiles/utlis";
 import { computeAge } from "../../../Utlis/utlis";
 import { useAddToHomeScreen } from "../Hooks/useAddToHomeScreen";
 import AddToHomeBanner from "../components/AddToHomeBanner";
+import PendingDeletionBanner from "../components/PendingDeletionBanner";
 import { getLanguageName } from "../utlis/getLanguageName";
 import ComputingLoading from "../components/Loading/Computing";
 import { useLocation } from "react-router-dom";
@@ -34,6 +36,13 @@ import ReportUserModal from "../components/Modals/ReportUserModal";
 export default function UserHomePage() {
   const { t } = useTranslation("swipe");
   const { data: myProfile } = useMyProfile();
+  const queryClient = useQueryClient();
+  const restoreMutation = useMutation({
+    mutationFn: restoreMyAccount,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["my-profile"]);
+    },
+  });
 const { mutate: reportUser } = useReportUser();
   const {
     profiles,
@@ -285,6 +294,14 @@ const [showReport, setShowReport] = useState(false);
           </Suspense>
         )}
       </div>
+
+      {myProfile?.tobeDeleted && (
+        <PendingDeletionBanner
+          expiresAt={myProfile.expiresAt}
+          onRestore={() => restoreMutation.mutate()}
+          isRestoring={restoreMutation.isPending}
+        />
+      )}
 
       {canShow && (
         <AddToHomeBanner

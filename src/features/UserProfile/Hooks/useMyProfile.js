@@ -31,6 +31,9 @@ export const mapProfile = (data) => {
     photos,
     profileLink:data?.profileLink || "",
     profilePhoto,
+    tobeDeleted: Boolean(data?.tobeDeleted),
+    deletionDate: data?.deletionDate || null,
+    expiresAt: data?.expiresAt || null,
     raw: data
   }
 }
