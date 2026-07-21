@@ -46,6 +46,7 @@
     "deleteMessageTitle": "Удалить это сообщение?",
     "deleteMessageBody": "Оно исчезнет только из вашего чата. Собеседник по-прежнему будет его видеть.",
     "deleteMessageAction": "Удалить у себя",
+    "messageDeleted": "Сообщение удалено",
     "sending": "Отправка…",
     "sendFailed": "Не отправлено",
     "retrySend": "Нажмите, чтобы повторить"

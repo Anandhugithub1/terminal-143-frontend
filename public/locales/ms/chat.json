@@ -46,6 +46,7 @@
     "deleteMessageTitle": "Padam mesej ini?",
     "deleteMessageBody": "Ini hanya membuangnya daripada paparan anda. Pihak satu lagi masih boleh melihatnya.",
     "deleteMessageAction": "Padam untuk saya",
+    "messageDeleted": "Mesej dipadam",
     "sending": "Menghantar…",
     "sendFailed": "Tidak dihantar",
     "retrySend": "Ketik untuk cuba semula"

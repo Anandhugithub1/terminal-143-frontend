@@ -46,6 +46,7 @@
     "deleteMessageTitle": "Delete this message?",
     "deleteMessageBody": "This only removes it from your view. The other person will still see it.",
     "deleteMessageAction": "Delete for me",
+    "messageDeleted": "Message deleted",
     "sending": "Sending…",
     "sendFailed": "Not sent",
     "retrySend": "Tap to retry"
