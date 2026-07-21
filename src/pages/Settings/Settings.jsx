@@ -14,13 +14,14 @@ import PageHeader from '../../shared/components/PageHeader';
 import '@fontsource-variable/inter';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
 import { useTranslation } from 'react-i18next';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { signOut } from '../../features/Auth/authApi';
 import { socketManager } from '../../shared/socket/socketManager';
 
 const SettingsPage = () => {
   const { t } = useTranslation('settings');
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   //  SAME logout behavior, TanStack only
@@ -30,6 +31,10 @@ const SettingsPage = () => {
       socketManager.closeSession();
       localStorage.clear();
       sessionStorage.clear();
+      // Without this, the next account to log in on this device inherits
+      // this session's cached queries (e.g. useMyProfile's ["my-profile"]
+      // key carries no user id) until they individually go stale.
+      queryClient.clear();
       navigate('/login');
     },
     onError: (err) => {

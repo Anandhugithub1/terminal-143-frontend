@@ -1,35 +1,25 @@
-import React, { useEffect, useState } from "react"
 import { Navigate } from "react-router-dom"
-import { fetchMyProfile } from "../features/UserProfile/api/profile.js"
 import { LoadingSpinner } from "../components/Ui/Spinner.jsx"
+import { useMyProfile } from "../features/UserProfile/Hooks/useMyProfile.js"
 
+// Shares useMyProfile's cache with the rest of the app (React Query), rather
+// than running its own uncached fetchMyProfile() — see ProtectedRoute.jsx
+// for why that duplication caused inconsistent redirects.
 export default function GuestRoute({ children }) {
-  const [status, setStatus] = useState("loading") 
-  // loading | authenticated | unauthenticated
+  const { data, isLoading, isError } = useMyProfile()
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const profile = await fetchMyProfile()
-
-        if (profile) {
-          setStatus("authenticated")
-        } else {
-          setStatus("unauthenticated")
-        }
-      } catch {
-        setStatus("unauthenticated")
-      }
-    }
-
-    checkAuth()
-  }, [])
-
-  if (status === "loading") {
+  if (isLoading) {
     return <LoadingSpinner />
   }
 
-  if (status === "authenticated") {
+  if (isError) {
+    // Whether it's "no profile"/"not authenticated" (genuinely a guest) or a
+    // transient failure (5xx, network), the safe default is the same either
+    // way: show the guest page rather than assume they're authenticated.
+    return children
+  }
+
+  if (data) {
     return <Navigate to="/" replace />
   }
 
