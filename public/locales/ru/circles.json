@@ -249,5 +249,10 @@
     "tabPosts": "Посты",
     "noPostsTagged": "Нет постов с тегом «{{tag}}»",
     "postNoText": "Пост с фото/видео"
+  },
+  "profileTabs": {
+    "info": "Инфо",
+    "posts": "Посты",
+    "seeMore": "Показать ещё"
   }
 }

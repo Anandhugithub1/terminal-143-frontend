@@ -249,5 +249,10 @@
     "tabPosts": "Siaran",
     "noPostsTagged": "Tiada siaran bertag \"{{tag}}\"",
     "postNoText": "Siaran foto/video"
+  },
+  "profileTabs": {
+    "info": "Info",
+    "posts": "Siaran",
+    "seeMore": "Lihat lagi"
   }
 }

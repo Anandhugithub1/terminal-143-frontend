@@ -1,14 +1,18 @@
 import {
   useQuery,
+  useInfiniteQuery,
   useMutation,
   useQueryClient
 }
 from
 '@tanstack/react-query';
 
+import { useMemo } from 'react';
+
 import {
   listPosts,
   listMyPosts,
+  listUserPosts,
   createPost,
   getPost,
   updatePost,
@@ -139,6 +143,36 @@ useMyPosts() {
     staleTime:
       1000 * 30
   });
+}
+
+// Posts by ANOTHER user across every circle they belong to (profile view).
+// Paginated, `limit` per page (5 for the profile-tab preview, more on the
+// dedicated "see all posts" page) — fetchNextPage() loads the next older
+// page via the backend's lastKey cursor, same shape as chat's message
+// history pagination.
+export function
+useUserPosts(authorId, { limit = 5 } = {}) {
+  const query = useInfiniteQuery({
+    queryKey: [...queryKeys.userPosts(authorId), limit],
+
+    queryFn:
+      async ({ pageParam }) => {
+        const res = await listUserPosts(authorId, { limit, lastKey: pageParam });
+        return res.data;
+      },
+
+    initialPageParam: null,
+    getNextPageParam: lastPage => lastPage.lastKey,
+    enabled: !!authorId,
+    staleTime: 1000 * 30,
+  });
+
+  const posts = useMemo(
+    () => query.data?.pages.flatMap(page => page.items) ?? [],
+    [query.data]
+  );
+
+  return { ...query, posts };
 }
 
 export function

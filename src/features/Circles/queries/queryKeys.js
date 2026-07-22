@@ -20,6 +20,12 @@ export const queryKeys =
     'myPosts'
   ],
 
+  userPosts:
+    authorId => [
+      'userPosts',
+      authorId
+    ],
+
   post:
     (
       circleId,

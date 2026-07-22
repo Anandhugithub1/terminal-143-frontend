@@ -17,6 +17,9 @@ const PublicProfilePage = lazy(() =>
 const UserProfilePage = lazy(() =>
   import("../features/UserHome/pages/UserProfileById.jsx")
 )
+const UserPostsListPage = lazy(() =>
+  import("../features/UserHome/pages/UserPostsListPage.jsx")
+)
 
 const LocationEditPage =lazy(() => 
 import("../features/UserHome/pages/LocationEditPage.jsx")
@@ -79,5 +82,13 @@ export const ProfileRoutes = (
     />
 
     <Route path="/user/:pk/:sk" element={<UserProfilePage />} />
+    <Route
+      path="/user/:pk/posts"
+      element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <UserPostsListPage />
+        </Suspense>
+      }
+    />
   </>
 )

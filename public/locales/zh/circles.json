@@ -249,5 +249,10 @@
     "tabPosts": "帖子",
     "noPostsTagged": "没有带“{{tag}}”标签的帖子",
     "postNoText": "图片/视频帖子"
+  },
+  "profileTabs": {
+    "info": "简介",
+    "posts": "帖子",
+    "seeMore": "查看更多"
   }
 }

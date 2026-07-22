@@ -249,5 +249,10 @@
     "tabPosts": "โพสต์",
     "noPostsTagged": "ไม่มีโพสต์ที่ติดแท็ก \"{{tag}}\"",
     "postNoText": "โพสต์รูป/วิดีโอ"
+  },
+  "profileTabs": {
+    "info": "ข้อมูล",
+    "posts": "โพสต์",
+    "seeMore": "ดูเพิ่มเติม"
   }
 }

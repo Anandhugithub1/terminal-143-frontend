@@ -7,7 +7,7 @@ import ProfileSkeleton from '../components/ProfileSkeleton';
 import placeholderImage from '../../../assets/woman.png';
 // import ProfileCard from '../components/Cards/ProfileCard';
 const ProfileCard =lazy(()=> import('../components/Cards/ProfileCard'))
-const DetailSection =lazy(()=>import('../components/Details/Details'))
+const ProfileTabs =lazy(()=>import('../components/Details/ProfileTabs'))
 import { computeAge } from '../../../Utlis/utlis';
 import { useTranslation } from 'react-i18next';
 export default function UserProfilePage() {
@@ -80,7 +80,7 @@ export default function UserProfilePage() {
 
         <div className="mt-16 sm:mt-14 px-4 relative z-10">
           <Suspense fallback={null}>
-            <DetailSection profile={normalized} />
+            <ProfileTabs profile={normalized} authorId={normalized.userId} />
           </Suspense>
         </div>
       </div>

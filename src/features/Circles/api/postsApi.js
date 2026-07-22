@@ -26,6 +26,16 @@ export const listMyPosts =
     { params: { limit, lastKey } }
   );
 
+// Posts by ANOTHER user, across every circle they belong to — for viewing
+// their profile. authorId is their username (matches the rest of the app's
+// convention — see UserProfileById's profile.username).
+export const listUserPosts =
+(authorId, { limit, lastKey } = {}) =>
+  api.get(
+    `${BASE}/users/${authorId}/posts`,
+    { params: { limit, lastKey } }
+  );
+
 export const getPost =
 (
   circleId,

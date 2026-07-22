@@ -249,5 +249,10 @@
     "tabPosts": "Posts",
     "noPostsTagged": "No posts tagged \"{{tag}}\"",
     "postNoText": "Photo/video post"
+  },
+  "profileTabs": {
+    "info": "Info",
+    "posts": "Posts",
+    "seeMore": "See more"
   }
 }

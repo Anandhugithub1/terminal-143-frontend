@@ -249,5 +249,10 @@
     "tabPosts": "게시물",
     "noPostsTagged": "\"{{tag}}\" 태그가 달린 게시물이 없습니다",
     "postNoText": "사진/동영상 게시물"
+  },
+  "profileTabs": {
+    "info": "정보",
+    "posts": "게시물",
+    "seeMore": "더 보기"
   }
 }
