@@ -37,16 +37,16 @@ export default function DiscoverCirclesPage() {
     isTagQuery ? tagSearch : nameSearch;
 
   const joinedCircleIds = new Set((circlesData?.circles || []).map((circle) => circle.circleId));
-  const discoverableCircles = availableCircles.filter((circle) => !joinedCircleIds.has(circle.circleId));
 
   // Search results come from the server already scoped to public+active
-  // circles; drop the ones the user is already in, and honour the category
-  // chip so the two filters compose the way they look like they should.
-  const searchCircleResults = searchResults
-    .filter((circle) => !joinedCircleIds.has(circle.circleId))
-    .filter((circle) => selectedCategory === "All" || circle.category === selectedCategory);
+  // circles; honour the category chip so the two filters compose the way
+  // they look like they should. Joined circles stay in the list (shown as
+  // "Joined") instead of being filtered out.
+  const searchCircleResults = searchResults.filter(
+    (circle) => selectedCategory === "All" || circle.category === selectedCategory
+  );
 
-  const browseCircles = discoverableCircles.filter(
+  const browseCircles = availableCircles.filter(
     (circle) => selectedCategory === "All" || circle.category === selectedCategory
   );
 
@@ -89,7 +89,7 @@ export default function DiscoverCirclesPage() {
       </div>
 
       <div className="max-w-3xl mx-auto px-3 pt-4 space-y-4">
-        {discoverableCircles.length === 0 ? (
+        {availableCircles.length > 0 && availableCircles.every((circle) => joinedCircleIds.has(circle.circleId)) ? (
           <div className="flex flex-col items-center justify-center text-center py-16 px-4">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
               <Compass className="w-8 h-8 text-primary" />
@@ -149,6 +149,7 @@ export default function DiscoverCirclesPage() {
                 const key = circle.id ?? circle.circleId;
                 const Icon = circle.icon;
                 const isJoining = joiningId === circle.circleId;
+                const isJoined = joinedCircleIds.has(circle.circleId);
                 const image = circle.image || circle.coverPhoto;
                 const showFallback = !image || imageErrors.has(key);
                 return (
@@ -184,11 +185,21 @@ export default function DiscoverCirclesPage() {
                         t("discoverCircles.memberCount", { count: circle.memberCount ?? 0 })}
                     </p>
                     <button
-                      onClick={() => handleJoin(circle)}
+                      onClick={() =>
+                        isJoined ? navigate(`/circles/${circle.circleId}`) : handleJoin(circle)
+                      }
                       disabled={isJoining}
-                      className="w-full py-2 bg-primary text-white rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60"
+                      className={`w-full py-2 rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60 ${
+                        isJoined
+                          ? "bg-primary/10 text-primary"
+                          : "bg-primary text-white"
+                      }`}
                     >
-                      {isJoining ? t("discoverCircles.joining") : t("discoverCircles.joinCircle")}
+                      {isJoining
+                        ? t("discoverCircles.joining")
+                        : isJoined
+                        ? t("circleSearch.joinedBadge")
+                        : t("discoverCircles.joinCircle")}
                     </button>
                   </div>
                 );
