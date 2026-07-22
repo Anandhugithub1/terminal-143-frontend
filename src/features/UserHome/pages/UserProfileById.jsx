@@ -78,7 +78,7 @@ export default function UserProfilePage() {
           />
         </Suspense>
 
-        <div className="mt-16 sm:mt-14 px-4 relative z-10">
+        <div className="mt-4 px-4 relative z-10">
           <Suspense fallback={null}>
             <ProfileTabs profile={normalized} authorId={normalized.userId} />
           </Suspense>

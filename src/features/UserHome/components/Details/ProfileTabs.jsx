@@ -41,14 +41,16 @@ export default function ProfileTabs({ profile, authorId }) {
   };
 
   return (
-    <div className="-mt-12 px-1 pb-6">
+    <div className="px-1 pb-6">
       {/* Tab switcher */}
       <div className="flex bg-gray-100 rounded-full p-1 mb-4">
         <button
           type="button"
           onClick={() => setActiveTab("info")}
-          className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${
-            activeTab === "info" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+          className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-colors ${
+            activeTab === "info"
+              ? "bg-white text-gray-900 border border-gray-200"
+              : "text-gray-400"
           }`}
         >
           {t("profileTabs.info")}
@@ -56,8 +58,10 @@ export default function ProfileTabs({ profile, authorId }) {
         <button
           type="button"
           onClick={() => setActiveTab("posts")}
-          className={`flex-1 py-2 rounded-full text-sm font-semibold transition-colors ${
-            activeTab === "posts" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+          className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-colors ${
+            activeTab === "posts"
+              ? "bg-white text-gray-900 border border-gray-200"
+              : "text-gray-400"
           }`}
         >
           {t("profileTabs.posts")}
@@ -67,7 +71,7 @@ export default function ProfileTabs({ profile, authorId }) {
       {activeTab === "info" ? (
         <DetailSection profile={profile} />
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 pt-1">
           {isLoading && (
             <>
               <PostCardSkeleton />

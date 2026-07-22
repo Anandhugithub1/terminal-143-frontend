@@ -39,7 +39,7 @@ function DetailSection({ profile }) {
   }
 
   return (
-    <div className="-mt-12 px-1 pb-6 space-y-4">
+    <div className="pt-1 space-y-4">
       {/* Main details card */}
       <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
         <section>

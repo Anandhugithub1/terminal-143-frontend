@@ -26,7 +26,7 @@ import { subscribeToPush } from "../utlis/subscribeToPush";
 import BravePushHelpModal from "../components/Modals/BravePushHelpModal";
 import { useTranslation } from "react-i18next";
 const ProfileCard = lazy(() => import("../components/Cards/ProfileCard"));
-const DetailSection = lazy(() => import("../components/Details/Details"));
+const ProfileTabs = lazy(() => import("../components/Details/ProfileTabs"));
 const ActionControls = lazy(
   () => import("../components/Actions/ActionControls"),
 );
@@ -287,8 +287,8 @@ const [showReport, setShowReport] = useState(false);
                 </div>
               </div>
 
-              <div className="mt-16 px-4 relative z-10">
-                <DetailSection profile={profile} />
+              <div className="mt-4 px-4 relative z-10">
+                <ProfileTabs profile={profile} authorId={profile?.userId} />
               </div>
             </SwipeDeck>
           </Suspense>
