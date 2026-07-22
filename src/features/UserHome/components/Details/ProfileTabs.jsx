@@ -2,14 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MessageSquare } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import DetailSection from "./Details";
 import PostCard from "../../../Circles/components/post/PostCard";
 import PostMeta from "../../../Circles/components/post/PostMeta";
+import CommentSection from "../../../Circles/components/comment/CommentSection";
 import { PostCardSkeleton } from "../../../Circles/components/common/Skeletons";
 import EmptyState from "../../../../shared/components/EmptyState";
 import { useUserPosts } from "../../../Circles/hooks/usePosts";
 import { DEFAULT_AVATAR } from "../../../Circles/utils/postDisplay";
+import { buildPostActions } from "../../../Circles/utils/postActions";
 import { shareLink } from "../../../Circles/utils/share";
+import { useSendMatchRequest } from "../../../../Hooks/sendMatchRequest";
 
 const PREVIEW_LIMIT = 5;
 
@@ -21,6 +25,14 @@ export default function ProfileTabs({ profile, authorId }) {
   const { t } = useTranslation("circles");
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("info");
+  // Which post's comment sheet is open — one shared sheet reused across the
+  // list rather than one CommentSection instance per card.
+  const [commentsPost, setCommentsPost] = useState(null);
+  // Tracks which posts already had a match request sent via their heart
+  // button this session — same pattern as CircleDetailsPage's likedPosts,
+  // just local UI state for the filled-heart look, not a "like" concept.
+  const [matchedPostIds, setMatchedPostIds] = useState(() => new Set());
+  const { send: sendMatchRequest } = useSendMatchRequest();
 
   const {
     posts,
@@ -37,6 +49,21 @@ export default function ProfileTabs({ profile, authorId }) {
       url: shareUrl,
       copiedMessage: t("common.linkCopied"),
       failedMessage: t("common.failedToShare"),
+    });
+  };
+
+  // Every post here is by someone else (this tab only ever shows another
+  // user's profile), so the heart button is always available — mirrors
+  // CircleDetailsPage.jsx's toggleLike: the heart itself IS the "send a
+  // match request via this post" action, not a like.
+  const handleToggleMatch = (post) => {
+    if (matchedPostIds.has(post.postId) || !post.authorId) return;
+    setMatchedPostIds((prev) => new Set(prev).add(post.postId));
+    sendMatchRequest(post.authorId, {
+      postId: post.postId,
+      circleId: post.circleId,
+      createdAtEpoch: post.createdAtEpoch,
+      onSuccess: () => toast.success(t("circlesHome.matchRequestSent")),
     });
   };
 
@@ -116,6 +143,12 @@ export default function ProfileTabs({ profile, authorId }) {
               media={post.media}
               tags={post.tags || []}
               onShare={() => handleShare(post)}
+              actionsWrapperClassName="grid grid-cols-3 gap-2"
+              actions={buildPostActions({
+                isLiked: matchedPostIds.has(post.postId),
+                onToggleLike: () => handleToggleMatch(post),
+                onComment: () => setCommentsPost(post),
+              })}
             />
           ))}
 
@@ -130,6 +163,14 @@ export default function ProfileTabs({ profile, authorId }) {
           )}
         </div>
       )}
+
+      {/* Shared comment sheet — one instance reused across whichever post's
+          Comment button was tapped. */}
+      <CommentSection
+        isOpen={!!commentsPost}
+        onClose={() => setCommentsPost(null)}
+        post={commentsPost}
+      />
     </div>
   );
 }
