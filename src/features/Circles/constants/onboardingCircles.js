@@ -42,10 +42,34 @@ const categoryMeta = {
   travel_outdoor: { label: "Travel & Outdoor", icon: Mountain, bgColor: "bg-lime-50", iconBg: "bg-lime-100", iconColor: "text-lime-600" },
 };
 
+// Display order for onboarding category tabs/sections.
+const categoryOrder = [
+  "travel_outdoor",
+  "social_activities",
+  "art_culture",
+  "dancing",
+  "sports_fitness",
+  "music",
+  "games",
+  "hobbies_passions",
+  "career_business",
+  "health_wellbeing",
+  "pets_animals",
+  "identity_language",
+  "movements_politics",
+  "environment",
+  "religion_spirituality",
+  "science_education",
+  "support_health",
+];
+
 // English fallback list — use useOnboardingCircles() in components so
 // name/description come through i18next instead.
 export const availableCircles = onboardingCirclesData.circles
   .filter((circle) => circle.visibility === "public")
+  .sort(
+    (a, b) => categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category)
+  )
   .map((circle, index) => {
     const meta = categoryMeta[circle.category] ?? categoryMeta.hobbies_passions;
     return {
@@ -65,7 +89,7 @@ export const availableCircles = onboardingCirclesData.circles
 
 export const onboardingCategories = [
   "All",
-  ...new Set(availableCircles.map((circle) => circle.category)),
+  ...categoryOrder.map((key) => categoryMeta[key].label),
 ];
 
 // Same list as availableCircles, but name/description are translated via the
