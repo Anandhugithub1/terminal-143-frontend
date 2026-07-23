@@ -18,8 +18,17 @@ import { Toaster } from "sonner"
 
 import { useAutoReloadOnOnline } from "./shared/hooks/useAutoReloadOnOnline.js"
 import { setupChunkReload } from "./shared/hooks/chunkReloadHelper.js"
+import { Capacitor } from "@capacitor/core"
+import { StatusBar } from "@capacitor/status-bar"
 
 setupChunkReload()
+
+// Android 15+ (targetSdk 35+) forces edge-to-edge display and ignores the
+// legacy windowFullscreen/statusBarColor style attributes entirely, so the
+// WebView content draws underneath the status bar unless told otherwise here.
+if (Capacitor.isNativePlatform()) {
+  StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {})
+}
 
 const router = createBrowserRouter(createRoutesFromElements(appRoutes))
 

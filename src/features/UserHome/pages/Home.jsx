@@ -97,7 +97,7 @@ const [showReport, setShowReport] = useState(false);
   }, [profiles.length]);
 
   useEffect(() => {
-    if (!location.state?.justLoggedIn) return;
+    if (!location.state?.justLoggedIn && !location.state?.profileJustCompleted) return;
 
     const timer = setTimeout(async () => {
       try {
@@ -117,7 +117,7 @@ const [showReport, setShowReport] = useState(false);
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [location.state?.justLoggedIn]);
+  }, [location.state?.justLoggedIn, location.state?.profileJustCompleted]);
 
   const advance = useCallback(
     (dir) => {
