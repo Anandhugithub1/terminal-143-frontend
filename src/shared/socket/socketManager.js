@@ -224,6 +224,16 @@ class SocketManager {
       // rides along so a queued-but-never-flushed entry can be reported back
       // as failed by id rather than just vanishing — see _teardown().
       this.sendQueue.push({ data, clientMessageId: payload?.clientMessageId ?? null });
+      // Safety net: an acquire()/release() race (e.g. a component remounting
+      // right as it mounts) can leave the manager sitting idle/closed with
+      // refCount > 0 and nothing ever having called connect() for it — a
+      // queued message would then wait out ACK_TIMEOUT_MS and fail for no
+      // visible reason. If nobody is already connecting/open, kick a
+      // connection attempt off ourselves rather than trusting one already
+      // happened.
+      if (this.refCount > 0 && this.state !== SocketState.CONNECTING && this.state !== SocketState.OPEN) {
+        this.connect();
+      }
     }
   }
 
