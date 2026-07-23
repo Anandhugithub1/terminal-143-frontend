@@ -1,7 +1,7 @@
 // Limits and accepted formats for post media uploads.
 // Video uploads are disabled for now — post media is image-only. (Existing
 // posts that already contain videos still render; see PostMedia.)
-export const MAX_MEDIA_ITEMS = 5;
+export const MAX_MEDIA_ITEMS = 3;
 export const MAX_IMAGE_SIZE_MB = 10;
 
 export const ALLOWED_IMAGE_TYPES = [

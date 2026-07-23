@@ -211,6 +211,7 @@
     "addMediaHint": "(Max {{maxItems}}, videos ≤ {{maxDuration}}s)",
     "videoBadge": "Video",
     "addPhotos": "Add Photos",
+    "maxPhotosLabel": "Max {{maxItems}} photos",
     "addVideo": "Add Video (≤{{maxDuration}}s)",
     "checkingVideo": "Checking video...",
     "removeLocation": "Remove location",

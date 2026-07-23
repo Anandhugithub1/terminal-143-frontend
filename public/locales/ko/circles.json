@@ -211,6 +211,7 @@
     "addMediaHint": "(최대 {{maxItems}}개, 동영상은 {{maxDuration}}초 이하)",
     "videoBadge": "동영상",
     "addPhotos": "사진 추가",
+    "maxPhotosLabel": "최대 {{maxItems}}장",
     "addVideo": "동영상 추가 ({{maxDuration}}초 이하)",
     "checkingVideo": "동영상 확인 중...",
     "removeLocation": "위치 제거",

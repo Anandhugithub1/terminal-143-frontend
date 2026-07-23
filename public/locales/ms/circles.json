@@ -211,6 +211,7 @@
     "addMediaHint": "(Maks {{maxItems}}, video ≤ {{maxDuration}}s)",
     "videoBadge": "Video",
     "addPhotos": "Tambah Foto",
+    "maxPhotosLabel": "Maks {{maxItems}} foto",
     "addVideo": "Tambah Video (≤{{maxDuration}}s)",
     "checkingVideo": "Menyemak video...",
     "removeLocation": "Buang lokasi",

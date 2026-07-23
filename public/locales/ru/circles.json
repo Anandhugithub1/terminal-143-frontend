@@ -211,6 +211,7 @@
     "addMediaHint": "(до {{maxItems}}, видео не длиннее {{maxDuration}} с)",
     "videoBadge": "Видео",
     "addPhotos": "Добавить фото",
+    "maxPhotosLabel": "Максимум {{maxItems}} фото",
     "addVideo": "Добавить видео (до {{maxDuration}} с)",
     "checkingVideo": "Проверка видео...",
     "removeLocation": "Удалить местоположение",

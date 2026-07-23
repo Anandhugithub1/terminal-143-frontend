@@ -211,6 +211,7 @@
     "addMediaHint": "（最多 {{maxItems}} 个，视频不超过 {{maxDuration}} 秒）",
     "videoBadge": "视频",
     "addPhotos": "添加照片",
+    "maxPhotosLabel": "最多 {{maxItems}} 张照片",
     "addVideo": "添加视频（不超过 {{maxDuration}} 秒）",
     "checkingVideo": "正在检查视频...",
     "removeLocation": "移除位置",
