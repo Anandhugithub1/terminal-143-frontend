@@ -14,23 +14,48 @@ import {
 
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { appRoutes } from "./routes/AppRoutes.jsx"
-import { Toaster } from "sonner"
+import { Toaster, toast } from "sonner"
 
 import { useAutoReloadOnOnline } from "./shared/hooks/useAutoReloadOnOnline.js"
 import { setupChunkReload } from "./shared/hooks/chunkReloadHelper.js"
 import { Capacitor } from "@capacitor/core"
-import { StatusBar } from "@capacitor/status-bar"
+import { StatusBar, Style } from "@capacitor/status-bar"
+import { PushNotifications } from "@capacitor/push-notifications"
 
 setupChunkReload()
 
-// Android 15+ (targetSdk 35+) forces edge-to-edge display and ignores the
-// legacy windowFullscreen/statusBarColor style attributes entirely, so the
-// WebView content draws underneath the status bar unless told otherwise here.
+// setOverlaysWebView/setBackgroundColor are documented as unavailable on
+// Android 15+ (edge-to-edge is forced there), so they're kept here only for
+// older Android/iOS. The actual inset handling for Android 15+ lives natively
+// in MainActivity.java, which pads the WebView by the real status bar height.
 if (Capacitor.isNativePlatform()) {
   StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {})
+  StatusBar.setStyle({ style: Style.Dark }).catch(() => {})
+  StatusBar.setBackgroundColor({ color: "#ffffff" }).catch(() => {})
+  StatusBar.show().catch(() => {})
 }
 
 const router = createBrowserRouter(createRoutesFromElements(appRoutes))
+
+// FCM only auto-shows a system tray notification when the app is backgrounded/killed.
+// In the foreground Android delivers the payload silently, so we have to render it ourselves.
+if (Capacitor.isNativePlatform()) {
+  PushNotifications.addListener("pushNotificationReceived", notification => {
+    const url = notification.data?.url
+
+    toast(notification.title, {
+      description: notification.body,
+      action: url
+        ? { label: "View", onClick: () => router.navigate(url) }
+        : undefined
+    })
+  })
+
+  PushNotifications.addListener("pushNotificationActionPerformed", action => {
+    const url = action.notification.data?.url
+    if (url) router.navigate(url)
+  })
+}
 
 function Root() {
   useAutoReloadOnOnline()
