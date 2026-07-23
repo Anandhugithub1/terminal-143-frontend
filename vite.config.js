@@ -18,23 +18,15 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (!id.includes('node_modules')) return
-
-          // React must load before any chunk that touches React APIs at
-          // module scope (createContext, etc.), so it gets its own chunk
-          // instead of falling into 'vendor' where load order isn't guaranteed.
-          if (id.includes('/react/') || id.includes('/react-dom/') || id.includes('/scheduler/')) return 'react-vendor'
-
-          if (id.includes('@tanstack')) return 'tanstack'
-          if (id.includes('i18next')) return 'i18n'
-          if (id.includes('headlessui')) return 'headlessui'
-          if (id.includes('react-icons')) return 'icons'
-          if (id.includes('framer-motion')) return 'motion'
-          if (id.includes('axios')) return 'axios'
-
-          return 'vendor'
-        },
+        // Splitting React-dependent libraries (i18n, headlessui, motion, ...)
+        // into separate manual chunks let some of them be reached only
+        // through a lazy route's dynamic import(), while React itself was
+        // still eagerly modulepreloaded from index.html — two different
+        // loading paths for the same shared chunk, which could execute a
+        // dependent chunk's top-level code (e.g. react-i18next's
+        // createContext()) before React had finished loading. Let Rollup's
+        // automatic chunking handle this instead; it tracks static vs.
+        // dynamic import graphs correctly on its own.
       },
     },
   },
