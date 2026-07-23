@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+ :root {
+   --vh: 1vh;
+ }
 
 html,
 body {

@@ -6,6 +6,10 @@ export const createApiClient = (baseURL) => {
   const api = axios.create({
     baseURL,
     timeout: 10000,
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
 
   // Retry failed requests on network errors or 5xx

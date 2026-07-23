@@ -6,7 +6,7 @@ import { userProfilesApi } from "../../../api/clients";
 //   userProfilesApi.get('v0.2/user/profile', { withCredentials: true });
 export const fetchMyProfile = async () => {
   const res = await userProfilesApi.get(
-    "v0.2/user/profile",
+    "/v0.2/user/profile",
     { withCredentials: true }
   )
   return res.data
@@ -17,7 +17,7 @@ export const fetchMyProfile = async () => {
 /** Update profile fields */
 export const updateMyProfile = async (payload) => {
   const res = await userProfilesApi.post(
-    "v0.2/user/update",
+    "/v0.2/user/update",
     payload,
     { withCredentials: true }
   )
@@ -27,7 +27,7 @@ export const updateMyProfile = async (payload) => {
 
 export const getProfileByLink = async (username) => {
   try {
-    const res = await userProfilesApi.get("v0.2/user/by-link", {
+    const res = await userProfilesApi.get("/v0.2/user/by-link", {
       params: { username },
       withCredentials: true
     })
@@ -84,7 +84,7 @@ export const getPresignedUrl = async ({ fileType, photoIndex }) => {
 
 /** Complete profile setup (finalize user profile) */
 export const completeProfileApi = (payload) =>
-  userProfilesApi.post('v0.2/user/complete-profile', payload, {
+  userProfilesApi.post('/v0.2/user/complete-profile', payload, {
     withCredentials: true,
   });
 

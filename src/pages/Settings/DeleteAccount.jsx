@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CapacitorCookies } from '@capacitor/core';
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import PageHeader from '../../shared/components/PageHeader';
 import { SecondaryButton } from '../../shared/Button';
@@ -34,10 +35,15 @@ export default function DeleteAccountPage() {
       }
       return result;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       socketManager.closeSession();
       localStorage.clear();
       sessionStorage.clear();
+      try {
+        await CapacitorCookies.clearAllCookies();
+      } catch (err) {
+        console.warn('Failed to clear cookies after account deletion', err);
+      }
       queryClient.clear();
       navigate('/login', { replace: true });
     },

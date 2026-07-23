@@ -1,0 +1,10 @@
+{
+  "appId": "com.passormatch",
+  "appName": "PassorMatch",
+  "webDir": "dist",
+  "server": {
+    "hostname": "app.passormatch.com",
+    "androidScheme": "https",
+    "iosScheme": "https"
+  }
+}

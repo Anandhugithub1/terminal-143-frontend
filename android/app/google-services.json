@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "285771963490",
+    "project_id": "passormatch-e45a6",
+    "storage_bucket": "passormatch-e45a6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285771963490:android:34ade861b0e7f86174453b",
+        "android_client_info": {
+          "package_name": "com.passormatch"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbhO6JdxyGqioUjIaA1V8L47ZxKjSvYPg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

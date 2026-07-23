@@ -2,6 +2,7 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import "./App.css"
 import "./i18n/i18n.js"
+import "./utils/setVh.js"
 
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "./shared/lib/client.js"

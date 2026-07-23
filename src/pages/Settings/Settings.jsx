@@ -15,6 +15,7 @@ import '@fontsource-variable/inter';
 import { PrimaryButton, SecondaryButton } from '../../shared/Button';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CapacitorCookies } from '@capacitor/core';
 import { signOut } from '../../features/Auth/authApi';
 import { socketManager } from '../../shared/socket/socketManager';
 
@@ -27,10 +28,19 @@ const SettingsPage = () => {
   //  SAME logout behavior, TanStack only
   const logoutMutation = useMutation({
     mutationFn: () => signOut('signout'),
-    onSuccess: () => {
+    onSuccess: async () => {
       socketManager.closeSession();
       localStorage.clear();
       sessionStorage.clear();
+      // The auth cookie is HttpOnly, so JS can't touch it via document.cookie —
+      // this clears it at the native WebView cookie-jar level as a safety net
+      // in case the server's Set-Cookie expiry doesn't land (e.g. flaky
+      // cross-subdomain cookie handling between app.* and api.* in the WebView).
+      try {
+        await CapacitorCookies.clearAllCookies();
+      } catch (err) {
+        console.warn('Failed to clear cookies on logout', err);
+      }
       // Without this, the next account to log in on this device inherits
       // this session's cached queries (e.g. useMyProfile's ["my-profile"]
       // key carries no user id) until they individually go stale.
