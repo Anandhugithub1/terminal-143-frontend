@@ -1,4 +1,6 @@
 import axios from "axios"
+import { Capacitor } from "@capacitor/core"
+import { PushNotifications } from "@capacitor/push-notifications"
 
 const VAPID_PUBLIC_KEY="BED0WujBmOjlCKalCfPnKuYHRmVysHIWkRTDumenI0DxfTexeo_X-5E4G0lm3vV-Y63zX4oo2KYLsRyieX1Yd_o"
 
@@ -19,7 +21,52 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 export async function subscribeToPush() {
-  console.log("=== subscribeToPush called ===")
+  if (Capacitor.isNativePlatform()) {
+    return subscribeToFcmPush()
+  }
+
+  return subscribeToWebPush()
+}
+
+async function subscribeToFcmPush() {
+  console.log("=== subscribeToFcmPush called ===")
+
+  let permission = await PushNotifications.checkPermissions()
+
+  if (permission.receive === "prompt") {
+    permission = await PushNotifications.requestPermissions()
+  }
+
+  if (permission.receive !== "granted") {
+    throw new Error("permission-not-granted")
+  }
+
+  const tokenPromise = new Promise((resolve, reject) => {
+    PushNotifications.addListener("registration", token => {
+      resolve(token.value)
+    })
+
+    PushNotifications.addListener("registrationError", err => {
+      reject(err)
+    })
+  })
+
+  await PushNotifications.register()
+
+  const fcmToken = await tokenPromise
+  console.log("FCM token received")
+
+  await axios.post(
+    "https://api.passormatch.com/notifications/save-subscription",
+    { fcmToken },
+    { withCredentials: true }
+  )
+
+  console.log("Backend call completed")
+}
+
+async function subscribeToWebPush() {
+  console.log("=== subscribeToWebPush called ===")
 
   if (!("serviceWorker" in navigator)) {
     console.log("No serviceWorker support")
