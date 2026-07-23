@@ -4,6 +4,8 @@
 // via useSocket() rather than opening their own connection.
 import { fetchConnectTicket } from "./ticketApi";
 import { getCurrentUsername } from "../utils/getCurrentUsername";
+import { Capacitor } from "@capacitor/core";
+import { App as CapacitorApp } from "@capacitor/app";
 
 const WS_URL = "wss://ws.passormatch.com/chat";
 const HEARTBEAT_INTERVAL_MS = 30000;
@@ -153,10 +155,16 @@ class SocketManager {
 
   _resume() {
     this._clearHiddenTimer();
-    if (!this.suspended) return;
     this.suspended = false;
     if (this.refCount === 0) return;
     this.explicitClose = false;
+    // Don't trust this.state here: on Android the OS can freeze/kill the
+    // underlying socket while backgrounded without ever running _suspend()
+    // or firing onclose (WebView visibility/timer behavior isn't guaranteed
+    // the way it is in a real browser tab) — the client can be left thinking
+    // it's still OPEN when nothing is actually being delivered. Foregrounding
+    // always re-checks the real readyState instead of trusting local state.
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) return;
     this.reconnectAttempts = 0;
     this.connect();
   }
@@ -169,25 +177,42 @@ class SocketManager {
   }
 
   _attachLifecycleListeners() {
-    if (typeof document === "undefined") return;
+    if (typeof document !== "undefined") {
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+          this._clearHiddenTimer();
+          this.hiddenTimer = setTimeout(() => this._suspend(), HIDDEN_CLOSE_DELAY_MS);
+        } else {
+          this._resume();
+        }
+      });
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden") {
-        this._clearHiddenTimer();
-        this.hiddenTimer = setTimeout(() => this._suspend(), HIDDEN_CLOSE_DELAY_MS);
-      } else {
-        this._resume();
-      }
-    });
+      // Best-effort — browsers don't guarantee this fires in time to complete
+      // an async send, but it costs nothing to try. Server-side cleanup for
+      // the case it doesn't land is handled independently (connection TTL).
+      window.addEventListener("pagehide", () => {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.ws.close();
+        }
+      });
+    }
 
-    // Best-effort — browsers don't guarantee this fires in time to complete
-    // an async send, but it costs nothing to try. Server-side cleanup for
-    // the case it doesn't land is handled independently (connection TTL).
-    window.addEventListener("pagehide", () => {
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        this.ws.close();
-      }
-    });
+    // Android's WebView doesn't fire visibilitychange/pagehide reliably when
+    // the Activity is backgrounded (varies by OEM/WebView version), so the
+    // DOM listeners above are not enough on native — the socket can die
+    // silently in the background with nothing telling it to reconnect once
+    // the app returns to foreground. @capacitor/app's appStateChange fires
+    // from the real Android lifecycle instead of the WebView's own signals.
+    if (Capacitor.isNativePlatform()) {
+      CapacitorApp.addListener("appStateChange", ({ isActive }) => {
+        if (isActive) {
+          this._resume();
+        } else {
+          this._clearHiddenTimer();
+          this.hiddenTimer = setTimeout(() => this._suspend(), HIDDEN_CLOSE_DELAY_MS);
+        }
+      });
+    }
   }
 
   send(payload) {

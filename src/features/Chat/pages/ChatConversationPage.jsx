@@ -112,7 +112,7 @@ export default function ChatConversationPage() {
 
   const { send, sendWithAck } = useSocket()
   const queryClient = useQueryClient()
-  const { previews, markRead, recordSentMessage, setBlockedByMe } = useConversationPreviews()
+  const { previews, markRead, recordSentMessage, recordDeletedMessage, setBlockedByMe } = useConversationPreviews()
   const { mutate: blockUser, isPending: isBlocking } = useBlockUser(matchId)
   const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser(matchId)
   const { mutate: deleteMessage, isPending: isDeleting } = useDeleteMessage(matchId)
@@ -161,6 +161,14 @@ export default function ChatConversationPage() {
       seen.add(msg.id)
       combined.push(msg)
     }
+    // history and liveMessages are each internally ordered, but merging them
+    // (and appending later socket events onto liveMessages) only reflects
+    // ARRIVAL order, not send order — reconnect jitter, retries, or a
+    // message that lands in one array before the other's catches up can put
+    // them out of chronological order. Sort is stable, so same-timestamp
+    // messages (e.g. a burst sent within the same millisecond) keep their
+    // relative arrival order instead of shuffling on every re-render.
+    combined.sort((a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime())
     return combined
   }, [history, liveMessages])
 
@@ -222,6 +230,34 @@ export default function ChatConversationPage() {
     markRead(matchId)
     if (msg.id) send({ action: 'readReceipt', otherUserId: matchId, messageId: msg.id })
     queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
+  })
+
+  // A delete-for-me performed on ANOTHER of this viewer's own live
+  // connections (another tab/device — see deleteMessage.js's broadcast).
+  // Never fires for the other participant's own deletes — those are
+  // invisible to this viewer by design (delete-for-me, not for-everyone).
+  useSocketEvent('MESSAGE_DELETED', (payload) => {
+    const { matchId: eventMatchId, messageId } = payload || {}
+    if (!eventMatchId || eventMatchId !== matchId || !messageId) return
+
+    const wasNewest = messages.length > 0 && messages[messages.length - 1].id === messageId
+
+    setLiveMessages((prev) => prev.filter((m) => m.id !== messageId))
+    queryClient.setQueryData(['chatHistory', matchId], (old) => {
+      if (!old) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          messages: page.messages.filter((m) => m.id !== messageId),
+        })),
+      }
+    })
+
+    if (wasNewest) {
+      const remaining = messages.filter((m) => m.id !== messageId)
+      recordDeletedMessage(matchId, remaining[remaining.length - 1] || null)
+    }
   })
 
   // Confirms a bubble sent from THIS device actually reached createMessage —
@@ -417,6 +453,11 @@ export default function ChatConversationPage() {
   function handleConfirmDelete() {
     if (!messageToDelete) return
     const id = messageToDelete.id
+    // Whether this was the newest message open in this thread — if so, the
+    // chat-list preview (which only this viewer's delete-for-me can make
+    // stale, see useConversationPreviews.recordDeletedMessage) needs
+    // correcting too, once we know what (if anything) is left after it.
+    const wasNewest = messages.length > 0 && messages[messages.length - 1].id === id
 
     // A pending/failed bubble hasn't been assigned a real server messageId
     // yet (still using its client-local id) — nothing to call the delete
@@ -424,6 +465,9 @@ export default function ChatConversationPage() {
     if (messageToDelete.status && messageToDelete.status !== 'sent') {
       setLiveMessages((prev) => prev.filter((m) => m.id !== id))
       setMessageToDelete(null)
+      if (wasNewest) {
+        recordDeletedMessage(matchId, messages[messages.length - 2] || null)
+      }
       toast.success(t('conversation.messageDeleted'))
       return
     }
@@ -435,6 +479,9 @@ export default function ChatConversationPage() {
         // this session) only exists in liveMessages, so drop it there too.
         setLiveMessages((prev) => prev.filter((m) => m.id !== id))
         setMessageToDelete(null)
+        if (wasNewest) {
+          recordDeletedMessage(matchId, messages[messages.length - 2] || null)
+        }
         toast.success(t('conversation.messageDeleted'))
       },
     })

@@ -192,14 +192,60 @@ export function useConversationPreviews() {
       if (!old?.pages?.length) return old
       const newestPage = old.pages[0]
       if (newestPage.messages.some((m) => m.id === msg.id)) return old
+      // Appending unconditionally assumes arrival order matches sentAt order,
+      // which reconnects/jitter can violate — insert in sorted position
+      // instead (stable: ties keep arrival order) so this cache never needs
+      // a separate re-sort pass later (see ChatConversationPage's `messages`
+      // memo, which sorts its OWN merge but reads straight from this cache
+      // for `history`).
+      const incoming = { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }
+      const messages = [...newestPage.messages, incoming].sort(
+        (a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()
+      )
       return {
         ...old,
         pages: [
-          { ...newestPage, messages: [...newestPage.messages, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }] },
+          { ...newestPage, messages },
           ...old.pages.slice(1),
         ],
       }
     })
+  })
+
+  // A delete-for-me performed on ANOTHER of this viewer's own live
+  // connections (another tab/device — see chat-service's deleteMessage.js
+  // broadcast). ChatConversationPage keeps its own MESSAGE_DELETED listener
+  // for when that conversation is open, but this one's needed for the same
+  // reason the MESSAGE handler above is: the chat LIST page never mounts
+  // ChatConversationPage, so its ['chatHistory', matchId] cache and this
+  // preview would otherwise go stale until a full refetch.
+  useSocketEvent('MESSAGE_DELETED', (payload) => {
+    const { matchId, messageId } = payload || {}
+    if (!matchId || !messageId) return
+
+    // Determine BEFORE patching whether the deleted message was the newest
+    // one loaded (pages[0] is always the newest page — see the MESSAGE
+    // handler above) — that's the only case the preview needs correcting for.
+    const before = queryClient.getQueryData(['chatHistory', matchId])
+    const beforeNewestPage = before?.pages?.[0]?.messages
+    const wasNewest = !!beforeNewestPage?.length && beforeNewestPage[beforeNewestPage.length - 1].id === messageId
+
+    queryClient.setQueryData(['chatHistory', matchId], (old) => {
+      if (!old) return old
+      return {
+        ...old,
+        pages: old.pages.map((page) => ({
+          ...page,
+          messages: page.messages.filter((m) => m.id !== messageId),
+        })),
+      }
+    })
+
+    if (!wasNewest) return
+    const after = queryClient.getQueryData(['chatHistory', matchId])
+    const afterNewestPage = after?.pages?.[0]?.messages
+    const newestRemaining = afterNewestPage?.[afterNewestPage.length - 1] || null
+    recordDeletedMessage(matchId, newestRemaining)
   })
 
   useSocketEvent('PRESENCE', (payload) => {
@@ -221,6 +267,22 @@ export function useConversationPreviews() {
     }))
   }, [])
 
+  // Called after a successful delete-for-me, with the conversation's own
+  // newest still-visible message (or null if none remain). The server's
+  // Conversation.lastMessage is shared between both participants, so it
+  // can't reflect a delete-for-me (the other party never deleted anything
+  // and must keep seeing the real last message) — this viewer's OWN chat-list
+  // preview has to be corrected purely locally instead. The caller (chat
+  // conversation page) already knows whether the deleted message was the
+  // newest one open in this thread, so it only calls this when that's true.
+  const recordDeletedMessage = useCallback((matchId, newestRemaining) => {
+    updateMatch(matchId, () => ({
+      lastMessage: newestRemaining?.text ?? null,
+      lastMessageAt: newestRemaining?.sentAt ?? null,
+      lastMessageMine: !!newestRemaining?.mine,
+    }))
+  }, [])
+
   // Blocked conversations are hidden from the chat list (standard pattern —
   // see ChatListPage). Only tracks blockedByMe, since that's the case a
   // client can act on immediately; if the other side blocked you instead,
@@ -229,5 +291,5 @@ export function useConversationPreviews() {
     updateMatch(matchId, () => ({ blockedByMe: blocked }))
   }, [])
 
-  return { previews: state, markRead, recordSentMessage, setBlockedByMe }
+  return { previews: state, markRead, recordSentMessage, recordDeletedMessage, setBlockedByMe }
 }

@@ -36,6 +36,9 @@ package-lock.json
 // If you use Yarn:
 yarn.lock
 
+# Firebase / Google services
+/android/app/google-services.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
