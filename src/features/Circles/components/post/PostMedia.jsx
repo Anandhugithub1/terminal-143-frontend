@@ -1,20 +1,37 @@
-import { useEffect, useRef, useState } from "react";
-import { ImageOff, RefreshCw, Volume2, VolumeX } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, ImageOff, RefreshCw, Volume2, VolumeX } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-// Renders the first media item of a post. Images are lazy-loaded; videos
-// behave like Instagram/Reels:
-// - <video src> is only set once the card is near the viewport (lazy load,
-//   avoids fetching every video on the page up front)
-// - muted autoplay + loop only while scrolled into view, paused otherwise
-// - tap to play/pause, mute toggle overlay
-// - loading spinner until the first frame is ready, error fallback if the
-//   media fails to load
+// Renders circle post media. If multiple images exist, show a simple local
+// carousel that matches existing circle post card behavior. If the first media
+// item is a video, video rendering remains unchanged.
 export default function PostMedia({ media = [], image, alt, className }) {
   const { t } = useTranslation("circles");
-  const item = media?.[0];
-  const url = item?.url || image;
-  const isVideo = item?.type === "video";
+  const imageUrls = useMemo(() => {
+    const urls = (media || [])
+      .filter((item) => item?.url && item?.type !== "video")
+      .map((item) => item.url);
+
+    if (urls.length === 0 && image) {
+      return [image];
+    }
+
+    return urls;
+  }, [media, image]);
+
+  const firstItem = media?.[0];
+  const isVideo = firstItem?.type === "video";
+  const shouldUseCarousel = imageUrls.length > 1 && !isVideo;
+  const [activeIdx, setActiveIdx] = useState(0);
+  const url = isVideo ? firstItem?.url : imageUrls[activeIdx] || image;
+
+  const nextPhoto = () => {
+    setActiveIdx((idx) => (idx + 1) % imageUrls.length);
+  };
+
+  const prevPhoto = () => {
+    setActiveIdx((idx) => (idx - 1 + imageUrls.length) % imageUrls.length);
+  };
 
   const containerRef = useRef(null);
   const videoRef = useRef(null);
@@ -77,7 +94,66 @@ export default function PostMedia({ media = [], image, alt, className }) {
     setRetryKey((k) => k + 1);
   };
 
+  useEffect(() => {
+    if (activeIdx >= imageUrls.length) {
+      setActiveIdx(0);
+    }
+  }, [activeIdx, imageUrls.length]);
+
   if (!url) return null;
+
+  if (shouldUseCarousel) {
+    return (
+      <div
+        ref={containerRef}
+        className="relative w-full overflow-hidden bg-gray-100"
+        style={{ aspectRatio: 4 / 5 }}
+      >
+        <img
+          src={url}
+          alt={`${alt} photo ${activeIdx + 1}`}
+          loading="lazy"
+          className="w-full h-full object-cover"
+          onError={() => setHasError(true)}
+        />
+
+        <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 pointer-events-none">
+          <button
+            type="button"
+            onClick={prevPhoto}
+            className="pointer-events-auto rounded-full bg-white/80 p-2 shadow-sm text-gray-700 hover:bg-white transition"
+            aria-label={t("postMedia.previousPhoto")}
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            type="button"
+            onClick={nextPhoto}
+            className="pointer-events-auto rounded-full bg-white/80 p-2 shadow-sm text-gray-700 hover:bg-white transition"
+            aria-label={t("postMedia.nextPhoto")}
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1">
+          {imageUrls.map((_, idx) => (
+            <span
+              key={idx}
+              className={`h-1.5 rounded-full ${idx === activeIdx ? "w-5 bg-white" : "w-2 bg-white/60"}`}
+            />
+          ))}
+        </div>
+
+        {hasError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400">
+            <ImageOff className="w-6 h-6" />
+            <span className="text-xs">{t("postMedia.imageUnavailable")}</span>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   if (isVideo) {
     // Landscape videos (>1) get a portrait 4:5 container — video centered, blur fills gaps (Instagram style).
