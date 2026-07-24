@@ -4,7 +4,10 @@ import { useNavigate } from "react-router-dom";
 export default function PageHeader({ title, onBack, action, className = "" }) {
   const navigate = useNavigate();
   return (
-    <header className={`flex items-center px-4 py-3 border-b border-gray-100 bg-white ${className}`}>
+    <header
+      className={`flex items-center px-4 py-3 border-b border-gray-100 bg-white ${className}`}
+      style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}
+    >
       <button
         onClick={onBack ?? (() => navigate(-1))}
         className="p-1.5 -ml-1.5 hover:bg-gray-100 rounded-full transition-colors"

@@ -40,7 +40,10 @@ const TopNav = () => {
   }, [data]);
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white sticky top-0 z-40">
+    <div
+      className="flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white sticky top-0 z-40"
+      style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}
+    >
 
       {/* LEFT: App Name */}
       <Link to="/home" className="flex items-center h-10 min-w-0 group">
