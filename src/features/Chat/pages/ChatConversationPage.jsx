@@ -576,6 +576,9 @@ export default function ChatConversationPage() {
             <p className="text-gray-900 font-semibold text-base">
               {match?.name || t('conversation.yourMatchFallback')}
             </p>
+            <p className="text-gray-400 text-sm mt-1">
+              {t('conversation.sayHelloPrompt')}
+            </p>
           </div>
         ) : (
           <>

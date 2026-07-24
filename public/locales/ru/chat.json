@@ -30,6 +30,7 @@
     "online": "В сети",
     "chatFallback": "Чат",
     "yourMatchFallback": "Ваше совпадение",
+    "sayHelloPrompt": "Поздоровайтесь 👋",
     "couldNotLoad": "Не удалось загрузить этот разговор",
     "checkConnection": "Проверьте подключение и попробуйте снова.",
     "typeMessage": "Введите сообщение",

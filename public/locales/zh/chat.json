@@ -30,6 +30,7 @@
     "online": "在线",
     "chatFallback": "聊天",
     "yourMatchFallback": "你的匹配对象",
+    "sayHelloPrompt": "打个招呼吧 👋",
     "couldNotLoad": "无法加载此对话",
     "checkConnection": "请检查网络连接后重试。",
     "typeMessage": "输入消息",

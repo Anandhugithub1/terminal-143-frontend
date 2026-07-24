@@ -30,6 +30,7 @@
     "online": "온라인",
     "chatFallback": "채팅",
     "yourMatchFallback": "내 매치",
+    "sayHelloPrompt": "인사를 건네보세요 👋",
     "couldNotLoad": "이 대화를 불러올 수 없습니다",
     "checkConnection": "연결 상태를 확인하고 다시 시도해 주세요.",
     "typeMessage": "메시지를 입력하세요",

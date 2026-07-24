@@ -30,6 +30,7 @@
     "online": "Online",
     "chatFallback": "Chat",
     "yourMatchFallback": "Your match",
+    "sayHelloPrompt": "Say hello 👋",
     "couldNotLoad": "Couldn't load this conversation",
     "checkConnection": "Please check your connection and try again.",
     "typeMessage": "Type your message",
