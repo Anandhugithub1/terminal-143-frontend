@@ -67,9 +67,9 @@ export default function ChatListPage() {
   const goToProfile = (link) => {
     try {
       const url = new URL(link)
-      navigate(url.pathname)
+      navigate(url.pathname, { state: { isMatch: true } })
     } catch {
-      navigate(link)
+      navigate(link, { state: { isMatch: true } })
     }
   }
 

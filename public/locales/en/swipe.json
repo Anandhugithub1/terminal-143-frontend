@@ -27,9 +27,12 @@
     "noRequestsYetTitle": "No Requests Yet",
     "noRequestsYetSubtitle": "You're all caught up.",
     "pageTitle": "Match Requests",
+    "accept": "Accept",
+    "reject": "Reject",
     "accepted": "Match request accepted",
     "rejected": "Match request rejected",
-    "genericError": "Something went wrong. Please try again."
+    "genericError": "Something went wrong. Please try again.",
+    "matchRequestSent": "Match request sent"
   },
 
   "confirmation": {

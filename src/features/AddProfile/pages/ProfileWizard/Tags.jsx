@@ -46,8 +46,6 @@ export default function Tags() {
       missing.push(t("wizard.tags.missingValidAge"));
     }
     if (!formData.preferences?.length) missing.push(t("wizard.tags.missingPreference"));
-    if (!formData.socialMediaLinks?.length)
-      missing.push(t("wizard.tags.missingSocialLink"));
     const loc = formData.location;
     if (
       !loc?.coordinates ||

@@ -146,7 +146,11 @@ const confirmAction = () => {
               return (
                 <div
                   key={`${request.senderUsername}-${request.sentAt || idx}`}
-                  onClick={() => navigate(`/profile/${encodeURIComponent(request.senderUsername)}`)}
+                  onClick={() =>
+                    navigate(`/profile/${encodeURIComponent(request.senderUsername)}`, {
+                      state: { fromRequest: true },
+                    })
+                  }
                   className="cursor-pointer active:scale-[0.99] transition-transform"
                 >
                   <RequestItem

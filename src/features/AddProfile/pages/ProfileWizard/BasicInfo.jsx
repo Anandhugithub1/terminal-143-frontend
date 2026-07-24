@@ -34,16 +34,12 @@ const Step1BasicInfo = () => {
   const maxDob = `${currentYear}-12-31`
 
   const preferences = formData?.preferences || []
-  const hasSocial =
-    !!formData?.socialMediaLinks &&
-    formData.socialMediaLinks.length > 0
 
   const isNextDisabled =
     !formData?.name?.trim() ||
     !formData?.dob ||
     calculateAge(formData.dob) < 18 ||
-    preferences.length === 0 ||
-    !hasSocial
+    preferences.length === 0
 
   useEffect(() => {
     if (!error) return
@@ -52,16 +48,14 @@ const Step1BasicInfo = () => {
       formData?.name?.trim() &&
       formData?.dob &&
       calculateAge(formData.dob) >= 18 &&
-      preferences.length > 0 &&
-      hasSocial
+      preferences.length > 0
     ) {
       setError('')
     }
   }, [
     formData?.name,
     formData?.dob,
-    preferences,
-    formData?.socialMediaLinks
+    preferences
   ])
 
   const handleNext = () => {
@@ -84,17 +78,6 @@ const Step1BasicInfo = () => {
       setError(t('preferencesRequired'))
       return
     }
-
-   if (
-  !formData?.socialMediaLinks ||
-  formData.socialMediaLinks.length === 0
-) {
-  setError(
-    t('socialRequired') ||
-      'Social media link is required'
-  )
-  return
-}
 
     setError('')
     navigate('/complete/location')
@@ -251,7 +234,7 @@ const Step1BasicInfo = () => {
 
         <div>
           <label className="block text-sm font-medium mb-2">
-            {t('socialLabel')}
+            {t('socialLabel')} <span className="text-gray-400 font-normal">{t('socialOptional') || '(optional)'}</span>
           </label>
 
 <p className="text-xs text-gray-500 mb-2">
@@ -259,11 +242,6 @@ const Step1BasicInfo = () => {
     'Your social links stay private and are shared only when there’s a match'}
 </p>
 
-{!hasSocial && (
-  <p className="text-xs text-gray-400 mb-2">
-    {t('socialRequired') || 'At least one social link is required'}
-  </p>
-)}
           <SocialLinkInput
             platforms={SOCIAL_PLATFORMS}
             selectedPlatform={socialPlatform}

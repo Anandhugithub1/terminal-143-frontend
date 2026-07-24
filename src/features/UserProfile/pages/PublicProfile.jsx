@@ -1,9 +1,15 @@
-import React from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import React, { lazy, Suspense, useState } from "react"
+import { useParams, useNavigate, useLocation } from "react-router-dom"
 import { FiLock, FiSlash } from "react-icons/fi"
+import { RxCross1 } from "react-icons/rx"
+import { FaHeart } from "react-icons/fa"
+import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 import { useMyProfile } from "../Hooks/useMyProfile"
 import { useProfileByLink } from "../Hooks/getProfileByLink"
+import { useMatchRequestResponse } from "../../UserHome/api"
+import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest"
 
 import ProfileCard from "../../UserHome/components/Cards/ProfileCard"
 import placeholderImage from "../../../assets/woman.png"
@@ -15,11 +21,23 @@ import PublicTopbar from "../components/PublicProfile/TopBar"
 import TopBar from "../../../components/Layout/TopNavigation"
 import BottomNav from "../../../components/Layout/BottomNavigation"
 import { useProtectedLocks } from "../Hooks/useProtectedLocks"
+import { ConfirmationModal } from "../../../components/Ui/Confirmation"
+
+const ProfileTabs = lazy(() => import("../../UserHome/components/Details/ProfileTabs"))
 
 export default function PublicProfilePage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const { t } = useTranslation("swipe")
   const {  username } = useParams()
   const profileLink = `${username}`
+  const fromRequest = !!location.state?.fromRequest
+  const isMatch = !!location.state?.isMatch
+
+  const [confirmAction, setConfirmAction] = useState(null) // "accept" | "reject" | null
+
+  const respondMutation = useMatchRequestResponse()
+  const { send: sendMatchRequest, isSending } = useSendMatchRequest()
 
   // Logged-in user profile (TanStack Query)
   const {
@@ -51,6 +69,7 @@ const images = Array.isArray(src.photos)
 
 const normalized = {
   name: src.name ?? src.username ?? "",
+  userId: src.username ?? username,
   age: src.dob ? computeAge(src.dob) : null,
   about: src.bio ?? "",
 
@@ -72,6 +91,28 @@ const normalized = {
 
   // locks when user has no access
   const { wrapperRef, layerRef, locks } = useProtectedLocks(!hasAccess)
+
+  const handleRespond = (action) => {
+    respondMutation.mutate(
+      { senderUsername: username, action },
+      {
+        onSuccess: () => {
+          toast.success(
+            action === "accept" ? t("requests.accepted") : t("requests.rejected")
+          )
+          navigate("/requests")
+        },
+        onError: () => toast.error(t("requests.genericError")),
+      }
+    )
+    setConfirmAction(null)
+  }
+
+  const handleSendMatch = () => {
+    sendMatchRequest(username, {
+      onSuccess: () => toast.success(t("requests.matchRequestSent")),
+    })
+  }
 
   if (isProfileLoading || isMyProfileLoading) return <LoadingSpinner />
 
@@ -141,9 +182,49 @@ const normalized = {
           </div>
         )}
 
+        {hasAccess && !isMatch && (
+          <div className="flex justify-center items-center gap-8 mt-5">
+            {fromRequest ? (
+              <>
+                <button
+                  aria-label={t("requests.reject") || "Reject"}
+                  onClick={() => setConfirmAction("reject")}
+                  disabled={respondMutation.isLoading}
+                  className="w-16 h-16 flex items-center justify-center bg-black text-white rounded-full shadow-lg active:scale-95 transition-transform disabled:opacity-50"
+                >
+                  <RxCross1 size={30} />
+                </button>
+                <button
+                  aria-label={t("requests.accept") || "Accept"}
+                  onClick={() => setConfirmAction("accept")}
+                  disabled={respondMutation.isLoading}
+                  className="w-16 h-16 flex items-center justify-center bg-black text-rose-400 rounded-full shadow-lg active:scale-95 transition-transform disabled:opacity-50"
+                >
+                  <FaHeart size={25} />
+                </button>
+              </>
+            ) : (
+              <button
+                aria-label="Send match request"
+                onClick={handleSendMatch}
+                disabled={isSending}
+                className="w-16 h-16 flex items-center justify-center bg-black text-rose-400 rounded-full shadow-lg active:scale-95 transition-transform disabled:opacity-50"
+              >
+                <FaHeart size={25} />
+              </button>
+            )}
+          </div>
+        )}
+
         <div className="mt-3 px-2 relative z-0">
           <div ref={wrapperRef} className="relative transition-all duration-300">
-            <DetailSection profile={normalized} locked={!hasAccess} />
+            {hasAccess ? (
+              <Suspense fallback={null}>
+                <ProfileTabs profile={normalized} authorId={normalized.userId} />
+              </Suspense>
+            ) : (
+              <DetailSection profile={normalized} locked={!hasAccess} />
+            )}
           </div>
 
           {!hasAccess && (
@@ -201,6 +282,14 @@ const normalized = {
       )}
 
       {hasAccess && <BottomNav />}
+
+      <ConfirmationModal
+        isOpen={!!confirmAction}
+        onClose={() => setConfirmAction(null)}
+        onConfirm={() => handleRespond(confirmAction)}
+        action={confirmAction}
+        name={normalized.name}
+      />
     </div>
   )
 }

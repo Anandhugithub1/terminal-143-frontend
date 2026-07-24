@@ -91,9 +91,9 @@ export default function ChatConversationPage() {
     const link = match?.profileLink
     if (!link) return
     try {
-      navigate(new URL(link).pathname)
+      navigate(new URL(link).pathname, { state: { isMatch: true } })
     } catch {
-      navigate(link)
+      navigate(link, { state: { isMatch: true } })
     }
   }
 
