@@ -22,7 +22,10 @@ public class MainActivity extends BridgeActivity {
         // header — same appearance the JS setStyle(Dark) call used to fix
         // pre-Android 15.
         WindowInsetsControllerCompat insetsController = WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
-        insetsController.setAppearanceLightStatusBars(true);
+        if (insetsController != null) {
+            insetsController.show(WindowInsetsCompat.Type.statusBars());
+            insetsController.setAppearanceLightStatusBars(true);
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(getWindow().getDecorView(), (view, insets) -> {
             int topInset = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top;

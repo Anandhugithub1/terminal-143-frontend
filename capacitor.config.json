@@ -6,5 +6,12 @@
     "hostname": "app.passormatch.com",
     "androidScheme": "https",
     "iosScheme": "https"
+  },
+  "plugins": {
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#ffffff",
+      "overlaysWebView": false
+    }
   }
 }

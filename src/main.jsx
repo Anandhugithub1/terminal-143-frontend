@@ -30,7 +30,7 @@ setupChunkReload()
 // in MainActivity.java, which pads the WebView by the real status bar height.
 if (Capacitor.isNativePlatform()) {
   StatusBar.setOverlaysWebView({ overlay: false }).catch(() => {})
-  StatusBar.setStyle({ style: Style.Dark }).catch(() => {})
+  StatusBar.setStyle({ style: Style.Light }).catch(() => {})
   StatusBar.setBackgroundColor({ color: "#ffffff" }).catch(() => {})
   StatusBar.show().catch(() => {})
 }
