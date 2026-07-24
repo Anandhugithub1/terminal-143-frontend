@@ -78,10 +78,39 @@ function MessageBubble({ msg, onLongPress, onRetry, t }) {
   )
 }
 
+// iOS Safari/WKWebView doesn't shrink 100dvh when the keyboard opens — the
+// layout viewport stays put and the keyboard just overlays it, so a fixed
+// h-[100dvh] column leaves stale/blank space where the keyboard now covers
+// content. window.visualViewport DOES report the keyboard-adjusted height on
+// iOS, so we track it explicitly and size the page off that instead.
+function useVisualViewportHeight() {
+  const [height, setHeight] = useState(() =>
+    typeof window !== 'undefined' && window.visualViewport
+      ? window.visualViewport.height
+      : null
+  )
+
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+    const update = () => setHeight(vv.height)
+    update()
+    vv.addEventListener('resize', update)
+    vv.addEventListener('scroll', update)
+    return () => {
+      vv.removeEventListener('resize', update)
+      vv.removeEventListener('scroll', update)
+    }
+  }, [])
+
+  return height
+}
+
 export default function ChatConversationPage() {
   const { t } = useTranslation('chat')
   const { matchId } = useParams()
   const navigate = useNavigate()
+  const viewportHeight = useVisualViewportHeight()
   const { data: matches = [], isLoading: isMatchLoading } = useMatches()
   const match = useMemo(() => matches.find((m) => m.PK === matchId), [matches, matchId])
 
@@ -488,7 +517,10 @@ export default function ChatConversationPage() {
   }
 
   return (
-    <div className="h-[100dvh] flex flex-col bg-gray-50">
+    <div
+      className="flex flex-col bg-gray-50 h-[100dvh]"
+      style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
+    >
       <header className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white">
         <button
           onClick={() => navigate(-1)}
@@ -625,7 +657,13 @@ export default function ChatConversationPage() {
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             placeholder={t('conversation.typeMessage')}
-            className="flex-1 bg-input rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-focus"
+            // iOS Safari auto-zooms the page on focus for any input with a
+            // computed font-size under 16px — text-sm (14px) was tripping
+            // that, so this is pinned to 16px directly rather than a
+            // Tailwind size step (text-base is 1rem but not guaranteed 16px
+            // if the root font-size is ever changed).
+            style={{ fontSize: 16 }}
+            className="flex-1 bg-input rounded-full px-4 py-3 focus:outline-none focus:ring-2 focus:ring-focus"
           />
           <button
             type="submit"
