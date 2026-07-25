@@ -29,7 +29,9 @@
     "pageTitle": "Permintaan Padanan",
     "accepted": "Permintaan padanan diterima",
     "rejected": "Permintaan padanan ditolak",
-    "genericError": "Sesuatu tidak kena. Sila cuba lagi."
+    "genericError": "Sesuatu tidak kena. Sila cuba lagi.",
+    "pass": "Langkau",
+    "passed": "Dilangkau"
   },
 
   "confirmation": {

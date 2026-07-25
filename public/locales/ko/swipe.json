@@ -29,7 +29,9 @@
     "pageTitle": "매칭 요청",
     "accepted": "매칭 요청을 수락했습니다",
     "rejected": "매칭 요청을 거절했습니다",
-    "genericError": "문제가 발생했습니다. 다시 시도해 주세요."
+    "genericError": "문제가 발생했습니다. 다시 시도해 주세요.",
+    "pass": "패스",
+    "passed": "패스했습니다"
   },
 
   "confirmation": {

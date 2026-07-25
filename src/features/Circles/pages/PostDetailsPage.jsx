@@ -9,7 +9,7 @@ import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import { usePost } from "../hooks/usePosts";
 import { useCircle } from "../hooks/useCircles";
-import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { useReportUser } from "../../UserHome/api";
@@ -30,7 +30,7 @@ export default function PostDetailsPage() {
 
   const handleShare = () =>
     shareLink({
-      title: post?.authorName ? `${post.authorName}'s post` : t("common.circlePost"),
+      title: getAuthorDisplayName(post) ? `${getAuthorDisplayName(post)}'s post` : t("common.circlePost"),
       text: post?.content || "",
       url: window.location.href,
       copiedMessage: t("common.linkCopied"),
@@ -100,7 +100,7 @@ export default function PostDetailsPage() {
         <PostCard
           variant="circle"
           avatar={post.authorImage || DEFAULT_AVATAR}
-          name={post.authorName || t("common.anonymous")}
+          name={getAuthorDisplayName(post) || t("common.anonymous")}
           meta={<PostMeta post={post} />}
           body={post.content}
           media={post.media}

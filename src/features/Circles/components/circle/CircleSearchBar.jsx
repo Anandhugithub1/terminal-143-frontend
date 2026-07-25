@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Search, X, Compass, Loader2, FileText } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCircleSearch, usePostTagSearch } from "../../hooks/useCircles";
+import { getAuthorDisplayName } from "../../utils/postDisplay";
 
 // Combined search: one input, results split into Circles and Posts tabs.
 //
@@ -142,7 +143,7 @@ export default function CircleSearchBar({ joinedCircleIds, onSelect, onSelectPos
                       {post.content || t("search.postNoText")}
                     </p>
                     <p className="text-xs text-gray-400 truncate">
-                      {post.circleName} · {post.authorName}
+                      {post.circleName} · {getAuthorDisplayName(post)}
                     </p>
                   </div>
                 </button>

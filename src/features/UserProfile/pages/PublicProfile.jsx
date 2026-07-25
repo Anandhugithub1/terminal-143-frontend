@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next"
 
 import { useMyProfile } from "../Hooks/useMyProfile"
 import { useProfileByLink } from "../Hooks/getProfileByLink"
-import { useMatchRequestResponse } from "../../UserHome/api"
+import { useMatchRequestResponse, SendProfileFeeback } from "../../UserHome/api"
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest"
 
 import ProfileCard from "../../UserHome/components/Cards/ProfileCard"
@@ -38,6 +38,7 @@ export default function PublicProfilePage() {
 
   const respondMutation = useMatchRequestResponse()
   const { send: sendMatchRequest, isSending } = useSendMatchRequest()
+  const { mutate: sendFeedback, isLoading: isPassing } = SendProfileFeeback()
 
   // Logged-in user profile (TanStack Query)
   const {
@@ -112,6 +113,21 @@ const normalized = {
     sendMatchRequest(username, {
       onSuccess: () => toast.success(t("requests.matchRequestSent")),
     })
+  }
+
+  // Pass — record "not interested" feedback (same endpoint the swipe deck /
+  // chat list use, liked:false) and step back to where we came from.
+  const handlePass = () => {
+    sendFeedback(
+      { targetUsername: username, liked: false },
+      {
+        onSuccess: () => {
+          toast.success(t("requests.passed"))
+          navigate(-1)
+        },
+        onError: () => toast.error(t("requests.genericError")),
+      }
+    )
   }
 
   if (isProfileLoading || isMyProfileLoading) return <LoadingSpinner />
@@ -204,14 +220,24 @@ const normalized = {
                 </button>
               </>
             ) : (
-              <button
-                aria-label="Send match request"
-                onClick={handleSendMatch}
-                disabled={isSending}
-                className="w-16 h-16 flex items-center justify-center bg-black text-rose-400 rounded-full shadow-lg active:scale-95 transition-transform disabled:opacity-50"
-              >
-                <FaHeart size={25} />
-              </button>
+              <>
+                <button
+                  aria-label={t("requests.pass") || "Pass"}
+                  onClick={handlePass}
+                  disabled={isPassing || isSending}
+                  className="w-16 h-16 flex items-center justify-center bg-black text-white rounded-full shadow-lg active:scale-95 transition-transform disabled:opacity-50"
+                >
+                  <RxCross1 size={30} />
+                </button>
+                <button
+                  aria-label="Send match request"
+                  onClick={handleSendMatch}
+                  disabled={isSending || isPassing}
+                  className="w-16 h-16 flex items-center justify-center bg-black text-rose-400 rounded-full shadow-lg active:scale-95 transition-transform disabled:opacity-50"
+                >
+                  <FaHeart size={25} />
+                </button>
+              </>
             )}
           </div>
         )}

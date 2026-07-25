@@ -24,7 +24,7 @@ import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import { useReportUser } from "../../UserHome/api";
 import { queryKeys } from "../queries/queryKeys";
-import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
@@ -103,7 +103,7 @@ export default function CircleDetailsPage() {
       const { data: postDetail } = await getPost(circleId, post.createdAtEpoch, post.postId);
       const shareUrl = `${window.location.origin}/circles/${circleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`;
       await shareLink({
-        title: postDetail?.authorName ? `${postDetail.authorName}'s post` : t("common.circlePost"),
+        title: getAuthorDisplayName(postDetail) ? `${getAuthorDisplayName(postDetail)}'s post` : t("common.circlePost"),
         text: postDetail?.content || post.content || "",
         url: shareUrl,
         copiedMessage: t("common.linkCopied"),
@@ -378,7 +378,7 @@ export default function CircleDetailsPage() {
                   key={post.postId}
                   variant="circle"
                   avatar={post.authorImage || DEFAULT_AVATAR}
-                  name={post.authorName || t("common.anonymous")}
+                  name={getAuthorDisplayName(post) || t("common.anonymous")}
                   meta={<PostMeta post={post} />}
                   body={post.content}
                   media={post.media}

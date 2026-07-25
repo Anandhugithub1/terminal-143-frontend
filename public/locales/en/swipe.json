@@ -32,7 +32,9 @@
     "accepted": "Match request accepted",
     "rejected": "Match request rejected",
     "genericError": "Something went wrong. Please try again.",
-    "matchRequestSent": "Match request sent"
+    "matchRequestSent": "Match request sent",
+    "pass": "Pass",
+    "passed": "Passed"
   },
 
   "confirmation": {

@@ -29,7 +29,9 @@
     "pageTitle": "匹配请求",
     "accepted": "已接受匹配请求",
     "rejected": "已拒绝匹配请求",
-    "genericError": "出了点问题，请重试。"
+    "genericError": "出了点问题，请重试。",
+    "pass": "跳过",
+    "passed": "已跳过"
   },
 
   "confirmation": {

@@ -25,7 +25,7 @@ import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { useMatches } from "../../UserHome/api";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { buildPostActions } from "../utils/postActions";
-import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
 import { shareLink } from "../utils/share";
 import { PostCardSkeleton, CircleAvatarSkeleton } from "../components/common/Skeletons";
 import { queryKeys } from "../queries/queryKeys";
@@ -200,7 +200,7 @@ export default function CirclesHomePage() {
   const handleSharePost = (post, circleId) => {
     const url = `${window.location.origin}/circles/${circleId}/posts/${post.postId}?createdAtEpoch=${post.createdAtEpoch}`;
     shareLink({
-      title: post.authorName ? `${post.authorName}'s post` : t("common.circlePost"),
+      title: getAuthorDisplayName(post) ? `${getAuthorDisplayName(post)}'s post` : t("common.circlePost"),
       text: post.content ? post.content.slice(0, 100) : "",
       url,
       copiedMessage: t("common.linkCopied"),
@@ -453,7 +453,7 @@ export default function CirclesHomePage() {
                       key={post.postId}
                       variant="feed"
                       avatar={post.authorImage || DEFAULT_AVATAR}
-                      name={post.authorName || t("common.anonymous")}
+                      name={getAuthorDisplayName(post) || t("common.anonymous")}
                       meta={<PostMeta post={post} />}
                       body={post.content}
                       media={post.media}
@@ -462,7 +462,7 @@ export default function CirclesHomePage() {
                       onShare={() => handleSharePost(post, selectedCircleId)}
                       matched={
                         isMatched
-                          ? { name: post.authorName, onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
+                          ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
                           : null
                       }
                       actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
@@ -532,7 +532,7 @@ export default function CirclesHomePage() {
                               key={post.postId}
                               variant="feed"
                               avatar={post.authorImage || DEFAULT_AVATAR}
-                              name={post.authorName || t("common.anonymous")}
+                              name={getAuthorDisplayName(post) || t("common.anonymous")}
                               heading={post.circleName}
                               onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
                               meta={<PostMeta post={post} />}
@@ -543,7 +543,7 @@ export default function CirclesHomePage() {
                               onShare={() => handleSharePost(post, post.circleId)}
                               matched={
                                 isMatched
-                                  ? { name: post.authorName, onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
+                                  ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
                                   : null
                               }
                               actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
@@ -582,7 +582,7 @@ export default function CirclesHomePage() {
                       <PostCard
                         variant="feed"
                         avatar={post.authorImage || DEFAULT_AVATAR}
-                        name={post.authorName || t("common.anonymous")}
+                        name={getAuthorDisplayName(post) || t("common.anonymous")}
                         meta={
                           <PostMeta
                             post={post}
@@ -605,7 +605,7 @@ export default function CirclesHomePage() {
                         tags={post.tags || []}
                         matched={
                           isMatched
-                            ? { name: post.authorName, onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
+                            ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
                             : null
                         }
                         actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}

@@ -41,6 +41,12 @@ export const getGenderLabel = (gender) => {
   return GENDER_LABELS[gender.toUpperCase()] || gender;
 };
 
+// The label to show for a post's author. Prefers the real profile display name
+// (authorDisplayName, added later); falls back to authorName (the username) for
+// posts created before that field existed / not yet backfilled.
+export const getAuthorDisplayName = (post) =>
+  post?.authorDisplayName || post?.authorName || "";
+
 // Buckets a gender into its matching pool: men and trans men (MTM), women
 // and trans women (FTF), everyone else (OT).
 const genderGroup = (gender) => {

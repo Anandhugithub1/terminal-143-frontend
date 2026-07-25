@@ -9,7 +9,7 @@ import EditPostModal from "../components/post/EditPostModal";
 import PostMeta from "../components/post/PostMeta";
 import ConfirmDialog from "../components/common/ConfirmDialog";
 import { useMyPosts, useUpdateMyPost, useDeleteMyPost } from "../hooks/usePosts";
-import { DEFAULT_AVATAR } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
 import { shareLink } from "../utils/share";
 import { PostCardSkeleton } from "../components/common/Skeletons";
 import EmptyState from "../../../shared/components/EmptyState";
@@ -135,7 +135,7 @@ export default function MyPostsPage() {
             key={`${post.circleId}-${post.postId}`}
             variant="circle"
             avatar={post.authorImage || DEFAULT_AVATAR}
-            name={post.authorName || t("common.anonymous")}
+            name={getAuthorDisplayName(post) || t("common.anonymous")}
             heading={post.circleName}
             onHeadingClick={() => navigate(`/circles/${post.circleId}`)}
             meta={<PostMeta post={post} />}
