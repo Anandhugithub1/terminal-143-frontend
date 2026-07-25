@@ -68,17 +68,17 @@ const RequestItem = ({ request, openModal, isProcessing }) => {
             onClick={(e) => { e.stopPropagation(); openModal(request, "reject"); }}
             disabled={isProcessing}
             className="flex-1 rounded-full py-2 text-sm font-medium border border-gray-300 text-gray-700 bg-white active:bg-gray-50 transition disabled:opacity-50"
-            aria-label={`Reject ${senderName}`}
+            aria-label={`Pass on ${senderName}`}
           >
-            {isProcessing ? "…" : "Reject"}
+            {isProcessing ? "…" : "Pass"}
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); openModal(request, "accept"); }}
             disabled={isProcessing}
             className="flex-1 rounded-full py-2 text-sm font-semibold bg-primary text-white active:bg-pink-600 transition shadow-sm disabled:opacity-60"
-            aria-label={`Accept ${senderName}`}
+            aria-label={`Match with ${senderName}`}
           >
-            {isProcessing ? "…" : "Accept"}
+            {isProcessing ? "…" : "Match"}
           </button>
         </div>
       </div>

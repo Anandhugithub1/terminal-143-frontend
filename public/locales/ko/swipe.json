@@ -27,6 +27,8 @@
     "noRequestsYetTitle": "아직 요청이 없어요",
     "noRequestsYetSubtitle": "모두 확인하셨습니다.",
     "pageTitle": "매칭 요청",
+    "accept": "매칭",
+    "reject": "패스",
     "accepted": "매칭 요청을 수락했습니다",
     "rejected": "매칭 요청을 거절했습니다",
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요.",
@@ -37,6 +39,8 @@
   "confirmation": {
     "titlePrefix": "확인 ",
     "body": "{{name}} 님의 매칭 요청을 {{action}}하시겠습니까?",
+    "bodyPass": "{{name}} 님의 매칭 요청을 패스하시겠습니까?",
+    "bodyMatch": "{{name}} 님과 매칭하시겠습니까?",
     "fallbackName": "이 사용자",
     "cancel": "취소",
     "confirm": "확인"

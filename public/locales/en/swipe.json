@@ -27,8 +27,8 @@
     "noRequestsYetTitle": "No Requests Yet",
     "noRequestsYetSubtitle": "You're all caught up.",
     "pageTitle": "Match Requests",
-    "accept": "Accept",
-    "reject": "Reject",
+    "accept": "Match",
+    "reject": "Pass",
     "accepted": "Match request accepted",
     "rejected": "Match request rejected",
     "genericError": "Something went wrong. Please try again.",
@@ -40,6 +40,8 @@
   "confirmation": {
     "titlePrefix": "Confirm ",
     "body": "Are you sure you want to {{action}} the match request from {{name}}?",
+    "bodyPass": "Are you sure you want to pass on the match request from {{name}}?",
+    "bodyMatch": "Are you sure you want to match with {{name}}?",
     "fallbackName": "this user",
     "cancel": "Cancel",
     "confirm": "Confirm"

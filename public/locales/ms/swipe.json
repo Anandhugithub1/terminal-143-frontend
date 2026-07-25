@@ -27,6 +27,8 @@
     "noRequestsYetTitle": "Belum Ada Permintaan",
     "noRequestsYetSubtitle": "Anda sudah lihat semuanya.",
     "pageTitle": "Permintaan Padanan",
+    "accept": "Padan",
+    "reject": "Langkau",
     "accepted": "Permintaan padanan diterima",
     "rejected": "Permintaan padanan ditolak",
     "genericError": "Sesuatu tidak kena. Sila cuba lagi.",
@@ -37,6 +39,8 @@
   "confirmation": {
     "titlePrefix": "Sahkan ",
     "body": "Anda pasti mahu {{action}} permintaan padanan daripada {{name}}?",
+    "bodyPass": "Anda pasti mahu langkau permintaan padanan daripada {{name}}?",
+    "bodyMatch": "Anda pasti mahu padan dengan {{name}}?",
     "fallbackName": "pengguna ini",
     "cancel": "Batal",
     "confirm": "Sahkan"

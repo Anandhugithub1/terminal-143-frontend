@@ -27,6 +27,8 @@
     "noRequestsYetTitle": "暂无请求",
     "noRequestsYetSubtitle": "您已经看完所有请求了。",
     "pageTitle": "匹配请求",
+    "accept": "匹配",
+    "reject": "跳过",
     "accepted": "已接受匹配请求",
     "rejected": "已拒绝匹配请求",
     "genericError": "出了点问题，请重试。",
@@ -37,6 +39,8 @@
   "confirmation": {
     "titlePrefix": "确认",
     "body": "您确定要{{action}}来自 {{name}} 的匹配请求吗？",
+    "bodyPass": "您确定要跳过来自 {{name}} 的匹配请求吗？",
+    "bodyMatch": "您确定要与 {{name}} 匹配吗？",
     "fallbackName": "该用户",
     "cancel": "取消",
     "confirm": "确认"
