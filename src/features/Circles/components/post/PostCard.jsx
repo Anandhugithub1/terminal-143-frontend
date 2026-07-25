@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight, Flag, MoreVertical, Pencil, Share2, Trash2 } from "lucide-react";
+import { ChevronRight, Flag, Heart, MoreVertical, Pencil, Send, Share2, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PostMedia from "./PostMedia";
 import BottomSheetModal from "../common/BottomSheetModal";
@@ -25,6 +25,10 @@ export default function PostCard({
   tags = [],
   actions = [],
   actionsWrapperClassName = "",
+  // When set, the post is by someone the viewer has already matched with:
+  // Pass/Match/Comment are replaced by a "you matched" banner + a Message
+  // button that opens the chat. Shape: { name, onMessage }.
+  matched = null,
 }) {
   const { t } = useTranslation("circles");
   const isFeed = variant === "feed";
@@ -117,8 +121,31 @@ export default function PostCard({
         />
       )}
 
+      {/* Matched author — banner + Message, replaces the action row */}
+      {matched && (
+        <>
+          <div className="flex items-center justify-center gap-1.5 border-t border-gray-100 bg-primary/10 px-4 py-2.5 text-[12.5px] font-bold text-primary">
+            <Heart className="w-4 h-4 fill-primary" />
+            {matched.name
+              ? t("postCard.matchedWith", { name: matched.name })
+              : t("postCard.matched")}
+          </div>
+          <div className="px-4 pt-2.5 pb-3">
+            <button
+              onClick={matched.onMessage}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all"
+            >
+              <Send className="w-4 h-4" />
+              {matched.name
+                ? t("postCard.messageName", { name: matched.name })
+                : t("postCard.message")}
+            </button>
+          </div>
+        </>
+      )}
+
       {/* Actions */}
-      {actions.length > 0 && (
+      {!matched && actions.length > 0 && (
         <div className={`border-t border-gray-100 px-4 py-2.5 ${hasMedia ? 'mt-0' : ''}`}>
           <div className={actionsWrapperClassName}>
             {actions.map(({ key, icon: Icon, label, onClick, className, iconClassName }) => (

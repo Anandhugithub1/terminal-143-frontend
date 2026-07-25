@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Compass, FileText, MapPin, PenLine, Plus, Rss } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQueries } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
@@ -19,8 +19,10 @@ import BottomSheetModal from "../components/common/BottomSheetModal";
 import CircleSearchBar from "../components/circle/CircleSearchBar";
 import { useCircles } from "../hooks/useCircles";
 import { useFeed, usePosts } from "../hooks/usePosts";
+import { listPosts } from "../api/postsApi";
 import { useSeenTracker } from "../hooks/useSeenTracker";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
+import { useMatches } from "../../UserHome/api";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { buildPostActions } from "../utils/postActions";
 import { DEFAULT_AVATAR } from "../utils/postDisplay";
@@ -88,18 +90,65 @@ export default function CirclesHomePage() {
   const { data: circlePostsData, isLoading: isLoadingCirclePosts } = usePosts(selectedCircleId);
   const circlePosts = (circlePostsData?.items || []).filter((p) => p.status !== "deleted");
 
-  const firstCircleId =
-    !isLoadingFeed && feed.length === 0 && !selectedCircleId
-      ? myCircles[0]?.circleId
-      : null;
-  const { data: firstCirclePostsData } = usePosts(firstCircleId);
-  const firstCirclePosts = (firstCirclePostsData?.items || [])
-    .filter((p) => p.status !== "deleted")
-    .slice(0, 5);
-
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
+
+  // Usernames the current user has already matched with. A match's PK is the
+  // other user's username — the same identifier a post carries as authorId —
+  // so we can use this set to hide Match/Pass on those authors' posts (you
+  // can't re-match someone you're already matched with). Normalized to bare
+  // usernames to be robust against a stray USER# prefix on either side.
+  const { data: matches } = useMatches();
+  const matchedUserIds = useMemo(
+    () =>
+      new Set(
+        (matches || []).map((m) => String(m.PK || "").replace(/^USER#/, ""))
+      ),
+    [matches]
+  );
+  const isMatchedAuthor = (authorId) =>
+    !!authorId && matchedUserIds.has(String(authorId).replace(/^USER#/, ""));
+
+  // ─── Feed-empty fallback ───
+  // When the "For You" feed comes back empty, instead of only surfacing the
+  // first circle's posts we pull posts from ALL the circles the user is in.
+  // GET /circles/{id}/posts already applies the same mutual preference /
+  // compatibility filter as the feed (plus block/deletion filters) server-side
+  // — see circle-service listPosts.js — so we don't re-filter here; we only
+  // merge across circles, dedupe, and sort by recency. Only fetch when we
+  // actually need the fallback: feed is loaded, empty, and no circle selected.
+  const needFallback =
+    !isLoadingFeed && feed.length === 0 && !selectedCircleId;
+
+  const fallbackQueries = useQueries({
+    queries: (needFallback ? myCircles : []).map((c) => ({
+      queryKey: queryKeys.posts(c.circleId),
+      queryFn: async () => {
+        const res = await listPosts(c.circleId);
+        return res.data;
+      },
+      staleTime: 1000 * 30,
+    })),
+  });
+
+  const fallbackPosts = useMemo(() => {
+    if (!needFallback) return [];
+
+    const seen = new Set();
+    return fallbackQueries
+      .flatMap((q) => q.data?.items || [])
+      .filter((p) => p.status !== "deleted")
+      // A post can surface from more than one circle query; keep the first.
+      .filter((p) => {
+        if (seen.has(p.postId)) return false;
+        seen.add(p.postId);
+        return true;
+      })
+      .sort((a, b) => (b.createdAtEpoch || 0) - (a.createdAtEpoch || 0));
+    // fallbackQueries is a fresh array each render; depend on its data only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [needFallback, fallbackQueries.map((q) => q.dataUpdatedAt).join(",")]);
 
   const markPostSeen = useSeenTracker();
   const { send: sendMatchRequest } = useSendMatchRequest();
@@ -397,6 +446,8 @@ export default function CirclesHomePage() {
 
                 {!isLoadingCirclePosts && circlePosts.map((post) => {
                   const isAuthor = !!myId && myId === post.authorId;
+                  const isMatched = !isAuthor && isMatchedAuthor(post.authorId);
+                  const showMatchActions = !isAuthor && !isMatched;
                   return (
                     <PostCard
                       key={post.postId}
@@ -409,9 +460,14 @@ export default function CirclesHomePage() {
                       tags={post.tags || []}
                       onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
                       onShare={() => handleSharePost(post, selectedCircleId)}
-                      actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                      matched={
+                        isMatched
+                          ? { name: post.authorName, onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
+                          : null
+                      }
+                      actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                       actions={buildPostActions({
-                        includeMatchActions: !isAuthor,
+                        includeMatchActions: showMatchActions,
                         onComment: () => setCommentPost(post),
                         onToggleLike: () =>
                           sendMatchRequest(post.authorId, {
@@ -453,48 +509,51 @@ export default function CirclesHomePage() {
                       </button>
                     </div>
 
-                    {/* Fallback — first circle posts */}
-                    {firstCirclePosts.length > 0 && (
+                    {/* Fallback — recent posts across all your circles */}
+                    {fallbackPosts.length > 0 && (
                       <>
                         <div className="flex items-center justify-between pt-2">
                           <p className="text-sm font-bold text-gray-700">
-                            {t("circlesHome.meanwhileIn")}
-                            <button
-                              onClick={() => navigate(`/circles/${firstCircleId}`)}
-                              className="text-primary"
-                            >
-                              {myCircles[0]?.name}
-                            </button>{" "}✨
+                            {t("circlesHome.fromYourCircles")}{" "}✨
                           </p>
                           <button
-                            onClick={() => navigate(`/circles/${firstCircleId}`)}
+                            onClick={() => navigate("/circles/discover")}
                             className="text-xs btn-outlined px-3 py-1 rounded-full"
                           >
-                            {t("circlesHome.seeAll")}
+                            {t("common.discover")}
                           </button>
                         </div>
-                        {firstCirclePosts.map((post) => {
+                        {fallbackPosts.map((post) => {
                           const isAuthor = !!myId && myId === post.authorId;
+                          const isMatched = !isAuthor && isMatchedAuthor(post.authorId);
+                          const showMatchActions = !isAuthor && !isMatched;
                           return (
                             <PostCard
                               key={post.postId}
                               variant="feed"
                               avatar={post.authorImage || DEFAULT_AVATAR}
                               name={post.authorName || t("common.anonymous")}
+                              heading={post.circleName}
+                              onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
                               meta={<PostMeta post={post} />}
                               body={post.content}
                               media={post.media}
                               tags={post.tags || []}
                               onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
-                              onShare={() => handleSharePost(post, firstCircleId)}
-                              actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                              onShare={() => handleSharePost(post, post.circleId)}
+                              matched={
+                                isMatched
+                                  ? { name: post.authorName, onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
+                                  : null
+                              }
+                              actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                               actions={buildPostActions({
-                                includeMatchActions: !isAuthor,
+                                includeMatchActions: showMatchActions,
                                 onComment: () => setCommentPost(post),
                                 onToggleLike: () =>
                                   sendMatchRequest(post.authorId, {
                                     postId: post.postId,
-                                    circleId: firstCircleId,
+                                    circleId: post.circleId,
                                     createdAtEpoch: post.createdAtEpoch,
                                     onSuccess: () => toast.success(t("circlesHome.matchRequestSent")),
                                   }),
@@ -514,6 +573,8 @@ export default function CirclesHomePage() {
                       : null;
                   const isLastPost = index === feed.length - 1;
                   const isAuthor = !!myId && myId === post.authorId;
+                  const isMatched = !isAuthor && isMatchedAuthor(post.authorId);
+                  const showMatchActions = !isAuthor && !isMatched;
                   const onSeen = (postId) => markPostSeen(postId, { immediate: isLastPost });
 
                   return (
@@ -542,9 +603,14 @@ export default function CirclesHomePage() {
                         media={post.media}
                         body={post.content}
                         tags={post.tags || []}
-                        actionsWrapperClassName={!isAuthor ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                        matched={
+                          isMatched
+                            ? { name: post.authorName, onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
+                            : null
+                        }
+                        actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                         actions={buildPostActions({
-                          includeMatchActions: !isAuthor,
+                          includeMatchActions: showMatchActions,
                           onComment: () => setCommentPost(post),
                           onToggleLike: () =>
                             sendMatchRequest(post.authorId, {

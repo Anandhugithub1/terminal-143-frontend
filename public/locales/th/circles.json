@@ -80,6 +80,7 @@
     "feedQuietTitle": "ฟีดของคุณเงียบไปหน่อย",
     "feedQuietBody": "เข้าร่วมเซอร์เคิลเพิ่มเติมเพื่อเติมเต็มฟีด",
     "meanwhileIn": "ในขณะเดียวกันที่ ",
+    "fromYourCircles": "จากเซอร์เคิลของคุณ",
     "seeAll": "ดูทั้งหมด",
     "loadFailedTitle": "โหลดเซอร์เคิลของคุณไม่สำเร็จ",
     "loadFailedBody": "โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง",
@@ -232,7 +233,11 @@
     "editPost": "แก้ไขโพสต์",
     "share": "แชร์",
     "deletePost": "ลบโพสต์",
-    "reportPost": "รายงานโพสต์"
+    "reportPost": "รายงานโพสต์",
+    "matchedWith": "คุณแมตช์กับ {{name}} แล้ว",
+    "matched": "คุณแมตช์แล้ว",
+    "messageName": "ส่งข้อความถึง {{name}}",
+    "message": "ส่งข้อความ"
   },
   "postMedia": {
     "videoUnavailable": "ไม่สามารถแสดงวิดีโอได้",

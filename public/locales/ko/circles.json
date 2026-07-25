@@ -80,6 +80,7 @@
     "feedQuietTitle": "피드가 조용하네요",
     "feedQuietBody": "더 많은 서클에 가입해서 채워보세요",
     "meanwhileIn": "한편, ",
+    "fromYourCircles": "내 서클에서",
     "seeAll": "전체 보기",
     "loadFailedTitle": "서클을 불러오지 못했습니다",
     "loadFailedBody": "연결 상태를 확인하고 다시 시도해 주세요.",
@@ -232,7 +233,11 @@
     "editPost": "게시물 수정",
     "share": "공유",
     "deletePost": "게시물 삭제",
-    "reportPost": "게시물 신고"
+    "reportPost": "게시물 신고",
+    "matchedWith": "{{name}}님과 매치되었어요",
+    "matched": "매치되었어요",
+    "messageName": "{{name}}님에게 메시지",
+    "message": "메시지"
   },
   "postMedia": {
     "videoUnavailable": "동영상을 사용할 수 없습니다",

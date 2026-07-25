@@ -80,6 +80,7 @@
     "feedQuietTitle": "Your feed is quiet",
     "feedQuietBody": "Join more circles to fill it up",
     "meanwhileIn": "Meanwhile in ",
+    "fromYourCircles": "From your circles",
     "seeAll": "See all",
     "loadFailedTitle": "Couldn't load your circles",
     "loadFailedBody": "Check your connection and try again.",
@@ -232,7 +233,11 @@
     "editPost": "Edit Post",
     "share": "Share",
     "deletePost": "Delete Post",
-    "reportPost": "Report Post"
+    "reportPost": "Report Post",
+    "matchedWith": "You matched with {{name}}",
+    "matched": "You're matched",
+    "messageName": "Message {{name}}",
+    "message": "Message"
   },
   "postMedia": {
     "videoUnavailable": "Video unavailable",

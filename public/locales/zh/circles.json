@@ -80,6 +80,7 @@
     "feedQuietTitle": "你的动态很安静",
     "feedQuietBody": "加入更多圈子来丰富你的动态",
     "meanwhileIn": "与此同时，在 ",
+    "fromYourCircles": "来自你的圈子",
     "seeAll": "查看全部",
     "loadFailedTitle": "加载圈子失败",
     "loadFailedBody": "请检查网络连接后重试。",
@@ -232,7 +233,11 @@
     "editPost": "编辑动态",
     "share": "分享",
     "deletePost": "删除动态",
-    "reportPost": "举报动态"
+    "reportPost": "举报动态",
+    "matchedWith": "你已与 {{name}} 配对",
+    "matched": "已配对",
+    "messageName": "给 {{name}} 发消息",
+    "message": "发消息"
   },
   "postMedia": {
     "videoUnavailable": "视频不可用",

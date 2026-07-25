@@ -80,6 +80,7 @@
     "feedQuietTitle": "Suapan anda agak sunyi",
     "feedQuietBody": "Sertai lebih banyak bulatan untuk memenuhkannya",
     "meanwhileIn": "Sementara itu di ",
+    "fromYourCircles": "Daripada bulatan anda",
     "seeAll": "Lihat semua",
     "loadFailedTitle": "Gagal memuatkan bulatan anda",
     "loadFailedBody": "Semak sambungan anda dan cuba lagi.",
@@ -232,7 +233,11 @@
     "editPost": "Edit Hantaran",
     "share": "Kongsi",
     "deletePost": "Padam Hantaran",
-    "reportPost": "Laporkan Hantaran"
+    "reportPost": "Laporkan Hantaran",
+    "matchedWith": "Anda sepadan dengan {{name}}",
+    "matched": "Anda telah sepadan",
+    "messageName": "Mesej {{name}}",
+    "message": "Mesej"
   },
   "postMedia": {
     "videoUnavailable": "Video tidak tersedia",
