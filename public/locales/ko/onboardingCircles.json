@@ -1,302 +1,302 @@
 {
   "c5e751f9-7a6b-456a-b5f0-fdc926c5fd64": {
-    "name": "Painting",
-    "description": "Meet someone who paints or sketches too. Share your work, get feedback, and plan an art date or gallery visit together."
+    "name": "그림 그리기",
+    "description": "그림이나 스케치를 좋아하는 사람을 만나보세요. 작품을 공유하고 피드백을 받고, 함께 아트 데이트나 갤러리 방문을 계획해보세요."
   },
   "d419dc18-8c67-4476-89cd-7b4c26a2c4a1": {
-    "name": "Culture Exchange",
-    "description": "Meet someone from a different culture. Swap traditions, plan outings together, and get to know each other through your backgrounds."
+    "name": "문화 교류",
+    "description": "다른 문화권의 사람을 만나보세요. 전통을 나누고 함께 나들이를 계획하며, 서로의 배경을 통해 알아가 보세요."
   },
   "99845b4a-a07f-414c-84e9-ba833caa19a5": {
-    "name": "Anime Fans",
-    "description": "Meet someone who loves anime too. Talk favorite series, plan watch parties, and bond over shared fandoms."
+    "name": "애니메이션 팬",
+    "description": "애니메이션을 좋아하는 사람을 만나보세요. 좋아하는 시리즈에 대해 이야기하고, 같이 보기 모임을 계획하며, 같은 취향으로 가까워지세요."
   },
   "9cc4e2b3-0ab3-47f7-b8fa-84d28f442854": {
-    "name": "Cosplay Lovers",
-    "description": "Meet a fellow cosplayer. Share your builds, plan con meetups, and find someone to cosplay with."
+    "name": "코스프레 애호가",
+    "description": "동료 코스어를 만나보세요. 제작물을 공유하고, 행사 만남을 계획하며, 함께 코스프레할 사람을 찾아보세요."
   },
   "0a0adf83-bea2-4fa8-b1fd-e61e9d602c04": {
-    "name": "Movie Lovers",
-    "description": "Meet someone to plan movie nights with. Talk about favorite films, swap recommendations, and find your next movie date."
+    "name": "영화 애호가",
+    "description": "함께 영화의 밤을 계획할 사람을 만나보세요. 좋아하는 영화 이야기를 나누고 추천을 주고받으며 다음 영화 데이트 상대를 찾아보세요."
   },
   "a7cf9176-67d5-4e52-b67c-65712f417712": {
-    "name": "Aspiring Writers",
-    "description": "Meet a fellow writer. Swap your work, plan writing dates at a cafe, and support each other's creative journey."
+    "name": "예비 작가",
+    "description": "동료 작가를 만나보세요. 작품을 나누고, 카페에서 글쓰기 데이트를 계획하며, 서로의 창작 여정을 응원해보세요."
   },
   "d3d590cb-6350-437d-a9eb-ec7a33dab30c": {
-    "name": "Entrepreneurs",
-    "description": "Meet a fellow founder or business owner. Talk business, plan meetups, and find someone who gets the hustle."
+    "name": "창업가",
+    "description": "동료 창업자나 사업가를 만나보세요. 비즈니스 이야기를 나누고 모임을 계획하며, 그 열정을 이해하는 사람을 찾아보세요."
   },
   "83dca486-4469-4694-87c5-6d60391d0497": {
-    "name": "Digital Nomads",
-    "description": "Meet another remote worker or digital nomad. Plan coworking dates, share travel and visa tips, and find a partner who lives life on the move."
+    "name": "디지털 노마드",
+    "description": "다른 원격 근무자나 디지털 노마드를 만나보세요. 코워킹 데이트를 계획하고 여행·비자 팁을 나누며, 이동하며 사는 삶을 함께할 상대를 찾아보세요."
   },
   "6eba4e17-55d2-4a09-8ad4-03fcebc893c6": {
-    "name": "Content Creators",
-    "description": "Meet a fellow creator. Collaborate, plan content together, and find someone who understands the creator lifestyle."
+    "name": "콘텐츠 크리에이터",
+    "description": "동료 크리에이터를 만나보세요. 협업하고 함께 콘텐츠를 기획하며, 크리에이터의 삶을 이해하는 사람을 찾아보세요."
   },
   "b2fbe728-9adf-43ef-a03a-bedb17c3d8ed": {
-    "name": "Medical/Healthcare",
-    "description": "For healthcare workers and anyone who wants to date one. Long shifts and high stress make this job hard to explain to outsiders, so meet a doctor, nurse, or someone drawn to that world."
+    "name": "의료/헬스케어",
+    "description": "의료 종사자와 그들과 데이트하고 싶은 분들을 위한 곳입니다. 긴 교대 근무와 높은 스트레스 탓에 외부인에게 설명하기 어려운 이 일, 의사나 간호사, 혹은 그 세계에 끌리는 사람을 만나보세요."
   },
   "de942c1e-8416-4670-9347-d01f0b714590": {
-    "name": "Academia/Research",
-    "description": "For professors, PhDs, researchers, and anyone into that world. Late nights in the lab or library, deep conversations, and a mind worth getting to know."
+    "name": "학계/연구",
+    "description": "교수, 박사, 연구자, 그리고 그 세계에 관심 있는 분들을 위한 곳입니다. 실험실이나 도서관에서의 긴 밤, 깊은 대화, 그리고 알아갈 가치가 있는 지성을 만나보세요."
   },
   "01b57f4f-9860-4ee7-8aca-2677272abfaf": {
-    "name": "Legal",
-    "description": "For lawyers and anyone who wants to date one. Long hours and high stakes come with the job, so meet someone who lives and breathes the law."
+    "name": "법조",
+    "description": "변호사와 그들과 데이트하고 싶은 분들을 위한 곳입니다. 긴 근무 시간과 높은 부담이 따르는 직업, 법과 함께 살아가는 사람을 만나보세요."
   },
   "803d8698-59e8-4c54-b79e-ad382fc73ce8": {
-    "name": "Entertainment & Artist",
-    "description": "For actors, musicians, dancers, and creatives, and anyone drawn to that world. Stage lights, studio sessions, and unpredictable schedules come with the territory, so meet someone living the artist's life."
+    "name": "엔터테인먼트 & 아티스트",
+    "description": "배우, 음악가, 댄서, 창작자, 그리고 그 세계에 끌리는 분들을 위한 곳입니다. 무대 조명, 스튜디오 작업, 예측 불가한 일정이 따르는 삶, 예술가의 삶을 사는 사람을 만나보세요."
   },
   "2d34f295-2e26-45d3-9ab1-e3748bb332e5": {
-    "name": "Finance",
-    "description": "For bankers, traders, and finance professionals, and anyone who wants to date one. Long hours and high pressure come with the job, so meet someone who gets the grind."
+    "name": "금융",
+    "description": "은행원, 트레이더, 금융 전문가, 그리고 그들과 데이트하고 싶은 분들을 위한 곳입니다. 긴 근무 시간과 높은 압박이 따르는 일, 그 치열함을 이해하는 사람을 만나보세요."
   },
   "0a4d343f-39e7-482c-a99a-3dabe8a1c6ff": {
-    "name": "Pilots/Flight Crew",
-    "description": "For pilots, flight attendants, and anyone drawn to that lifestyle. Layovers and shifting time zones make a normal schedule tricky, so meet someone who lives that life too."
+    "name": "파일럿/승무원",
+    "description": "파일럿, 승무원, 그리고 그런 라이프스타일에 끌리는 분들을 위한 곳입니다. 레이오버와 바뀌는 시간대로 일반적인 일정이 어려운 삶, 같은 삶을 사는 사람을 만나보세요."
   },
   "bb735811-0eb7-45f4-af3d-9513cf260f97": {
-    "name": "Environmental Conscious",
-    "description": "Meet someone who cares about sustainability. Plan eco-friendly dates, join clean-up meetups, and share ideas for greener living together."
+    "name": "환경 의식",
+    "description": "지속가능성에 관심 있는 사람을 만나보세요. 친환경 데이트를 계획하고, 정화 활동 모임에 참여하며, 더 친환경적인 삶에 대한 아이디어를 함께 나눠보세요."
   },
   "9a9b6071-97b0-4bda-962d-ef0c26b708d9": {
-    "name": "Dance",
-    "description": "Meet a dance partner. Plan nights out at salsa, swing, or ballroom events and learn new moves together."
+    "name": "댄스",
+    "description": "댄스 파트너를 만나보세요. 살사, 스윙, 볼룸 행사의 밤을 계획하고 함께 새로운 동작을 배워보세요."
   },
   "7eea747c-25af-4705-a174-8b54bac4949f": {
-    "name": "Gaming",
-    "description": "Meet someone to game with. Team up, plan sessions, and find a partner who shares your love for gaming."
+    "name": "게임",
+    "description": "함께 게임할 사람을 만나보세요. 팀을 이루고 게임 세션을 계획하며, 게임 사랑을 나눌 상대를 찾아보세요."
   },
   "212b0561-64f1-4005-a0a6-ecfc55f8e4c0": {
-    "name": "Board Games",
-    "description": "Meet someone for game night. Plan tabletop sessions and find a partner to build a board game habit with."
+    "name": "보드게임",
+    "description": "게임의 밤을 함께할 사람을 만나보세요. 보드게임 세션을 계획하고, 보드게임 습관을 함께 만들 상대를 찾아보세요."
   },
   "3c3bb825-1682-4b24-bd35-61ccb57ea79d": {
-    "name": "Yoga",
-    "description": "Meet someone who practices yoga. Plan classes together and find a partner who shares your approach to mindfulness and movement."
+    "name": "요가",
+    "description": "요가를 하는 사람을 만나보세요. 함께 수업을 계획하고, 마음챙김과 움직임에 대한 접근이 비슷한 상대를 찾아보세요."
   },
   "565d651a-299a-4116-9d36-4fa72a4efd43": {
-    "name": "Healthy Habits",
-    "description": "Meet someone focused on healthy living. Plan meals, workouts, and routines together with a partner who shares your lifestyle goals."
+    "name": "건강한 습관",
+    "description": "건강한 삶에 집중하는 사람을 만나보세요. 식사, 운동, 루틴을 함께 계획하고, 라이프스타일 목표가 비슷한 상대를 찾아보세요."
   },
   "2047eb2c-2616-4e20-a032-afe2e13a70e8": {
-    "name": "Foodies",
-    "description": "Meet someone to explore restaurants and dishes with. Plan food dates and discover new favorites together."
+    "name": "미식가",
+    "description": "함께 맛집과 요리를 탐방할 사람을 만나보세요. 푸드 데이트를 계획하고 새로운 최애를 함께 발견해보세요."
   },
   "2d970fa3-71c5-4648-8ad7-6ab9cdaefcee": {
-    "name": "Reading, Book Lovers",
-    "description": "Meet a fellow reader. Swap book recommendations, plan reading dates, and find a partner to talk books with."
+    "name": "독서, 책벌레",
+    "description": "동료 독서가를 만나보세요. 책 추천을 주고받고, 독서 데이트를 계획하며, 책 이야기를 나눌 상대를 찾아보세요."
   },
   "fa24cf90-99af-45eb-b595-9e37813e1987": {
-    "name": "Cooking",
-    "description": "Meet someone who loves to cook. Plan cooking dates, swap recipes, and find a partner to share meals with."
+    "name": "요리",
+    "description": "요리를 좋아하는 사람을 만나보세요. 요리 데이트를 계획하고 레시피를 나누며, 함께 식사를 나눌 상대를 찾아보세요."
   },
   "4b53ef93-8dc6-4faf-b4b4-b1463a816207": {
-    "name": "Gardening",
-    "description": "Meet a fellow plant lover. Swap tips, plan garden visits, and find a partner to grow things with."
+    "name": "가드닝",
+    "description": "동료 식물 애호가를 만나보세요. 팁을 나누고 정원 방문을 계획하며, 함께 무언가를 키울 상대를 찾아보세요."
   },
   "2902b48b-f2ea-47af-b258-53089e9b70b0": {
-    "name": "Language Exchange",
-    "description": "Meet someone to practice languages with. Teach each other, plan language dates, and find a partner while learning."
+    "name": "언어 교환",
+    "description": "함께 언어를 연습할 사람을 만나보세요. 서로 가르치고 언어 데이트를 계획하며, 배우는 동안 상대를 찾아보세요."
   },
   "e5b58365-d834-42cb-bc09-a5a447f9f7eb": {
-    "name": "Asian Americans in Thailand",
-    "description": "For Asian Americans in Thailand and anyone who connects with that background. Meet, connect, and find someone."
+    "name": "태국의 아시아계 미국인",
+    "description": "태국에 있는 아시아계 미국인과 그 배경에 공감하는 분들을 위한 곳입니다. 만나고 이어지며 누군가를 찾아보세요."
   },
   "d3be2864-9de4-4605-9219-27791d1b3fc7": {
-    "name": "Latinos Singles Thailand",
-    "description": "For anyone interested in meeting Latino singles in Thailand. Good music, good energy, and good conversation, this is the place if that's your kind of connection."
+    "name": "태국의 라틴 싱글",
+    "description": "태국의 라틴 싱글을 만나고 싶은 분들을 위한 곳입니다. 좋은 음악, 좋은 에너지, 좋은 대화, 그런 만남을 원한다면 여기가 바로 그 장소입니다."
   },
   "f644dd32-cb3f-4496-8a55-25652bd56845": {
-    "name": "Jewish Singles Thailand",
-    "description": "For anyone interested in meeting Jewish singles in Thailand. A small, tight-knit community abroad, great for finding someone who shares your faith or simply wants to learn more about it."
+    "name": "태국의 유대인 싱글",
+    "description": "태국의 유대인 싱글을 만나고 싶은 분들을 위한 곳입니다. 해외의 작지만 끈끈한 커뮤니티로, 같은 신앙을 가진 사람이나 그것을 더 알고 싶은 사람을 찾기에 좋습니다."
   },
   "b5912deb-8eb2-48ad-84ad-fe0aa6334695": {
-    "name": "Indians Singles Thailand",
-    "description": "For anyone interested in meeting Indian singles in Thailand. Whether it's the food, the festivals, or the people, this is where those conversations turn into dates."
+    "name": "태국의 인도 싱글",
+    "description": "태국의 인도 싱글을 만나고 싶은 분들을 위한 곳입니다. 음식이든 축제든 사람이든, 그런 대화가 데이트로 이어지는 곳입니다."
   },
   "32c67a2a-c840-4612-abc4-be8e739bc379": {
-    "name": "Nigerians Singles Thailand",
-    "description": "For anyone interested in meeting Nigerian singles in Thailand. Bold personalities and big energy come with the territory, so come find someone who matches it."
+    "name": "태국의 나이지리아 싱글",
+    "description": "태국의 나이지리아 싱글을 만나고 싶은 분들을 위한 곳입니다. 대담한 성격과 넘치는 에너지가 특징이니, 그와 어울리는 사람을 찾아보세요."
   },
   "5377dc4c-f0f8-4a1c-83d0-325d65b8ddec": {
-    "name": "Japanese Singles Thailand",
-    "description": "For anyone interested in meeting Japanese singles in Thailand. Whether you grew up with the culture or simply love it from afar, this is the place to find someone."
+    "name": "태국의 일본 싱글",
+    "description": "태국의 일본 싱글을 만나고 싶은 분들을 위한 곳입니다. 그 문화 속에서 자랐든 멀리서 사랑하든, 여기가 바로 누군가를 찾는 곳입니다."
   },
   "11215248-46c8-43eb-97b7-0271ae62395a": {
-    "name": "Chinese Singles Thailand",
-    "description": "For anyone interested in meeting Chinese singles in Thailand. A space to connect over language, food, and culture, and find someone worth getting to know."
+    "name": "태국의 중국 싱글",
+    "description": "태국의 중국 싱글을 만나고 싶은 분들을 위한 곳입니다. 언어, 음식, 문화로 이어지고 알아갈 가치가 있는 사람을 찾는 공간입니다."
   },
   "9eff87bb-2996-4dae-80cb-78d30f4aa745": {
-    "name": "French Singles Thailand",
-    "description": "For anyone interested in meeting French singles in Thailand. Wine, language, and a bit of romance, this circle is for anyone drawn to that French charm."
+    "name": "태국의 프랑스 싱글",
+    "description": "태국의 프랑스 싱글을 만나고 싶은 분들을 위한 곳입니다. 와인, 언어, 그리고 약간의 로맨스, 프랑스식 매력에 끌리는 누구에게나 열린 서클입니다."
   },
   "30646ea5-a687-4483-aee7-28ecc2744e83": {
-    "name": "Russian Singles Thailand",
-    "description": "For anyone interested in meeting Russian singles in Thailand. Straightforward and striking, find someone who fits that description."
+    "name": "태국의 러시아 싱글",
+    "description": "태국의 러시아 싱글을 만나고 싶은 분들을 위한 곳입니다. 솔직하고 강렬한, 그 설명에 어울리는 사람을 찾아보세요."
   },
   "2f23eaf6-4660-4541-a8b5-5866245d9136": {
-    "name": "African Americans",
-    "description": "For African Americans abroad and anyone who wants to connect with that culture and community. A space to meet people who share your background or simply want to understand it better."
+    "name": "아프리카계 미국인",
+    "description": "해외에 있는 아프리카계 미국인과 그 문화·커뮤니티와 이어지고 싶은 분들을 위한 곳입니다. 같은 배경을 가진 사람이나 그것을 더 잘 이해하고 싶은 사람을 만나는 공간입니다."
   },
   "3370bb4f-102f-49eb-a3c2-0ab2d0d28136": {
-    "name": "Arab Singles Thailand",
-    "description": "For anyone interested in meeting Arab singles in Thailand. Rich culture and warm hospitality come with the territory, so meet someone who brings all of that."
+    "name": "태국의 아랍 싱글",
+    "description": "태국의 아랍 싱글을 만나고 싶은 분들을 위한 곳입니다. 풍부한 문화와 따뜻한 환대가 특징이니, 그 모든 것을 지닌 사람을 만나보세요."
   },
   "478b0eef-fcb8-42ba-8a05-c60d67b7c2d6": {
-    "name": "Kurdish Singles Thailand",
-    "description": "For anyone interested in meeting Kurdish singles in Thailand. A smaller community with deep culture and pride, a great place to find someone genuine."
+    "name": "태국의 쿠르드 싱글",
+    "description": "태국의 쿠르드 싱글을 만나고 싶은 분들을 위한 곳입니다. 깊은 문화와 자부심을 가진 작은 커뮤니티로, 진실한 사람을 찾기에 좋은 곳입니다."
   },
   "28b69c20-6aab-40d0-9549-b04cb7854c04": {
-    "name": "Farangs Thailand",
-    "description": "Meet fellow foreigners living in Thailand. Share tips on local life and find a partner who understands the expat experience."
+    "name": "태국의 외국인",
+    "description": "태국에 사는 다른 외국인들을 만나보세요. 현지 생활 팁을 나누고, 이주 생활의 경험을 이해하는 상대를 찾아보세요."
   },
   "fa050913-1743-48e4-871a-78075ed4fc34": {
-    "name": "Introverted",
-    "description": "Meet someone who prefers quieter connections. Skip the small talk pressure and find a partner who gets your pace."
+    "name": "내향인",
+    "description": "조용한 관계를 선호하는 사람을 만나보세요. 스몰토크의 부담을 덜고, 당신의 페이스를 이해하는 상대를 찾아보세요."
   },
   "ffb77486-f630-4b05-a731-57808794541f": {
-    "name": "Big Beautiful Singles",
-    "description": "Meet someone body-positive and confident. Find a partner who appreciates you as you are."
+    "name": "빅 뷰티풀 싱글",
+    "description": "자기 몸을 긍정하고 당당한 사람을 만나보세요. 있는 그대로의 당신을 사랑해주는 상대를 찾아보세요."
   },
   "43704cb0-da27-42d5-8e10-928b9a8da7fc": {
-    "name": "Feminism",
-    "description": "Meet someone who shares your views on gender equality. Discuss ideas together and find a partner who aligns with your values."
+    "name": "페미니즘",
+    "description": "성평등에 대한 생각이 같은 사람을 만나보세요. 함께 이야기를 나누고, 가치관이 맞는 상대를 찾아보세요."
   },
   "57b77330-6d37-4a5c-b427-9071270ebbe8": {
-    "name": "Liberals",
-    "description": "Meet someone with similar progressive or liberal views. Discuss ideas and current events, and find a partner who shares your outlook."
+    "name": "진보 성향",
+    "description": "비슷한 진보·자유주의 성향의 사람을 만나보세요. 생각과 시사를 논하고, 관점이 같은 상대를 찾아보세요."
   },
   "3703402d-0805-4793-831e-58dbf79a60ac": {
-    "name": "Concerts",
-    "description": "Meet someone to go to concerts with. Plan live music dates and share favorite artists together."
+    "name": "콘서트",
+    "description": "함께 콘서트에 갈 사람을 만나보세요. 라이브 음악 데이트를 계획하고 좋아하는 아티스트를 함께 나눠보세요."
   },
   "cb89a520-43b1-4424-941e-bf3ffd16674f": {
-    "name": "Karaoke",
-    "description": "Meet someone for karaoke nights. Plan a fun first date built around music and singing together."
+    "name": "노래방",
+    "description": "노래방의 밤을 함께할 사람을 만나보세요. 음악과 노래를 중심으로 한 즐거운 첫 데이트를 계획해보세요."
   },
   "16f88feb-2862-4080-b4b5-7cad419cc6c0": {
-    "name": "Rave Meetup",
-    "description": "Meet someone who loves EDM, trance, and festivals. Plan rave meetups and share the dance floor together."
+    "name": "레이브 모임",
+    "description": "EDM, 트랜스, 페스티벌을 좋아하는 사람을 만나보세요. 레이브 모임을 계획하고 함께 댄스 플로어를 즐겨보세요."
   },
   "8d7d7157-0d4a-4855-8451-cc4808955915": {
-    "name": "Pets (Dogs, Cats)",
-    "description": "Meet a fellow pet lover. Plan pet-friendly dates and find a partner who loves animals as much as you do."
+    "name": "반려동물 (강아지, 고양이)",
+    "description": "동료 반려동물 애호가를 만나보세요. 반려동물 동반 데이트를 계획하고, 당신만큼 동물을 사랑하는 상대를 찾아보세요."
   },
   "e1587e0e-1c06-4383-8d63-4aaee3b4ad99": {
-    "name": "Christians",
-    "description": "Meet a fellow Christian. Connect over shared faith, plan fellowship activities, and find a partner to build a relationship with."
+    "name": "기독교인",
+    "description": "동료 기독교인을 만나보세요. 같은 신앙으로 이어지고, 교제 활동을 계획하며, 관계를 만들어갈 상대를 찾아보세요."
   },
   "02b4ccea-ce60-4d74-9466-bf7b9e0affc1": {
-    "name": "Buddhism",
-    "description": "Meet someone who shares Buddhist beliefs or practice. Connect over shared values and find a partner on the same path."
+    "name": "불교",
+    "description": "불교 신념이나 수행을 함께 나누는 사람을 만나보세요. 같은 가치관으로 이어지고, 같은 길을 걷는 상대를 찾아보세요."
   },
   "06752c8c-c9a4-4580-b8a4-5a7ed1195430": {
-    "name": "Islam",
-    "description": "Meet a fellow Muslim. Connect over shared faith and values, and find a partner who shares your lifestyle."
+    "name": "이슬람교",
+    "description": "동료 무슬림을 만나보세요. 같은 신앙과 가치관으로 이어지고, 라이프스타일이 같은 상대를 찾아보세요."
   },
   "5303d17e-376b-4a39-8469-7e2bf47f2e8a": {
-    "name": "Hinduism",
-    "description": "Meet someone who shares Hindu beliefs or practice. Connect over shared values and find a partner on the same path."
+    "name": "힌두교",
+    "description": "힌두교 신념이나 수행을 함께 나누는 사람을 만나보세요. 같은 가치관으로 이어지고, 같은 길을 걷는 상대를 찾아보세요."
   },
   "799ddcf0-f2d6-4286-b8d5-c7195c1ce405": {
-    "name": "Spiritual",
-    "description": "Meet someone spiritually-minded. Discuss energy, mindfulness, and personal growth with a partner on a similar journey."
+    "name": "영적인",
+    "description": "영적 성향의 사람을 만나보세요. 에너지, 마음챙김, 자기 성장에 대해 비슷한 여정을 걷는 상대와 이야기 나눠보세요."
   },
   "ddd87c59-ed84-41db-9e35-1b59488e0b5a": {
-    "name": "Witchcraft",
-    "description": "Meet someone into witchcraft, tarot, or modern paganism. Share practices and find a partner who shares your path."
+    "name": "위카/마법",
+    "description": "위카, 타로, 현대 이교에 관심 있는 사람을 만나보세요. 수행을 나누고, 같은 길을 걷는 상대를 찾아보세요."
   },
   "a0d57a5b-abb4-446e-bca8-fc3498400a1b": {
-    "name": "Atheist",
-    "description": "Meet someone who shares your secular worldview. Discuss ideas and find a partner on the same page about faith."
+    "name": "무신론자",
+    "description": "세속적 세계관을 공유하는 사람을 만나보세요. 생각을 나누고, 신앙에 대해 뜻이 맞는 상대를 찾아보세요."
   },
   "04965e7e-02a7-48e4-9b68-12a8d0cbabeb": {
-    "name": "Philosophy",
-    "description": "Meet someone who loves deep conversations. Discuss life's big questions and find a partner who thinks the way you do."
+    "name": "철학",
+    "description": "깊은 대화를 좋아하는 사람을 만나보세요. 삶의 큰 질문을 논하고, 당신과 같은 방식으로 생각하는 상대를 찾아보세요."
   },
   "cd14e4bc-96bb-466a-8932-7bcda97b0375": {
-    "name": "Bar Hopping",
-    "description": "Meet someone to go out with. Plan bar nights and find a partner who loves the nightlife scene."
+    "name": "바 호핑",
+    "description": "함께 나가 놀 사람을 만나보세요. 바에서의 밤을 계획하고, 나이트라이프를 좋아하는 상대를 찾아보세요."
   },
   "8ef8bda7-7085-48e7-b54f-23a03b01f1f5": {
-    "name": "Cafe Hopping",
-    "description": "Meet someone to explore cafes with. Plan cafe dates and find your next favorite coffee spot together."
+    "name": "카페 투어",
+    "description": "함께 카페를 탐방할 사람을 만나보세요. 카페 데이트를 계획하고 다음 최애 커피 스팟을 함께 찾아보세요."
   },
   "d217c7aa-8f5a-4067-bc44-e4758141d384": {
-    "name": "Dating Over Forty",
-    "description": "Meet singles over 40 at a similar life stage. Plan dates and find a partner who's looking for the same thing."
+    "name": "40대 이상 데이트",
+    "description": "비슷한 인생 단계의 40대 이상 싱글을 만나보세요. 데이트를 계획하고, 같은 것을 찾는 상대를 만나보세요."
   },
   "3a0b46b1-91c2-4320-9359-60bab91f9913": {
-    "name": "Dating Over Fifty",
-    "description": "Meet singles over 50 at a similar life stage. Plan dates and find a partner who's looking for the same thing."
+    "name": "50대 이상 데이트",
+    "description": "비슷한 인생 단계의 50대 이상 싱글을 만나보세요. 데이트를 계획하고, 같은 것을 찾는 상대를 만나보세요."
   },
   "c17bdc8e-a0b7-484c-9c1b-a9660975ef86": {
-    "name": "Play - Badminton, Tennis, Pickleball",
-    "description": "Meet someone to play with. Plan matches at the court and find a partner for racquet sports and beyond."
+    "name": "운동 - 배드민턴, 테니스, 피클볼",
+    "description": "함께 운동할 사람을 만나보세요. 코트에서 경기를 계획하고, 라켓 스포츠와 그 이상을 함께할 상대를 찾아보세요."
   },
   "96e3f2a5-3b52-4055-9a47-a0410fac3ce3": {
-    "name": "Runners",
-    "description": "Meet a fellow runner. Plan runs together, train for races, and find a partner to hit the pavement with."
+    "name": "러너",
+    "description": "동료 러너를 만나보세요. 함께 달리기를 계획하고, 대회를 준비하며, 함께 길을 달릴 상대를 찾아보세요."
   },
   "c79b4eed-232c-4b07-b904-7786067d4088": {
-    "name": "Rock Climbing",
-    "description": "Meet a fellow climber. Plan gym sessions or outdoor climbs and find a partner to conquer routes with."
+    "name": "클라이밍",
+    "description": "동료 클라이머를 만나보세요. 실내 클라이밍이나 야외 등반을 계획하고, 루트를 함께 정복할 상대를 찾아보세요."
   },
   "4400cb86-0301-45b7-acc0-edb6f9f4e2a5": {
-    "name": "Cycling",
-    "description": "Meet someone to ride with. Plan group rides and find a partner who shares your love for cycling."
+    "name": "자전거",
+    "description": "함께 라이딩할 사람을 만나보세요. 그룹 라이딩을 계획하고, 자전거 사랑을 나눌 상대를 찾아보세요."
   },
   "47f8ef70-6b9a-4df0-b9b9-ded8ee529204": {
-    "name": "Adventure Sports",
-    "description": "Meet someone who loves adventure challenges. Plan outdoor competitions together and find a partner who pushes limits with you."
+    "name": "익스트림 스포츠",
+    "description": "모험적인 도전을 좋아하는 사람을 만나보세요. 야외 대회를 함께 계획하고, 함께 한계를 밀어붙일 상대를 찾아보세요."
   },
   "8996881e-aaa1-49bb-885a-05082e66b800": {
-    "name": "Martial Arts",
-    "description": "Meet someone into martial arts like Muay Thai, BJJ, CrossFit... Train together and find a partner who shares your fitness drive."
+    "name": "무술",
+    "description": "무에타이, 주짓수, 크로스핏 같은 무술을 좋아하는 사람을 만나보세요. 함께 훈련하고, 피트니스 열정을 나눌 상대를 찾아보세요."
   },
   "4bb66a53-402a-4ea9-8f88-8bb43de31fd4": {
-    "name": "Dwarfism",
-    "description": "Meet someone who shares the experience of dwarfism. Connect, support each other, and find a partner who understands."
+    "name": "왜소증",
+    "description": "왜소증의 경험을 함께 나누는 사람을 만나보세요. 이어지고 서로를 응원하며, 이해해주는 상대를 찾아보세요."
   },
   "4a686578-7417-481c-bc31-14c42c4609b2": {
-    "name": "Mental Health",
-    "description": "Meet someone who understands living with bipolar, OCD, ADHD, or anxiety. Connect, support each other, and find a partner who gets it."
+    "name": "정신 건강",
+    "description": "조울증, 강박증, ADHD, 불안과 함께 사는 삶을 이해하는 사람을 만나보세요. 이어지고 서로를 응원하며, 당신을 이해해주는 상대를 찾아보세요."
   },
   "8fdbdf4d-51d1-481b-9e19-de5b6bb5f59d": {
-    "name": "Disabled",
-    "description": "Meet someone who shares your experience as blind, deaf, or physically disabled. Connect and find a partner who understands your daily life."
+    "name": "장애인",
+    "description": "시각, 청각 또는 신체 장애의 경험을 함께 나누는 사람을 만나보세요. 이어지고, 당신의 일상을 이해해주는 상대를 찾아보세요."
   },
   "4e8e99a4-0238-40d9-a80d-577477ab9bb5": {
-    "name": "Neurodivergent",
-    "description": "Meet someone who shares an autism or Asperger's experience. Connect and find a partner who understands how you see the world."
+    "name": "신경다양성",
+    "description": "자폐나 아스퍼거의 경험을 함께 나누는 사람을 만나보세요. 이어지고, 당신이 세상을 보는 방식을 이해해주는 상대를 찾아보세요."
   },
   "b273af8d-fba7-4e86-8062-a51ca77b8fd1": {
-    "name": "Divorced",
-    "description": "Meet someone who's also navigating life after divorce. Connect, support each other, and find a partner who understands where you're starting from."
+    "name": "이혼",
+    "description": "이혼 후의 삶을 함께 헤쳐가는 사람을 만나보세요. 이어지고 서로를 응원하며, 당신의 출발점을 이해해주는 상대를 찾아보세요."
   },
   "8ba103ee-6bb4-46f5-9c85-e1f81d7fe7af": {
-    "name": "Adventure Challenges",
-    "description": "Meet someone up for a challenge. Team up for adventure events and find a partner who loves adventure."
+    "name": "어드벤처 챌린지",
+    "description": "도전을 즐길 사람을 만나보세요. 모험 이벤트에 팀을 이루고, 모험을 사랑하는 상대를 찾아보세요."
   },
   "6f476e4a-d9f1-44f0-93e4-b051ec9fea65": {
-    "name": "Travel",
-    "description": "Meet someone to travel with. Plan trips together and find a partner who shares your wanderlust."
+    "name": "여행",
+    "description": "함께 여행할 사람을 만나보세요. 함께 여행을 계획하고, 당신의 방랑벽을 나눌 상대를 찾아보세요."
   },
   "6ad9e84b-4eb5-4e13-9f1c-71edbad58663": {
-    "name": "Camping",
-    "description": "Meet someone to camp with. Plan trips together and find a partner who loves the outdoors."
+    "name": "캠핑",
+    "description": "함께 캠핑할 사람을 만나보세요. 함께 여행을 계획하고, 야외 활동을 사랑하는 상대를 찾아보세요."
   },
   "53af7618-b981-4876-8280-a15e6635290b": {
-    "name": "Diving",
-    "description": "Meet a fellow diver. Plan dive trips together and find a partner to explore underwater with."
+    "name": "다이빙",
+    "description": "동료 다이버를 만나보세요. 함께 다이빙 여행을 계획하고, 수중을 함께 탐험할 상대를 찾아보세요."
   },
   "71e1b035-2615-47ca-8ca8-2271e8f9ef55": {
-    "name": "Solo Travelers",
-    "description": "Meet a fellow solo traveler. Plan a trip together and find a partner who loves exploring new places."
+    "name": "혼자 여행하는 사람",
+    "description": "동료 솔로 여행자를 만나보세요. 함께 여행을 계획하고, 새로운 곳을 탐험하는 것을 사랑하는 상대를 찾아보세요."
   }
 }

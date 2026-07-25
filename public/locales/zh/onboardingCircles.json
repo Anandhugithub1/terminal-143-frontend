@@ -1,302 +1,302 @@
 {
   "c5e751f9-7a6b-456a-b5f0-fdc926c5fd64": {
-    "name": "Painting",
-    "description": "Meet someone who paints or sketches too. Share your work, get feedback, and plan an art date or gallery visit together."
+    "name": "绘画",
+    "description": "遇见同样喜欢绘画或素描的人。分享你的作品，获得反馈，一起安排艺术约会或逛画廊。"
   },
   "d419dc18-8c67-4476-89cd-7b4c26a2c4a1": {
-    "name": "Culture Exchange",
-    "description": "Meet someone from a different culture. Swap traditions, plan outings together, and get to know each other through your backgrounds."
+    "name": "文化交流",
+    "description": "遇见来自不同文化背景的人。交换传统，一起外出，通过彼此的背景相互了解。"
   },
   "99845b4a-a07f-414c-84e9-ba833caa19a5": {
-    "name": "Anime Fans",
-    "description": "Meet someone who loves anime too. Talk favorite series, plan watch parties, and bond over shared fandoms."
+    "name": "动漫爱好者",
+    "description": "遇见同样热爱动漫的人。聊聊喜欢的系列，安排追番派对，因共同的爱好而结缘。"
   },
   "9cc4e2b3-0ab3-47f7-b8fa-84d28f442854": {
-    "name": "Cosplay Lovers",
-    "description": "Meet a fellow cosplayer. Share your builds, plan con meetups, and find someone to cosplay with."
+    "name": "Cosplay 爱好者",
+    "description": "遇见同好 coser。分享你的作品，安排漫展见面，找个人一起 cosplay。"
   },
   "0a0adf83-bea2-4fa8-b1fd-e61e9d602c04": {
-    "name": "Movie Lovers",
-    "description": "Meet someone to plan movie nights with. Talk about favorite films, swap recommendations, and find your next movie date."
+    "name": "电影爱好者",
+    "description": "遇见可以一起安排电影之夜的人。聊聊最爱的电影，交换推荐，找到你的下一场电影约会。"
   },
   "a7cf9176-67d5-4e52-b67c-65712f417712": {
-    "name": "Aspiring Writers",
-    "description": "Meet a fellow writer. Swap your work, plan writing dates at a cafe, and support each other's creative journey."
+    "name": "写作新手",
+    "description": "遇见同为写作者的人。交换作品，在咖啡馆安排写作约会，互相支持彼此的创作旅程。"
   },
   "d3d590cb-6350-437d-a9eb-ec7a33dab30c": {
-    "name": "Entrepreneurs",
-    "description": "Meet a fellow founder or business owner. Talk business, plan meetups, and find someone who gets the hustle."
+    "name": "创业者",
+    "description": "遇见同为创始人或企业主的人。聊聊生意，安排见面，找个懂拼搏的人。"
   },
   "83dca486-4469-4694-87c5-6d60391d0497": {
-    "name": "Digital Nomads",
-    "description": "Meet another remote worker or digital nomad. Plan coworking dates, share travel and visa tips, and find a partner who lives life on the move."
+    "name": "数字游民",
+    "description": "遇见另一位远程工作者或数字游民。安排共同办公约会，分享旅行和签证攻略，找个同样在路上生活的伴侣。"
   },
   "6eba4e17-55d2-4a09-8ad4-03fcebc893c6": {
-    "name": "Content Creators",
-    "description": "Meet a fellow creator. Collaborate, plan content together, and find someone who understands the creator lifestyle."
+    "name": "内容创作者",
+    "description": "遇见同为创作者的人。一起合作，共同策划内容，找个理解创作者生活方式的人。"
   },
   "b2fbe728-9adf-43ef-a03a-bedb17c3d8ed": {
-    "name": "Medical/Healthcare",
-    "description": "For healthcare workers and anyone who wants to date one. Long shifts and high stress make this job hard to explain to outsiders, so meet a doctor, nurse, or someone drawn to that world."
+    "name": "医疗/健康",
+    "description": "献给医护工作者以及想与他们约会的人。长时间轮班和高压让这份工作难以向外人解释，来遇见一位医生、护士，或被这个领域吸引的人。"
   },
   "de942c1e-8416-4670-9347-d01f0b714590": {
-    "name": "Academia/Research",
-    "description": "For professors, PhDs, researchers, and anyone into that world. Late nights in the lab or library, deep conversations, and a mind worth getting to know."
+    "name": "学术/研究",
+    "description": "献给教授、博士、研究者以及热爱这个领域的人。实验室或图书馆里的深夜、深刻的对话，还有一个值得结识的头脑。"
   },
   "01b57f4f-9860-4ee7-8aca-2677272abfaf": {
-    "name": "Legal",
-    "description": "For lawyers and anyone who wants to date one. Long hours and high stakes come with the job, so meet someone who lives and breathes the law."
+    "name": "法律",
+    "description": "献给律师以及想与他们约会的人。长时间工作和高风险是这份职业的一部分，来遇见一位以法律为生的人。"
   },
   "803d8698-59e8-4c54-b79e-ad382fc73ce8": {
-    "name": "Entertainment & Artist",
-    "description": "For actors, musicians, dancers, and creatives, and anyone drawn to that world. Stage lights, studio sessions, and unpredictable schedules come with the territory, so meet someone living the artist's life."
+    "name": "娱乐与艺术家",
+    "description": "献给演员、音乐人、舞者、创作者以及被这个领域吸引的人。舞台灯光、录音棚时光和难以预测的日程是常态，来遇见一位过着艺术家生活的人。"
   },
   "2d34f295-2e26-45d3-9ab1-e3748bb332e5": {
-    "name": "Finance",
-    "description": "For bankers, traders, and finance professionals, and anyone who wants to date one. Long hours and high pressure come with the job, so meet someone who gets the grind."
+    "name": "金融",
+    "description": "献给银行家、交易员、金融专业人士以及想与他们约会的人。长时间工作和高压是这份工作的一部分，来遇见一位懂这份忙碌的人。"
   },
   "0a4d343f-39e7-482c-a99a-3dabe8a1c6ff": {
-    "name": "Pilots/Flight Crew",
-    "description": "For pilots, flight attendants, and anyone drawn to that lifestyle. Layovers and shifting time zones make a normal schedule tricky, so meet someone who lives that life too."
+    "name": "飞行员/机组人员",
+    "description": "献给飞行员、空乘以及被这种生活方式吸引的人。经停和不断变化的时区让正常作息变得棘手，来遇见一位同样过着这种生活的人。"
   },
   "bb735811-0eb7-45f4-af3d-9513cf260f97": {
-    "name": "Environmental Conscious",
-    "description": "Meet someone who cares about sustainability. Plan eco-friendly dates, join clean-up meetups, and share ideas for greener living together."
+    "name": "环保意识",
+    "description": "遇见关心可持续发展的人。安排环保约会，参加清洁活动，一起分享更绿色生活的想法。"
   },
   "9a9b6071-97b0-4bda-962d-ef0c26b708d9": {
-    "name": "Dance",
-    "description": "Meet a dance partner. Plan nights out at salsa, swing, or ballroom events and learn new moves together."
+    "name": "舞蹈",
+    "description": "遇见舞伴。安排萨尔萨、摇摆舞或交谊舞之夜，一起学习新舞步。"
   },
   "7eea747c-25af-4705-a174-8b54bac4949f": {
-    "name": "Gaming",
-    "description": "Meet someone to game with. Team up, plan sessions, and find a partner who shares your love for gaming."
+    "name": "游戏",
+    "description": "遇见一起玩游戏的人。组队，安排游戏时间，找个同样热爱游戏的伴侣。"
   },
   "212b0561-64f1-4005-a0a6-ecfc55f8e4c0": {
-    "name": "Board Games",
-    "description": "Meet someone for game night. Plan tabletop sessions and find a partner to build a board game habit with."
+    "name": "桌游",
+    "description": "遇见一起玩游戏之夜的人。安排桌游局，找个伴侣一起养成玩桌游的习惯。"
   },
   "3c3bb825-1682-4b24-bd35-61ccb57ea79d": {
-    "name": "Yoga",
-    "description": "Meet someone who practices yoga. Plan classes together and find a partner who shares your approach to mindfulness and movement."
+    "name": "瑜伽",
+    "description": "遇见练瑜伽的人。一起安排课程，找个在正念与运动上理念相同的伴侣。"
   },
   "565d651a-299a-4116-9d36-4fa72a4efd43": {
-    "name": "Healthy Habits",
-    "description": "Meet someone focused on healthy living. Plan meals, workouts, and routines together with a partner who shares your lifestyle goals."
+    "name": "健康习惯",
+    "description": "遇见专注于健康生活的人。一起规划饮食、锻炼和日常作息，找个生活方式目标相同的伴侣。"
   },
   "2047eb2c-2616-4e20-a032-afe2e13a70e8": {
-    "name": "Foodies",
-    "description": "Meet someone to explore restaurants and dishes with. Plan food dates and discover new favorites together."
+    "name": "美食家",
+    "description": "遇见一起探索餐厅和美食的人。安排美食约会，一起发现新的最爱。"
   },
   "2d970fa3-71c5-4648-8ad7-6ab9cdaefcee": {
-    "name": "Reading, Book Lovers",
-    "description": "Meet a fellow reader. Swap book recommendations, plan reading dates, and find a partner to talk books with."
+    "name": "阅读，书友",
+    "description": "遇见同为读者的人。交换书籍推荐，安排阅读约会，找个伴侣一起聊书。"
   },
   "fa24cf90-99af-45eb-b595-9e37813e1987": {
-    "name": "Cooking",
-    "description": "Meet someone who loves to cook. Plan cooking dates, swap recipes, and find a partner to share meals with."
+    "name": "烹饪",
+    "description": "遇见热爱烹饪的人。安排下厨约会，交换食谱，找个伴侣一起分享美食。"
   },
   "4b53ef93-8dc6-4faf-b4b4-b1463a816207": {
-    "name": "Gardening",
-    "description": "Meet a fellow plant lover. Swap tips, plan garden visits, and find a partner to grow things with."
+    "name": "园艺",
+    "description": "遇见同为植物爱好者的人。交换心得，安排逛花园，找个伴侣一起种植。"
   },
   "2902b48b-f2ea-47af-b258-53089e9b70b0": {
-    "name": "Language Exchange",
-    "description": "Meet someone to practice languages with. Teach each other, plan language dates, and find a partner while learning."
+    "name": "语言交换",
+    "description": "遇见一起练习语言的人。互相教学，安排语言约会，在学习中找到伴侣。"
   },
   "e5b58365-d834-42cb-bc09-a5a447f9f7eb": {
-    "name": "Asian Americans in Thailand",
-    "description": "For Asian Americans in Thailand and anyone who connects with that background. Meet, connect, and find someone."
+    "name": "泰国的亚裔美国人",
+    "description": "献给在泰国的亚裔美国人以及与这一背景产生共鸣的人。相遇、连接，找到那个人。"
   },
   "d3be2864-9de4-4605-9219-27791d1b3fc7": {
-    "name": "Latinos Singles Thailand",
-    "description": "For anyone interested in meeting Latino singles in Thailand. Good music, good energy, and good conversation, this is the place if that's your kind of connection."
+    "name": "泰国拉丁单身",
+    "description": "献给有兴趣结识泰国拉丁单身的人。好音乐、好能量、好对话，如果这就是你想要的连接方式，这里就是你的地方。"
   },
   "f644dd32-cb3f-4496-8a55-25652bd56845": {
-    "name": "Jewish Singles Thailand",
-    "description": "For anyone interested in meeting Jewish singles in Thailand. A small, tight-knit community abroad, great for finding someone who shares your faith or simply wants to learn more about it."
+    "name": "泰国犹太单身",
+    "description": "献给有兴趣结识泰国犹太单身的人。这是海外一个紧密的小社区，很适合找到有相同信仰或只是想多了解的人。"
   },
   "b5912deb-8eb2-48ad-84ad-fe0aa6334695": {
-    "name": "Indians Singles Thailand",
-    "description": "For anyone interested in meeting Indian singles in Thailand. Whether it's the food, the festivals, or the people, this is where those conversations turn into dates."
+    "name": "泰国印度单身",
+    "description": "献给有兴趣结识泰国印度单身的人。无论是美食、节日还是人，这里就是那些对话变成约会的地方。"
   },
   "32c67a2a-c840-4612-abc4-be8e739bc379": {
-    "name": "Nigerians Singles Thailand",
-    "description": "For anyone interested in meeting Nigerian singles in Thailand. Bold personalities and big energy come with the territory, so come find someone who matches it."
+    "name": "泰国尼日利亚单身",
+    "description": "献给有兴趣结识泰国尼日利亚单身的人。大胆的个性和充沛的能量是这里的特色，来找个与之相配的人。"
   },
   "5377dc4c-f0f8-4a1c-83d0-325d65b8ddec": {
-    "name": "Japanese Singles Thailand",
-    "description": "For anyone interested in meeting Japanese singles in Thailand. Whether you grew up with the culture or simply love it from afar, this is the place to find someone."
+    "name": "泰国日本单身",
+    "description": "献给有兴趣结识泰国日本单身的人。无论你是在这种文化中长大，还是只是远远地热爱它，这里都是你找到那个人的地方。"
   },
   "11215248-46c8-43eb-97b7-0271ae62395a": {
-    "name": "Chinese Singles Thailand",
-    "description": "For anyone interested in meeting Chinese singles in Thailand. A space to connect over language, food, and culture, and find someone worth getting to know."
+    "name": "泰国华人单身",
+    "description": "献给有兴趣结识泰国华人单身的人。一个通过语言、美食和文化建立连接的空间，找到值得结识的人。"
   },
   "9eff87bb-2996-4dae-80cb-78d30f4aa745": {
-    "name": "French Singles Thailand",
-    "description": "For anyone interested in meeting French singles in Thailand. Wine, language, and a bit of romance, this circle is for anyone drawn to that French charm."
+    "name": "泰国法国单身",
+    "description": "献给有兴趣结识泰国法国单身的人。红酒、语言，还有一点浪漫，这个圈子献给所有被法式魅力吸引的人。"
   },
   "30646ea5-a687-4483-aee7-28ecc2744e83": {
-    "name": "Russian Singles Thailand",
-    "description": "For anyone interested in meeting Russian singles in Thailand. Straightforward and striking, find someone who fits that description."
+    "name": "泰国俄罗斯单身",
+    "description": "献给有兴趣结识泰国俄罗斯单身的人。直率而出众，来找个符合这个描述的人。"
   },
   "2f23eaf6-4660-4541-a8b5-5866245d9136": {
-    "name": "African Americans",
-    "description": "For African Americans abroad and anyone who wants to connect with that culture and community. A space to meet people who share your background or simply want to understand it better."
+    "name": "非裔美国人",
+    "description": "献给身在海外的非裔美国人以及想与这一文化和社区连接的人。一个结识有相同背景、或只是想更好地理解它的人的空间。"
   },
   "3370bb4f-102f-49eb-a3c2-0ab2d0d28136": {
-    "name": "Arab Singles Thailand",
-    "description": "For anyone interested in meeting Arab singles in Thailand. Rich culture and warm hospitality come with the territory, so meet someone who brings all of that."
+    "name": "泰国阿拉伯单身",
+    "description": "献给有兴趣结识泰国阿拉伯单身的人。丰富的文化和热情的待客之道是这里的特色，来遇见一位拥有这一切的人。"
   },
   "478b0eef-fcb8-42ba-8a05-c60d67b7c2d6": {
-    "name": "Kurdish Singles Thailand",
-    "description": "For anyone interested in meeting Kurdish singles in Thailand. A smaller community with deep culture and pride, a great place to find someone genuine."
+    "name": "泰国库尔德单身",
+    "description": "献给有兴趣结识泰国库尔德单身的人。一个文化深厚、充满自豪的小社区，是找到真诚之人的好地方。"
   },
   "28b69c20-6aab-40d0-9549-b04cb7854c04": {
-    "name": "Farangs Thailand",
-    "description": "Meet fellow foreigners living in Thailand. Share tips on local life and find a partner who understands the expat experience."
+    "name": "泰国外国人",
+    "description": "遇见同在泰国生活的外国人。分享本地生活攻略，找个理解侨居生活的伴侣。"
   },
   "fa050913-1743-48e4-871a-78075ed4fc34": {
-    "name": "Introverted",
-    "description": "Meet someone who prefers quieter connections. Skip the small talk pressure and find a partner who gets your pace."
+    "name": "内向者",
+    "description": "遇见喜欢安静连接的人。跳过闲聊的压力，找个懂你节奏的伴侣。"
   },
   "ffb77486-f630-4b05-a731-57808794541f": {
-    "name": "Big Beautiful Singles",
-    "description": "Meet someone body-positive and confident. Find a partner who appreciates you as you are."
+    "name": "丰满魅力单身",
+    "description": "遇见自信、爱自己身体的人。找个欣赏真实的你的伴侣。"
   },
   "43704cb0-da27-42d5-8e10-928b9a8da7fc": {
-    "name": "Feminism",
-    "description": "Meet someone who shares your views on gender equality. Discuss ideas together and find a partner who aligns with your values."
+    "name": "女权主义",
+    "description": "遇见在性别平等观念上与你一致的人。一起探讨想法，找个价值观相符的伴侣。"
   },
   "57b77330-6d37-4a5c-b427-9071270ebbe8": {
-    "name": "Liberals",
-    "description": "Meet someone with similar progressive or liberal views. Discuss ideas and current events, and find a partner who shares your outlook."
+    "name": "自由派",
+    "description": "遇见持有相似进步或自由派观点的人。讨论想法和时事，找个观点相同的伴侣。"
   },
   "3703402d-0805-4793-831e-58dbf79a60ac": {
-    "name": "Concerts",
-    "description": "Meet someone to go to concerts with. Plan live music dates and share favorite artists together."
+    "name": "演唱会",
+    "description": "遇见一起去演唱会的人。安排现场音乐约会，一起分享喜欢的艺人。"
   },
   "cb89a520-43b1-4424-941e-bf3ffd16674f": {
-    "name": "Karaoke",
-    "description": "Meet someone for karaoke nights. Plan a fun first date built around music and singing together."
+    "name": "卡拉OK",
+    "description": "遇见一起唱卡拉OK之夜的人。策划一场以音乐和歌唱为主题的有趣初次约会。"
   },
   "16f88feb-2862-4080-b4b5-7cad419cc6c0": {
-    "name": "Rave Meetup",
-    "description": "Meet someone who loves EDM, trance, and festivals. Plan rave meetups and share the dance floor together."
+    "name": "锐舞聚会",
+    "description": "遇见热爱 EDM、迷幻电子和音乐节的人。安排锐舞聚会，一起共享舞池。"
   },
   "8d7d7157-0d4a-4855-8451-cc4808955915": {
-    "name": "Pets (Dogs, Cats)",
-    "description": "Meet a fellow pet lover. Plan pet-friendly dates and find a partner who loves animals as much as you do."
+    "name": "宠物（猫狗）",
+    "description": "遇见同为宠物爱好者的人。安排宠物友好约会，找个和你一样爱动物的伴侣。"
   },
   "e1587e0e-1c06-4383-8d63-4aaee3b4ad99": {
-    "name": "Christians",
-    "description": "Meet a fellow Christian. Connect over shared faith, plan fellowship activities, and find a partner to build a relationship with."
+    "name": "基督徒",
+    "description": "遇见同为基督徒的人。因共同的信仰而连接，安排团契活动，找个伴侣建立关系。"
   },
   "02b4ccea-ce60-4d74-9466-bf7b9e0affc1": {
-    "name": "Buddhism",
-    "description": "Meet someone who shares Buddhist beliefs or practice. Connect over shared values and find a partner on the same path."
+    "name": "佛教",
+    "description": "遇见有相同佛教信仰或修行的人。因共同的价值观而连接，找个走在同一条路上的伴侣。"
   },
   "06752c8c-c9a4-4580-b8a4-5a7ed1195430": {
-    "name": "Islam",
-    "description": "Meet a fellow Muslim. Connect over shared faith and values, and find a partner who shares your lifestyle."
+    "name": "伊斯兰教",
+    "description": "遇见同为穆斯林的人。因共同的信仰和价值观而连接，找个生活方式相同的伴侣。"
   },
   "5303d17e-376b-4a39-8469-7e2bf47f2e8a": {
-    "name": "Hinduism",
-    "description": "Meet someone who shares Hindu beliefs or practice. Connect over shared values and find a partner on the same path."
+    "name": "印度教",
+    "description": "遇见有相同印度教信仰或修行的人。因共同的价值观而连接，找个走在同一条路上的伴侣。"
   },
   "799ddcf0-f2d6-4286-b8d5-c7195c1ce405": {
-    "name": "Spiritual",
-    "description": "Meet someone spiritually-minded. Discuss energy, mindfulness, and personal growth with a partner on a similar journey."
+    "name": "灵性",
+    "description": "遇见注重灵性的人。与走在相似旅程上的伴侣探讨能量、正念和个人成长。"
   },
   "ddd87c59-ed84-41db-9e35-1b59488e0b5a": {
-    "name": "Witchcraft",
-    "description": "Meet someone into witchcraft, tarot, or modern paganism. Share practices and find a partner who shares your path."
+    "name": "巫术",
+    "description": "遇见对巫术、塔罗或现代异教感兴趣的人。分享修习，找个走在同一条路上的伴侣。"
   },
   "a0d57a5b-abb4-446e-bca8-fc3498400a1b": {
-    "name": "Atheist",
-    "description": "Meet someone who shares your secular worldview. Discuss ideas and find a partner on the same page about faith."
+    "name": "无神论者",
+    "description": "遇见与你世俗观念相同的人。探讨想法，找个在信仰问题上想法一致的伴侣。"
   },
   "04965e7e-02a7-48e4-9b68-12a8d0cbabeb": {
-    "name": "Philosophy",
-    "description": "Meet someone who loves deep conversations. Discuss life's big questions and find a partner who thinks the way you do."
+    "name": "哲学",
+    "description": "遇见热爱深度对话的人。探讨人生的重大问题，找个和你想法相同的伴侣。"
   },
   "cd14e4bc-96bb-466a-8932-7bcda97b0375": {
-    "name": "Bar Hopping",
-    "description": "Meet someone to go out with. Plan bar nights and find a partner who loves the nightlife scene."
+    "name": "酒吧漫游",
+    "description": "遇见一起出去玩的人。安排酒吧之夜，找个热爱夜生活的伴侣。"
   },
   "8ef8bda7-7085-48e7-b54f-23a03b01f1f5": {
-    "name": "Cafe Hopping",
-    "description": "Meet someone to explore cafes with. Plan cafe dates and find your next favorite coffee spot together."
+    "name": "咖啡馆漫游",
+    "description": "遇见一起探索咖啡馆的人。安排咖啡馆约会，一起找到下一家最爱的咖啡店。"
   },
   "d217c7aa-8f5a-4067-bc44-e4758141d384": {
-    "name": "Dating Over Forty",
-    "description": "Meet singles over 40 at a similar life stage. Plan dates and find a partner who's looking for the same thing."
+    "name": "四十岁以上约会",
+    "description": "遇见处于相似人生阶段的40岁以上单身。安排约会，找个追求同样目标的伴侣。"
   },
   "3a0b46b1-91c2-4320-9359-60bab91f9913": {
-    "name": "Dating Over Fifty",
-    "description": "Meet singles over 50 at a similar life stage. Plan dates and find a partner who's looking for the same thing."
+    "name": "五十岁以上约会",
+    "description": "遇见处于相似人生阶段的50岁以上单身。安排约会，找个追求同样目标的伴侣。"
   },
   "c17bdc8e-a0b7-484c-9c1b-a9660975ef86": {
-    "name": "Play - Badminton, Tennis, Pickleball",
-    "description": "Meet someone to play with. Plan matches at the court and find a partner for racquet sports and beyond."
+    "name": "打球 - 羽毛球、网球、匹克球",
+    "description": "遇见一起打球的人。在球场安排比赛，找个球拍运动及更多活动的伙伴。"
   },
   "96e3f2a5-3b52-4055-9a47-a0410fac3ce3": {
-    "name": "Runners",
-    "description": "Meet a fellow runner. Plan runs together, train for races, and find a partner to hit the pavement with."
+    "name": "跑者",
+    "description": "遇见同为跑者的人。一起安排跑步，为比赛训练，找个伴侣一起上路奔跑。"
   },
   "c79b4eed-232c-4b07-b904-7786067d4088": {
-    "name": "Rock Climbing",
-    "description": "Meet a fellow climber. Plan gym sessions or outdoor climbs and find a partner to conquer routes with."
+    "name": "攀岩",
+    "description": "遇见同为攀岩者的人。安排岩馆训练或户外攀登，找个伴侣一起征服路线。"
   },
   "4400cb86-0301-45b7-acc0-edb6f9f4e2a5": {
-    "name": "Cycling",
-    "description": "Meet someone to ride with. Plan group rides and find a partner who shares your love for cycling."
+    "name": "骑行",
+    "description": "遇见一起骑行的人。安排团骑，找个同样热爱骑行的伴侣。"
   },
   "47f8ef70-6b9a-4df0-b9b9-ded8ee529204": {
-    "name": "Adventure Sports",
-    "description": "Meet someone who loves adventure challenges. Plan outdoor competitions together and find a partner who pushes limits with you."
+    "name": "极限运动",
+    "description": "遇见热爱冒险挑战的人。一起安排户外比赛，找个和你一起突破极限的伴侣。"
   },
   "8996881e-aaa1-49bb-885a-05082e66b800": {
-    "name": "Martial Arts",
-    "description": "Meet someone into martial arts like Muay Thai, BJJ, CrossFit... Train together and find a partner who shares your fitness drive."
+    "name": "武术",
+    "description": "遇见热爱泰拳、巴西柔术、CrossFit 等武术的人……一起训练，找个健身劲头相同的伴侣。"
   },
   "4bb66a53-402a-4ea9-8f88-8bb43de31fd4": {
-    "name": "Dwarfism",
-    "description": "Meet someone who shares the experience of dwarfism. Connect, support each other, and find a partner who understands."
+    "name": "侏儒症",
+    "description": "遇见有相同侏儒症经历的人。连接、互相支持，找个理解你的伴侣。"
   },
   "4a686578-7417-481c-bc31-14c42c4609b2": {
-    "name": "Mental Health",
-    "description": "Meet someone who understands living with bipolar, OCD, ADHD, or anxiety. Connect, support each other, and find a partner who gets it."
+    "name": "心理健康",
+    "description": "遇见理解与双相、强迫症、多动症或焦虑共处的人。连接、互相支持，找个懂你的伴侣。"
   },
   "8fdbdf4d-51d1-481b-9e19-de5b6bb5f59d": {
-    "name": "Disabled",
-    "description": "Meet someone who shares your experience as blind, deaf, or physically disabled. Connect and find a partner who understands your daily life."
+    "name": "残障人士",
+    "description": "遇见与你有相同经历的视障、听障或肢体残障人士。连接并找个理解你日常生活的伴侣。"
   },
   "4e8e99a4-0238-40d9-a80d-577477ab9bb5": {
-    "name": "Neurodivergent",
-    "description": "Meet someone who shares an autism or Asperger's experience. Connect and find a partner who understands how you see the world."
+    "name": "神经多样性",
+    "description": "遇见有相同自闭症或阿斯伯格经历的人。连接并找个理解你看待世界方式的伴侣。"
   },
   "b273af8d-fba7-4e86-8062-a51ca77b8fd1": {
-    "name": "Divorced",
-    "description": "Meet someone who's also navigating life after divorce. Connect, support each other, and find a partner who understands where you're starting from."
+    "name": "离异",
+    "description": "遇见同样在离婚后重新出发的人。连接、互相支持，找个理解你起点的伴侣。"
   },
   "8ba103ee-6bb4-46f5-9c85-e1f81d7fe7af": {
-    "name": "Adventure Challenges",
-    "description": "Meet someone up for a challenge. Team up for adventure events and find a partner who loves adventure."
+    "name": "冒险挑战",
+    "description": "遇见乐于接受挑战的人。组队参加冒险活动，找个热爱冒险的伴侣。"
   },
   "6f476e4a-d9f1-44f0-93e4-b051ec9fea65": {
-    "name": "Travel",
-    "description": "Meet someone to travel with. Plan trips together and find a partner who shares your wanderlust."
+    "name": "旅行",
+    "description": "遇见一起旅行的人。一起规划行程，找个同样向往远方的伴侣。"
   },
   "6ad9e84b-4eb5-4e13-9f1c-71edbad58663": {
-    "name": "Camping",
-    "description": "Meet someone to camp with. Plan trips together and find a partner who loves the outdoors."
+    "name": "露营",
+    "description": "遇见一起露营的人。一起规划行程，找个热爱户外的伴侣。"
   },
   "53af7618-b981-4876-8280-a15e6635290b": {
-    "name": "Diving",
-    "description": "Meet a fellow diver. Plan dive trips together and find a partner to explore underwater with."
+    "name": "潜水",
+    "description": "遇见同为潜水者的人。一起安排潜水之旅，找个伴侣一起探索水下世界。"
   },
   "71e1b035-2615-47ca-8ca8-2271e8f9ef55": {
-    "name": "Solo Travelers",
-    "description": "Meet a fellow solo traveler. Plan a trip together and find a partner who loves exploring new places."
+    "name": "独自旅行者",
+    "description": "遇见同为独自旅行者的人。一起规划一段旅程，找个热爱探索新地方的伴侣。"
   }
 }
