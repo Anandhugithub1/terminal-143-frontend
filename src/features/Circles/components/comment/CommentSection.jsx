@@ -174,7 +174,11 @@ export default function CommentSection({ isOpen, onClose, post }) {
                         onChange={(e) => setReplyText(e.target.value.slice(0, COMMENT_MAX_LENGTH))}
                         placeholder={t("comments.replyPlaceholder")}
                         maxLength={COMMENT_MAX_LENGTH}
-                        className="flex-1 px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        // iOS Safari auto-zooms the page on focus for inputs under
+                        // 16px computed font-size — text-xs (12px) was tripping
+                        // that, so pin it directly (see ChatConversationPage).
+                        style={{ fontSize: 16 }}
+                        className="flex-1 px-3 py-1.5 bg-white border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20"
                       />
                       <button
                         type="submit"
@@ -206,7 +210,11 @@ export default function CommentSection({ isOpen, onClose, post }) {
                 onChange={(e) => setNewComment(e.target.value.slice(0, COMMENT_MAX_LENGTH))}
                 placeholder={t("comments.commentPlaceholder")}
                 maxLength={COMMENT_MAX_LENGTH}
-                className="w-full pl-4 pr-12 py-2.5 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
+                // iOS Safari auto-zooms the page on focus for inputs under
+                // 16px computed font-size — text-sm (14px) was tripping
+                // that, so pin it directly (see ChatConversationPage).
+                style={{ fontSize: 16 }}
+                className="w-full pl-4 pr-12 py-2.5 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all"
               />
               <button
                 type="submit"
