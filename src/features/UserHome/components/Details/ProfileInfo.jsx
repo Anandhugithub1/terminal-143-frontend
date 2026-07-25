@@ -37,11 +37,6 @@ const ProfileInfo = memo(({
 
   const likePercent = feedback?.likePercentage || 0
 
-  const feedbackColor =
-    likePercent > 50
-      ? 'text-green-600'
-      : 'text-orange-500'
-
   const genderLabel = genderMap[gender] || gender
 
   return (
@@ -61,11 +56,11 @@ const ProfileInfo = memo(({
           label={genderLabel}
         />
 
-        {likePercent > 0 && (
+        {likePercent >= 50 && (
           <Badge
             icon={<RxHeart size={12} />}
             label={`${likePercent}%`}
-            iconClass={feedbackColor}
+            iconClass="text-green-600"
           />
         )}
 

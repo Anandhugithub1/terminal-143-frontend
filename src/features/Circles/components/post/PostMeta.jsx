@@ -28,7 +28,7 @@ export default function PostMeta({ post, extra }) {
         </span>
       )}
 
-      {typeof likePercentage === "number" && (
+      {typeof likePercentage === "number" && likePercentage >= 50 && (
         <span className="inline-flex items-center gap-1 whitespace-nowrap text-rose-500 font-medium">
           <Heart className="w-3 h-3 shrink-0 fill-rose-500" />
           {t("postMeta.likedPercentage", { percent: likePercentage })}
