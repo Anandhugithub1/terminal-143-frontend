@@ -30,10 +30,7 @@ lerna-debug.log*
 # Test coverage
 coverage/
 
-# Optional: lock files (choose one based on your package manager)
-// If you use npm:
-package-lock.json
-// If you use Yarn:
+# This project uses npm; package-lock.json is committed for reproducible installs
 yarn.lock
 
 # Firebase / Google services
