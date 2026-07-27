@@ -33,7 +33,7 @@ jobs:
         run: |
           set -euo pipefail
           if [ ! -d "ios" ]; then
-            npx cap add ios --no-interactive
+            npx cap add ios --packagemanager SPM
           else
             npx cap copy ios
           fi
