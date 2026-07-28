@@ -1,17 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { AlertCircle, ArrowLeft, MoreVertical, Send, ShieldOff } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Flag, MoreVertical, Send, ShieldOff, Trash2 } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
-import { useMatches } from '../../UserHome/api'
+import { useMatches, useReportUser } from '../../UserHome/api'
 import { useConversationHistory, normalizeIncomingMessage, useBlockUser, useUnblockUser, useDeleteMessage } from '../api'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import { useLongPress } from '../hooks/useLongPress'
 import BottomSheetModal from '../../../shared/components/BottomSheetModal'
+import ReportUserModal from '../../UserHome/components/Modals/ReportUserModal'
 
 // How long to wait for chat-service's SENT_ACK before treating a send as
 // failed. Generous — this only fires for a genuinely stuck/lost frame, not
@@ -145,6 +146,7 @@ export default function ChatConversationPage() {
   const { mutate: blockUser, isPending: isBlocking } = useBlockUser(matchId)
   const { mutate: unblockUser, isPending: isUnblocking } = useUnblockUser(matchId)
   const { mutate: deleteMessage, isPending: isDeleting } = useDeleteMessage(matchId)
+  const { mutate: reportUser } = useReportUser()
 
   // Live messages received/sent this session are kept separate from the
   // fetched history so a background history refetch never clobbers them.
@@ -154,6 +156,13 @@ export default function ChatConversationPage() {
   const [isBlockConfirmOpen, setIsBlockConfirmOpen] = useState(false)
   // The message a long-press picked, awaiting a delete-for-me confirmation.
   const [messageToDelete, setMessageToDelete] = useState(null)
+  // The message a long-press picked, awaiting a Delete/Report choice.
+  const [messageActionTarget, setMessageActionTarget] = useState(null)
+  // The message chosen to report (opens the reason-picker modal).
+  const [messageToReport, setMessageToReport] = useState(null)
+  // Reporting the conversation partner generally (from the header menu),
+  // as opposed to a specific message.
+  const [isReportUserOpen, setIsReportUserOpen] = useState(false)
   const scrollRef = useRef(null)
   const hasScrolledRef = useRef(false)
   // Set right before fetchNextPage() prepends an older page, so the effect
@@ -623,7 +632,7 @@ export default function ChatConversationPage() {
               <MessageBubble
                 key={msg.id}
                 msg={msg}
-                onLongPress={() => setMessageToDelete(msg)}
+                onLongPress={() => setMessageActionTarget(msg)}
                 onRetry={handleRetry}
                 t={t}
               />
@@ -694,12 +703,19 @@ export default function ChatConversationPage() {
         ) : (
           <button
             onClick={() => { setIsMenuOpen(false); setIsBlockConfirmOpen(true); }}
-            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors"
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-b border-gray-100"
           >
             <ShieldOff className="w-5 h-5" />
             {t('conversation.blockUser', { name: match?.name || '' })}
           </button>
         )}
+        <button
+          onClick={() => { setIsMenuOpen(false); setIsReportUserOpen(true); }}
+          className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors"
+        >
+          <Flag className="w-5 h-5" />
+          {t('conversation.reportUser', { name: match?.name || '' })}
+        </button>
       </BottomSheetModal>
 
       {/* Block confirmation */}
@@ -732,6 +748,39 @@ export default function ChatConversationPage() {
         </div>
       </BottomSheetModal>
 
+      {/* Long-press action picker: Delete-for-me / Report */}
+      <BottomSheetModal
+        isOpen={!!messageActionTarget}
+        onClose={() => setMessageActionTarget(null)}
+        centered
+        panelClassName="rounded-2xl overflow-hidden"
+      >
+        <button
+          onClick={() => {
+            const msg = messageActionTarget
+            setMessageActionTarget(null)
+            setMessageToDelete(msg)
+          }}
+          className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-b border-gray-100"
+        >
+          <Trash2 className="w-5 h-5" />
+          {t('conversation.deleteMessageAction')}
+        </button>
+        {!messageActionTarget?.mine && (
+          <button
+            onClick={() => {
+              const msg = messageActionTarget
+              setMessageActionTarget(null)
+              setMessageToReport(msg)
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors"
+          >
+            <Flag className="w-5 h-5" />
+            {t('conversation.reportMessageAction')}
+          </button>
+        )}
+      </BottomSheetModal>
+
       {/* Delete-for-me confirmation */}
       <BottomSheetModal
         isOpen={!!messageToDelete}
@@ -761,6 +810,23 @@ export default function ChatConversationPage() {
           </button>
         </div>
       </BottomSheetModal>
+
+      <ReportUserModal
+        open={!!messageToReport}
+        onClose={() => setMessageToReport(null)}
+        username={matchId}
+        sourceType="MESSAGE"
+        sourceService="chat-service"
+        sourceId={messageToReport?.id}
+        onSubmit={(payload) => reportUser(payload)}
+      />
+
+      <ReportUserModal
+        open={isReportUserOpen}
+        onClose={() => setIsReportUserOpen(false)}
+        username={matchId}
+        onSubmit={(payload) => reportUser(payload)}
+      />
     </div>
   )
 }

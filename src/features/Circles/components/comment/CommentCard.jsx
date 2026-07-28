@@ -1,4 +1,4 @@
-import { Heart, MoreVertical, Trash2 } from "lucide-react";
+import { Flag, Heart, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -14,6 +14,7 @@ export default function CommentCard({
   onLike,
   onReply,
   onDelete,
+  onReport,
   onAuthorClick,
   isReply = false,
   replySlot,
@@ -21,6 +22,7 @@ export default function CommentCard({
 }) {
   const { t } = useTranslation("circles");
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showReportOption, setShowReportOption] = useState(false);
   const displayName = name || t("common.anonymous");
 
   return (
@@ -64,7 +66,31 @@ export default function CommentCard({
                 </button>
               </div>
             )}
-            {!onDelete && (
+            {!onDelete && onReport && !showReportOption && (
+              <button
+                onClick={() => setShowReportOption(true)}
+                className="p-1 hover:bg-gray-200 rounded-full transition-colors"
+              >
+                <MoreVertical className={isReply ? "w-3.5 h-3.5 text-gray-400" : "w-4 h-4 text-gray-400"} />
+              </button>
+            )}
+            {!onDelete && onReport && showReportOption && (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => { onReport(); setShowReportOption(false); }}
+                  className="flex items-center gap-1 px-2 py-0.5 bg-rose-500 text-white text-xs rounded-full"
+                >
+                  <Flag className="w-3 h-3" /> {t("comments.report")}
+                </button>
+                <button
+                  onClick={() => setShowReportOption(false)}
+                  className="px-2 py-0.5 bg-gray-200 text-gray-600 text-xs rounded-full"
+                >
+                  {t("comments.cancel")}
+                </button>
+              </div>
+            )}
+            {!onDelete && !onReport && (
               <button className="p-1 hover:bg-gray-200 rounded-full transition-colors">
                 <MoreVertical className={isReply ? "w-3.5 h-3.5 text-gray-400" : "w-4 h-4 text-gray-400"} />
               </button>
@@ -104,6 +130,7 @@ export default function CommentCard({
             likes={reply.likes}
             onAuthorClick={reply.onAuthorClick}
             onDelete={reply.onDelete}
+            onReport={reply.onReport}
           />
         ))}
       </div>

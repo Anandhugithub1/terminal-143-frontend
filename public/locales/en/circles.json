@@ -154,6 +154,7 @@
   "comments": {
     "delete": "Delete",
     "cancel": "Cancel",
+    "report": "Report",
     "reply": "Reply",
     "header": "Comments",
     "empty": "No comments yet. Be the first to comment!",

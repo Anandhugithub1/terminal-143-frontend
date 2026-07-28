@@ -38,6 +38,8 @@
     "moreOptions": "More options",
     "blockUser": "Block {{name}}",
     "unblockUser": "Unblock {{name}}",
+    "reportUser": "Report {{name}}",
+    "reportMessageAction": "Report message",
     "blockConfirmTitle": "Block {{name}}?",
     "blockConfirmBody": "They won't be able to send you messages, and you won't be able to send them messages either.",
     "blockConfirmAction": "Block",

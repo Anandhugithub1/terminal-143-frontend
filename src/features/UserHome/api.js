@@ -133,10 +133,26 @@ export function useUserProfileById(PK, SK, enabled = true) {
 
 export function useReportUser() {
   return useMutation({
-    mutationFn: async ({ reportedUsername, reason }) => {
+    mutationFn: async ({
+      reportedUsername,
+      reason,
+      description,
+      sourceType,
+      sourceService,
+      sourceId,
+      circleId,
+    }) => {
       const res = await reportApi.post(
         "/reportUser",
-        { reportedUsername, reason },
+        {
+          reportedUsername,
+          reason,
+          description,
+          sourceType,
+          sourceService,
+          sourceId,
+          circleId,
+        },
         { withCredentials: true }
       )
       return res.data

@@ -23,6 +23,7 @@ import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import { useReportUser } from "../../UserHome/api";
+import ReportUserModal from "../../UserHome/components/Modals/ReportUserModal";
 import { queryKeys } from "../queries/queryKeys";
 import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
@@ -42,6 +43,7 @@ export default function CircleDetailsPage() {
   const [commentPost, setCommentPost] = useState(null);
   const [editPost, setEditPost] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [reportPost, setReportPost] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -117,7 +119,7 @@ export default function CircleDetailsPage() {
 
   const handleReportPost = (post) => {
     if (!post.authorId) return;
-    reportUser({ reportedUsername: post.authorId, reason: "other" });
+    setReportPost(post);
   };
 
   const toggleLike = (post) => {
@@ -193,6 +195,17 @@ export default function CircleDetailsPage() {
         }
         title={t("circleDetails.deletePostTitle")}
         message={t("circleDetails.deletePostMessage")}
+      />
+
+      <ReportUserModal
+        open={!!reportPost}
+        onClose={() => setReportPost(null)}
+        username={reportPost?.authorId}
+        sourceType="POST"
+        sourceService="circle-service"
+        sourceId={reportPost?.postId}
+        circleId={circleId}
+        onSubmit={(payload) => reportUser(payload)}
       />
 
       {/* Cover Image */}

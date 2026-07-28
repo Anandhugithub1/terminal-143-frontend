@@ -1,6 +1,15 @@
 import React, { useState, useRef } from "react";
 
-export default function ReportUserModal({ open, onClose, username, onSubmit }) {
+export default function ReportUserModal({
+  open,
+  onClose,
+  username,
+  onSubmit,
+  sourceType,
+  sourceService,
+  sourceId,
+  circleId,
+}) {
   const [reason, setReason] = useState("");
   const [description, setDescription] = useState("");
 
@@ -27,7 +36,11 @@ const reasons = [
     onSubmit({
       reportedUsername: username,
       reason,
-      description
+      description,
+      sourceType,
+      sourceService,
+      sourceId,
+      circleId,
     });
 
     setReason("");

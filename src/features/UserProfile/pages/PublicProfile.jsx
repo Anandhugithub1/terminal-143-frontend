@@ -8,7 +8,8 @@ import { useTranslation } from "react-i18next"
 
 import { useMyProfile } from "../Hooks/useMyProfile"
 import { useProfileByLink } from "../Hooks/getProfileByLink"
-import { useMatchRequestResponse, SendProfileFeeback } from "../../UserHome/api"
+import { useMatchRequestResponse, SendProfileFeeback, useReportUser } from "../../UserHome/api"
+import ReportUserModal from "../../UserHome/components/Modals/ReportUserModal"
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest"
 
 import ProfileCard from "../../UserHome/components/Cards/ProfileCard"
@@ -35,10 +36,12 @@ export default function PublicProfilePage() {
   const isMatch = !!location.state?.isMatch
 
   const [confirmAction, setConfirmAction] = useState(null) // "accept" | "reject" | null
+  const [showReport, setShowReport] = useState(false)
 
   const respondMutation = useMatchRequestResponse()
   const { send: sendMatchRequest, isSending } = useSendMatchRequest()
   const { mutate: sendFeedback, isLoading: isPassing } = SendProfileFeeback()
+  const { mutate: reportUser } = useReportUser()
 
   // Logged-in user profile (TanStack Query)
   const {
@@ -178,6 +181,7 @@ const normalized = {
           <ProfileCard
             profile={normalized}
             placeholderImage={placeholderImage}
+            onReport={hasAccess ? () => setShowReport(true) : undefined}
           />
         </div>
 
@@ -315,6 +319,13 @@ const normalized = {
         onConfirm={() => handleRespond(confirmAction)}
         action={confirmAction}
         name={normalized.name}
+      />
+
+      <ReportUserModal
+        open={showReport}
+        onClose={() => setShowReport(false)}
+        username={normalized.userId}
+        onSubmit={(payload) => reportUser(payload, { onSuccess: () => setShowReport(false) })}
       />
     </div>
   )

@@ -13,6 +13,7 @@ import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { useReportUser } from "../../UserHome/api";
+import ReportUserModal from "../../UserHome/components/Modals/ReportUserModal";
 
 export default function PostDetailsPage() {
   const { t } = useTranslation("circles");
@@ -23,6 +24,7 @@ export default function PostDetailsPage() {
 
   const [isLiked, setIsLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showReport, setShowReport] = useState(false);
 
   const { data: post, isLoading } = usePost(circleId, postId, createdAtEpoch);
   const { data: circle } = useCircle(circleId);
@@ -39,7 +41,7 @@ export default function PostDetailsPage() {
 
   const handleReportPost = () => {
     if (!post?.authorId) return;
-    reportUser({ reportedUsername: post.authorId, reason: "other" });
+    setShowReport(true);
   };
 
   if (isLoading) {
@@ -115,6 +117,17 @@ export default function PostDetailsPage() {
           })}
         />
       </div>
+
+      <ReportUserModal
+        open={showReport}
+        onClose={() => setShowReport(false)}
+        username={post.authorId}
+        sourceType="POST"
+        sourceService="circle-service"
+        sourceId={postId}
+        circleId={circleId}
+        onSubmit={(payload) => reportUser(payload)}
+      />
 
       <BottomNav />
     </div>

@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useComments, useCreateComment, useReplyToComment, useDeleteComment } from "../../hooks/useComments";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
+import { useReportUser } from "../../../UserHome/api";
+import ReportUserModal from "../../../UserHome/components/Modals/ReportUserModal";
 import CommentCard from "./CommentCard";
 import BottomSheetModal from "../common/BottomSheetModal";
 import { DEFAULT_AVATAR, formatPostTime as formatCommentTime } from "../../utils/postDisplay";
@@ -17,12 +19,14 @@ export default function CommentSection({ isOpen, onClose, post }) {
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState("");
+  const [reportComment, setReportComment] = useState(null);
 
   const postId = post?.postId;
   const { data: commentsData, isLoading } = useComments(postId);
   const createCommentMutation = useCreateComment(postId);
   const replyCommentMutation = useReplyToComment(postId);
   const deleteCommentMutation = useDeleteComment(postId);
+  const { mutate: reportUser } = useReportUser();
 
   const { data: myProfile } = useMyProfile();
 
@@ -75,6 +79,7 @@ export default function CommentSection({ isOpen, onClose, post }) {
   };
 
   return (
+    <>
     <BottomSheetModal
       isOpen={isOpen}
       onClose={onClose}
@@ -140,6 +145,11 @@ export default function CommentSection({ isOpen, onClose, post }) {
                     ? () => deleteCommentMutation.mutate(commentKey)
                     : undefined
                 }
+                onReport={
+                  comment.authorId && myId !== comment.authorId
+                    ? () => setReportComment({ commentId: commentKey, authorId: comment.authorId })
+                    : undefined
+                }
                 onReply={isPostAuthor ? () => setReplyingTo(isReplying ? null : commentKey) : undefined}
                 replies={(comment.replies || []).map((reply) => ({
                   commentId: reply.commentId || reply.id,
@@ -154,6 +164,10 @@ export default function CommentSection({ isOpen, onClose, post }) {
                   onDelete:
                     (isPostAuthor || (myId && myId === reply.authorId))
                       ? () => deleteCommentMutation.mutate(reply.commentId || reply.id)
+                      : undefined,
+                  onReport:
+                    reply.authorId && myId !== reply.authorId
+                      ? () => setReportComment({ commentId: reply.commentId || reply.id, authorId: reply.authorId })
                       : undefined,
                 }))}
                 replySlot={
@@ -232,5 +246,17 @@ export default function CommentSection({ isOpen, onClose, post }) {
           )}
         </div>
     </BottomSheetModal>
+
+    <ReportUserModal
+      open={!!reportComment}
+      onClose={() => setReportComment(null)}
+      username={reportComment?.authorId}
+      sourceType="COMMENT"
+      sourceService="circle-service"
+      sourceId={reportComment?.commentId}
+      circleId={post?.circleId}
+      onSubmit={(payload) => reportUser(payload)}
+    />
+    </>
   );
 }
