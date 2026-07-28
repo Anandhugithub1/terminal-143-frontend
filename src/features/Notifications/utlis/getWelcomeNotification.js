@@ -51,6 +51,10 @@ export function normalizeNotification(n) {
       message = `New message from ${n.fromUsername}`
       break
 
+    case "REPORT_RESOLVED":
+      message = n.payload?.message || "Your report has been reviewed and the case is now resolved."
+      break
+
     default:
       message = n.payload?.message || message
   }
