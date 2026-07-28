@@ -2,13 +2,13 @@
 import client from '../../Utlis/client';
 import axios from 'axios';
 // REGISTER
-export const apiRegister = async ({ emailPhone, password, gender }) => {
+export const apiRegister = async ({ emailPhone, password, gender, agreedToTerms }) => {
   const payload = {
     email: emailPhone.includes('@') ? emailPhone : '',
     phoneNumber: !emailPhone.includes('@') ? emailPhone : '',
     gender,
     password,
-  
+    agreedToTerms,
   };
   const { data } = await client.post('/v0.2/register', payload);
   return data;

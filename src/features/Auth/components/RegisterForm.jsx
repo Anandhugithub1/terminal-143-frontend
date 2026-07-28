@@ -17,6 +17,7 @@ const RegisterForm = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [localError, setLocalError] = useState("");
 
   const navigate = useNavigate();
@@ -47,8 +48,13 @@ useEffect(() => {
       return;
     }
 
+    if (!agreedToTerms) {
+      setLocalError(t("mustAgreeToTerms"));
+      return;
+    }
+
     setLocalError("");
-    mutate({ emailPhone, password, gender });
+    mutate({ emailPhone, password, gender, agreedToTerms });
   };
 
   if (!ready) return null;
@@ -117,6 +123,26 @@ useEffect(() => {
         placeholder={t("confirmPassword")}
       />
 
+      <div className="flex items-start gap-2">
+        <input
+          id="agreedToTerms"
+          type="checkbox"
+          checked={agreedToTerms}
+          onChange={(e) => setAgreedToTerms(e.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+        />
+        <label htmlFor="agreedToTerms" className="text-sm text-gray-600">
+          {t("agreeToTermsPrefix")}{" "}
+          <Link to="/terms" className="text-pink-600 font-semibold hover:underline">
+            {t("termsOfService")}
+          </Link>{" "}
+          {t("agreeToTermsConjunction")}{" "}
+          <Link to="/privacy" className="text-pink-600 font-semibold hover:underline">
+            {t("privacyPolicy")}
+          </Link>
+        </label>
+      </div>
+
       {(localError || isError) && (
         <p className="text-red-500 text-sm">
           {localError ||
@@ -127,7 +153,7 @@ useEffect(() => {
 
       {isSuccess && <p className="text-green-600 text-sm">{data?.message}</p>}
 
-      <Button type="submit" disabled={isPending}>
+      <Button type="submit" disabled={isPending || !agreedToTerms}>
         {isPending ? t("registering") : t("getStarted")}
       </Button>
 <div className="mt-4 text-center text-sm text-gray-500">
