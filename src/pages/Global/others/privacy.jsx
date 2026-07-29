@@ -24,7 +24,7 @@ export default function Privacy() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-sm p-8 border-l-4 border-[#D2449D]">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-              <p className="text-gray-500 text-sm mb-8">Last updated: April 22, 2026</p>
+              <p className="text-gray-500 text-sm mb-8">Last updated: July 29, 2026</p>
 
               <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
 
@@ -46,16 +46,25 @@ export default function Privacy() {
                     <li>Profile information (photos, bio, location preferences)</li>
                     <li>Communication data (messages, support inquiries)</li>
                     <li>Payment information (processed securely by third-party providers)</li>
-                    <li>Preference information (interests, dating preferences)</li>
+                    <li>Preference information (interests, dating preferences, gender)</li>
+                    <li>Reports, blocks, and safety-related information you or others submit about your account</li>
                   </ul>
 
                   <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Automatically Collected Information:</h3>
                   <ul className="list-disc list-inside space-y-2 ml-4">
                     <li>Device information (IP address, device type, browser type)</li>
                     <li>Usage data (features accessed, time spent, actions taken)</li>
-                    <li>Location data (if you grant permission)</li>
+                    <li>Location data, used to show your approximate distance to other users and to match you with people nearby (if you grant permission)</li>
                     <li>Cookies and similar technologies</li>
                   </ul>
+                </div>
+
+                {/* Photos & Profile Visibility */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Photos & Profile Visibility</h2>
+                  <p>
+                    Your profile photos, bio, and other profile details you choose to display are visible to other users of the Service as part of its core matching functionality. We may use automated tools and human review to screen uploaded photos and content for policy violations (e.g. nudity, impersonation, or illegal content) before or after they become visible to other users.
+                  </p>
                 </div>
 
                 {/* How We Use Information */}
@@ -80,8 +89,8 @@ export default function Privacy() {
                   </p>
                   <ul className="list-disc list-inside space-y-2 ml-4">
                     <li>Service providers (hosting, payment processing, analytics)</li>
-                    <li>Law enforcement (when legally required)</li>
-                    <li>Other users (profile information you choose to display)</li>
+                    <li>Law enforcement (when legally required, including in response to safety reports involving harassment, threats, or suspected criminal activity)</li>
+                    <li>Other users (profile information you choose to display, and limited details in connection with a report you file or that is filed against you)</li>
                   </ul>
                 </div>
 

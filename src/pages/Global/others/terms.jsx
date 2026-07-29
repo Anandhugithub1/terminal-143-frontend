@@ -24,7 +24,7 @@ export default function Terms() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-sm p-8 border-l-4 border-[#D2449D]">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Terms of Service</h1>
-              <p className="text-gray-500 text-sm mb-8">Last updated: April 22, 2026</p>
+              <p className="text-gray-500 text-sm mb-8">Last updated: July 29, 2026</p>
 
               <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
 
@@ -63,38 +63,75 @@ export default function Terms() {
                     <li>Maintain the confidentiality of your password</li>
                     <li>Accept responsibility for all activities under your account</li>
                     <li>Use genuine photos and information</li>
+                    <li>Create only one account for your own personal use — accounts may not be shared, sold, or transferred</li>
                   </ul>
+                </div>
+
+                {/* No Guarantee of Matches */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">4. No Guarantee of Matches or Compatibility</h2>
+                  <p>
+                    PassorMatch is a platform that helps you connect with other users; it is not a matchmaking, background-check, or dating-coaching service. We do not guarantee that you will find a match, that any match will be compatible with you, or that any interaction with another user will be safe, truthful, or appropriate. You are solely responsible for your interactions with other users, both on and off the Service.
+                  </p>
                 </div>
 
                 {/* Acceptable Use */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">4. Acceptable Use Policy</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">5. Acceptable Use Policy</h2>
                   <p>
                     You agree not to use PassorMatch to:
                   </p>
                   <ul className="list-disc list-inside space-y-2 ml-4">
                     <li>Harass, abuse, or threaten other users</li>
                     <li>Post false, misleading, or fraudulent information</li>
+                    <li>Impersonate any person, or create a profile using another person's photos or identity ("catfishing")</li>
                     <li>Engage in sexual exploitation or trafficking</li>
-                    <li>Spam, scam, or phishing attempts</li>
+                    <li>Spam, scam, or phishing attempts, including requests for money, gift cards, or financial information from other users</li>
                     <li>Violate intellectual property rights</li>
                     <li>Engage in illegal activities</li>
                     <li>Attempt to gain unauthorized access to our systems</li>
-                    <li>Post explicit or illegal content</li>
+                    <li>Post explicit, nude, or illegal content, or content involving minors</li>
+                    <li>Solicit or advertise commercial services, including sex work, to other users</li>
                   </ul>
+                </div>
+
+                {/* Dating Safety & In-Person Meetings */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">6. Dating Safety & In-Person Meetings</h2>
+                  <p>
+                    PassorMatch does not conduct criminal background checks on its users and cannot verify the identity, intentions, or truthfulness of any user. You are responsible for exercising your own judgment and caution when communicating with other users and when deciding whether to meet someone in person. We strongly recommend that you:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 ml-4">
+                    <li>Never send money, gift cards, or financial information to someone you have not met in person</li>
+                    <li>Meet for the first time in a public place, and arrange your own transportation</li>
+                    <li>Tell a friend or family member where you are going and who you are meeting</li>
+                    <li>Avoid sharing sensitive personal information (home address, financial details, workplace) until you have established trust</li>
+                    <li>Trust your instincts and end contact with anyone who makes you feel unsafe or uncomfortable</li>
+                  </ul>
+                  <p className="mt-3">
+                    PassorMatch is not responsible for the conduct of any user, whether online or in person, and disclaims all liability for any interactions, meetings, or relationships arising from use of the Service, to the fullest extent permitted by law.
+                  </p>
+                </div>
+
+                {/* Reporting, Blocking & Enforcement */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">7. Reporting, Blocking & Enforcement</h2>
+                  <p>
+                    PassorMatch provides tools to block and report other users. If you encounter behavior that violates these Terms — including harassment, fraud, impersonation, or inappropriate content — please report it through the in-app reporting feature or by contacting us directly. We reserve the right, at our sole discretion, to investigate reports, remove content, and suspend or permanently terminate any account that violates these Terms, without prior notice and without refund of any paid features.
+                  </p>
                 </div>
 
                 {/* Content Ownership */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">5. Content Ownership & Rights</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">8. Content Ownership & Rights</h2>
                   <p>
-                    You retain ownership of content you post, but grant PassorMatch a worldwide, non-exclusive license to use, reproduce, and display your profile information for operating the Service. By posting content, you warrant that you own or have permission to use such content.
+                    You retain ownership of content you post, but grant PassorMatch a worldwide, non-exclusive license to use, reproduce, and display your profile information for operating the Service. By posting content, you warrant that you own or have permission to use such content, that any photos are genuinely of you, and that your content does not depict any other identifiable person without their consent.
                   </p>
                 </div>
 
                 {/* Liability Disclaimer */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">6. Disclaimer of Warranties</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">9. Disclaimer of Warranties</h2>
                   <p>
                     The materials on PassorMatch are provided on an 'as is' basis. PassorMatch makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
                   </p>
@@ -102,15 +139,15 @@ export default function Terms() {
 
                 {/* Limitation of Liability */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">7. Limitation of Liability</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">10. Limitation of Liability</h2>
                   <p>
-                    In no event shall PassorMatch or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on PassorMatch, even if PassorMatch or an authorized representative has been notified orally or in writing of the possibility of such damage.
+                    In no event shall PassorMatch or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, personal injury, or due to business interruption) arising out of the use or inability to use the materials on PassorMatch, or out of any interaction, meeting, or relationship with another user, even if PassorMatch or an authorized representative has been notified orally or in writing of the possibility of such damage.
                   </p>
                 </div>
 
                 {/* Accuracy of Materials */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">8. Accuracy of Materials</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">11. Accuracy of Materials</h2>
                   <p>
                     The materials appearing on PassorMatch could include technical, typographical, or photographic errors. PassorMatch does not warrant that any of the materials on its website are accurate, complete, or current. PassorMatch may make changes to the materials contained on its website at any time without notice.
                   </p>
@@ -118,7 +155,7 @@ export default function Terms() {
 
                 {/* Links */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">9. Links</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">12. Links</h2>
                   <p>
                     PassorMatch has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by PassorMatch of the site. Use of any such linked website is at the user's own risk.
                   </p>
@@ -126,7 +163,7 @@ export default function Terms() {
 
                 {/* Modifications */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">10. Modifications</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">13. Modifications</h2>
                   <p>
                     PassorMatch may revise these Terms of Service for its website at any time without notice. By using this website, you are agreeing to be bound by the then current version of these Terms of Service.
                   </p>
@@ -134,7 +171,7 @@ export default function Terms() {
 
                 {/* Governing Law */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">11. Governing Law</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">14. Governing Law</h2>
                   <p>
                     These Terms and Conditions are governed by and construed in accordance with the laws of Thailand, and you irrevocably submit to the exclusive jurisdiction of the courts in Bangkok.
                   </p>
@@ -142,7 +179,7 @@ export default function Terms() {
 
                 {/* Contact */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">12. Contact Information</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">15. Contact Information</h2>
                   <p>
                     If you have any questions about these Terms of Service, please contact us at:
                   </p>
