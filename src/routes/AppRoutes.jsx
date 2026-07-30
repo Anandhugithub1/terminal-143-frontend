@@ -8,13 +8,13 @@ import {AppFeatureRoutes} from './AppFeatureRoutes.jsx'
 import { Route } from 'react-router-dom';
 import App from "../App.jsx";
 import { Suspense, lazy } from 'react';
-import NotFoundPage from '../pages/404/404.jsx'
 import { LoadingSpinner } from '../components/Ui/Spinner.jsx';
 
 const Privacy = lazy(() => import('../pages/Global/others/privacy.jsx'))
 const Terms = lazy(() => import('../pages/Global/others/terms.jsx'))
 const FAQ = lazy(() => import('../pages/Global/others/FAQ.jsx'))
 const Reviews = lazy(() => import('../pages/Global/Review.jsx'))
+const NotFoundPage = lazy(() => import('../pages/404/404.jsx'))
 export const appRoutes = (
 
   <Route path="" element={<App />} errorElement={<ErrorPage />}>

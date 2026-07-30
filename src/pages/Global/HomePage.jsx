@@ -1,5 +1,4 @@
 // import React, { useEffect, useMemo, Suspense } from 'react';
-// import { motion } from 'framer-motion';
 // import { useTranslation } from 'react-i18next';
 // import { itemVariants, containerVariants } from '../../Utlis/animation_variants';
 // import Skeleton from 'react-loading-skeleton';

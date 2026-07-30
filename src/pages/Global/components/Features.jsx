@@ -1,9 +1,8 @@
 // src/components/Global/Features.jsx
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
-import { itemVariants, containerVariants } from '../../../Utlis/animation_variants';
+import InView from '../../../shared/components/InView';
 import FeatureCard from './Cards/GlobalFeatureCard';
 
 // Icons
@@ -38,26 +37,14 @@ export default function Features() {
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={containerVariants}
-          className="text-center mb-16"
-        >
-          <motion.h2
-            variants={itemVariants}
-            className="text-3xl font-bold text-gray-900 mb-4"
-          >
+        <InView className="text-center mb-16">
+          <InView as="h2" className="text-3xl font-bold text-gray-900 mb-4">
             {t('heading')}
-          </motion.h2>
-          <motion.p
-            variants={itemVariants}
-            className="text-gray-600 max-w-2xl mx-auto"
-          >
+          </InView>
+          <InView as="p" delayMs={150} className="text-gray-600 max-w-2xl mx-auto">
             {t('subheading')}
-          </motion.p>
-        </motion.div>
+          </InView>
+        </InView>
 
         <div className="grid md:grid-cols-3 gap-8">
           {cards.map((c, i) => (

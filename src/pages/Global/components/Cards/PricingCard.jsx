@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
 import React from 'react'
-import { itemVariants, containerVariants } from "../../../../Utlis/animation_variants";
 import { plans, } from "../../../../Utlis/Global/pricing";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { PrimaryButton } from '../../../../shared/Button';
-import { motion } from 'framer-motion';
+import InView from '../../../../shared/components/InView';
 
 const PricingCard = () => {
   return (
@@ -13,24 +11,16 @@ const PricingCard = () => {
   {/* Pricing Cards with enhanced visual hierarchy */}
   <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={containerVariants}
-            className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch"
-          >
-            {plans.map((plan) => (
-              <motion.div
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+            {plans.map((plan, i) => (
+              <InView
                 key={plan.name}
-                variants={itemVariants}
-                className={`relative group ${
+                delayMs={i * 100}
+                className={`relative group hover:scale-[1.02] ${
                   plan.featured
                     ? "ring-2 ring-offset-2 ring-gradient-secondary shadow-2xl"
                     : "ring-1 ring-gray-200 hover:ring-gray-300"
                 } rounded-xl bg-white p-6 transition-all duration-200 ease-out`}
-                whileHover={{ scale: 1.02 }}
-                transition={{ type: "spring", stiffness: 300 }}
               >
                 {plan.featured && (
                   <div className="absolute -top-4 inset-x-0 mx-auto w-fit bg-gradient-to-r from-gradient-primary to-gradient-secondary text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-lg">
@@ -83,9 +73,9 @@ const PricingCard = () => {
                 >
                   {plan.cta}
                 </PrimaryButton>
-              </motion.div>
+              </InView>
             ))}
-          </motion.div>
+          </div>
 
           {/* Added helper text */}
           <p className="text-center text-gray-500 mt-8 text-sm">

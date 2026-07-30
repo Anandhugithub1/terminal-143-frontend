@@ -1,4 +1,4 @@
-import { StrictMode } from "react"
+import { lazy, StrictMode, Suspense } from "react"
 import { createRoot } from "react-dom/client"
 import "./App.css"
 import "./i18n/i18n.js"
@@ -12,7 +12,6 @@ import {
   RouterProvider,
 } from "react-router-dom"
 
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { appRoutes } from "./routes/AppRoutes.jsx"
 import { Toaster, toast } from "sonner"
 
@@ -36,6 +35,17 @@ if (Capacitor.isNativePlatform()) {
 }
 
 const router = createBrowserRouter(createRoutesFromElements(appRoutes))
+
+// Dynamically imported (rather than statically) so the devtools code and its
+// dependencies are excluded from the production bundle entirely, not just
+// dead-code-eliminated behind an `if`.
+const ReactQueryDevtools = import.meta.env.DEV
+  ? lazy(() =>
+      import("@tanstack/react-query-devtools").then((m) => ({
+        default: m.ReactQueryDevtools,
+      }))
+    )
+  : null
 
 // FCM only auto-shows a system tray notification when the app is backgrounded/killed.
 // In the foreground Android delivers the payload silently, so we have to render it ourselves.
@@ -64,7 +74,11 @@ function Root() {
     <>
       <Toaster richColors position="top-center" />
       <RouterProvider router={router} />
-      <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+      {ReactQueryDevtools && (
+        <Suspense fallback={null}>
+          <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+        </Suspense>
+      )}
     </>
   )
 }

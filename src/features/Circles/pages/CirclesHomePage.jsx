@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from "framer-motion";
 import { Compass, FileText, MapPin, PenLine, Plus, Rss } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
