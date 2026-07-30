@@ -25,14 +25,6 @@ export default function PostMedia({ media = [], image, alt, className }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const url = isVideo ? firstItem?.url : imageUrls[activeIdx] || image;
 
-  const nextPhoto = () => {
-    setActiveIdx((idx) => (idx + 1) % imageUrls.length);
-  };
-
-  const prevPhoto = () => {
-    setActiveIdx((idx) => (idx - 1 + imageUrls.length) % imageUrls.length);
-  };
-
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
@@ -43,6 +35,21 @@ export default function PostMedia({ media = [], image, alt, className }) {
   const [retryKey, setRetryKey] = useState(0);
   const [videoAspectRatio, setVideoAspectRatio] = useState(16 / 9);
   const [imageAspectRatio, setImageAspectRatio] = useState(null);
+  // The carousel's box is locked to the FIRST photo's ratio (Instagram/Reddit
+  // behavior) — later photos are object-cover cropped into that same box
+  // rather than resizing it, so the container never reflows the feed as you
+  // swipe between slides.
+  const [carouselAspectRatio, setCarouselAspectRatio] = useState(null);
+
+  const nextPhoto = () => {
+    setHasError(false);
+    setActiveIdx((idx) => (idx + 1) % imageUrls.length);
+  };
+
+  const prevPhoto = () => {
+    setHasError(false);
+    setActiveIdx((idx) => (idx - 1 + imageUrls.length) % imageUrls.length);
+  };
 
   // Lazy-load: start fetching once the card is within ~200px of the viewport.
   useEffect(() => {
@@ -103,19 +110,33 @@ export default function PostMedia({ media = [], image, alt, className }) {
   if (!url) return null;
 
   if (shouldUseCarousel) {
+    const clampedCarouselRatio = carouselAspectRatio !== null
+      ? Math.max(carouselAspectRatio, 4 / 5)
+      : 4 / 5;
+
     return (
       <div
         ref={containerRef}
         className="relative w-full overflow-hidden bg-gray-100"
-        style={{ aspectRatio: 4 / 5 }}
+        style={{ aspectRatio: clampedCarouselRatio }}
       >
-        <img
-          src={url}
-          alt={`${alt} photo ${activeIdx + 1}`}
-          loading="lazy"
-          className="w-full h-full object-cover"
-          onError={() => setHasError(true)}
-        />
+        {shouldLoad && (
+          <img
+            key={activeIdx}
+            src={url}
+            alt={`${alt} photo ${activeIdx + 1}`}
+            loading="lazy"
+            className="w-full h-full object-cover"
+            onLoad={(e) => {
+              if (activeIdx !== 0) return;
+              const { naturalWidth, naturalHeight } = e.target;
+              if (naturalWidth && naturalHeight) {
+                setCarouselAspectRatio(naturalWidth / naturalHeight);
+              }
+            }}
+            onError={() => setHasError(true)}
+          />
+        )}
 
         <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 pointer-events-none">
           <button
