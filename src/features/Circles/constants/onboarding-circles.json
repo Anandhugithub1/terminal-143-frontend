@@ -1236,6 +1236,27 @@
       ],
       "coverPhoto": "https://images.unsplash.com/photo-1608392642949-782c43a14646?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "ownerId": "adminusernew"
+    },
+    {
+      "name": "LGBTQ+",
+      "circleId": "81aa6b18-68a6-4481-9325-fe775f40ebef",
+      "description": "Meet someone in the LGBTQ+ community. Connect over shared experience, swap stories, and find a partner who gets it without having to explain.",
+      "category": "identity_language",
+      "visibility": "public",
+      "tags": [
+        "gay",
+        "gaydating",
+        "lesbian",
+        "sapphic",
+        "trans",
+        "transgender",
+        "nonbinary",
+        "bisexual",
+        "bicurious",
+        "lgbt"
+      ],
+      "coverPhoto": "https://images.unsplash.com/photo-1637631531662-cea0fb4b1d97?q=80&w=1740&auto=format&fit=crop",
+      "ownerId": "pride.parker"
     }
   ]
 }
