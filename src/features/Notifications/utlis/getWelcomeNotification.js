@@ -14,7 +14,7 @@ export function getWelcomeNotification() {
     return {
       SK: "welcome",
       type: "WELCOME",
-      message: "👋 Welcome to Terminal 143! You’re all set to start connecting.",
+      message: "👋 Welcome to Passormatch.com! You’re all set to start connecting.",
       createdAt: now
     }
   }
@@ -28,7 +28,7 @@ export function getWelcomeNotification() {
   return {
     SK: "welcome",
     type: "WELCOME",
-    message: "👋 Welcome to Terminal 143! You’re all set to start connecting.",
+    message: "👋 Welcome to Passormatch.com! You’re all set to start connecting.",
     createdAt
   }
 }
