@@ -17,7 +17,7 @@ import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import ConfirmDialog from "../components/common/ConfirmDialog";
 import { useCircle, useCircles } from "../hooks/useCircles";
-import { useJoinCircle } from "../hooks/useMembership";
+import { useJoinCircle, useLeaveCircle } from "../hooks/useMembership";
 import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
@@ -44,6 +44,7 @@ export default function CircleDetailsPage() {
   const [editPost, setEditPost] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [reportPost, setReportPost] = useState(null);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const queryClient = useQueryClient();
 
@@ -55,6 +56,7 @@ export default function CircleDetailsPage() {
   const deletePostMutation = useDeletePost(circleId);
   const { send: sendMatchRequest } = useSendMatchRequest();
   const { mutate: joinCircle, isPending: isJoining } = useJoinCircle();
+  const { mutate: leaveCircle, isPending: isLeaving } = useLeaveCircle();
   const { mutate: reportUser } = useReportUser();
 
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
@@ -65,6 +67,8 @@ export default function CircleDetailsPage() {
 
   const data = fetchedCircle || location.state?.circleData;
   const posts = (postsData?.items || []).filter((p) => p.status !== "deleted");
+
+  const isOwner = !!myId && myId === data?.ownerId;
 
   if (isLoading && !data) {
     return <CircleHeaderSkeleton />;
@@ -96,6 +100,19 @@ export default function CircleDetailsPage() {
       },
       onError: () => {
         toast.error(t("circleDetails.joinFailedToast"));
+      },
+    });
+  };
+
+  const handleLeaveCircle = () => {
+    leaveCircle(circleId, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: queryKeys.circles });
+        queryClient.invalidateQueries({ queryKey: queryKeys.circle(circleId) });
+        toast.success(t("circleDetails.leftToast", { name: data.name }));
+      },
+      onError: () => {
+        toast.error(t("circleDetails.leaveFailedToast"));
       },
     });
   };
@@ -197,6 +214,15 @@ export default function CircleDetailsPage() {
         message={t("circleDetails.deletePostMessage")}
       />
 
+      <ConfirmDialog
+        isOpen={showLeaveConfirm}
+        onClose={() => setShowLeaveConfirm(false)}
+        onConfirm={handleLeaveCircle}
+        title={t("circleDetails.leaveCircleTitle")}
+        message={t("circleDetails.leaveCircleMessage")}
+        confirmLabel={t("circleDetails.leaveCircle")}
+      />
+
       <ReportUserModal
         open={!!reportPost}
         onClose={() => setReportPost(null)}
@@ -256,12 +282,23 @@ export default function CircleDetailsPage() {
         <div className="bg-white rounded-2xl shadow-lg p-3">
           <div className="flex gap-2">
             {isJoined ? (
-              <button
-                onClick={handleShareCircle}
-                className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
-              >
-                {t("circleDetails.share")}
-              </button>
+              <>
+                <button
+                  onClick={handleShareCircle}
+                  className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
+                >
+                  {t("circleDetails.share")}
+                </button>
+                {!isOwner && (
+                  <button
+                    onClick={() => setShowLeaveConfirm(true)}
+                    disabled={isLeaving}
+                    className="flex-1 rounded-xl py-2.5 text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-60 transition-colors"
+                  >
+                    {isLeaving ? t("circleDetails.leaving") : t("circleDetails.leaveCircle")}
+                  </button>
+                )}
+              </>
             ) : (
               <button
                 onClick={handleJoinCircle}

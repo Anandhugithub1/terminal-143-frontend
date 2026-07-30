@@ -8,3 +8,9 @@ circleId =>
   api.post(
     `${BASE}/${circleId}/join`
   );
+
+export const leaveCircle =
+circleId =>
+  api.post(
+    `${BASE}/${circleId}/leave`
+  );

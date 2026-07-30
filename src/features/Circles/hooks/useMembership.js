@@ -5,7 +5,8 @@ from
 '@tanstack/react-query';
 
 import {
-  joinCircle
+  joinCircle,
+  leaveCircle
 }
 from
 '../api/membershipApi';
@@ -16,6 +17,17 @@ useJoinCircle() {
     mutationFn:
       circleId =>
         joinCircle(
+          circleId
+        )
+  });
+}
+
+export function
+useLeaveCircle() {
+  return useMutation({
+    mutationFn:
+      circleId =>
+        leaveCircle(
           circleId
         )
   });
