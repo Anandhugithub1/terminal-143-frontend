@@ -24,17 +24,28 @@ export default function DiscoverCirclesPage() {
   const [imageErrors, setImageErrors] = useState(new Set());
 
   // A query starting with "#" searches by exact tag instead of name prefix —
-  // same convention post tag search already uses elsewhere in Circles.
-  const isTagQuery = searchQuery.trim().startsWith("#");
-  const tagQuery = isTagQuery ? searchQuery.trim().slice(1) : "";
+  // same convention post tag search already uses elsewhere in Circles. A bare
+  // word (no "#") still gets a tag search too, as a fallback once the name
+  // search comes back empty, so "hiking" alone also finds circles tagged
+  // #hiking instead of requiring the "#" to be typed.
+  const trimmedQuery = searchQuery.trim();
+  const isTagQuery = trimmedQuery.startsWith("#");
+  const tagQuery = isTagQuery ? trimmedQuery.slice(1) : trimmedQuery;
 
   // Typing searches ALL circles server-side (Redis-backed) rather than
   // filtering the hardcoded starter list — that list can't surface circles
   // other users created.
   const nameSearch = useCircleSearch(isTagQuery ? "" : searchQuery);
-  const tagSearch = useCircleTagSearch(isTagQuery ? tagQuery : "");
+  const nameSearchEmpty =
+    nameSearch.isActive && !nameSearch.isSearching && nameSearch.circles.length === 0;
+  const shouldTagSearch = isTagQuery || nameSearchEmpty;
+  const tagSearch = useCircleTagSearch(shouldTagSearch ? tagQuery : "");
   const { circles: searchResults, isSearching, isActive: isSearchActive } =
-    isTagQuery ? tagSearch : nameSearch;
+    isTagQuery
+      ? tagSearch
+      : nameSearchEmpty
+        ? { ...tagSearch, isActive: nameSearch.isActive }
+        : nameSearch;
 
   const joinedCircleIds = new Set((circlesData?.circles || []).map((circle) => circle.circleId));
 
