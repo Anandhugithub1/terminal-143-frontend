@@ -1,4 +1,5 @@
 import { Compass, FileText, MapPin, PenLine, Plus, Rss } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
