@@ -23,7 +23,11 @@ i18n
     backend: {
       // Path to load each namespace file:
       //   e.g. public/locales/en/common.json
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
+      // The v= query param busts stale browser/CDN caches on mobile after a
+      // deploy adds or changes keys — these JSON files aren't content-hashed
+      // like the JS/CSS bundle, so without this a phone could keep serving a
+      // pre-deploy copy indefinitely and print raw "namespace.key" text.
+      loadPath: `/locales/{{lng}}/{{ns}}.json?v=${__APP_BUILD_ID__}`,
     },
 
     ns: ['common', 'home', 'nav' ,'auth','settings','location','circles','chat','swipe','onboardingCircles'],

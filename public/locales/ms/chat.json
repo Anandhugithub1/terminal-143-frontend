@@ -9,6 +9,12 @@
     "tapMatchToStart": "Ketik padanan di atas untuk menyapa dan mula bersembang.",
     "chatSectionLabel": "Sembang"
   },
+  "support": {
+    "title": "Sokongan",
+    "rowSubtitle": "Dapatkan bantuan daripada pasukan kami",
+    "loading": "Memuatkan mesej...",
+    "emptyPrompt": "Ada soalan atau menghadapi masalah? Hantar mesej kepada kami dan pasukan kami akan menghubungi anda semula."
+  },
   "matchesStrip": {
     "label": "Padanan"
   },
@@ -38,6 +44,8 @@
     "moreOptions": "Pilihan lain",
     "blockUser": "Sekat {{name}}",
     "unblockUser": "Nyahsekat {{name}}",
+    "reportUser": "Laporkan {{name}}",
+    "reportMessageAction": "Laporkan mesej",
     "blockConfirmTitle": "Sekat {{name}}?",
     "blockConfirmBody": "Mereka tidak akan dapat menghantar mesej kepada anda, dan anda juga tidak akan dapat menghantar mesej kepada mereka.",
     "blockConfirmAction": "Sekat",

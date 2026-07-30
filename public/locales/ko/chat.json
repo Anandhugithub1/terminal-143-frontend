@@ -9,6 +9,12 @@
     "tapMatchToStart": "위에서 매치를 눌러 인사를 건네고 대화를 시작해 보세요.",
     "chatSectionLabel": "채팅"
   },
+  "support": {
+    "title": "지원",
+    "rowSubtitle": "저희 팀의 도움 받기",
+    "loading": "메시지를 불러오는 중...",
+    "emptyPrompt": "질문이 있거나 문제가 발생했나요? 메시지를 보내주시면 저희 팀이 답변해 드립니다."
+  },
   "matchesStrip": {
     "label": "매치"
   },
@@ -38,6 +44,8 @@
     "moreOptions": "더 보기",
     "blockUser": "{{name}}님 차단하기",
     "unblockUser": "{{name}}님 차단 해제하기",
+    "reportUser": "{{name}}님 신고하기",
+    "reportMessageAction": "메시지 신고",
     "blockConfirmTitle": "{{name}}님을 차단할까요?",
     "blockConfirmBody": "상대방은 회원님에게 메시지를 보낼 수 없고, 회원님도 상대방에게 메시지를 보낼 수 없게 됩니다.",
     "blockConfirmAction": "차단",

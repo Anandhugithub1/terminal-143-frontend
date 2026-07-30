@@ -5,6 +5,14 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
 
+  define: {
+    // Bakes the build time into the bundle so i18next can cache-bust its
+    // translation JSON requests per-deploy — those files are fetched at
+    // runtime via i18next-http-backend, not hashed like JS/CSS assets, so
+    // mobile browsers were holding onto pre-deploy copies indefinitely.
+    __APP_BUILD_ID__: JSON.stringify(Date.now()),
+  },
+
   server: {
     host: 'local.passormatch.com',
     strictPort: true,
