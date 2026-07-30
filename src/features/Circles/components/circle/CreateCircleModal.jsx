@@ -104,7 +104,9 @@ export default function CreateCircleModal({
     useCreateCircle();
 
   const handleAddTag = () => {
-    const trimmed = tagInput.trim().toLowerCase();
+    // Strip a leading "#" — the chip already prepends its own Hash icon, so a
+    // typed "#hiking" would otherwise show/send a doubled hash.
+    const trimmed = tagInput.trim().toLowerCase().replace(/^#+/, "");
     if (trimmed && !tags.includes(trimmed)) {
       setTags([...tags, trimmed]);
     }
