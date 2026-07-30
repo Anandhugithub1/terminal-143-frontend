@@ -87,6 +87,55 @@ export function useConversationHistory(matchId) {
   return { ...query, data }
 }
 
+// Support chat is standalone REST, not realtime (no WebSocket path — see
+// chat-service's supportChat.js) — a poll-based history fetch plus a plain
+// POST to send, instead of useConversationHistory/the socket send path.
+const SUPPORT_POLL_MS = 8000
+
+export async function fetchSupportHistory() {
+  // Reuses the same cookie-authed history endpoint as a 1:1 conversation
+  // (getConversationHistory.js), just with the reserved SUPPORT id as the
+  // "other user" — that handler already special-cases SUPPORT (skips the
+  // soft-delete check, since it isn't a real profile).
+  const res = await chatApi.get('/conversations/SUPPORT/messages', {
+    withCredentials: true,
+  })
+  const myUsername = getCurrentUsername()
+  return (res.data?.messages || []).map((msg) => ({
+    id: msg.messageId,
+    text: msg.content,
+    sentAt: msg.sentAt,
+    mine: msg.senderId === myUsername,
+  }))
+}
+
+export function useSupportHistory() {
+  return useQuery({
+    queryKey: ['supportChatHistory'],
+    queryFn: fetchSupportHistory,
+    refetchInterval: SUPPORT_POLL_MS,
+    staleTime: 0,
+  })
+}
+
+export function useSendSupportMessage() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (content) => {
+      const res = await chatApi.post(
+        '/support/messages',
+        { content },
+        { withCredentials: true }
+      )
+      return res.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['supportChatHistory'] })
+      queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
+    },
+  })
+}
+
 export function useBlockUser(matchId) {
   const queryClient = useQueryClient()
 

@@ -5,6 +5,7 @@ import DefaultHomeRoute from "./DefaultHomeRoute.jsx"
 
 const ChatListPage = lazy(() => import("../features/Chat/pages/ChatListPage.jsx"))
 const ChatConversationPage = lazy(() => import("../features/Chat/pages/ChatConversationPage.jsx"))
+const SupportChatPage = lazy(() => import("../features/Chat/pages/SupportChatPage.jsx"))
 const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx"))
 import NotificationsPage from "../features/Notifications/pages/NotificationsPage.jsx"
 export const AppFeatureRoutes = (
@@ -26,6 +27,15 @@ export const AppFeatureRoutes = (
       element={
         <Suspense fallback={<LoadingSpinner />}>
           <ChatConversationPage />
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="matches/support/chat"
+      element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <SupportChatPage />
         </Suspense>
       }
     />

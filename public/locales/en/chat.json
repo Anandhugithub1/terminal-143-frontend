@@ -9,6 +9,12 @@
     "tapMatchToStart": "Tap a match above to say hi and start chatting.",
     "chatSectionLabel": "Chat"
   },
+  "support": {
+    "title": "Support",
+    "rowSubtitle": "Get help from our team",
+    "loading": "Loading messages...",
+    "emptyPrompt": "Have a question or ran into a problem? Send us a message and our team will get back to you."
+  },
   "matchesStrip": {
     "label": "Matches"
   },

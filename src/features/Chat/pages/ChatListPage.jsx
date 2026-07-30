@@ -9,6 +9,7 @@ import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import PageLayout from '../../../shared/components/PageLayout'
 import EmptyState from '../../../shared/components/EmptyState'
 import MatchRow from '../components/MatchRow'
+import SupportRow from '../components/SupportRow'
 import NewMatchesStrip from '../components/NewMatchesStrip'
 
 export default function ChatListPage() {
@@ -127,9 +128,14 @@ export default function ChatListPage() {
     )
   }
 
+  // Support is always reachable, independent of whether this user has any
+  // real matches — it must never be hidden behind the no-matches/error empty
+  // states below.
   if (isError || matches.length === 0) {
     return (
       <PageLayout className="bg-white">
+        <SupportRow onOpenChat={() => navigate('/matches/support/chat')} />
+        <div className="border-t border-gray-100" />
         <div className="flex-1 flex items-center justify-center">
           <EmptyState
             icon={MessageCircle}
@@ -152,42 +158,47 @@ export default function ChatListPage() {
 
       <div className="border-t border-gray-100" />
 
-      {conversations.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center">
-          <EmptyState
-            icon={MessageCircle}
-            title={t('list.noConversationsYet')}
-            subtitle={t('list.tapMatchToStart')}
-          />
-        </div>
-      ) : (
-        <div className="flex-1">
-          <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
-            {t('list.chatSectionLabel')}
-          </p>
-          {conversations.map((match) => (
-            <MatchRow
-              key={match.PK}
-              match={match}
-              preview={previews[match.PK]}
-              feedbackState={sentFeedback[match.PK] || match.feedback}
-              feedbackDisabled={loadingUser === match.PK}
-              onOpenChat={() => navigate(`/matches/${match.PK}/chat`)}
-              onOpenProfile={() => goToProfile(match.profileLink)}
-              onLike={() => handleFeedback(match.PK, true)}
-              onDislike={() => handleFeedback(match.PK, false)}
-            />
-          ))}
+      <div className="flex-1">
+        <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
+          {t('list.chatSectionLabel')}
+        </p>
 
-          {hasNextPage && (
-            <div ref={loadMoreRef} className="py-4 flex justify-center">
-              {isFetchingNextPage && (
-                <Skeleton circle width={24} height={24} />
-              )}
-            </div>
-          )}
-        </div>
-      )}
+        <SupportRow onOpenChat={() => navigate('/matches/support/chat')} />
+
+        {conversations.length === 0 ? (
+          <div className="flex-1 flex items-center justify-center">
+            <EmptyState
+              icon={MessageCircle}
+              title={t('list.noConversationsYet')}
+              subtitle={t('list.tapMatchToStart')}
+            />
+          </div>
+        ) : (
+          <>
+            {conversations.map((match) => (
+              <MatchRow
+                key={match.PK}
+                match={match}
+                preview={previews[match.PK]}
+                feedbackState={sentFeedback[match.PK] || match.feedback}
+                feedbackDisabled={loadingUser === match.PK}
+                onOpenChat={() => navigate(`/matches/${match.PK}/chat`)}
+                onOpenProfile={() => goToProfile(match.profileLink)}
+                onLike={() => handleFeedback(match.PK, true)}
+                onDislike={() => handleFeedback(match.PK, false)}
+              />
+            ))}
+
+            {hasNextPage && (
+              <div ref={loadMoreRef} className="py-4 flex justify-center">
+                {isFetchingNextPage && (
+                  <Skeleton circle width={24} height={24} />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </PageLayout>
   )
 }
