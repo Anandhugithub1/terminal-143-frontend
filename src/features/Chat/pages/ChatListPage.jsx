@@ -134,7 +134,7 @@ export default function ChatListPage() {
   if (isError || matches.length === 0) {
     return (
       <PageLayout className="bg-white">
-        <SupportRow onOpenChat={() => navigate('/matches/support/chat')} />
+        <SupportRow onOpenChat={() => navigate('/matches/support/chat')} preview={previews.SUPPORT} />
         <div className="border-t border-gray-100" />
         <div className="flex-1 flex items-center justify-center">
           <EmptyState
@@ -163,7 +163,7 @@ export default function ChatListPage() {
           {t('list.chatSectionLabel')}
         </p>
 
-        <SupportRow onOpenChat={() => navigate('/matches/support/chat')} />
+        <SupportRow onOpenChat={() => navigate('/matches/support/chat')} preview={previews.SUPPORT} />
 
         {conversations.length === 0 ? (
           <div className="flex-1 flex items-center justify-center">

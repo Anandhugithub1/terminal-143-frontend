@@ -2,6 +2,7 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 import { useMemo } from 'react'
 import { chatApi } from '../../api/clients'
 import { getCurrentUsername } from '../../shared/utils/getCurrentUsername'
+import { uploadToS3 } from '../../shared/utils/uploadToS3'
 
 // Server-authoritative per-conversation summary: unread count + last message.
 // Computed on the backend (ULID key-range count, no per-message counter), so it
@@ -104,6 +105,7 @@ export async function fetchSupportHistory() {
   return (res.data?.messages || []).map((msg) => ({
     id: msg.messageId,
     text: msg.content,
+    imageUrl: msg.imageUrl || null,
     sentAt: msg.sentAt,
     mine: msg.senderId === myUsername,
   }))
@@ -121,16 +123,50 @@ export function useSupportHistory() {
 export function useSendSupportMessage() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (content) => {
+    mutationFn: async ({ content, imageUrl }) => {
       const res = await chatApi.post(
         '/support/messages',
-        { content },
+        { content, imageUrl },
         { withCredentials: true }
       )
       return res.data
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['supportChatHistory'] })
+      queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
+    },
+  })
+}
+
+// Requests a presigned S3 PUT url for a support-chat photo attachment
+// (issueSupportUploadUrl.js — user-side only, staff replies stay text-only),
+// then uploads the file directly to S3, mirroring CreatePostModal's
+// getPresignedUrl -> uploadToS3 flow for circle post media.
+export async function uploadSupportImage(file) {
+  const res = await chatApi.post(
+    '/support/upload-url',
+    { fileType: file.type, fileSize: file.size },
+    { withCredentials: true }
+  )
+  const { presignedUrl, publicUrl } = res.data
+  await uploadToS3(presignedUrl, file)
+  return publicUrl
+}
+
+// REST equivalent of the WebSocket readReceipt action, for the support
+// thread's poll-based (non-realtime) flow — see markSupportRead.js.
+export function useMarkSupportRead() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (messageId) => {
+      const res = await chatApi.post(
+        '/support/read',
+        { messageId },
+        { withCredentials: true }
+      )
+      return res.data
+    },
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['chatUnreadCounts'] })
     },
   })

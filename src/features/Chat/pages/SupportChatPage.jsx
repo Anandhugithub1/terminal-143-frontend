@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, HelpCircle, Send } from 'lucide-react'
+import { ArrowLeft, HelpCircle, Image as ImageIcon, Send, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { useSupportHistory, useSendSupportMessage } from '../api'
+import { toast } from 'sonner'
+import { useSupportHistory, useSendSupportMessage, useMarkSupportRead, uploadSupportImage } from '../api'
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024
 
 function formatMessageTime(iso) {
   if (!iso) return ''
@@ -16,15 +20,24 @@ function formatMessageTime(iso) {
 // chat-service's supportChat.js): history is polled (useSupportHistory) and
 // sending is a plain POST, so unlike ChatConversationPage there's no ack
 // timer, retry queue, or delete-for-me here — just send + poll.
+//
+// Photo attachments are USER-SIDE ONLY — staff replies from the moderation
+// dashboard stay text-only (see sendSupportReply.js), so there's no attach
+// control for incoming/staff messages, only for what this page sends.
 export default function SupportChatPage() {
   const { t } = useTranslation('chat')
   const navigate = useNavigate()
   const { data: messages = [], isLoading, isError } = useSupportHistory()
   const { mutate: sendMessage, isPending: isSending } = useSendSupportMessage()
+  const { mutate: markRead } = useMarkSupportRead()
 
   const [draft, setDraft] = useState('')
+  const [pendingImage, setPendingImage] = useState(null) // { file, previewUrl }
+  const [isUploading, setIsUploading] = useState(false)
   const scrollRef = useRef(null)
+  const fileInputRef = useRef(null)
   const hasScrolledRef = useRef(false)
+  const markedReadForRef = useRef(null)
 
   useEffect(() => {
     if (!scrollRef.current) return
@@ -35,12 +48,68 @@ export default function SupportChatPage() {
     hasScrolledRef.current = true
   }, [messages.length])
 
-  function handleSend(e) {
+  // Advances the server-side read boundary once per newest incoming message,
+  // so /chat/unread stops counting it and the pinned row's badge clears —
+  // mirrors ChatConversationPage's markConversationRead, but over REST since
+  // there's no socket to send a readReceipt frame through here.
+  useEffect(() => {
+    const newest = messages[messages.length - 1]
+    if (!newest || newest.mine) return
+    if (markedReadForRef.current === newest.id) return
+    markedReadForRef.current = newest.id
+    markRead(newest.id)
+  }, [messages, markRead])
+
+  function handlePickImage() {
+    fileInputRef.current?.click()
+  }
+
+  function handleImageSelected(e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      toast.error(t('support.invalidImageType'))
+      return
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      toast.error(t('support.imageTooLarge'))
+      return
+    }
+
+    setPendingImage({ file, previewUrl: URL.createObjectURL(file) })
+  }
+
+  function clearPendingImage() {
+    if (pendingImage) URL.revokeObjectURL(pendingImage.previewUrl)
+    setPendingImage(null)
+  }
+
+  async function handleSend(e) {
     e.preventDefault()
     const text = draft.trim()
-    if (!text || isSending) return
+    if ((!text && !pendingImage) || isSending || isUploading) return
+
+    let imageUrl
+    if (pendingImage) {
+      setIsUploading(true)
+      try {
+        imageUrl = await uploadSupportImage(pendingImage.file)
+      } catch {
+        toast.error(t('support.imageUploadFailed'))
+        setIsUploading(false)
+        return
+      }
+      setIsUploading(false)
+    }
+
     setDraft('')
-    sendMessage(text)
+    clearPendingImage()
+    sendMessage(
+      { content: text, imageUrl },
+      { onError: () => toast.error(t('support.sendFailed')) }
+    )
   }
 
   return (
@@ -91,7 +160,15 @@ export default function SupportChatPage() {
                   : 'bg-white text-gray-800 border border-gray-100 rounded-bl-sm'
               }`}
             >
-              <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+              {msg.imageUrl && (
+                <img
+                  src={msg.imageUrl}
+                  alt=""
+                  loading="lazy"
+                  className="rounded-lg mb-1.5 max-h-64 w-full object-cover"
+                />
+              )}
+              {msg.text && <p className="whitespace-pre-wrap break-words">{msg.text}</p>}
               <p className={`text-[10px] mt-1 text-right ${msg.mine ? 'text-white/70' : 'text-gray-400'}`}>
                 {formatMessageTime(msg.sentAt)}
               </p>
@@ -100,22 +177,56 @@ export default function SupportChatPage() {
         ))}
       </div>
 
-      <form onSubmit={handleSend} className="flex items-center gap-2 px-4 py-3 border-t border-gray-100 bg-white">
-        <input
-          type="text"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder={t('conversation.typeMessage')}
-          className="flex-1 px-4 py-2.5 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
-        />
-        <button
-          type="submit"
-          disabled={!draft.trim() || isSending}
-          aria-label={t('conversation.sendMessage')}
-          className="w-10 h-10 shrink-0 flex items-center justify-center bg-primary text-white rounded-full disabled:opacity-50 transition-opacity"
-        >
-          <Send className="w-4 h-4" />
-        </button>
+      <form onSubmit={handleSend} className="border-t border-gray-100 bg-white">
+        {pendingImage && (
+          <div className="flex items-center gap-2 px-4 pt-3">
+            <div className="relative">
+              <img src={pendingImage.previewUrl} alt="" className="w-14 h-14 rounded-lg object-cover" />
+              <button
+                type="button"
+                onClick={clearPendingImage}
+                aria-label={t('support.removeImage')}
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-900 text-white flex items-center justify-center"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 px-4 py-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={ALLOWED_IMAGE_TYPES.join(',')}
+            onChange={handleImageSelected}
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={handlePickImage}
+            disabled={isSending || isUploading}
+            aria-label={t('support.attachImage')}
+            className="w-10 h-10 shrink-0 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-gray-100 rounded-full transition-colors disabled:opacity-50"
+          >
+            <ImageIcon className="w-5 h-5" />
+          </button>
+          <input
+            type="text"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder={t('conversation.typeMessage')}
+            className="flex-1 px-4 py-2.5 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+          <button
+            type="submit"
+            disabled={(!draft.trim() && !pendingImage) || isSending || isUploading}
+            aria-label={t('conversation.sendMessage')}
+            className="w-10 h-10 shrink-0 flex items-center justify-center bg-primary text-white rounded-full disabled:opacity-50 transition-opacity"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
       </form>
     </div>
   )

@@ -13,7 +13,13 @@
     "title": "Support",
     "rowSubtitle": "Get help from our team",
     "loading": "Loading messages...",
-    "emptyPrompt": "Have a question or ran into a problem? Send us a message and our team will get back to you."
+    "emptyPrompt": "Have a question or ran into a problem? Send us a message and our team will get back to you.",
+    "attachImage": "Attach a photo",
+    "removeImage": "Remove photo",
+    "invalidImageType": "Please select a JPG, PNG, or WEBP image",
+    "imageTooLarge": "Image must be under 10MB",
+    "imageUploadFailed": "Failed to upload image. Please try again.",
+    "sendFailed": "Failed to send message. Please try again."
   },
   "matchesStrip": {
     "label": "Matches"
