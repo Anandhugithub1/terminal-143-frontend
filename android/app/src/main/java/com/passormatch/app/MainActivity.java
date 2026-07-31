@@ -1,4 +1,4 @@
-package com.passormatch;
+package com.passormatch.app;
 
 import android.os.Bundle;
 import android.view.View;

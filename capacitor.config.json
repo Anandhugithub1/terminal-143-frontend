@@ -1,5 +1,5 @@
 {
-  "appId": "com.passormatch",
+  "appId": "com.passormatch.app",
   "appName": "PassorMatch",
   "webDir": "dist",
   "server": {
