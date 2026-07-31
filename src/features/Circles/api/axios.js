@@ -1,5 +1,6 @@
 import axios
 from 'axios';
+import { attachAuthInterceptors } from '../../../shared/auth/authInterceptors';
 
 const api =
 axios.create({
@@ -14,5 +15,7 @@ axios.create({
       'application/json',
   },
 });
+
+attachAuthInterceptors(api);
 
 export default api;

@@ -1,6 +1,13 @@
 // src/features/auth/authAPI.js
 import client from '../../Utlis/client';
 import axios from 'axios';
+import {
+  isNativeClient,
+  setTokens,
+  setSessionMeta,
+  clearSession,
+  getTokens,
+} from '../../shared/auth/tokenStore';
 // REGISTER
 export const apiRegister = async ({ emailPhone, password, gender, agreedToTerms }) => {
   const payload = {
@@ -22,7 +29,14 @@ export const apiLogin = async ({ emailPhone, password }) => {
 
   const { data } = await client.post('/v0.2/login', payload, {
     withCredentials: true,
+    headers: isNativeClient() ? { 'X-Client-Type': 'capacitor' } : undefined,
   });
+
+  if (isNativeClient() && data.tokens) {
+    setTokens(data.tokens);
+    setSessionMeta({ username: data.username, preferences: data.preferences });
+  }
+
   return data;
 };
 
@@ -49,18 +63,28 @@ export const apiForgotPassword = async ({ email }) => {
 
 export const signOut = async (action = 'signout') => {
   try {
+    const headers = { 'Content-Type': 'application/json' };
+
+    if (isNativeClient()) {
+      const { accessToken, idToken, refreshToken } = getTokens();
+      headers['X-Client-Type'] = 'capacitor';
+      if (accessToken) headers.Authorization = `Bearer ${accessToken}`;
+      if (idToken) headers['X-Id-Token'] = idToken;
+      if (refreshToken) headers['X-Refresh-Token'] = refreshToken;
+    }
+
     const response = await axios.post(
       'https://api.passormatch.com/auth/v0.2/signout',
       { action },
       {
         withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers,
       }
     );
+    clearSession();
     return response.data;
   } catch (err) {
+    clearSession();
     const message =
       err.response?.data?.message ||
       err.message ||

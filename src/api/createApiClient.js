@@ -1,6 +1,7 @@
 // src/api/createApiClient.js
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
+import { attachAuthInterceptors } from '../shared/auth/authInterceptors';
 
 export const createApiClient = (baseURL) => {
   const api = axios.create({
@@ -20,6 +21,8 @@ export const createApiClient = (baseURL) => {
       return !error.response || error.response.status >= 500;
     },
   });
+
+  attachAuthInterceptors(api);
 
   return api;
 };
