@@ -216,7 +216,7 @@ export default function SupportChatPage() {
         )}
       </div>
 
-      <form onSubmit={handleSend} className="border-t border-gray-100 bg-white">
+      <form onSubmit={handleSend} className="border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom)]">
         {pendingImage && (
           <div className="flex items-center gap-2 px-4 pt-3">
             <div className="relative">
@@ -233,7 +233,7 @@ export default function SupportChatPage() {
           </div>
         )}
 
-        <div className="flex items-center gap-2 px-4 py-3">
+        <div className="flex items-center gap-1.5 px-3 py-2.5 sm:gap-2 sm:px-4 sm:py-3">
           <input
             ref={fileInputRef}
             type="file"
@@ -246,7 +246,7 @@ export default function SupportChatPage() {
             onClick={handlePickImage}
             disabled={isSending || isUploading}
             aria-label={t('support.attachImage')}
-            className="w-10 h-10 shrink-0 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-gray-100 rounded-full transition-colors disabled:opacity-50"
+            className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center text-gray-400 hover:text-primary hover:bg-gray-100 rounded-full transition-colors disabled:opacity-50"
           >
             <ImageIcon className="w-5 h-5" />
           </button>
@@ -255,13 +255,18 @@ export default function SupportChatPage() {
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             placeholder={t('conversation.typeMessage')}
-            className="flex-1 px-4 py-2.5 bg-gray-100 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+            // iOS Safari auto-zooms the page on focus for any input with a
+            // computed font-size under 16px — text-sm (14px) was tripping
+            // that, so this is pinned to 16px directly (matches the fix in
+            // ChatConversationPage).
+            style={{ fontSize: 16 }}
+            className="flex-1 min-w-0 px-4 py-2.5 bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
           <button
             type="submit"
             disabled={(!draft.trim() && !pendingImage) || isSending || isUploading}
             aria-label={t('conversation.sendMessage')}
-            className="w-10 h-10 shrink-0 flex items-center justify-center bg-primary text-white rounded-full disabled:opacity-50 transition-opacity"
+            className="w-9 h-9 sm:w-10 sm:h-10 shrink-0 flex items-center justify-center bg-primary text-white rounded-full disabled:opacity-50 transition-opacity"
           >
             <Send className="w-4 h-4" />
           </button>
