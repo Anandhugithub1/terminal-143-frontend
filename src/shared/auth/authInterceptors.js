@@ -5,20 +5,30 @@ import {
   getStoredPreferences,
 } from './tokenStore';
 
+// CapacitorHttp patches XMLHttpRequest, and axios's AxiosHeaders wrapper does
+// not always survive that round trip — assigning through .set() when it exists
+// keeps this working whether headers arrive as an instance or a plain object.
+const setHeader = (config, name, value) => {
+  if (typeof config.headers?.set === 'function') config.headers.set(name, value);
+  else config.headers[name] = value;
+};
+
 export const attachAuthInterceptors = (api) => {
   api.interceptors.request.use((config) => {
     if (!isNativeClient()) return config;
 
+    config.headers = config.headers || {};
+
     const { accessToken, idToken, refreshToken } = getTokens();
     if (!accessToken || !idToken) return config;
 
-    config.headers['X-Client-Type'] = 'capacitor';
-    config.headers.Authorization = `Bearer ${accessToken}`;
-    config.headers['X-Id-Token'] = idToken;
-    if (refreshToken) config.headers['X-Refresh-Token'] = refreshToken;
+    setHeader(config, 'X-Client-Type', 'capacitor');
+    setHeader(config, 'Authorization', `Bearer ${accessToken}`);
+    setHeader(config, 'X-Id-Token', idToken);
+    if (refreshToken) setHeader(config, 'X-Refresh-Token', refreshToken);
 
     const preferences = getStoredPreferences();
-    if (preferences) config.headers['X-Preferences'] = JSON.stringify(preferences);
+    if (preferences) setHeader(config, 'X-Preferences', JSON.stringify(preferences));
 
     return config;
   });

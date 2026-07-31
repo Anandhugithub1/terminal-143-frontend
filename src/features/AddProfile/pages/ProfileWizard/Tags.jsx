@@ -10,6 +10,7 @@ import {
   getPresignedUrl,
 } from "../../../UserProfile/api/profile";
 import { ensureNormalizedImage } from "../../../../utils/imageConversion";
+import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
 import OnboardingPage from "../../../Circles/pages/OnboardingPage";
 import { useTranslation } from "react-i18next";
 
@@ -78,11 +79,7 @@ export default function Tags() {
     const { presignedUrl, publicUrl } = await getPresignedUrl({
       fileType: uploadFile.type,
     });
-    await fetch(presignedUrl, {
-      method: "PUT",
-      headers: { "Content-Type": uploadFile.type },
-      body: uploadFile,
-    });
+    await uploadToS3(presignedUrl, uploadFile);
     return publicUrl;
   };
 

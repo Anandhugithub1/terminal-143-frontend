@@ -4,10 +4,12 @@
   "webDir": "dist",
   "server": {
     "hostname": "app.passormatch.com",
-    "androidScheme": "https",
-    "iosScheme": "https"
+    "androidScheme": "https"
   },
   "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    },
     "StatusBar": {
       "style": "LIGHT",
       "backgroundColor": "#ffffff",
