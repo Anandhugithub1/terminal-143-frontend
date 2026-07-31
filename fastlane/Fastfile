@@ -36,9 +36,12 @@ platform :ios do
 
   desc "Upload the built .ipa to TestFlight"
   lane :beta do
+    UI.important("api_key present: #{!@api_key.nil?}, keys: #{@api_key.is_a?(Hash) ? @api_key.keys : @api_key.inspect}")
+
     upload_to_testflight(
       api_key: @api_key,
       ipa: "build/App.ipa",
+      app_identifier: "com.passormatch.app",
       skip_waiting_for_build_processing: true
     )
   end
