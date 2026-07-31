@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, HelpCircle, Image as ImageIcon, Send, X } from 'lucide-react'
+import { ArrowLeft, HelpCircle, Image as ImageIcon, RotateCw, Send, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useSupportHistory, useSendSupportMessage, useMarkSupportRead, uploadSupportImage } from '../api'
@@ -27,7 +27,7 @@ function formatMessageTime(iso) {
 export default function SupportChatPage() {
   const { t } = useTranslation('chat')
   const navigate = useNavigate()
-  const { data: messages = [], isLoading, isError } = useSupportHistory()
+  const { data: messages = [], isLoading, isError, refetch: refetchHistory } = useSupportHistory()
   const { mutate: sendMessage, isPending: isSending } = useSendSupportMessage()
   const { mutate: markRead } = useMarkSupportRead()
 
@@ -91,6 +91,9 @@ export default function SupportChatPage() {
     const text = draft.trim()
     if ((!text && !pendingImage) || isSending || isUploading) return
 
+    // Keep the draft/image in place until we know the message actually went
+    // through — a network drop mid-upload or mid-send must not silently
+    // lose what the user typed/attached, only a toast with nothing to retry.
     let imageUrl
     if (pendingImage) {
       setIsUploading(true)
@@ -104,11 +107,15 @@ export default function SupportChatPage() {
       setIsUploading(false)
     }
 
-    setDraft('')
-    clearPendingImage()
     sendMessage(
       { content: text, imageUrl },
-      { onError: () => toast.error(t('support.sendFailed')) }
+      {
+        onSuccess: () => {
+          setDraft('')
+          clearPendingImage()
+        },
+        onError: () => toast.error(t('support.sendFailed')),
+      }
     )
   }
 
@@ -144,7 +151,17 @@ export default function SupportChatPage() {
         )}
 
         {isError && (
-          <p className="text-center text-sm text-gray-400 mt-4">{t('conversation.couldNotLoad')}</p>
+          <div className="flex flex-col items-center gap-2 mt-4">
+            <p className="text-center text-sm text-gray-400">{t('conversation.couldNotLoad')}</p>
+            <button
+              type="button"
+              onClick={() => refetchHistory()}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-primary font-medium hover:bg-primary/5 rounded-full transition-colors"
+            >
+              <RotateCw className="w-3.5 h-3.5" />
+              {t('support.retry')}
+            </button>
+          </div>
         )}
 
         {!isLoading && !isError && messages.length === 0 && (

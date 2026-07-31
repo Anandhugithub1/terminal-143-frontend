@@ -19,7 +19,8 @@
     "invalidImageType": "Please select a JPG, PNG, or WEBP image",
     "imageTooLarge": "Image must be under 10MB",
     "imageUploadFailed": "Failed to upload image. Please try again.",
-    "sendFailed": "Failed to send message. Please try again."
+    "sendFailed": "Failed to send message. Please try again.",
+    "retry": "Retry"
   },
   "matchesStrip": {
     "label": "Matches"
