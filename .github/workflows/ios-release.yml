@@ -32,6 +32,9 @@ jobs:
       - name: Build web app
         run: npm run build
 
+      - name: Ensure @capacitor/ios is installed
+        run: npm install @capacitor/ios@8.4.2
+
       - name: Sync iOS platform
         run: npx cap sync ios
 
