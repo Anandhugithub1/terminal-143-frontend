@@ -1,0 +1,4 @@
+git_url("https://github.com/Anandhugithub1/passormatch-certificates-")
+storage_mode("git")
+type("appstore")
+app_identifier("com.passormatch.app")

@@ -1,0 +1,35 @@
+default_platform(:ios)
+
+platform :ios do
+  before_all do
+    @api_key = app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+      key_content: ENV["APP_STORE_CONNECT_API_KEY"],
+      is_key_content_base64: true
+    )
+  end
+
+  desc "Fetch signing certs/profile (read-only) and build a signed App Store archive"
+  lane :release do
+    setup_ci
+    match(type: "appstore", readonly: true, api_key: @api_key)
+
+    gym(
+      project: "ios/App/App.xcodeproj",
+      scheme: "App",
+      export_method: "app-store",
+      output_directory: "build",
+      output_name: "App.ipa"
+    )
+  end
+
+  desc "Upload the built .ipa to TestFlight"
+  lane :beta do
+    upload_to_testflight(
+      api_key: @api_key,
+      ipa: "build/App.ipa",
+      skip_waiting_for_build_processing: true
+    )
+  end
+end
