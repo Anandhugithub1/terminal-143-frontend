@@ -100,3 +100,15 @@ input[type="date"].with-custom-date-icon::-webkit-inner-spin-button,
 input[type="date"].with-custom-date-icon::-webkit-clear-button {
   display: none;
 }
+/* iOS/WKWebView auto-zooms the page when focusing any control whose computed
+   font-size is under 16px, and never zooms back out — the layout is left
+   scaled and scrolled. Pin every text control to 16px on touch devices; the
+   !important is needed because Tailwind's text-sm/text-xs utilities are more
+   specific. Pointer-coarse keeps desktop web free to use smaller inputs. */
+@media (pointer: coarse) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}

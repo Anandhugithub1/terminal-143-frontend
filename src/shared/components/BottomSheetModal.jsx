@@ -58,7 +58,13 @@ export default function BottomSheetModal({ isOpen, onClose, children, panelClass
   const overlayClassName = centered
     ? "fixed inset-0 z-[200] flex items-center justify-center p-4"
     : "fixed inset-0 z-[200] flex items-end justify-center sm:items-center sm:p-4";
-  const panelWidthClass = centered ? "w-full max-w-sm" : "w-full";
+  // The viewport is edge-to-edge (viewport-fit=cover), so a bottom-docked sheet
+  // runs under the home indicator and swallows the last ~34px — whatever the
+  // sheet puts last, usually its action row. Centered dialogs never reach that
+  // far, and from sm+ the overlay's own padding already clears it.
+  const panelWidthClass = centered
+    ? "w-full max-w-sm"
+    : "w-full pb-[env(safe-area-inset-bottom)] sm:pb-0";
 
   const panelRef = useModalA11y(isOpen, onClose);
 

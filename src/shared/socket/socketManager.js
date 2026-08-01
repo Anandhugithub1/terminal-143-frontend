@@ -21,6 +21,32 @@ export const SocketState = {
   CLOSED: "closed",
 };
 
+// Temporary: chat sends fail on iOS because the socket is repeatedly torn down
+// within a second or two of connecting, so send() finds it non-OPEN and queues
+// frames that _teardown() then reports as failed. Heartbeats survive only
+// because one happens to land on a live connection. These traces record who
+// triggers each teardown so the churn can be pinned down from a device log
+// rather than inferred from connect/disconnect timestamps. Remove once fixed.
+const READY_STATE_NAMES = ["CONNECTING", "OPEN", "CLOSING", "CLOSED"];
+
+const socketTrace = (event, manager, extra = {}) => {
+  const ws = manager.ws;
+  console.log(
+    "[socket]",
+    JSON.stringify({
+      event,
+      state: manager.state,
+      readyState: ws ? READY_STATE_NAMES[ws.readyState] : "no-socket",
+      refCount: manager.refCount,
+      explicitClose: manager.explicitClose,
+      connecting: manager.connecting,
+      suspended: manager.suspended,
+      queued: manager.sendQueue.length,
+      ...extra,
+    })
+  );
+};
+
 class SocketManager {
   constructor() {
     this.ws = null;
@@ -91,8 +117,11 @@ class SocketManager {
     }
 
     this.ws = new WebSocket(`${WS_URL}?ticket=${encodeURIComponent(ticket)}`);
+    let openedAt = null;
 
     this.ws.onopen = () => {
+      openedAt = Date.now();
+      socketTrace("onopen", this);
       this.connecting = false;
       this.reconnectAttempts = 0;
       this._setState(SocketState.OPEN);
@@ -110,7 +139,13 @@ class SocketManager {
       this._dispatch(payload);
     };
 
-    this.ws.onclose = () => {
+    this.ws.onclose = (event) => {
+      socketTrace("onclose", this, {
+        code: event?.code ?? null,
+        reason: event?.reason || null,
+        wasClean: event?.wasClean ?? null,
+        openedForMs: openedAt ? Date.now() - openedAt : null,
+      });
       this.connecting = false;
       this._stopHeartbeat();
       this._setState(SocketState.CLOSED);
@@ -146,6 +181,7 @@ class SocketManager {
   // disconnect() — leaves refCount untouched and remembers to reconnect
   // once the tab is visible again, without needing a new acquire() call.
   _suspend() {
+    socketTrace("suspend", this);
     if (!this.ws || this.refCount === 0) return;
     this.suspended = true;
     this.explicitClose = true;
@@ -154,6 +190,7 @@ class SocketManager {
   }
 
   _resume() {
+    socketTrace("resume", this);
     this._clearHiddenTimer();
     this.suspended = false;
     if (this.refCount === 0) return;
@@ -179,6 +216,7 @@ class SocketManager {
   _attachLifecycleListeners() {
     if (typeof document !== "undefined") {
       document.addEventListener("visibilitychange", () => {
+        socketTrace("visibilitychange", this, { visibility: document.visibilityState });
         if (document.visibilityState === "hidden") {
           this._clearHiddenTimer();
           this.hiddenTimer = setTimeout(() => this._suspend(), HIDDEN_CLOSE_DELAY_MS);
@@ -205,6 +243,7 @@ class SocketManager {
     // from the real Android lifecycle instead of the WebView's own signals.
     if (Capacitor.isNativePlatform()) {
       CapacitorApp.addListener("appStateChange", ({ isActive }) => {
+        socketTrace("appStateChange", this, { isActive });
         if (isActive) {
           this._resume();
         } else {
@@ -217,6 +256,7 @@ class SocketManager {
 
   send(payload) {
     const data = JSON.stringify(payload);
+    socketTrace("send", this, { action: payload?.action ?? null });
     if (this.ws && this.ws.readyState === WebSocket.OPEN) {
       this.ws.send(data);
     } else {
@@ -309,6 +349,9 @@ class SocketManager {
   }
 
   _teardown() {
+    // Logged unconditionally: a teardown holding queued frames is the moment a
+    // message becomes "Not sent", so the trace needs to name the caller.
+    socketTrace("teardown", this, { caller: new Error().stack?.split("\n")[2]?.trim() ?? null });
     this._stopHeartbeat();
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);

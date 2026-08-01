@@ -125,7 +125,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       isOpen={isOpen}
       onClose={onClose}
       animated
-      panelClassName="max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col h-[100dvh] sm:h-auto sm:max-h-[90vh]"
+      panelClassName="max-w-lg rounded-t-2xl sm:rounded-2xl flex flex-col h-[calc(100dvh-env(safe-area-inset-bottom))] sm:h-auto sm:max-h-[90vh]"
     >
       {/* Header */}
             <div className="flex-shrink-0 p-4 border-b border-gray-100 flex items-center justify-between">
