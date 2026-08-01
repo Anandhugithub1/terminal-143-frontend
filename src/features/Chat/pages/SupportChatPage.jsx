@@ -4,6 +4,7 @@ import { ArrowLeft, HelpCircle, Image as ImageIcon, RotateCw, Send, X } from 'lu
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useSupportHistory, useSendSupportMessage, useMarkSupportRead, uploadSupportImage } from '../api'
+import { useVisualViewportHeight } from '../../../shared/hooks/useVisualViewportHeight'
 
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
@@ -27,6 +28,7 @@ function formatMessageTime(iso) {
 export default function SupportChatPage() {
   const { t } = useTranslation('chat')
   const navigate = useNavigate()
+  const viewportHeight = useVisualViewportHeight()
   const { data: messages = [], isLoading, isError, refetch: refetchHistory } = useSupportHistory()
   const { mutate: sendMessage, isPending: isSending } = useSendSupportMessage()
   const { mutate: markRead } = useMarkSupportRead()
@@ -120,7 +122,10 @@ export default function SupportChatPage() {
   }
 
   return (
-    <div className="flex flex-col bg-gray-50 h-[100dvh]">
+    <div
+      className="flex flex-col bg-gray-50 h-[100dvh]"
+      style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
+    >
       <header className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white">
         <button
           onClick={() => navigate(-1)}

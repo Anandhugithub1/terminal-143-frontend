@@ -12,6 +12,7 @@ import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import { useLongPress } from '../hooks/useLongPress'
 import BottomSheetModal from '../../../shared/components/BottomSheetModal'
+import { useVisualViewportHeight } from '../../../shared/hooks/useVisualViewportHeight'
 import ReportUserModal from '../../UserHome/components/Modals/ReportUserModal'
 
 // How long to wait for chat-service's SENT_ACK before treating a send as
@@ -77,34 +78,6 @@ function MessageBubble({ msg, onLongPress, onRetry, t }) {
       </div>
     </div>
   )
-}
-
-// iOS Safari/WKWebView doesn't shrink 100dvh when the keyboard opens — the
-// layout viewport stays put and the keyboard just overlays it, so a fixed
-// h-[100dvh] column leaves stale/blank space where the keyboard now covers
-// content. window.visualViewport DOES report the keyboard-adjusted height on
-// iOS, so we track it explicitly and size the page off that instead.
-function useVisualViewportHeight() {
-  const [height, setHeight] = useState(() =>
-    typeof window !== 'undefined' && window.visualViewport
-      ? window.visualViewport.height
-      : null
-  )
-
-  useEffect(() => {
-    const vv = window.visualViewport
-    if (!vv) return
-    const update = () => setHeight(vv.height)
-    update()
-    vv.addEventListener('resize', update)
-    vv.addEventListener('scroll', update)
-    return () => {
-      vv.removeEventListener('resize', update)
-      vv.removeEventListener('scroll', update)
-    }
-  }, [])
-
-  return height
 }
 
 export default function ChatConversationPage() {
