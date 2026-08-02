@@ -10,8 +10,23 @@ import { getErrorMessage } from '../api/getErrorMessage';
 // 401s are excluded here: authInterceptors.js's response interceptor already
 // forces a logout + redirect for those, and stacking a toast on top of a
 // screen that's about to unmount is not useful.
+//
+// ["my-profile"] 404s are ALSO excluded, but narrowly — not a blanket "hide
+// all 404s" rule, since a 404 on e.g. a deleted post really is worth
+// surfacing. A brand-new user (just registered, no profile row created yet)
+// or anyone landing on / before completing signup gets a 404 here as the
+// NORMAL, expected first response — RequireProfileIncomplete/DefaultHomeRoute
+// already treat it as "show the wizard" / "go to login", not an error. The
+// toast was firing anyway underneath that correct handling, showing "Profile
+// not found" to someone who was never supposed to see an error at all.
+const isExpectedNoProfileYet = (error, query) => {
+  const key = query?.queryKey || query?.options?.queryKey;
+  return key?.[0] === 'my-profile' && error?.response?.status === 404;
+};
+
 const shouldToast = (error, query) => {
   if (query?.meta?.silent || query?.options?.meta?.silent) return false;
+  if (isExpectedNoProfileYet(error, query)) return false;
   return error?.response?.status !== 401;
 };
 

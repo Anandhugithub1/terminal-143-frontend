@@ -63,6 +63,10 @@ export default function Tags() {
 
   const completeMutation = useMutation({
     mutationFn: completeProfileApi,
+    // silent: this mutation shows its own toast below — without this the
+    // global MutationCache handler in client.js would also toast the same
+    // failure, showing two error toasts for one submit.
+    meta: { silent: true },
     onError: () => {
       submittingRef.current = false;
       setIsSubmitting(false);
