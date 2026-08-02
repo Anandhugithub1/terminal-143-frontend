@@ -15,10 +15,22 @@ const shouldToast = (error, query) => {
   return error?.response?.status !== 401;
 };
 
+// A 401/403 will never succeed on retry — there's no token to appear between
+// attempts — so retrying one only adds a wasted round-trip of latency before
+// the user sees anything. Matters most for a first-time/logged-out visitor
+// hitting the home screen: their profile fetch 401s immediately, and without
+// this they'd sit through a retry before ProtectedRoute/DefaultHomeRoute
+// redirects them to /login. Everything else keeps the default single retry.
+const shouldRetryQuery = (failureCount, error) => {
+  const status = error?.response?.status;
+  if (status === 401 || status === 403) return false;
+  return failureCount < 1;
+};
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: shouldRetryQuery,
       staleTime: 5 * 60 * 1000,
       refetchOnWindowFocus: false,
     },

@@ -10,6 +10,7 @@ const ID_KEY = 'pm.idToken';
 const REFRESH_KEY = 'pm.refreshToken';
 const USERNAME_KEY = 'pm.username';
 const PREFERENCES_KEY = 'pm.preferences';
+const HAS_SESSION_KEY = 'pm.hasSession';
 
 const read = (key) => {
   try {
@@ -57,6 +58,17 @@ export const setSessionMeta = ({ username, preferences }) => {
   if (preferences) write(PREFERENCES_KEY, JSON.stringify(preferences));
 };
 
+// Web sessions live in an httpOnly cookie set by auth-service — invisible to
+// JS by design, so there's no way to ask "is there a valid session" directly
+// the way getTokens() answers that on native. This flag is the substitute:
+// set on every successful login (both platforms), cleared on logout. It lets
+// the 401 interceptor tell "a session that existed just died" (show the
+// expired-session toast) apart from "this browser/device never logged in"
+// (e.g. a first-time visitor's profile fetch 401s on the home screen) —
+// the latter must not tell someone their non-existent session "expired."
+export const markSessionActive = () => write(HAS_SESSION_KEY, '1');
+export const hasActiveSession = () => read(HAS_SESSION_KEY) === '1';
+
 export const clearSession = () => {
-  [ACCESS_KEY, ID_KEY, REFRESH_KEY, USERNAME_KEY, PREFERENCES_KEY].forEach((key) => write(key, null));
+  [ACCESS_KEY, ID_KEY, REFRESH_KEY, USERNAME_KEY, PREFERENCES_KEY, HAS_SESSION_KEY].forEach((key) => write(key, null));
 };

@@ -7,6 +7,7 @@ import {
   setSessionMeta,
   clearSession,
   getTokens,
+  markSessionActive,
 } from '../../shared/auth/tokenStore';
 import { getErrorMessage } from '../../shared/api/getErrorMessage';
 // REGISTER
@@ -37,6 +38,12 @@ export const apiLogin = async ({ emailPhone, password }) => {
     setTokens(data.tokens);
     setSessionMeta({ username: data.username, preferences: data.preferences });
   }
+
+  // Web has no equivalent of native's stored tokens (its session lives in the
+  // httpOnly cookie this response just set) — mark it unconditionally here,
+  // on both platforms, so the 401 interceptor can tell "a session that
+  // existed just died" apart from "this browser never logged in."
+  markSessionActive();
 
   return data;
 };

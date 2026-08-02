@@ -5,6 +5,7 @@ import {
   getTokens,
   setTokens,
   getStoredPreferences,
+  hasActiveSession,
 } from './tokenStore';
 // Deliberately NOT a static import: logout.js -> authApi.js -> Utlis/client.js
 // -> attachAuthInterceptors (this file) closes a require cycle back here.
@@ -86,13 +87,20 @@ export const attachAuthInterceptors = (api) => {
         // Every backend service normalizes an expired/invalid/missing token
         // to 401 (403 is reserved for real permission failures), so this is
         // a reliable "the session is dead" signal for any authenticated
-        // request. Fire-and-forget: the caller's own .catch still runs with
-        // the original rejection, this just also tears down the session.
-        loggingOut = true;
-        toast.error(i18n.t('errors:unauthorized'));
-        import('./logout').then(({ performLogout }) => performLogout()).finally(() => {
-          loggingOut = false;
-        });
+        // request — PROVIDED there was a session to begin with. A first-time
+        // or logged-out visitor loading the home screen also gets a 401 on
+        // their profile fetch (no token/cookie exists at all), and that must
+        // not show "your session has expired" — there was no session. Only
+        // toast + force-logout when hasActiveSession() confirms this device
+        // actually had one; otherwise just let the 401 propagate to whatever
+        // route guard (e.g. ProtectedRoute) already redirects to /login.
+        if (hasActiveSession()) {
+          loggingOut = true;
+          toast.error(i18n.t('errors:unauthorized'));
+          import('./logout').then(({ performLogout }) => performLogout()).finally(() => {
+            loggingOut = false;
+          });
+        }
       }
       return Promise.reject(error);
     }
