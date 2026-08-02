@@ -6,7 +6,14 @@ import {
   setTokens,
   getStoredPreferences,
 } from './tokenStore';
-import { performLogout } from './logout';
+// Deliberately NOT a static import: logout.js -> authApi.js -> Utlis/client.js
+// -> attachAuthInterceptors (this file) closes a require cycle back here.
+// Vite/webpack can leave `attachAuthInterceptors` in the temporal dead zone
+// when Utlis/client.js's top-level `attachAuthInterceptors(client)` call runs
+// before this module has finished initializing its own exports, throwing
+// "Cannot access 'attachAuthInterceptors' before initialization" at app boot.
+// A dynamic import resolves lazily, at call time (never during module
+// evaluation), which breaks the cycle without breaking either import.
 
 // CapacitorHttp patches XMLHttpRequest, and axios's AxiosHeaders wrapper does
 // not always survive that round trip — assigning through .set() when it exists
@@ -83,7 +90,7 @@ export const attachAuthInterceptors = (api) => {
         // the original rejection, this just also tears down the session.
         loggingOut = true;
         toast.error(i18n.t('errors:unauthorized'));
-        performLogout().finally(() => {
+        import('./logout').then(({ performLogout }) => performLogout()).finally(() => {
           loggingOut = false;
         });
       }
