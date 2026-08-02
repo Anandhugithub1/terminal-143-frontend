@@ -1,3 +1,5 @@
+import { toast } from 'sonner';
+import i18n from '../../i18n/i18n';
 import {
   isNativeClient,
   getTokens,
@@ -32,6 +34,15 @@ const isPublicAuthRequest = (config) => {
   return PUBLIC_AUTH_PATHS.some((path) => url.includes(path));
 };
 
+// Several requests can be in flight when a token dies (e.g. a chat heartbeat
+// poll firing alongside whatever the user is actively doing) and would each
+// resolve to a 401 within the same instant — without this guard every one of
+// them would independently call performLogout(), which is harmless but noisy
+// (multiple sign-out network calls, multiple navigations). Module-level is
+// intentional: this must be shared across every api client's interceptor,
+// not per-client state.
+let loggingOut = false;
+
 export const attachAuthInterceptors = (api) => {
   api.interceptors.request.use((config) => {
     if (!isNativeClient()) return config;
@@ -64,13 +75,17 @@ export const attachAuthInterceptors = (api) => {
     },
     (error) => {
       const status = error?.response?.status;
-      if (status === 401 && !isPublicAuthRequest(error.config || {})) {
+      if (status === 401 && !isPublicAuthRequest(error.config || {}) && !loggingOut) {
         // Every backend service normalizes an expired/invalid/missing token
         // to 401 (403 is reserved for real permission failures), so this is
         // a reliable "the session is dead" signal for any authenticated
         // request. Fire-and-forget: the caller's own .catch still runs with
         // the original rejection, this just also tears down the session.
-        performLogout();
+        loggingOut = true;
+        toast.error(i18n.t('errors:unauthorized'));
+        performLogout().finally(() => {
+          loggingOut = false;
+        });
       }
       return Promise.reject(error);
     }
