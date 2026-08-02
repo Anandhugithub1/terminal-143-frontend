@@ -5,6 +5,8 @@ import {
   getPresignedUrl
 } from "../features/UserProfile/api/profile"
 import { ensureNormalizedImage } from "../utils/imageConversion"
+// Aliased: this hook has its own uploadToS3 that wraps the presigned-URL fetch.
+import { uploadToS3 as putToS3 } from "../shared/utils/uploadToS3"
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -52,11 +54,7 @@ export function useEditableProfile() {
     const { presignedUrl, publicUrl } =
       await getPresignedUrl({ fileType: uploadFile.type, photoIndex: order })
 
-    await fetch(presignedUrl, {
-      method: "PUT",
-      headers: { "Content-Type": uploadFile.type },
-      body: uploadFile
-    })
+    await putToS3(presignedUrl, uploadFile)
 
     return publicUrl
   }

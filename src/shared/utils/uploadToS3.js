@@ -1,15 +1,17 @@
-// CapacitorHttp patches window.fetch to route through native HTTP, which is what
-// lets the API calls bypass WKWebView's CORS. S3 uploads must not go that way:
-// the presigned URL signs the exact byte count, and native re-encoding of a
-// binary body yields 403 SignatureDoesNotMatch. S3 needs no CORS bypass anyway.
+// CapacitorHttp patches window.fetch to route requests through native HTTP,
+// which is what lets the API calls bypass WKWebView's CORS. Uploads must not go
+// that way: the native bridge marshals bodies as strings/JSON, so a Blob/File
+// body is mangled or dropped (ionic-team/capacitor#6132, #6645), and the
+// presigned URL signs an exact byte count — anything but the original bytes
+// gets 403 SignatureDoesNotMatch. S3 needs no CORS bypass regardless.
 //
-// Capacitor stashes the pre-patch original on window, so prefer that; it is the
-// only reference guaranteed to be the WebView's own fetch regardless of whether
-// this module happened to load before or after the patch was applied.
+// native-bridge.ts stashes the pre-patch original as win.CapacitorWebFetch
+// before assigning its own, so that reference is the WebView's real fetch
+// whether or not the patch has been applied yet. Resolved per call rather than
+// at module load, since the bridge injects it before any app code runs but
+// after this module is evaluated in some bundling orders.
 const webFetch = (...args) => {
-  const original =
-    typeof window !== 'undefined' &&
-    (window.CapacitorWebFetch || window.CapacitorHttpFetch);
+  const original = typeof window !== 'undefined' && window.CapacitorWebFetch;
   return typeof original === 'function'
     ? original.apply(window, args)
     : fetch(...args);
