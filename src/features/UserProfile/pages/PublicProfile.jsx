@@ -5,6 +5,8 @@ import { RxCross1 } from "react-icons/rx"
 import { FaHeart } from "react-icons/fa"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
+import Skeleton from "react-loading-skeleton"
+import "react-loading-skeleton/dist/skeleton.css"
 
 import { useMyProfile } from "../Hooks/useMyProfile"
 import { useProfileByLink } from "../Hooks/getProfileByLink"
@@ -15,7 +17,6 @@ import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest"
 import ProfileCard from "../../UserHome/components/Cards/ProfileCard"
 import placeholderImage from "../../../assets/woman.png"
 import { computeAge } from "../../../Utlis/utlis"
-import { LoadingSpinner } from "../../../components/Ui/Spinner"
 import DetailSection from "../components/PublicProfile/DetailsSection"
 import { Button } from "../../../shared/Button"
 import PublicTopbar from "../components/PublicProfile/TopBar"
@@ -133,7 +134,31 @@ const normalized = {
     )
   }
 
-  if (isProfileLoading || isMyProfileLoading) return <LoadingSpinner />
+  if (isProfileLoading || isMyProfileLoading) {
+    return (
+      <div className="relative bg-gray-50 min-h-[100dvh]">
+        {myProfile ? <TopBar /> : <PublicTopbar />}
+
+        <div className="relative max-w-2xl mx-auto px-2 pt-2 pb-6">
+          <div className="mx-5 mt-3 rounded-3xl overflow-hidden relative h-[55vh] sm:h-[60vh] md:h-[65vh]">
+            <Skeleton height="100%" className="!block" />
+          </div>
+
+          <div className="flex justify-center items-center gap-8 mt-5">
+            <Skeleton circle width={64} height={64} />
+            <Skeleton circle width={64} height={64} />
+          </div>
+
+          <div className="mt-3 px-2">
+            <div className="bg-white rounded-2xl shadow-sm p-4 space-y-3">
+              <Skeleton width="40%" height={18} />
+              <Skeleton count={3} height={12} />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (profileError) {
     // A 404 here means the profile is missing OR the two users are blocked —

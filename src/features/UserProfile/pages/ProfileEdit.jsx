@@ -4,8 +4,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { ChevronLeft } from "lucide-react";
+import Skeleton from "react-loading-skeleton";
 
-import { LoadingSpinner } from "../../../components/Ui/Spinner";
 import { interestMap, getProfileFields } from "../../../Utlis/utlis";
 import { useEditableProfile } from "../../../Hooks/EditProfile";
 import { Section, LazyWrapper } from "../components/ProfileEdit/Reusable";
@@ -89,7 +89,60 @@ export default function ProfileEditPage() {
     !profile ||
     isFetching
   ) {
-    return <LoadingSpinner />;
+    return (
+      <div className="flex flex-col h-[100dvh] bg-white font-inter overflow-hidden">
+        <PageHeader title={t("profileEdit.title")} />
+
+        <main className="flex-1 overflow-y-auto pb-20">
+          <div className="p-5 space-y-6">
+            {/* Bio */}
+            <div className="bg-white rounded-2xl shadow-sm px-5 py-4">
+              <Skeleton width="30%" height={16} className="mb-3" />
+              <Skeleton count={2} height={12} />
+            </div>
+
+            {/* About Me */}
+            <div>
+              <Skeleton width="35%" height={16} className="mb-3" />
+              <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center px-5 py-4 border-b border-gray-100 last:border-b-0"
+                  >
+                    <Skeleton circle width={20} height={20} className="mr-3" />
+                    <div className="flex-1">
+                      <Skeleton width="40%" height={14} />
+                      <Skeleton width="60%" height={12} className="mt-1.5" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Interests */}
+            <div className="bg-white rounded-2xl shadow-sm px-5 py-4">
+              <Skeleton width="30%" height={16} className="mb-3" />
+              <div className="flex flex-wrap gap-2">
+                <Skeleton width={80} height={30} borderRadius={999} />
+                <Skeleton width={100} height={30} borderRadius={999} />
+                <Skeleton width={70} height={30} borderRadius={999} />
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="bg-white rounded-2xl shadow-sm px-5 py-4">
+              <Skeleton width="35%" height={16} className="mb-3" />
+              <div className="space-y-3">
+                <Skeleton height={44} borderRadius={12} />
+                <Skeleton height={44} borderRadius={12} />
+                <Skeleton height={44} borderRadius={12} />
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
   }
 
   return (

@@ -48,14 +48,29 @@
 
     if (isLoading || !profile) {
       return (
-        <div className="flex flex-col h-[100dvh] bg-gray-100 font-inter">
-          <TopNav title="Profile" />
-          <main className="flex-1 flex flex-col items-center justify-center">
-            <Skeleton circle width={96} height={96} />
-            <Skeleton width={140} height={20} className="mt-4" />
-            <Skeleton width={180} height={16} className="mt-2" />
-            <Skeleton width={120} height={16} className="mt-3" />
+        <div className="flex flex-col h-[100dvh] bg-white font-inter">
+          <TopNav title="Back" />
+
+          <main className="flex-1 overflow-y-auto pb-24">
+            <div className="flex flex-col items-center pt-8 pb-6 bg-gray-100 border-b border-gray-200">
+              <Skeleton circle width={96} height={96} />
+              <Skeleton width={140} height={20} className="mt-4" />
+              <Skeleton width={100} height={14} className="mt-2" />
+              <Skeleton width={130} height={30} borderRadius={999} className="mt-3" />
+            </div>
+
+            <div className="bg-white mt-2 divide-y divide-gray-100">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between w-full px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <Skeleton circle width={32} height={32} />
+                    <Skeleton width={130} height={16} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </main>
+
           <BottomNav />
         </div>
       )

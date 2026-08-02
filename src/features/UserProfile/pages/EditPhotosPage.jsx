@@ -1,6 +1,8 @@
 import { useState, useRef } from "react"
 import { Edit2, Plus, Camera } from "lucide-react"
 import { toast } from "sonner"
+import Skeleton from "react-loading-skeleton"
+import "react-loading-skeleton/dist/skeleton.css"
 import { useEditableProfile } from "../../../Hooks/EditProfile"
 import { useMyProfile } from "../Hooks/useMyProfile"
 import PageHeader from "../../../shared/components/PageHeader"
@@ -54,9 +56,16 @@ export default function EditPhotosPage() {
 
   if (isLoading || !profile) {
     return (
-      <div className="flex flex-col items-center justify-center h-[100dvh] bg-white">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="mt-4 text-gray-500">Loading your photos...</p>
+      <div className="flex flex-col min-h-[100dvh] bg-white">
+        <PageHeader title="Edit Photos" action={<Skeleton width={40} height={16} />} />
+
+        <main className="flex-1 px-5 pt-6">
+          <div className="grid grid-cols-2 gap-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-square !block" borderRadius={12} />
+            ))}
+          </div>
+        </main>
       </div>
     )
   }
