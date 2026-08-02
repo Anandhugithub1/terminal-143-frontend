@@ -157,6 +157,7 @@ export default function ChatConversationPage() {
   // liveMessages by the time it's queued here; this only paces dispatch.
   const sendQueueRef = useRef([])
   const isDrainingRef = useRef(false)
+  const drainTimerRef = useRef(null)
 
   // A message that arrives while this conversation is open can land in BOTH
   // `history` (useConversationPreviews's MESSAGE listener patches the
@@ -309,6 +310,17 @@ export default function ChatConversationPage() {
     return () => {
       timers.forEach((timer) => clearTimeout(timer))
       timers.clear()
+      // Navigating between conversations swaps matchId without unmounting, so
+      // these refs would otherwise carry the previous thread's state over: a
+      // queued entry still addressed to the old recipient, and — because the
+      // pacing timer belongs to the old thread — an isDraining flag with
+      // nothing left to clear it, which blocks every send in the new thread.
+      if (drainTimerRef.current) {
+        clearTimeout(drainTimerRef.current)
+        drainTimerRef.current = null
+      }
+      sendQueueRef.current = []
+      isDrainingRef.current = false
     }
   }, [matchId])
 
@@ -403,13 +415,29 @@ export default function ChatConversationPage() {
   function drainSendQueue() {
     if (isDrainingRef.current) return
     const next = sendQueueRef.current.shift()
+    // Nothing to send: clear the flag before returning. The previous order
+    // put this reset after the in-progress guard above, so an empty-queue
+    // call arriving while the flag was set bailed at that guard without ever
+    // reaching it — and since only the pacing timer clears the flag, and no
+    // timer is pending on that path, the flag stayed true for the life of the
+    // ref. Every later send then queued a bubble and returned at the guard,
+    // so dispatchMessage never ran: no ws.send(), no ack timer, a bubble
+    // stuck pending forever.
     if (!next) {
       isDrainingRef.current = false
       return
     }
     isDrainingRef.current = true
-    dispatchMessage(next.localId, next.text)
-    setTimeout(() => {
+    try {
+      dispatchMessage(next.localId, next.text)
+    } catch (err) {
+      // A throw here would otherwise leave the flag set with no timer
+      // scheduled — the same permanent stall, just from a different cause.
+      isDrainingRef.current = false
+      throw err
+    }
+    drainTimerRef.current = setTimeout(() => {
+      drainTimerRef.current = null
       isDrainingRef.current = false
       drainSendQueue()
     }, SEND_SPACING_MS)
