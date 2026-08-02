@@ -3,7 +3,7 @@ import React, { useState, useCallback, lazy, Suspense, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import PageLayout from "../../../shared/components/PageLayout";
-import ProfileSkeleton from "../components/ProfileSkeleton";
+import { ProfileSkeletonContent } from "../components/ProfileSkeleton";
 import { useReportUser } from "../api";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import { postSeen } from "../../../features/Profiles/profilesapi";
@@ -232,7 +232,7 @@ const [showReport, setShowReport] = useState(false);
             </button>
           </div>
         ) : isLoading && profiles.length === 0 && !exhausted ? (
-          <ProfileSkeleton />
+          <ProfileSkeletonContent />
         ) : computing ? (
           <ComputingLoading />
         ) : suggestionError ? (
@@ -261,9 +261,9 @@ const [showReport, setShowReport] = useState(false);
             </p>
           </div>
         ) : isBuffering ? (
-          <ProfileSkeleton />
+          <ProfileSkeletonContent />
         ) : profiles.length === 0 ? null : (
-          <Suspense fallback={<ProfileSkeleton />}>
+          <Suspense fallback={<ProfileSkeletonContent />}>
             <SwipeDeck
               idx={idx}
               direction={direction}
