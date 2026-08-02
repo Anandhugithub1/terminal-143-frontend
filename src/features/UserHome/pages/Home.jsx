@@ -22,6 +22,7 @@ import { getLanguageName } from "../utlis/getLanguageName";
 import ComputingLoading from "../components/Loading/Computing";
 import { useLocation } from "react-router-dom";
 import { subscribeToPush } from "../utlis/subscribeToPush";
+import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 
 import BravePushHelpModal from "../components/Modals/BravePushHelpModal";
 import { useTranslation } from "react-i18next";
@@ -86,7 +87,7 @@ const [showReport, setShowReport] = useState(false);
     mutationFn: postSeen,
     onError: (err) => {
       console.error("Seen error:", err);
-      setRequestError(err?.response?.data?.error || err.message);
+      setRequestError(getErrorMessage(err));
     },
   });
 

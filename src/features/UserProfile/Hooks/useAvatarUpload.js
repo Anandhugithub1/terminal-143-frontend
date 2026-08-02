@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react"
 import { toast } from "sonner"
+import { getErrorMessage } from "../../../shared/api/getErrorMessage"
 
 export function useAvatarUpload(uploadImage, profile, updateProfileData) {
 
@@ -55,12 +56,7 @@ export function useAvatarUpload(uploadImage, profile, updateProfileData) {
 
       setLocalPreview(null)
 
-      const message =
-        err?.response?.data?.error ||
-        err?.message ||
-        "Unable to upload photo. Please try again."
-
-      toast.error(message)
+      toast.error(getErrorMessage(err))
     }
   }
 
@@ -87,11 +83,7 @@ export function useAvatarUpload(uploadImage, profile, updateProfileData) {
       await updateProfileData("photos", remainingPhotos)
       toast.success("Photo removed")
     } catch (err) {
-      const message =
-        err?.response?.data?.error ||
-        err?.message ||
-        "Unable to remove photo. Please try again."
-      toast.error(message)
+      toast.error(getErrorMessage(err))
     } finally {
       setRemoving(false)
     }

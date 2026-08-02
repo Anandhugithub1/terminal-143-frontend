@@ -6,6 +6,7 @@ import PasswordInput from "../../../shared/Passinput";
 import { Button } from "../../../shared/Button";
 import { ChevronDown } from "lucide-react";
 import { useRegister } from "../useAuth";
+import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 import { toast } from "sonner"
 import ReactCountryFlag from "react-country-flag";
 
@@ -145,9 +146,7 @@ useEffect(() => {
 
       {(localError || isError) && (
         <p className="text-red-500 text-sm">
-          {localError ||
-            error?.response?.data?.error ||
-            error?.response?.data?.message}
+          {localError || getErrorMessage(error)}
         </p>
       )}
 

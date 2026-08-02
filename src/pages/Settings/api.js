@@ -1,5 +1,6 @@
 import { reportApi, reviewApi } from "../../api/clients";
 import { useMutation } from "@tanstack/react-query"
+import { getErrorMessage } from "../../shared/api/getErrorMessage"
 
 
 export const createSupportCase = async data => {
@@ -11,9 +12,7 @@ export const createSupportCase = async data => {
     )
     return res.data
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to create support case"
-    )
+    throw new Error(getErrorMessage(error))
   }
 }
 
@@ -26,9 +25,7 @@ export const submitAppReview = async ({ rating, text, isAnonymous }) => {
     )
     return res.data
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || "Failed to submit review"
-    )
+    throw new Error(getErrorMessage(error))
   }
 }
 

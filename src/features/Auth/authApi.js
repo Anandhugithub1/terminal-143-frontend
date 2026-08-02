@@ -8,6 +8,7 @@ import {
   clearSession,
   getTokens,
 } from '../../shared/auth/tokenStore';
+import { getErrorMessage } from '../../shared/api/getErrorMessage';
 // REGISTER
 export const apiRegister = async ({ emailPhone, password, gender, agreedToTerms }) => {
   const payload = {
@@ -85,11 +86,7 @@ export const signOut = async (action = 'signout') => {
     return response.data;
   } catch (err) {
     clearSession();
-    const message =
-      err.response?.data?.message ||
-      err.message ||
-      'Failed to sign out';
-    throw new Error(message);
+    throw new Error(getErrorMessage(err, 'server'));
   }
 };
 

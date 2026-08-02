@@ -10,6 +10,7 @@ import { toast } from "sonner"
 
 import { useMyProfile } from "../../features/UserProfile/Hooks/useMyProfile"
 import { updateMyProfile } from "../../features/UserProfile/api/profile"
+import { getErrorMessage } from "../../shared/api/getErrorMessage"
 
 const MAX_PREFERENCES = 5
 
@@ -49,10 +50,7 @@ const PreferencesPage = () => {
     navigate(-1)
   },
   onError: (err) => {
-    toast.error(
-      err?.response?.data?.error ||
-        t("preferencesUpdateFailed", "Failed to update preferences")
-    )
+    toast.error(getErrorMessage(err))
   }
 })
 

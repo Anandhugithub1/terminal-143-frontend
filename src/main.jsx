@@ -34,7 +34,10 @@ if (Capacitor.isNativePlatform()) {
   StatusBar.show().catch(() => {})
 }
 
-const router = createBrowserRouter(createRoutesFromElements(appRoutes))
+// Exported so code outside the React tree (e.g. performLogout in
+// src/shared/auth/logout.js, called from the axios response interceptor)
+// can navigate imperatively without a useNavigate() hook.
+export const router = createBrowserRouter(createRoutesFromElements(appRoutes))
 
 // Dynamically imported (rather than statically) so the devtools code and its
 // dependencies are excluded from the production bundle entirely, not just

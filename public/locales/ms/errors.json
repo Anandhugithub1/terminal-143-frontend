@@ -1,0 +1,39 @@
+{
+  "network": "Ralat rangkaian — sila semak sambungan anda dan cuba lagi.",
+  "timeout": "Permintaan mengambil masa terlalu lama. Sila cuba lagi.",
+  "unauthorized": "Sesi anda telah tamat tempoh. Sila log masuk semula.",
+  "forbidden": "Anda tidak mempunyai kebenaran untuk melakukan itu.",
+  "notFound": "Kami tidak dapat menjumpai apa yang anda cari.",
+  "conflict": "Ini sudah wujud.",
+  "tooManyRequests": "Anda melakukan itu terlalu kerap. Sila tunggu sebentar dan cuba lagi.",
+  "server": "Terdapat masalah di pihak kami. Sila cuba lagi sebentar lagi.",
+  "badRequest": "Sila semak input anda dan cuba lagi.",
+  "generic": "Sesuatu telah berlaku tidak kena. Sila cuba lagi.",
+
+  "profileAlreadyExists": "Anda sudah mempunyai profil.",
+  "profileNotFound": "Profil tidak dijumpai.",
+  "missingRequiredField": "Sila lengkapkan semua medan yang diperlukan.",
+  "invalidDob": "Sila masukkan tarikh lahir yang sah.",
+  "underAge": "Anda mesti berumur sekurang-kurangnya 18 tahun untuk mendaftar.",
+  "photoLimitSingle": "Hanya satu foto dibenarkan.",
+  "photoLimitMulti": "Anda boleh menambah sehingga 5 foto.",
+  "photoInvalidUrl": "Salah satu foto anda tidak dapat dimuat naik. Sila cuba lagi.",
+  "genderRequiredForUpdate": "Sila pilih jantina anda sebelum mengemas kini ini.",
+  "noUpdatableFields": "Tiada perubahan untuk disimpan.",
+  "restoreCooldown": "Anda baru sahaja memulihkan akaun anda. Sila tunggu sebelum memadamkannya semula.",
+
+  "circleNameRequired": "Sila berikan nama untuk circle anda.",
+  "circleNotFound": "Circle ini tidak lagi wujud.",
+  "alreadyMember": "Anda sudah menjadi ahli circle ini.",
+  "notAMember": "Anda bukan ahli circle ini.",
+
+  "userBlocked": "Anda tidak boleh berbuat demikian dengan pengguna ini.",
+  "senderProfileNotFound": "Profil anda tiada maklumat yang diperlukan untuk menghantar permintaan ini.",
+  "missingDobForRequest": "Sila tambah tarikh lahir anda sebelum menghantar permintaan.",
+
+  "supportTicketLimit": "Anda telah mencapai had tiket sokongan untuk hari ini. Sila cuba lagi esok.",
+  "invalidModerationAction": "Tindakan itu tidak sah.",
+
+  "ratingRange": "Sila pilih penarafan antara 1 dan 5.",
+  "reviewTextLength": "Ulasan anda hendaklah antara 5 hingga 300 aksara."
+}

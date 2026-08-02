@@ -13,6 +13,7 @@ import FieldEditPage from "./FieldEditPage";
 import { LANGUAGES } from "../utlis/profileUtils";
 import PageHeader from "../../../shared/components/PageHeader";
 import { SOCIAL_PLATFORMS } from "../constants/socialPlatforms";
+import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 
 const EditableSocialLinks = lazy(() =>
   import("../components/ProfileEdit/EditableSocialLinks")
@@ -61,11 +62,7 @@ export default function ProfileEditPage() {
   const showSuccess = () =>
     toast.success(t("profileEdit.updated", "Profile updated successfully"));
 
-  const showError = (err) =>
-    toast.error(
-      err?.response?.data?.error ||
-        t("profileEdit.updateFailed", "Failed to update profile")
-    );
+  const showError = (err) => toast.error(getErrorMessage(err));
 
   const saveSocialLinks = useCallback(async () => {
     const formatted = Object.entries(socialLinks)

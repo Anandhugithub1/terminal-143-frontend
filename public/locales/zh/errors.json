@@ -1,0 +1,39 @@
+{
+  "network": "网络错误——请检查您的网络连接后重试。",
+  "timeout": "请求耗时过长，请重试。",
+  "unauthorized": "您的登录已过期，请重新登录。",
+  "forbidden": "您没有权限执行此操作。",
+  "notFound": "未找到您要查找的内容。",
+  "conflict": "该内容已存在。",
+  "tooManyRequests": "操作过于频繁，请稍后再试。",
+  "server": "服务器出现问题，请稍后重试。",
+  "badRequest": "请检查您输入的信息后重试。",
+  "generic": "出现了一些问题，请重试。",
+
+  "profileAlreadyExists": "您已经拥有个人资料。",
+  "profileNotFound": "未找到个人资料。",
+  "missingRequiredField": "请填写所有必填项。",
+  "invalidDob": "请输入有效的出生日期。",
+  "underAge": "您必须年满18岁才能注册。",
+  "photoLimitSingle": "只能上传一张照片。",
+  "photoLimitMulti": "最多可添加5张照片。",
+  "photoInvalidUrl": "有一张照片上传失败，请重试。",
+  "genderRequiredForUpdate": "请先选择性别再进行此项更新。",
+  "noUpdatableFields": "没有可保存的更改。",
+  "restoreCooldown": "您最近刚恢复了账户，请稍候再删除。",
+
+  "circleNameRequired": "请为您的圈子命名。",
+  "circleNotFound": "该圈子已不存在。",
+  "alreadyMember": "您已经是该圈子的成员。",
+  "notAMember": "您不是该圈子的成员。",
+
+  "userBlocked": "您无法对该用户执行此操作。",
+  "senderProfileNotFound": "您的个人资料缺少发送此请求所需的信息。",
+  "missingDobForRequest": "请先添加出生日期再发送请求。",
+
+  "supportTicketLimit": "您今天的支持工单已达上限，请明天再试。",
+  "invalidModerationAction": "该操作无效。",
+
+  "ratingRange": "请选择1到5之间的评分。",
+  "reviewTextLength": "评价内容应为5到300个字符之间。"
+}

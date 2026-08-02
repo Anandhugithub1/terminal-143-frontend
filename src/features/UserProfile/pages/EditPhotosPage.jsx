@@ -4,6 +4,7 @@ import { toast } from "sonner"
 import { useEditableProfile } from "../../../Hooks/EditProfile"
 import { useMyProfile } from "../Hooks/useMyProfile"
 import PageHeader from "../../../shared/components/PageHeader"
+import { getErrorMessage } from "../../../shared/api/getErrorMessage"
 
 function PhotoCard({ order, isAvatar = false, imageUrl, onOpen }) {
   const hasImage = !!imageUrl
@@ -93,7 +94,7 @@ export default function EditPhotosPage() {
       setSelectedOrder(null)
       setPreviewMap({})
     } catch (err) {
-      toast.error(err?.response?.data?.error || "Failed to update photo")
+      toast.error(getErrorMessage(err))
     } finally {
       setSaving(false)
     }

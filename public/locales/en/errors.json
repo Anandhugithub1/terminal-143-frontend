@@ -1,0 +1,39 @@
+{
+  "network": "Network error — please check your connection and try again.",
+  "timeout": "The request took too long. Please try again.",
+  "unauthorized": "Your session has expired. Please log in again.",
+  "forbidden": "You don't have permission to do that.",
+  "notFound": "We couldn't find what you were looking for.",
+  "conflict": "This already exists.",
+  "tooManyRequests": "You're doing that too often. Please wait a moment and try again.",
+  "server": "Something went wrong on our end. Please try again shortly.",
+  "badRequest": "Please check your input and try again.",
+  "generic": "Something went wrong. Please try again.",
+
+  "profileAlreadyExists": "You already have a profile.",
+  "profileNotFound": "Profile not found.",
+  "missingRequiredField": "Please fill in all required fields.",
+  "invalidDob": "Please enter a valid date of birth.",
+  "underAge": "You must be at least 18 years old to sign up.",
+  "photoLimitSingle": "Only one photo is allowed.",
+  "photoLimitMulti": "You can add up to 5 photos.",
+  "photoInvalidUrl": "One of your photos couldn't be uploaded. Please try again.",
+  "genderRequiredForUpdate": "Please select your gender before updating this.",
+  "noUpdatableFields": "No changes to save.",
+  "restoreCooldown": "You recently restored your account. Please wait before deleting it again.",
+
+  "circleNameRequired": "Please give your circle a name.",
+  "circleNotFound": "This circle no longer exists.",
+  "alreadyMember": "You're already a member of this circle.",
+  "notAMember": "You're not a member of this circle.",
+
+  "userBlocked": "You can't do that with this user.",
+  "senderProfileNotFound": "Your profile is missing information needed to send this request.",
+  "missingDobForRequest": "Please add your date of birth before sending requests.",
+
+  "supportTicketLimit": "You've reached the limit of support tickets for today. Please try again tomorrow.",
+  "invalidModerationAction": "That action isn't valid.",
+
+  "ratingRange": "Please choose a rating between 1 and 5.",
+  "reviewTextLength": "Your review should be between 5 and 300 characters."
+}

@@ -7,6 +7,7 @@ import Loader from "../../../components/Ui/Loading";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useLogin } from "../useAuth";
+import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 import ReviewsSection from "../../../pages/Global/components/Review";
 
 const LoginForm = () => {
@@ -119,9 +120,7 @@ const LoginForm = () => {
 
         {isError && (
           <p className="text-red-500 text-sm">
-            {error?.response?.data?.error ||
-              error?.response?.data?.message ||
-              t("loginFailed")}
+            {getErrorMessage(error)}
           </p>
         )}
 

@@ -8,6 +8,7 @@ import {
   useForgotPassword,
   useConfirmForgotPassword,
 } from '../useAuth';
+import { getErrorMessage } from '../../../shared/api/getErrorMessage';
 
 export const ForgotAndResetPassword = () => {
   const { t } = useTranslation('auth');
@@ -44,9 +45,7 @@ export const ForgotAndResetPassword = () => {
           setTimeout(() => setStep('reset'), 1500);
         },
         onError: (err) => {
-          setError(
-            err?.response?.data?.error || t('resetPasswordFlow.failedToSendCode')
-          );
+          setError(getErrorMessage(err));
         },
       }
     );
@@ -81,9 +80,7 @@ export const ForgotAndResetPassword = () => {
           setTimeout(() => navigate('/login'), 2000);
         },
         onError: (err) => {
-          setError(
-            err?.response?.data?.error || t('resetPasswordFlow.resetFailed')
-          );
+          setError(getErrorMessage(err));
         },
       }
     );

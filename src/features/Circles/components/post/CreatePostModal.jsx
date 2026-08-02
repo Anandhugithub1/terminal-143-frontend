@@ -15,6 +15,7 @@ import { MAX_MEDIA_ITEMS } from "../../constants/mediaConfig";
 import { useMediaAttachments } from "../../hooks/useMediaAttachments";
 import { createPost } from "../../api/postsApi";
 import { getPresignedUrl } from "../../api/imageupload";
+import { getErrorMessage } from "../../../../shared/api/getErrorMessage";
 import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
 import { DEFAULT_AVATAR } from "../../utils/postDisplay";
 import BottomSheetModal from "../common/BottomSheetModal";
@@ -114,7 +115,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       onClose();
     } catch (err) {
       console.error(err);
-      toast.error(err?.response?.data?.error || t("createPostModal.failedToCreate"));
+      toast.error(getErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }

@@ -5,6 +5,7 @@ import { Button } from '../../../shared/Button'
 import { useVerifyOtp, useResendOtp } from '../useAuth'
 import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
+import { getErrorMessage } from '../../../shared/api/getErrorMessage'
 
 const EmailOTPVerification = () => {
   const { t } = useTranslation('auth')
@@ -64,8 +65,7 @@ const isPhone = email && /^\+?\d+$/.test(email);
 
           {verifyOtp.isError && (
             <p className="text-red-500 text-sm">
-              {verifyOtp.error?.response?.data?.error ||
-               verifyOtp.error?.response?.data?.message}
+              {getErrorMessage(verifyOtp.error)}
             </p>
           )}
 

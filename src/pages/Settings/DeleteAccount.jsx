@@ -8,6 +8,7 @@ import { SecondaryButton } from '../../shared/Button';
 import { deleteMyAccount } from '../../features/UserProfile/api/profile';
 import { signOut } from '../../features/Auth/authApi';
 import { socketManager } from '../../shared/socket/socketManager';
+import { getErrorMessage } from '../../shared/api/getErrorMessage';
 import '@fontsource-variable/inter';
 
 // Typing this exactly is required before the delete button enables — a
@@ -48,9 +49,7 @@ export default function DeleteAccountPage() {
       navigate('/login', { replace: true });
     },
     onError: (err) => {
-      setError(
-        err?.response?.data?.error || err?.message || 'Could not delete your account. Please try again.'
-      );
+      setError(getErrorMessage(err));
     },
   });
 
