@@ -24,7 +24,12 @@ export const ConfirmationModal = ({ isOpen, onClose, onConfirm, action, name }) 
   const displayAction = ACTION_LABELS[action] || action;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-sm">
+    // z-[200]: matches the app's modal convention (see
+    // shared/components/BottomSheetModal.jsx) — BottomNav is a fixed,
+    // z-50 element mounted alongside whatever page opens this dialog, so
+    // matching that z-index left stacking order to DOM position instead of
+    // guaranteeing the dialog renders on top.
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black bg-opacity-30 backdrop-blur-sm">
       <div className="bg-white rounded-2xl p-6 shadow-lg w-full max-w-sm">
         <h2 className="text-lg font-semibold text-gray-800 mb-2 capitalize">
           {t("confirmation.titlePrefix")}{displayAction}
