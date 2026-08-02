@@ -121,6 +121,11 @@ PassorMatch
 
    <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#ffffff" />
+  <!-- iOS Safari's "Add to Home Screen" ignores manifest.json's name/
+       short_name (that's honored by Chrome/Android) and falls back to the
+       page <title> above, which is long and would truncate awkwardly under
+       the home-screen icon — this gives it a short, correct title instead. -->
+  <meta name="apple-mobile-web-app-title" content="PassorMatch" />
 </head>
 <body>
   <div id="root"></div>

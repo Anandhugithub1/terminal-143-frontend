@@ -1,6 +1,6 @@
 {
-  "name": "MatchorPass",
-  "short_name": "MatchorPass",
+  "name": "PassorMatch.com",
+  "short_name": "PassorMatch",
   "start_url": "/home",
   "display": "standalone",
   "background_color": "#ffffff",
