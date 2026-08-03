@@ -55,6 +55,14 @@ export function normalizeNotification(n) {
       message = n.payload?.message || "Your report has been reviewed and the case is now resolved."
       break
 
+    case "CONTENT_HIDDEN":
+      message = n.payload?.message || "Some of your content was hidden pending moderator review."
+      break
+
+    case "CRISIS_RESOURCES":
+      message = n.payload?.message || "Support resources are available if you need them."
+      break
+
     default:
       message = n.payload?.message || message
   }
