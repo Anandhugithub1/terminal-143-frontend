@@ -11,6 +11,12 @@ body {
   min-height: 100dvh;
   overflow-x: hidden;
   background-color: #f5f3ff; /* matches the light end of app gradients */
+  /* iOS Safari (incl. Chrome-for-iOS, same WebKit engine) rubber-bands past
+     the end of the page on short screens, briefly exposing this background
+     below content that ends above the viewport bottom (e.g. a single matched
+     card on Circles home). Capacitor's WKWebView doesn't bounce, so this only
+     shows on mobile Safari. Disabling the vertical bounce removes the gap. */
+  overscroll-behavior-y: none;
 }
 
 body {

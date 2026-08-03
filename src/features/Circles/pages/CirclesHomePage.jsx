@@ -18,6 +18,7 @@ import PostSeenObserver from "../components/post/PostSeenObserver";
 import BottomSheetModal from "../components/common/BottomSheetModal";
 import CircleSearchBar from "../components/circle/CircleSearchBar";
 import { useCircles } from "../hooks/useCircles";
+import { useTranslatedCircleName } from "../constants/onboardingCircles";
 import { useFeed, usePosts } from "../hooks/usePosts";
 import { listPosts } from "../api/postsApi";
 import { useSeenTracker } from "../hooks/useSeenTracker";
@@ -69,6 +70,7 @@ function StoryAvatar({ isActive, onClick, label, sublabel, children, gradientCla
 
 export default function CirclesHomePage() {
   const { t } = useTranslation("circles");
+  const getCircleName = useTranslatedCircleName();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -221,31 +223,34 @@ export default function CirclesHomePage() {
             {t("circlesHome.postToCircle")}
           </p>
           <div className="space-y-1">
-            {myCircles.map((circle, index) => (
-              <button
-                key={circle.circleId}
-                onClick={() => handlePickCircle(circle)}
-                className="w-full flex items-center gap-3 px-3 py-3 rounded-2xl hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
-              >
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-gradient-to-br ${RING_GRADIENTS[index % RING_GRADIENTS.length]}`}
+            {myCircles.map((circle, index) => {
+              const circleName = getCircleName(circle.circleId, circle.name);
+              return (
+                <button
+                  key={circle.circleId}
+                  onClick={() => handlePickCircle(circle)}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-2xl hover:bg-gray-50 active:bg-gray-100 transition-colors text-left"
                 >
-                  {circle.coverPhoto ? (
-                    <img src={circle.coverPhoto} alt={circle.name} className="w-10 h-10 rounded-full object-cover" />
-                  ) : (
-                    <span className="text-sm font-bold text-white">
-                      {circle.name?.[0]?.toUpperCase()}
-                    </span>
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{circle.name}</p>
-                  {circle.category && (
-                    <p className="text-xs text-gray-400 truncate">{circle.category}</p>
-                  )}
-                </div>
-              </button>
-            ))}
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-gradient-to-br ${RING_GRADIENTS[index % RING_GRADIENTS.length]}`}
+                  >
+                    {circle.coverPhoto ? (
+                      <img src={circle.coverPhoto} alt={circleName} className="w-10 h-10 rounded-full object-cover" />
+                    ) : (
+                      <span className="text-sm font-bold text-white">
+                        {circleName?.[0]?.toUpperCase()}
+                      </span>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-gray-800 truncate">{circleName}</p>
+                    {circle.category && (
+                      <p className="text-xs text-gray-400 truncate">{circle.category}</p>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       </BottomSheetModal>
@@ -256,7 +261,7 @@ export default function CirclesHomePage() {
           onClose={() => setIsCreatePostOpen(false)}
           onSubmit={handlePostCreated}
           circleId={postTargetCircle.circleId}
-          circleName={postTargetCircle.name}
+          circleName={getCircleName(postTargetCircle.circleId, postTargetCircle.name)}
         />
       )}
 
@@ -300,25 +305,26 @@ export default function CirclesHomePage() {
 
             {!isLoadingCircles && myCircles.map((circle, index) => {
               const isActive = selectedCircleId === circle.circleId;
+              const circleName = getCircleName(circle.circleId, circle.name);
               return (
                 <StoryAvatar
                   key={circle.circleId}
                   isActive={isActive}
                   onClick={() => setSelectedCircleId(circle.circleId)}
-                  label={circle.name}
+                  label={circleName}
                   gradientClass={RING_GRADIENTS[index % RING_GRADIENTS.length]}
                 >
                   {circle.coverPhoto ? (
                     <img
                       src={circle.coverPhoto}
-                      alt={circle.name}
+                      alt={circleName}
                       loading="lazy"
                       className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
                     <div className={`w-full h-full rounded-full flex items-center justify-center bg-gradient-to-br ${RING_GRADIENTS[index % RING_GRADIENTS.length]}`}>
                       <span className="text-base font-bold text-white">
-                        {circle.name?.[0]?.toUpperCase()}
+                        {circleName?.[0]?.toUpperCase()}
                       </span>
                     </div>
                   )}
@@ -391,7 +397,9 @@ export default function CirclesHomePage() {
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-gray-800">
-              {selectedCircle ? selectedCircle.name : t("common.forYou")}
+              {selectedCircle
+                ? getCircleName(selectedCircle.circleId, selectedCircle.name)
+                : t("common.forYou")}
             </h2>
             {!selectedCircleId && !isLoadingFeed && feed.length > 0 && (
               <span className="text-xs text-gray-400 font-normal">{t("circlesHome.postsSuffix", { count: feed.length })}</span>
@@ -434,7 +442,7 @@ export default function CirclesHomePage() {
                       <PenLine className="w-7 h-7 text-gray-300" />
                     </div>
                     <p className="text-sm font-semibold text-gray-700 mb-1">{t("circlesHome.noPostsYetTitle")}</p>
-                    <p className="text-xs text-gray-400 mb-5">{t("circlesHome.beFirstToPost", { circleName: selectedCircle?.name })}</p>
+                    <p className="text-xs text-gray-400 mb-5">{t("circlesHome.beFirstToPost", { circleName: selectedCircle && getCircleName(selectedCircle.circleId, selectedCircle.name) })}</p>
                     <button
                       onClick={() => handlePickCircle(selectedCircle)}
                       className="px-5 py-2 btn-filled text-sm rounded-full shadow-sm"
@@ -533,7 +541,7 @@ export default function CirclesHomePage() {
                               variant="feed"
                               avatar={post.authorImage || DEFAULT_AVATAR}
                               name={getAuthorDisplayName(post) || t("common.anonymous")}
-                              heading={post.circleName}
+                              heading={getCircleName(post.circleId, post.circleName)}
                               onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
                               meta={<PostMeta post={post} />}
                               body={post.content}
@@ -596,7 +604,7 @@ export default function CirclesHomePage() {
                             }
                           />
                         }
-                        heading={post.circleName}
+                        heading={getCircleName(post.circleId, post.circleName)}
                         onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
                         onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
                         onShare={post.circleId ? () => handleSharePost(post, post.circleId) : undefined}

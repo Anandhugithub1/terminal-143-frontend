@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { ChevronLeft } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
-import { interestMap, getProfileFields } from "../../../Utlis/utlis";
+import { getProfileFields } from "../../../Utlis/utlis";
 import { useEditableProfile } from "../../../Hooks/EditProfile";
 import { Section, LazyWrapper } from "../components/ProfileEdit/Reusable";
 import FieldEditPage from "./FieldEditPage";
@@ -34,16 +34,6 @@ export default function ProfileEditPage() {
   );
 
   const fields = useMemo(() => getProfileFields(profile), [profile]);
-
-  const allInterests = useMemo(
-    () =>
-      Object.entries(interestMap).map(([key, value]) => ({
-        key,
-        label: value.label,
-        icon: value.icon,
-      })),
-    []
-  );
 
   useEffect(() => {
     if (!profile?.socialMediaLinks) return;
@@ -120,16 +110,6 @@ export default function ProfileEditPage() {
               </div>
             </div>
 
-            {/* Interests */}
-            <div className="bg-white rounded-2xl shadow-sm px-5 py-4">
-              <Skeleton width="30%" height={16} className="mb-3" />
-              <div className="flex flex-wrap gap-2">
-                <Skeleton width={80} height={30} borderRadius={999} />
-                <Skeleton width={100} height={30} borderRadius={999} />
-                <Skeleton width={70} height={30} borderRadius={999} />
-              </div>
-            </div>
-
             {/* Social Links */}
             <div className="bg-white rounded-2xl shadow-sm px-5 py-4">
               <Skeleton width="35%" height={16} className="mb-3" />
@@ -188,58 +168,6 @@ export default function ProfileEditPage() {
                 </div>
               ))}
           </Section>
-
-          {/* Interests */}
-         {/* Interests */}
-<div
-  onClick={() =>
-    setActiveField({
-      key: "interest",
-      label: t("profileEdit.interests"),
-      value: profile.interest || [],
-    })
-  }
-  className="bg-white rounded-2xl shadow-sm px-5 py-4 cursor-pointer hover:shadow-md transition-all"
->
-  <div className="flex justify-between items-start">
-    {/* Left */}
-    <div className="flex flex-col flex-1">
-      <span className="font-semibold text-gray-900 mb-3">
-        {t("profileEdit.interests")}
-      </span>
-
-      {profile.interest?.length ? (
-        <div className="flex flex-wrap gap-2">
-          {profile.interest.map((key) => {
-            const interest = allInterests.find((i) => i.key === key)
-            if (!interest) return null
-            const Icon = interest.icon
-
-            return (
-              <div
-                key={key}
-                className="flex items-center space-x-1 bg-gray-100 px-3 py-1.5 rounded-full text-sm"
-              >
-                <Icon size={15} className="text-gray-600" />
-                <span>{interest.label}</span>
-              </div>
-            )
-          })}
-        </div>
-      ) : (
-        <span className="text-sm text-gray-500">
-          {t("profileEdit.interestsEmptyText")}
-        </span>
-      )}
-    </div>
-
-    {/* Right — Edit label */}
-    <span className="text-[#FF3366] text-sm font-medium ml-4 mt-1 shrink-0">
-      {t("profileEdit.edit")}
-    </span>
-  </div>
-</div>
-
 
           {/* Social Links */}
           <LazyWrapper fallbackCount={6}>

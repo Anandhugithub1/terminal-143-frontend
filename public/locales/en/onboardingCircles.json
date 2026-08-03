@@ -298,5 +298,13 @@
   "71e1b035-2615-47ca-8ca8-2271e8f9ef55": {
     "name": "Solo Travelers",
     "description": "Meet a fellow solo traveler. Plan a trip together and find a partner who loves exploring new places."
+  },
+  "dcb30278-651b-4db5-b735-2f1c229e929b": {
+    "name": "Just for Fun",
+    "description": "No strings attached. For people who want something fun, casual, and in the moment."
+  },
+  "81aa6b18-68a6-4481-9325-fe775f40ebef": {
+    "name": "LGBTQ+",
+    "description": "Meet someone in the LGBTQ+ community. Connect over shared experience, swap stories, and find a partner who gets it without having to explain."
   }
 }

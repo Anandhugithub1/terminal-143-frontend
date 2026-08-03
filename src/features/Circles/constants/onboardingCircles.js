@@ -105,3 +105,13 @@ export function useOnboardingCircles() {
     description: t(`${circle.circleId}.description`, circle.description),
   }));
 }
+
+// Translate a circle by id when it's one of the seeded onboarding circles
+// (public/locales/{lng}/onboardingCircles.json), falling back to whatever
+// name the caller already has (e.g. a user-created circle, which has no
+// translation entry and isn't expected to need one).
+export function useTranslatedCircleName() {
+  const { t } = useTranslation("onboardingCircles");
+
+  return (circleId, fallbackName) => t(`${circleId}.name`, fallbackName);
+}
