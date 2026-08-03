@@ -142,14 +142,14 @@ export function useSendSupportMessage() {
 // (issueSupportUploadUrl.js — user-side only, staff replies stay text-only),
 // then uploads the file directly to S3, mirroring CreatePostModal's
 // getPresignedUrl -> uploadToS3 flow for circle post media.
-export async function uploadSupportImage(file) {
+export async function uploadSupportImage(file, options) {
   const res = await chatApi.post(
     '/support/upload-url',
     { fileType: file.type, fileSize: file.size },
     { withCredentials: true }
   )
   const { presignedUrl, publicUrl } = res.data
-  await uploadToS3(presignedUrl, file)
+  await uploadToS3(presignedUrl, file, options)
   return publicUrl
 }
 

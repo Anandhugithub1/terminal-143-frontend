@@ -36,6 +36,10 @@ export default function SupportChatPage() {
   const [draft, setDraft] = useState('')
   const [pendingImage, setPendingImage] = useState(null) // { file, previewUrl }
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  // Set only on a failed upload — the file/preview stay in pendingImage so
+  // "Retry" can re-attempt without asking the user to re-pick the image.
+  const [uploadFailed, setUploadFailed] = useState(false)
   const scrollRef = useRef(null)
   const fileInputRef = useRef(null)
   const hasScrolledRef = useRef(false)
@@ -81,32 +85,54 @@ export default function SupportChatPage() {
     }
 
     setPendingImage({ file, previewUrl: URL.createObjectURL(file) })
+    setUploadFailed(false)
+    setUploadProgress(0)
   }
 
   function clearPendingImage() {
     if (pendingImage) URL.revokeObjectURL(pendingImage.previewUrl)
     setPendingImage(null)
+    setUploadFailed(false)
+    setUploadProgress(0)
+  }
+
+  // Uploads the currently-pending image (retryable in place — uploadToS3
+  // already retries transient failures internally; this is the user-facing
+  // "try again" for when even those retries were exhausted, e.g. the whole
+  // connection dropped). Returns the public URL, or null if it failed (in
+  // which case pendingImage/uploadFailed are left set so the Retry button
+  // in the JSX can call this again without re-picking the file).
+  async function uploadPendingImage() {
+    setIsUploading(true)
+    setUploadFailed(false)
+    setUploadProgress(0)
+    try {
+      const url = await uploadSupportImage(pendingImage.file, {
+        onProgress: setUploadProgress,
+      })
+      return url
+    } catch {
+      setUploadFailed(true)
+      return null
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   async function handleSend(e) {
     e.preventDefault()
     const text = draft.trim()
     if ((!text && !pendingImage) || isSending || isUploading) return
+    if (pendingImage && uploadFailed) return // use the Retry button instead
 
     // Keep the draft/image in place until we know the message actually went
     // through — a network drop mid-upload or mid-send must not silently
-    // lose what the user typed/attached, only a toast with nothing to retry.
+    // lose what the user typed/attached; a failed upload surfaces a Retry
+    // button rather than just a toast with nothing to act on.
     let imageUrl
     if (pendingImage) {
-      setIsUploading(true)
-      try {
-        imageUrl = await uploadSupportImage(pendingImage.file)
-      } catch {
-        toast.error(t('support.imageUploadFailed'))
-        setIsUploading(false)
-        return
-      }
-      setIsUploading(false)
+      imageUrl = await uploadPendingImage()
+      if (!imageUrl) return
     }
 
     sendMessage(
@@ -223,18 +249,44 @@ export default function SupportChatPage() {
 
       <form onSubmit={handleSend} className="border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom)]">
         {pendingImage && (
-          <div className="flex items-center gap-2 px-4 pt-3">
+          <div className="flex items-center gap-3 px-4 pt-3">
             <div className="relative">
-              <img src={pendingImage.previewUrl} alt="" className="w-14 h-14 rounded-lg object-cover" />
-              <button
-                type="button"
-                onClick={clearPendingImage}
-                aria-label={t('support.removeImage')}
-                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-900 text-white flex items-center justify-center"
-              >
-                <X className="w-3 h-3" />
-              </button>
+              <img
+                src={pendingImage.previewUrl}
+                alt=""
+                className={`w-14 h-14 rounded-lg object-cover ${isUploading ? 'opacity-50' : ''}`}
+              />
+              {isUploading && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-[10px] font-semibold text-white bg-gray-900/70 rounded-full px-1.5 py-0.5">
+                    {Math.round(uploadProgress * 100)}%
+                  </span>
+                </div>
+              )}
+              {!isUploading && (
+                <button
+                  type="button"
+                  onClick={clearPendingImage}
+                  aria-label={t('support.removeImage')}
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-900 text-white flex items-center justify-center"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
             </div>
+            {uploadFailed && (
+              <div className="flex items-center gap-2">
+                <p className="text-xs text-rose-600">{t('support.imageUploadFailed')}</p>
+                <button
+                  type="button"
+                  onClick={uploadPendingImage}
+                  className="flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                >
+                  <RotateCw className="w-3 h-3" />
+                  {t('support.retry')}
+                </button>
+              </div>
+            )}
           </div>
         )}
 
