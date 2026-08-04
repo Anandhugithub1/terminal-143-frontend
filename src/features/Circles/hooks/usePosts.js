@@ -226,6 +226,41 @@ useUpdatePost(circleId) {
   });
 }
 
+// Edit/delete from a view that mixes posts across circles (Circles home's
+// selected-circle tab, "For You" feed, and cross-circle fallback feed) —
+// circleId comes per-call rather than being fixed to one hook instance, and
+// success invalidates every place the edited/deleted post could be showing:
+// its circle's own post list, the feed, and My Posts.
+export function
+useUpdateFeedPost() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ circleId, postId, createdAtEpoch, payload }) =>
+      updatePost(circleId, postId, createdAtEpoch, payload),
+    onSuccess: (_data, { circleId }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts(circleId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.feed });
+      queryClient.invalidateQueries({ queryKey: queryKeys.myPosts });
+    },
+  });
+}
+
+export function
+useDeleteFeedPost() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ circleId, postId, createdAtEpoch }) =>
+      deletePost(circleId, postId, createdAtEpoch),
+    onSuccess: (_data, { circleId }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.posts(circleId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.feed });
+      queryClient.invalidateQueries({ queryKey: queryKeys.myPosts });
+    },
+  });
+}
+
 export function
 useCreatePost(
   circleId

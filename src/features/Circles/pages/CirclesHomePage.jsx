@@ -12,14 +12,16 @@ import TopNav from "../../../components/Layout/TopNavigation";
 import CreateCircleModal from "../components/circle/CreateCircleModal";
 import CreatePostModal from "../components/post/CreatePostModal";
 import CommentSection from "../components/comment/CommentSection";
+import EditPostModal from "../components/post/EditPostModal";
 import PostCard from "../components/post/PostCard";
 import PostMeta from "../components/post/PostMeta";
 import PostSeenObserver from "../components/post/PostSeenObserver";
 import BottomSheetModal from "../components/common/BottomSheetModal";
+import ConfirmDialog from "../components/common/ConfirmDialog";
 import CircleSearchBar from "../components/circle/CircleSearchBar";
 import { useCircles } from "../hooks/useCircles";
 import { useTranslatedCircleName } from "../constants/onboardingCircles";
-import { useFeed, usePosts } from "../hooks/usePosts";
+import { useFeed, usePosts, useUpdateFeedPost, useDeleteFeedPost } from "../hooks/usePosts";
 import { listPosts } from "../api/postsApi";
 import { useSeenTracker } from "../hooks/useSeenTracker";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
@@ -79,7 +81,12 @@ export default function CirclesHomePage() {
   const [postTargetCircle, setPostTargetCircle] = useState(null);
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
   const [commentPost, setCommentPost] = useState(null);
+  const [editPost, setEditPost] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [selectedCircleId, setSelectedCircleId] = useState(null);
+
+  const updatePostMutation = useUpdateFeedPost();
+  const deletePostMutation = useDeleteFeedPost();
 
   const { data: circlesData, isLoading: isLoadingCircles, isError: isCirclesError, refetch: refetchCircles } = useCircles();
   const myCircles = circlesData?.circles || [];
@@ -210,11 +217,56 @@ export default function CirclesHomePage() {
     });
   };
 
+  const handleSaveEdit = (payload) => {
+    if (!editPost) return;
+    updatePostMutation.mutate(
+      { circleId: editPost.circleId, postId: editPost.postId, createdAtEpoch: editPost.createdAtEpoch, payload },
+      {
+        onSuccess: () => {
+          setEditPost(null);
+          toast.success(t("myPosts.postUpdated"));
+        },
+        onError: () => toast.error(t("myPosts.updateFailed")),
+      }
+    );
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteConfirm) return;
+    deletePostMutation.mutate(
+      { circleId: deleteConfirm.circleId, postId: deleteConfirm.postId, createdAtEpoch: deleteConfirm.createdAtEpoch },
+      {
+        onSuccess: () => toast.success(t("myPosts.postDeleted")),
+        onError: () => toast.error(t("myPosts.deleteFailed")),
+      }
+    );
+  };
+
   return (
     <div className="min-h-[100dvh] bg-gray-50 pb-20 overflow-x-hidden">
       {/* Modals */}
       <CreateCircleModal isOpen={isCreateCircleOpen} onClose={() => setIsCreateCircleOpen(false)} />
       <CommentSection isOpen={!!commentPost} onClose={() => setCommentPost(null)} post={commentPost} />
+
+      {editPost && (
+        <EditPostModal
+          isOpen
+          onClose={() => setEditPost(null)}
+          post={editPost}
+          circleId={editPost.circleId}
+          circleName={getCircleName(editPost.circleId, editPost.circleName)}
+          onSave={handleSaveEdit}
+          isSaving={updatePostMutation.isPending}
+        />
+      )}
+
+      <ConfirmDialog
+        isOpen={!!deleteConfirm}
+        onClose={() => setDeleteConfirm(null)}
+        onConfirm={handleConfirmDelete}
+        title={t("myPosts.deletePostTitle")}
+        message={t("myPosts.deletePostMessage")}
+      />
 
       {/* Reddit-style circle picker */}
       <BottomSheetModal isOpen={isCirclePickerOpen} onClose={() => setIsCirclePickerOpen(false)}>
@@ -468,6 +520,9 @@ export default function CirclesHomePage() {
                       tags={post.tags || []}
                       onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
                       onShare={() => handleSharePost(post, selectedCircleId)}
+                      isAuthor={isAuthor}
+                      onEdit={isAuthor ? () => setEditPost({ ...post, circleId: selectedCircleId, circleName: selectedCircle?.name }) : undefined}
+                      onDelete={isAuthor ? () => setDeleteConfirm({ ...post, circleId: selectedCircleId }) : undefined}
                       matched={
                         isMatched
                           ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
@@ -549,6 +604,9 @@ export default function CirclesHomePage() {
                               tags={post.tags || []}
                               onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
                               onShare={() => handleSharePost(post, post.circleId)}
+                              isAuthor={isAuthor}
+                              onEdit={isAuthor ? () => setEditPost(post) : undefined}
+                              onDelete={isAuthor ? () => setDeleteConfirm(post) : undefined}
                               matched={
                                 isMatched
                                   ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
@@ -608,6 +666,9 @@ export default function CirclesHomePage() {
                         onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
                         onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
                         onShare={post.circleId ? () => handleSharePost(post, post.circleId) : undefined}
+                        isAuthor={isAuthor}
+                        onEdit={isAuthor ? () => setEditPost(post) : undefined}
+                        onDelete={isAuthor ? () => setDeleteConfirm(post) : undefined}
                         media={post.media}
                         body={post.content}
                         tags={post.tags || []}
