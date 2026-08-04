@@ -31,6 +31,7 @@
     "axios-retry": "^4.5.0",
     "classnames": "^2.5.1",
     "clsx": "^2.1.1",
+    "country-codes-list": "^3.1.1",
     "framer-motion": "^12.7.4",
     "heic2any": "^0.0.4",
     "i18next": "^25.0.2",

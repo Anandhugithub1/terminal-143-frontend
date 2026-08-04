@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { InputField } from "../../../shared/common";
@@ -9,12 +9,24 @@ import { useRegister } from "../useAuth";
 import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 import { toast } from "sonner"
 import ReactCountryFlag from "react-country-flag";
+import CountryCodeSelect from "./CountryCodeSelect";
+import { DEFAULT_COUNTRY_CODE, findCountryByCode } from "../utils/countryCallingCodes";
+
+// A single "email or phone" field has to guess which one the user means as
+// they type. Digits-first (optionally with a leading +) reads as a phone
+// number in progress; anything else (starts with a letter, or already has
+// an @) is treated as an email — matching how the backend itself
+// disambiguates the combined field (see authApi.js's `.includes('@')`).
+function looksLikePhone(value) {
+  return /^\+?[0-9\s-]*$/.test(value) && value.trim() !== "";
+}
 
 const RegisterForm = () => {
   const { t, ready } = useTranslation("auth");
   const { t: tCommon } = useTranslation("common");
 
   const [emailPhone, setEmailPhone] = useState("");
+  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
@@ -25,15 +37,31 @@ const RegisterForm = () => {
 
   const { mutate, isPending, isError, isSuccess, data, error } = useRegister();
 
+  const isPhoneInput = looksLikePhone(emailPhone);
+  const callingCode = useMemo(
+    () => findCountryByCode(countryCode)?.callingCode,
+    [countryCode]
+  );
+  // What actually gets submitted/shown post-registration: the country's
+  // dial code combined with the digits the user typed, so they never have
+  // to type "+66" themselves. A user who pastes a full international number
+  // (already starting with +) is trusted as-is rather than double-prefixed;
+  // anything else (email) passes through unchanged.
+  const submittedValue = !isPhoneInput
+    ? emailPhone
+    : emailPhone.trim().startsWith("+")
+      ? emailPhone.replace(/[\s-]/g, "")
+      : `+${callingCode}${emailPhone.replace(/[\s-]/g, "").replace(/^0+/, "")}`;
+
 useEffect(() => {
   if (isSuccess) {
     toast.success(t("registrationSuccessful"))
 
     navigate(
-      `/verify?email=${encodeURIComponent(emailPhone)}`
+      `/verify?email=${encodeURIComponent(submittedValue)}`
     )
   }
-}, [isSuccess, navigate, emailPhone, t])
+}, [isSuccess, navigate, submittedValue, t])
 
 
   const handleSubmit = (e) => {
@@ -55,22 +83,30 @@ useEffect(() => {
     }
 
     setLocalError("");
-    mutate({ emailPhone, password, gender, agreedToTerms });
+    mutate({ emailPhone: submittedValue, password, gender, agreedToTerms });
   };
 
   if (!ready) return null;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <InputField
-        value={emailPhone}
-        onChange={(e) => setEmailPhone(e.target.value)}
-        placeholder={t("emailOrPhone")}
-      />
+      <div className="flex">
+        {isPhoneInput && (
+          <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
+        )}
+        <InputField
+          value={emailPhone}
+          onChange={(e) => setEmailPhone(e.target.value)}
+          placeholder={t("emailOrPhone")}
+          className={isPhoneInput ? "rounded-l-none" : ""}
+        />
+      </div>
 
       <div className="text-xs text-gray-500">
-  Enter your email or phone number. If using phone, include your country code (e.g. +66812345678).
-</div>
+        {isPhoneInput
+          ? t("phoneCountryHint", "We'll add the country code automatically — just enter your number.")
+          : t("emailOrPhoneHint", "Enter your email, or start typing your phone number to pick a country code.")}
+      </div>
 
 <div className="relative">
   <select
