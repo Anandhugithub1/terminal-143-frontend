@@ -90,7 +90,7 @@ useEffect(() => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="flex">
+      <div className="flex gap-2">
         {isPhoneInput && (
           <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
         )}
@@ -98,7 +98,7 @@ useEffect(() => {
           value={emailPhone}
           onChange={(e) => setEmailPhone(e.target.value)}
           placeholder={t("emailOrPhone")}
-          className={isPhoneInput ? "rounded-l-none" : ""}
+          className="flex-1 min-w-0"
         />
       </div>
 
