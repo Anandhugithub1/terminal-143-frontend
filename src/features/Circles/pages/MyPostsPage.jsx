@@ -1,4 +1,4 @@
-import { ArrowLeft, MessageCircle, MessageSquare, MoreVertical, Pencil, Share2 } from "lucide-react";
+import { ArrowLeft, MapPin, MessageCircle, MessageSquare, MoreVertical, Pencil, Share2, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import PostMedia from "../components/post/PostMedia";
 import EditPostModal from "../components/post/EditPostModal";
 import CommentSection from "../components/comment/CommentSection";
 import ConfirmDialog from "../components/common/ConfirmDialog";
+import BottomSheetModal from "../components/common/BottomSheetModal";
 import { useMyPosts, useUpdateMyPost, useDeleteMyPost } from "../hooks/usePosts";
 import { useTranslatedCircleName } from "../constants/onboardingCircles";
 import { formatPostTime } from "../utils/postDisplay";
@@ -15,23 +16,35 @@ import { shareLink } from "../utils/share";
 import { PostCardSkeleton } from "../components/common/Skeletons";
 import EmptyState from "../../../shared/components/EmptyState";
 
-function MyPostCard({ post, circleName, t, onComment, onShare, onEdit, onDeleteMenu }) {
+function MyPostCard({ post, circleName, t, onComment, onEdit, onOpenMenu }) {
   const hasMedia = !!(post.media?.[0]?.url);
+  const location = post.location?.placeName
+    ? `${post.location.placeName}${post.location.countryCode ? `, ${post.location.countryCode}` : ""}`
+    : null;
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-border-clr overflow-hidden">
       <div className="flex items-start justify-between gap-2 px-3.5 pt-3.5 pb-2.5">
-        <div>
+        <div className="min-w-0">
           <span className="inline-flex items-center gap-1.5 text-[11.5px] font-bold text-primary bg-primary/10 pl-2 pr-2.5 py-1 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-primary" />
             {circleName}
           </span>
-          <div className="text-xs text-gray-400 mt-1.5 tabular-nums">
-            {formatPostTime(post.createdAtEpoch)}
+          <div className="flex items-center gap-2 mt-1.5">
+            <span className="text-xs text-gray-400 tabular-nums shrink-0">
+              {formatPostTime(post.createdAtEpoch)}
+            </span>
+            {location && (
+              <span className="inline-flex items-center gap-1 text-xs text-gray-400 min-w-0">
+                <span className="text-gray-300">·</span>
+                <MapPin className="w-3 h-3 shrink-0" />
+                <span className="truncate">{location}</span>
+              </span>
+            )}
           </div>
         </div>
         <button
-          onClick={onDeleteMenu}
+          onClick={onOpenMenu}
           className="p-1.5 -mr-1 rounded-full text-gray-400 hover:bg-gray-50 transition-colors shrink-0"
         >
           <MoreVertical className="w-4 h-4" />
@@ -63,13 +76,6 @@ function MyPostCard({ post, circleName, t, onComment, onShare, onEdit, onDeleteM
           {t("postCard.comment")}
         </button>
         <button
-          onClick={onShare}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
-        >
-          <Share2 className="w-3.5 h-3.5" />
-          {t("postCard.share")}
-        </button>
-        <button
           onClick={onEdit}
           className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
         >
@@ -92,6 +98,7 @@ export default function MyPostsPage() {
 
   const [editPost, setEditPost] = useState(null);
   const [commentPost, setCommentPost] = useState(null);
+  const [menuPost, setMenuPost] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [activeCircleId, setActiveCircleId] = useState(null);
 
@@ -180,6 +187,25 @@ export default function MyPostsPage() {
         title={t("myPosts.deletePostTitle")}
         message={t("myPosts.deletePostMessage")}
       />
+
+      <BottomSheetModal isOpen={!!menuPost} onClose={() => setMenuPost(null)}>
+        <div className="px-2 pb-6">
+          <button
+            onClick={() => { handleShare(menuPost); setMenuPost(null); }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
+          >
+            <Share2 className="w-5 h-5 text-gray-500" />
+            {t("postCard.share")}
+          </button>
+          <button
+            onClick={() => { setDeleteConfirm(menuPost); setMenuPost(null); }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 rounded-xl transition-colors"
+          >
+            <Trash2 className="w-5 h-5" />
+            {t("postCard.deletePost")}
+          </button>
+        </div>
+      </BottomSheetModal>
 
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
@@ -295,9 +321,8 @@ export default function MyPostsPage() {
             circleName={getCircleName(post.circleId, post.circleName)}
             t={t}
             onComment={() => setCommentPost(post)}
-            onShare={() => handleShare(post)}
             onEdit={() => setEditPost(post)}
-            onDeleteMenu={() => setDeleteConfirm(post)}
+            onOpenMenu={() => setMenuPost(post)}
           />
         ))}
       </div>
