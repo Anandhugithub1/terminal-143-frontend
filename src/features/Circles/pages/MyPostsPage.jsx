@@ -265,12 +265,22 @@ export default function MyPostsPage() {
         )}
 
         {!isLoading && !isError && posts.length === 0 && (
-          <div className="bg-white rounded-2xl shadow-sm">
-            <EmptyState
-              icon={MessageSquare}
-              title={t("myPosts.noPostsYetTitle")}
-              subtitle={t("myPosts.noPostsYetSubtitle")}
-            />
+          <div className="bg-white rounded-2xl shadow-sm px-6 py-14 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-5">
+              <MessageSquare className="w-6 h-6 text-primary" />
+            </div>
+            <h2 className="text-base font-bold text-gray-900 mb-1.5">
+              {t("myPosts.noPostsYetTitle")}
+            </h2>
+            <p className="text-sm text-gray-400 leading-relaxed max-w-xs mb-6">
+              {t("myPosts.noPostsYetSubtitle")}
+            </p>
+            <button
+              onClick={() => navigate("/circles")}
+              className="px-6 py-3 btn-filled text-sm rounded-full"
+            >
+              {t("myPosts.createFirstPost")}
+            </button>
           </div>
         )}
 
