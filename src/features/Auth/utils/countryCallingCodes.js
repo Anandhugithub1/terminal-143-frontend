@@ -1,9 +1,9 @@
-import countryCodesList from "country-codes-list";
+import { customList } from "country-codes-list";
 
 // { AD: "Andorra|376", TH: "Thailand|66", ... } for all ~250 ISO countries —
 // full global coverage (the app's region gate limits who can sign up, not
 // which country code a phone number can use to register in the first place).
-const raw = countryCodesList.customList(
+const raw = customList(
   "countryCode",
   "{countryNameEn}|{countryCallingCode}"
 );
