@@ -136,7 +136,7 @@ export default function EditPostModal({ isOpen, onClose, post, circleId, circleN
 
           {showLocation && (
             <div className="mt-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
-              <LocationInput formData={{ location }} onSelect={handleLocationSelect} />
+              <LocationInput formData={{ location }} onSelect={handleLocationSelect} showAutoDetect={false} />
               {location.placeName && (
                 <p className="text-xs text-gray-500 mt-1">{location.placeName}{location.countryCode ? `, ${location.countryCode}` : ""}</p>
               )}
