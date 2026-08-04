@@ -1,10 +1,11 @@
-// src/pages/ShareQRCodePage.jsx
-import React, { useEffect, useState, lazy, Suspense } from "react"
+import React, { lazy, Suspense } from "react"
 import { useNavigate } from "react-router-dom"
+import { toast } from "sonner"
+import { AlertTriangle } from "lucide-react"
 
-import Header from "../components/Qrcode/Header"
-import Toast from "../components/Qrcode/Toast"
+import PageHeader from "../../../shared/components/PageHeader"
 import SkeletonLoader from "../../../components/Ui/Skeleton"
+import EmptyState from "../../../shared/components/EmptyState"
 import { useMyProfile } from "../Hooks/useMyProfile"
 
 const QRShareCard = lazy(() => import("../components/Qrcode/Card"))
@@ -16,17 +17,8 @@ export default function ShareQRCodePage() {
     data: profile,
     isLoading,
     isError,
-    error
+    refetch,
   } = useMyProfile()
-
-  const [toast, setToast] = useState({ open: false, message: "" })
-
-
-
-  const showToast = (message) => {
-    setToast({ open: true, message })
-    setTimeout(() => setToast({ open: false, message: "" }), 3000)
-  }
 
   const handleShare = async () => {
     if (!profile?.profileLink) return
@@ -35,53 +27,101 @@ export default function ShareQRCodePage() {
       try {
         await navigator.share({
           title: `${profile.name}'s Profile`,
-          text: "View my MatchMaker profile!",
-          url: profile.profileLink
+          text: "Check out my PassorMatch profile!",
+          url: profile.profileLink,
         })
-        showToast("Shared successfully")
-      } catch {
-        showToast("Share cancelled")
+      } catch (err) {
+        if (err?.name !== "AbortError") toast.error("Failed to share profile")
       }
       return
     }
 
     try {
       await navigator.clipboard.writeText(profile.profileLink)
-      showToast("Link copied to clipboard")
+      toast.success("Link copied to clipboard")
     } catch {
-      showToast("Unable to copy link")
+      toast.error("Unable to copy link")
+    }
+  }
+
+  const handleCopyLink = async () => {
+    if (!profile?.profileLink) return
+    try {
+      await navigator.clipboard.writeText(profile.profileLink)
+      toast.success("Link copied to clipboard")
+    } catch {
+      toast.error("Unable to copy link")
+    }
+  }
+
+  const handleDownload = async () => {
+    if (!profile?.qrCodeUrl) return
+    const qrCodeSrc = profile.qrCodeUrl.startsWith("http")
+      ? profile.qrCodeUrl
+      : `https://${profile.qrCodeUrl}`
+
+    try {
+      const res = await fetch(qrCodeSrc)
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.download = `${profile.name || "profile"}-qr-code.png`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    } catch {
+      toast.error("Unable to download QR code")
     }
   }
 
   const renderSkeleton = () => (
-    <div className="w-full max-w-md mx-auto p-4 bg-white rounded-xl shadow-md">
-      <SkeletonLoader height={40} width="60%" className="mb-4" />
-      <SkeletonLoader height={200} width="100%" className="mb-4" />
-      <SkeletonLoader height={40} width="40%" />
+    <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <SkeletonLoader height={56} width={56} circle className="mx-auto mb-3" />
+      <SkeletonLoader height={20} width="50%" className="mx-auto mb-6" />
+      <SkeletonLoader height={224} width={224} className="mx-auto mb-6 !rounded-xl" />
+      <div className="grid grid-cols-2 gap-3">
+        <SkeletonLoader height={44} className="!rounded-xl" />
+        <SkeletonLoader height={44} className="!rounded-xl" />
+      </div>
     </div>
   )
 
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-gradient-to-b from-pink-50 to-purple-50 font-inter">
-      <Header onBack={() => navigate(-1)} />
+    <div className="flex flex-col min-h-[100dvh] bg-gray-50">
+      <PageHeader title="Share Profile" onBack={() => navigate(-1)} />
 
-      <main className="flex-grow flex items-start justify-center px-4 py-8">
+      <main className="flex-1 flex items-start justify-center px-4 py-6">
         {isLoading && renderSkeleton()}
 
         {!isLoading && profile && (
           <Suspense fallback={renderSkeleton()}>
-            <QRShareCard profile={profile} onShare={handleShare} />
+            <QRShareCard
+              profile={profile}
+              onShare={handleShare}
+              onCopyLink={handleCopyLink}
+              onDownload={handleDownload}
+            />
           </Suspense>
         )}
 
         {isError && (
-          <div className="text-center text-red-500 mt-4">
-            {error?.message || "Failed to load profile"}
-          </div>
+          <EmptyState
+            icon={AlertTriangle}
+            title="Couldn't load your profile"
+            subtitle="Check your connection and try again."
+            action={
+              <button
+                onClick={() => refetch()}
+                className="px-6 py-2.5 btn-filled text-sm rounded-full"
+              >
+                Retry
+              </button>
+            }
+          />
         )}
       </main>
-
-      <Toast open={toast.open} message={toast.message} />
     </div>
   )
 }

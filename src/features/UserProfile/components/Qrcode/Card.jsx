@@ -1,46 +1,63 @@
-// src/pages/components/QRShareCard.jsx
-import React from 'react';
-import { Share2 } from 'lucide-react';
-import {Button} from '../../../../shared/Button'
-export default function QRShareCard({ profile, onShare }) {
-  const qrCodeSrc = profile?.qrCodeUrl?.startsWith('http')
+import { Copy, Download, Share2 } from "lucide-react";
+
+export default function QRShareCard({ profile, onShare, onCopyLink, onDownload }) {
+  const qrCodeSrc = profile?.qrCodeUrl?.startsWith("http")
     ? profile.qrCodeUrl
     : `https://${profile.qrCodeUrl}`;
 
   return (
-    <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 flex flex-col items-center space-y-6">
-      
-      {/* Heading */}
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold text-gray-800">{profile.name}</h2>
-        <p className="text-gray-600 text-sm max-w-xs">
-          Share this to let others view your dating profile and connect with you!
-        </p>
-      </div>
+    <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center">
+      <img
+        src={profile.profilePhoto}
+        alt={profile.name}
+        className="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm -mt-1 mb-3"
+      />
+      <h2 className="text-lg font-bold text-gray-900">{profile.name}</h2>
+      <p className="text-sm text-gray-400 text-center mt-1 mb-6 max-w-xs">
+        Anyone who scans this can view your profile and connect with you
+      </p>
 
-      {/* QR Code */}
-      <div className="relative p-6 bg-white rounded-2xl shadow-inner border-4 border-dotted border-pink-100">
+      <div className="p-4 bg-white rounded-2xl border border-gray-100">
         <img
           src={qrCodeSrc}
-          alt="Dating profile QR code"
-          className="w-64 h-64 object-contain bg-gray-100"
+          alt="Profile QR code"
+          className="w-56 h-56 object-contain bg-gray-50 rounded-xl"
           loading="lazy"
         />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-16 h-16 bg-pink-500/10 rounded-full animate-pulse" />
-        </div>
       </div>
 
-  
-      <Button onClick={onShare}
-      
-      disabled={!profile.profileLink} className='flex items-center justify-center  transition-all disabled:opacity-50 active:scale-95'>
-        
-            <Share2 className="mr-3" size={20} />
+      {profile.profileLink && (
+        <p className="text-xs text-gray-400 mt-4 text-center break-all max-w-xs">
+          {profile.profileLink.replace(/^https?:\/\//, "")}
+        </p>
+      )}
+
+      <div className="w-full grid grid-cols-2 gap-3 mt-6">
+        <button
+          onClick={onDownload}
+          className="flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium text-sm hover:bg-gray-50 active:scale-[0.98] transition-all"
+        >
+          <Download size={16} />
+          Download
+        </button>
+        <button
+          onClick={onCopyLink}
+          disabled={!profile.profileLink}
+          className="flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium text-sm hover:bg-gray-50 active:scale-[0.98] transition-all disabled:opacity-50"
+        >
+          <Copy size={16} />
+          Copy Link
+        </button>
+      </div>
+
+      <button
+        onClick={onShare}
+        disabled={!profile.profileLink}
+        className="w-full flex items-center justify-center gap-2 mt-3 py-3.5 rounded-xl bg-primary text-white font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50"
+      >
+        <Share2 size={18} />
         Share Profile
-
-
-      </Button>
+      </button>
     </div>
   );
 }
