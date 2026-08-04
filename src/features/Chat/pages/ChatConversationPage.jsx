@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
-import { AlertCircle, ArrowLeft, Flag, MoreVertical, Send, ShieldOff, Trash2 } from 'lucide-react'
+import { AlertCircle, ArrowLeft, Flag, MoreVertical, Send, ShieldOff, Trash2, WifiOff } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useMatches, useReportUser } from '../../UserHome/api'
-import { useConversationHistory, normalizeIncomingMessage, useBlockUser, useUnblockUser, useDeleteMessage } from '../api'
+import { useConversationHistory, normalizeIncomingMessage, appendToHistoryCache, useBlockUser, useUnblockUser, useDeleteMessage } from '../api'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
 import { useLongPress } from '../hooks/useLongPress'
@@ -113,7 +113,7 @@ export default function ChatConversationPage() {
   const blockedByOther = !!historyData?.blockedByOther
   const isBlocked = blockedByMe || blockedByOther
 
-  const { send, sendWithAck } = useSocket()
+  const { send, sendWithAck, isConnected } = useSocket()
   const queryClient = useQueryClient()
   const { previews, markRead, recordSentMessage, recordDeletedMessage, setBlockedByMe } = useConversationPreviews()
   const { mutate: blockUser, isPending: isBlocking } = useBlockUser(matchId)
@@ -124,6 +124,11 @@ export default function ChatConversationPage() {
   // Live messages received/sent this session are kept separate from the
   // fetched history so a background history refetch never clobbers them.
   const [liveMessages, setLiveMessages] = useState([])
+  // Mirrors liveMessages for synchronous reads from socket handlers (e.g.
+  // SENT_ACK below needs the bubble's text to write into the history cache,
+  // without waiting on a setLiveMessages updater callback to fire).
+  const liveMessagesRef = useRef([])
+  liveMessagesRef.current = liveMessages
   const [draft, setDraft] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isBlockConfirmOpen, setIsBlockConfirmOpen] = useState(false)
@@ -189,6 +194,19 @@ export default function ChatConversationPage() {
     hasScrolledRef.current = false
   }, [matchId])
 
+  // Debounced so a brief, normal reconnect blip (or the socket still doing
+  // its initial connect right as this page mounts) doesn't flash the banner
+  // — only a connection that's actually been down for a beat surfaces it.
+  const [showReconnecting, setShowReconnecting] = useState(false)
+  useEffect(() => {
+    if (isConnected) {
+      setShowReconnecting(false)
+      return
+    }
+    const timer = setTimeout(() => setShowReconnecting(true), 2000)
+    return () => clearTimeout(timer)
+  }, [isConnected])
+
   // Mark the conversation read both locally (instant badge clear) and on the
   // SERVER (advance lastRead via a socket readReceipt) so the unread count
   // doesn't reappear on refresh. Then drop the cached /chat/unread so a
@@ -237,6 +255,12 @@ export default function ChatConversationPage() {
     const msg = normalizeIncomingMessage(payload)
     if (!msg || msg.matchId !== matchId) return
     setLiveMessages((prev) => [...prev, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }])
+    // Also patch the history cache directly rather than relying solely on
+    // useConversationPreviews's own MESSAGE listener to do it (both are
+    // mounted at once here, but this page shouldn't depend on a sibling
+    // hook's side effect to keep its own data source consistent) —
+    // appendToHistoryCache no-ops on a duplicate id either way.
+    appendToHistoryCache(queryClient, matchId, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false })
     // Received while viewing this conversation → immediately read, on the
     // server too (advance lastRead to this message).
     markRead(matchId)
@@ -276,6 +300,17 @@ export default function ChatConversationPage() {
   // see sendMessage.js. Swaps the client-local id/sentAt for the server's
   // real ones so later actions (delete-for-me, readReceipt) target the
   // right message.
+  //
+  // Also writes the confirmed message into the ['chatHistory', matchId]
+  // React Query cache — the same cache useConversationHistory reads from,
+  // and the same one useConversationPreviews already patches for INCOMING
+  // messages (see that hook's MESSAGE handler). Without this, a sent message
+  // only ever lived in liveMessages, which is local component state that
+  // gets wiped every time this page mounts (see the effect below) — leave
+  // the conversation and come back and anything sent-only-in-liveMessages
+  // was gone until a hard refresh forced a fresh fetch. Writing it here too
+  // makes the cache the durable source of truth for anything confirmed,
+  // with liveMessages left as just a pending/optimistic overlay.
   useSocketEvent('SENT_ACK', (payload) => {
     const { clientMessageId, messageId, sentAt } = payload || {}
     if (!clientMessageId) return
@@ -284,6 +319,7 @@ export default function ChatConversationPage() {
       clearTimeout(timer)
       ackTimersRef.current.delete(clientMessageId)
     }
+    const sentBubble = liveMessagesRef.current.find((m) => m.clientMessageId === clientMessageId)
     setLiveMessages((prev) =>
       prev.map((m) =>
         m.clientMessageId === clientMessageId
@@ -291,6 +327,14 @@ export default function ChatConversationPage() {
           : m
       )
     )
+    if (messageId && sentBubble) {
+      appendToHistoryCache(queryClient, matchId, {
+        id: messageId,
+        text: sentBubble.text,
+        sentAt: sentAt || sentBubble.sentAt,
+        mine: true,
+      })
+    }
   })
 
   // The socket layer's own signal that a queued frame never reached the
@@ -581,6 +625,13 @@ export default function ChatConversationPage() {
           <MoreVertical className="w-5 h-5 text-gray-400" />
         </button>
       </header>
+
+      {showReconnecting && (
+        <div className="flex items-center justify-center gap-1.5 bg-amber-50 text-amber-700 text-xs font-medium py-1.5 border-b border-amber-100">
+          <WifiOff className="w-3.5 h-3.5" />
+          {t('conversation.reconnecting')}
+        </div>
+      )}
 
       <div
         ref={scrollRef}

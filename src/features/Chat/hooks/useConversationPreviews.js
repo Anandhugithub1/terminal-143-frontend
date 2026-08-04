@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useSocket, useSocketEvent } from '../../../shared/socket/useSocket'
-import { normalizeIncomingMessage, useUnreadCounts } from '../api'
+import { appendToHistoryCache, normalizeIncomingMessage, useUnreadCounts } from '../api'
 
 const STORAGE_KEY = 'chat.conversationPreviews'
 
@@ -179,37 +179,11 @@ export function useConversationPreviews() {
     // mounted while that specific conversation is open — a message arriving
     // while sitting on the list page never reaches it, so the cache below
     // goes stale and the conversation opens without its newest message
-    // until staleTime (60s) elapses. Patch it here too, whenever a
-    // ['chatHistory', matchId] entry already exists (nothing to patch if
-    // the user has never opened this conversation this session — it'll
-    // fetch fresh on first open anyway).
-    //
-    // ['chatHistory', matchId] is an infinite-query cache: { pages, pageParams }.
-    // pages[0] is always the NEWEST page (the first one fetched) — a live
-    // message belongs there, never on an older page appended later via
-    // fetchNextPage().
-    queryClient.setQueryData(['chatHistory', msg.matchId], (old) => {
-      if (!old?.pages?.length) return old
-      const newestPage = old.pages[0]
-      if (newestPage.messages.some((m) => m.id === msg.id)) return old
-      // Appending unconditionally assumes arrival order matches sentAt order,
-      // which reconnects/jitter can violate — insert in sorted position
-      // instead (stable: ties keep arrival order) so this cache never needs
-      // a separate re-sort pass later (see ChatConversationPage's `messages`
-      // memo, which sorts its OWN merge but reads straight from this cache
-      // for `history`).
-      const incoming = { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false }
-      const messages = [...newestPage.messages, incoming].sort(
-        (a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()
-      )
-      return {
-        ...old,
-        pages: [
-          { ...newestPage, messages },
-          ...old.pages.slice(1),
-        ],
-      }
-    })
+    // until staleTime (60s) elapses. Patch it here too (see
+    // appendToHistoryCache — it's a no-op if the user has never opened this
+    // conversation this session, since it'll fetch fresh on first open
+    // anyway).
+    appendToHistoryCache(queryClient, msg.matchId, { id: msg.id, text: msg.text, sentAt: msg.sentAt, mine: false })
   })
 
   // A delete-for-me performed on ANOTHER of this viewer's own live

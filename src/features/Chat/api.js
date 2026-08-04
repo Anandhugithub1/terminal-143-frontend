@@ -260,3 +260,41 @@ export function normalizeIncomingMessage(payload) {
     sentAt: payload.sentAt || new Date().toISOString(),
   }
 }
+
+// Writes one confirmed message (sent or received) directly into the
+// ['chatHistory', matchId] infinite-query cache, so it survives this
+// component unmounting even though it arrived over the socket rather than
+// through a REST fetch — see useConversationHistory. Used for both directions:
+// useConversationPreviews for incoming messages (arrives whether or not the
+// conversation is open), and ChatConversationPage's own SENT_ACK handler for
+// outgoing ones (the socket layer has no equivalent broadcast-to-self on send,
+// so the sender has to record its own message here).
+//
+// ['chatHistory', matchId] is an infinite-query cache: { pages, pageParams }.
+// pages[0] is always the NEWEST page (the first one fetched) — a live
+// message belongs there, never on an older page appended later via
+// fetchNextPage(). No-ops if the cache doesn't exist yet (nothing to patch if
+// this conversation was never opened this session — it fetches fresh on
+// first open anyway) or already contains the message (avoids double-inserting
+// if both the sender's own SENT_ACK path and a recipient's MESSAGE listener
+// somehow observe the same id, e.g. multi-tab).
+export function appendToHistoryCache(queryClient, matchId, message) {
+  queryClient.setQueryData(['chatHistory', matchId], (old) => {
+    if (!old?.pages?.length) return old
+    const newestPage = old.pages[0]
+    if (newestPage.messages.some((m) => m.id === message.id)) return old
+    // Appending unconditionally assumes arrival order matches sentAt order,
+    // which reconnects/jitter can violate — insert in sorted position
+    // instead (stable: ties keep arrival order) so this cache never needs a
+    // separate re-sort pass later (ChatConversationPage's own `messages`
+    // memo sorts its OWN merge, but reads straight from this cache for
+    // `history`).
+    const messages = [...newestPage.messages, message].sort(
+      (a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()
+    )
+    return {
+      ...old,
+      pages: [{ ...newestPage, messages }, ...old.pages.slice(1)],
+    }
+  })
+}

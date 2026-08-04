@@ -337,10 +337,15 @@ class SocketManager {
 
   _scheduleReconnect() {
     if (this.reconnectTimer || this.refCount === 0) return;
-    const delay = Math.min(
+    const base = Math.min(
       BASE_RECONNECT_DELAY_MS * 2 ** this.reconnectAttempts,
       MAX_RECONNECT_DELAY_MS
     );
+    // Full jitter (0-100% of the backoff step): a server restart or brief
+    // outage otherwise reconnects every affected client on the same
+    // doubling schedule, so they all hammer the server in near-lockstep on
+    // every retry — jitter spreads that back out.
+    const delay = Math.random() * base;
     this.reconnectAttempts += 1;
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
