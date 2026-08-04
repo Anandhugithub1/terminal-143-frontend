@@ -242,6 +242,7 @@
     "tagsHint": "Add tags so people can find this post"
   },
   "postCard": {
+    "comment": "Comments",
     "editPost": "Edit Post",
     "share": "Share",
     "deletePost": "Delete Post",

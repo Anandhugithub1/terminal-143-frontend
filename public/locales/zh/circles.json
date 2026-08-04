@@ -242,6 +242,7 @@
     "tagsHint": "添加标签，让其他人更容易找到这条帖子"
   },
   "postCard": {
+    "comment": "评论",
     "editPost": "编辑动态",
     "share": "分享",
     "deletePost": "删除动态",

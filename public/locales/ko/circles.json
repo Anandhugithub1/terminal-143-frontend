@@ -242,6 +242,7 @@
     "tagsHint": "태그를 추가하면 사람들이 이 게시물을 찾을 수 있어요"
   },
   "postCard": {
+    "comment": "댓글",
     "editPost": "게시물 수정",
     "share": "공유",
     "deletePost": "게시물 삭제",

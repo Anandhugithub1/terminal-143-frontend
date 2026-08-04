@@ -1,4 +1,4 @@
-import { ArrowLeft, MessageSquare, MoreVertical, Pencil, Share2, Trash2 } from "lucide-react";
+import { ArrowLeft, MessageCircle, MessageSquare, MoreVertical, Pencil, Share2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import PostMedia from "../components/post/PostMedia";
 import EditPostModal from "../components/post/EditPostModal";
+import CommentSection from "../components/comment/CommentSection";
 import ConfirmDialog from "../components/common/ConfirmDialog";
-import BottomSheetModal from "../components/common/BottomSheetModal";
 import { useMyPosts, useUpdateMyPost, useDeleteMyPost } from "../hooks/usePosts";
 import { useTranslatedCircleName } from "../constants/onboardingCircles";
 import { formatPostTime } from "../utils/postDisplay";
@@ -15,7 +15,7 @@ import { shareLink } from "../utils/share";
 import { PostCardSkeleton } from "../components/common/Skeletons";
 import EmptyState from "../../../shared/components/EmptyState";
 
-function MyPostCard({ post, circleName, onOpenMenu }) {
+function MyPostCard({ post, circleName, t, onComment, onShare, onEdit, onDeleteMenu }) {
   const hasMedia = !!(post.media?.[0]?.url);
 
   return (
@@ -31,7 +31,7 @@ function MyPostCard({ post, circleName, onOpenMenu }) {
           </div>
         </div>
         <button
-          onClick={() => onOpenMenu(post)}
+          onClick={onDeleteMenu}
           className="p-1.5 -mr-1 rounded-full text-gray-400 hover:bg-gray-50 transition-colors shrink-0"
         >
           <MoreVertical className="w-4 h-4" />
@@ -54,7 +54,29 @@ function MyPostCard({ post, circleName, onOpenMenu }) {
         </div>
       )}
 
-      <div className="h-3.5" />
+      <div className="flex items-center gap-1 px-2.5 py-1.5 mt-1.5 border-t border-gray-100">
+        <button
+          onClick={onComment}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+        >
+          <MessageCircle className="w-3.5 h-3.5" />
+          {t("postCard.comment")}
+        </button>
+        <button
+          onClick={onShare}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+        >
+          <Share2 className="w-3.5 h-3.5" />
+          {t("postCard.share")}
+        </button>
+        <button
+          onClick={onEdit}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold text-gray-500 hover:bg-gray-50 transition-colors"
+        >
+          <Pencil className="w-3.5 h-3.5" />
+          {t("postCard.editPost")}
+        </button>
+      </div>
     </div>
   );
 }
@@ -69,8 +91,8 @@ export default function MyPostsPage() {
   const deletePostMutation = useDeleteMyPost();
 
   const [editPost, setEditPost] = useState(null);
+  const [commentPost, setCommentPost] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [menuPost, setMenuPost] = useState(null);
   const [activeCircleId, setActiveCircleId] = useState(null);
 
   const posts = (data?.items || []).filter((p) => p.status !== "deleted");
@@ -133,14 +155,22 @@ export default function MyPostsPage() {
 
   return (
     <div className="min-h-[100dvh] bg-gray-50 pb-24">
-      <EditPostModal
-        isOpen={!!editPost}
-        onClose={() => setEditPost(null)}
-        post={editPost}
-        circleId={editPost?.circleId}
-        circleName={editPost && getCircleName(editPost.circleId, editPost.circleName)}
-        onSave={handleSaveEdit}
-        isSaving={updatePostMutation.isPending}
+      {editPost && (
+        <EditPostModal
+          isOpen
+          onClose={() => setEditPost(null)}
+          post={editPost}
+          circleId={editPost.circleId}
+          circleName={getCircleName(editPost.circleId, editPost.circleName)}
+          onSave={handleSaveEdit}
+          isSaving={updatePostMutation.isPending}
+        />
+      )}
+
+      <CommentSection
+        isOpen={!!commentPost}
+        onClose={() => setCommentPost(null)}
+        post={commentPost}
       />
 
       <ConfirmDialog
@@ -150,32 +180,6 @@ export default function MyPostsPage() {
         title={t("myPosts.deletePostTitle")}
         message={t("myPosts.deletePostMessage")}
       />
-
-      <BottomSheetModal isOpen={!!menuPost} onClose={() => setMenuPost(null)}>
-        <div className="px-2 pb-6">
-          <button
-            onClick={() => { setEditPost(menuPost); setMenuPost(null); }}
-            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
-          >
-            <Pencil className="w-5 h-5 text-gray-500" />
-            {t("postCard.editPost")}
-          </button>
-          <button
-            onClick={() => { handleShare(menuPost); setMenuPost(null); }}
-            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-xl transition-colors"
-          >
-            <Share2 className="w-5 h-5 text-gray-500" />
-            {t("postCard.share")}
-          </button>
-          <button
-            onClick={() => { setDeleteConfirm(menuPost); setMenuPost(null); }}
-            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 rounded-xl transition-colors"
-          >
-            <Trash2 className="w-5 h-5" />
-            {t("postCard.deletePost")}
-          </button>
-        </div>
-      </BottomSheetModal>
 
       {/* Header */}
       <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
@@ -289,7 +293,11 @@ export default function MyPostsPage() {
             key={`${post.circleId}-${post.postId}`}
             post={post}
             circleName={getCircleName(post.circleId, post.circleName)}
-            onOpenMenu={setMenuPost}
+            t={t}
+            onComment={() => setCommentPost(post)}
+            onShare={() => handleShare(post)}
+            onEdit={() => setEditPost(post)}
+            onDeleteMenu={() => setDeleteConfirm(post)}
           />
         ))}
       </div>

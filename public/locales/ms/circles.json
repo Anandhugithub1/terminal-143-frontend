@@ -242,6 +242,7 @@
     "tagsHint": "Tambah tag supaya orang boleh jumpa siaran ini"
   },
   "postCard": {
+    "comment": "Komen",
     "editPost": "Edit Hantaran",
     "share": "Kongsi",
     "deletePost": "Padam Hantaran",
