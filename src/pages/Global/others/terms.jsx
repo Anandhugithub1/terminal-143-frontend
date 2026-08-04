@@ -24,7 +24,7 @@ export default function Terms() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-sm p-8 border-l-4 border-[#D2449D]">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Terms of Service</h1>
-              <p className="text-gray-500 text-sm mb-8">Last updated: July 29, 2026</p>
+              <p className="text-gray-500 text-sm mb-8">Last updated: August 4, 2026</p>
 
               <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
 
@@ -59,7 +59,7 @@ export default function Terms() {
                   </p>
                   <ul className="list-disc list-inside space-y-2 ml-4">
                     <li>Provide accurate and complete information</li>
-                    <li>Be at least 18 years of age</li>
+                    <li>Be at least 18 years of age — PassorMatch is strictly for adults 18 and older, with no exceptions, and we do not permit accounts for anyone under 18</li>
                     <li>Maintain the confidentiality of your password</li>
                     <li>Accept responsibility for all activities under your account</li>
                     <li>Use genuine photos and information</li>
@@ -173,7 +173,7 @@ export default function Terms() {
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">14. Governing Law</h2>
                   <p>
-                    These Terms and Conditions are governed by and construed in accordance with the laws of Thailand, and you irrevocably submit to the exclusive jurisdiction of the courts in Bangkok.
+                    These Terms and Conditions are governed by and construed in accordance with the laws of Thailand, and you irrevocably submit to the exclusive jurisdiction of the courts in Bangkok. This does not affect any mandatory data protection rights you may have under the laws of the country where you live, including Thailand's Personal Data Protection Act (PDPA), the EU/UK General Data Protection Regulation (GDPR), or the California Consumer Privacy Act (CCPA), as described in our <a href="/privacy" className="text-[#D2449D] font-medium hover:underline">Privacy Policy</a>.
                   </p>
                 </div>
 

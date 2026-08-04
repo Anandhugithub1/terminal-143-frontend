@@ -24,7 +24,7 @@ export default function Privacy() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-sm p-8 border-l-4 border-[#D2449D]">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-              <p className="text-gray-500 text-sm mb-8">Last updated: July 29, 2026</p>
+              <p className="text-gray-500 text-sm mb-8">Last updated: August 4, 2026</p>
 
               <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
 
@@ -57,6 +57,9 @@ export default function Privacy() {
                     <li>Location data, used to show your approximate distance to other users and to match you with people nearby (if you grant permission)</li>
                     <li>Cookies and similar technologies</li>
                   </ul>
+                  <p className="mt-3">
+                    <strong>Your location is never shown to other users as an exact address or precise coordinate.</strong> Any distance or location shown to other users is approximate ("fuzzed" — for example, rounded to the nearest few kilometers or shown as a general area), not your exact position, and is not sufficient on its own to identify your precise home, workplace, or real-time location.
+                  </p>
                 </div>
 
                 {/* Photos & Profile Visibility */}
@@ -64,6 +67,23 @@ export default function Privacy() {
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">Photos & Profile Visibility</h2>
                   <p>
                     Your profile photos, bio, and other profile details you choose to display are visible to other users of the Service as part of its core matching functionality. We may use automated tools and human review to screen uploaded photos and content for policy violations (e.g. nudity, impersonation, or illegal content) before or after they become visible to other users.
+                  </p>
+                </div>
+
+                {/* Sensitive Information & Circles */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Sensitive Information & Community Groups ("Circles")</h2>
+                  <p>
+                    The Service lets you join optional interest- and identity-based community groups ("Circles"), some of which may reveal sensitive personal information about you — for example, your sexual orientation or gender identity (such as an LGBTQ+-oriented Circle) or your religion (such as a Religion & Spirituality Circle).
+                  </p>
+                  <p className="mt-3">
+                    <strong>We never share your membership in a sensitive Circle — or the fact that it reveals your sexual orientation, religion, or any similar sensitive category — with advertising partners, ad networks, or analytics/tracking partners.</strong> This information is used solely for in-app purposes: to show you relevant Circles, to power in-app matching and content within the Service, and for safety and moderation. It is never sold, and never used to build advertising profiles, whether by us or by any third party.
+                  </p>
+                  <p className="mt-3">
+                    We also do not use your sensitive Circle membership to enrich or supplement location-based profiling of you — for example, we do not combine your Circle memberships with location data to infer or share more precise information about where you spend time.
+                  </p>
+                  <p className="mt-3">
+                    You choose which Circles to join, and you may leave a Circle at any time; leaving removes it from your visible memberships going forward.
                   </p>
                 </div>
 
@@ -79,6 +99,9 @@ export default function Privacy() {
                     <li>Comply with legal obligations</li>
                     <li>Marketing and promotional purposes (with your consent)</li>
                   </ul>
+                  <p className="mt-3">
+                    <strong>Automated content & message scanning:</strong> To detect violations of our Acceptable Use Policy — such as harassment, scams, explicit or illegal content, and other safety risks — content and messages you post or send through the Service may be automatically scanned using third-party moderation tools. This scanning is used for trust and safety purposes only, is not used for advertising, and does not replace your ability to report content or users directly.
+                  </p>
                 </div>
 
                 {/* Data Sharing */}
@@ -92,6 +115,9 @@ export default function Privacy() {
                     <li>Law enforcement (when legally required, including in response to safety reports involving harassment, threats, or suspected criminal activity)</li>
                     <li>Other users (profile information you choose to display, and limited details in connection with a report you file or that is filed against you)</li>
                   </ul>
+                  <p className="mt-3">
+                    <strong>Exception for sensitive Circle membership:</strong> As described in "Sensitive Information & Community Groups" above, your membership in a Circle that reveals sexual orientation, religion, or a similar sensitive category is never shared with our advertising or analytics service providers, and is excluded from the analytics sharing described above.
+                  </p>
                 </div>
 
                 {/* Security */}
@@ -102,9 +128,25 @@ export default function Privacy() {
                   </p>
                 </div>
 
+                {/* Data Retention */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">5. Data Retention</h2>
+                  <p>
+                    When you delete your account, we delete your account data within 30 days, except for data we are required or permitted to retain longer for:
+                  </p>
+                  <ul className="list-disc list-inside space-y-2 ml-4">
+                    <li>Safety purposes (e.g. records related to reports, blocks, bans, or safety investigations, to prevent banned users from rejoining)</li>
+                    <li>Legal obligations (e.g. tax, accounting, or regulatory recordkeeping requirements)</li>
+                    <li>Fraud prevention (e.g. information needed to detect and prevent fraudulent accounts or payments)</li>
+                  </ul>
+                  <p className="mt-3">
+                    Data retained for these purposes is kept only as long as necessary for that purpose and is subject to the same security protections described above.
+                  </p>
+                </div>
+
                 {/* Your Rights */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">5. Your Privacy Rights</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">6. Your Privacy Rights</h2>
                   <p>Depending on your location, you may have the right to:</p>
                   <ul className="list-disc list-inside space-y-2 ml-4">
                     <li>Access your personal information</li>
@@ -113,11 +155,29 @@ export default function Privacy() {
                     <li>Opt-out of marketing communications</li>
                     <li>Data portability</li>
                   </ul>
+
+                  <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">Thailand — Personal Data Protection Act (PDPA)</h3>
+                  <p>
+                    If you are located in Thailand, we process your personal data as a data controller under the Personal Data Protection Act B.E. 2562 (2019). In addition to the rights above, you have the right to withdraw consent at any time (where processing is based on consent), the right to object to processing, and the right to lodge a complaint with the Personal Data Protection Committee (PDPC). Sensitive data under the PDPA (which includes data revealing sexual orientation and religion, such as certain Circle memberships described above) is processed only with your explicit consent or another legal basis permitted under the PDPA, and is handled with the heightened protections the PDPA requires.
+                  </p>
+
+                  <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">European Economic Area & UK — GDPR</h3>
+                  <p>
+                    If you are located in the EEA or UK, we process your personal data in accordance with the General Data Protection Regulation (GDPR) / UK GDPR. Our legal bases for processing include your consent, performance of our contract with you (providing the Service), our legitimate interests (such as safety and fraud prevention), and compliance with legal obligations. You have the right to access, rectify, erase, restrict, or port your data, to object to processing (including profiling), to withdraw consent at any time, and to lodge a complaint with your local supervisory authority. Special category data (including data revealing sexual orientation and religion) is processed only where a valid GDPR condition applies, such as your explicit consent.
+                  </p>
+
+                  <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">United States — CCPA/CPRA and other state privacy laws</h3>
+                  <p>
+                    If you are a California resident, the California Consumer Privacy Act (CCPA), as amended by the CPRA, and other applicable U.S. state privacy laws give you the right to know what personal information we collect, use, and disclose; to request deletion or correction of your information; to opt out of the "sale" or "sharing" of personal information (we do not sell your personal information, and do not share sensitive Circle membership with advertising or analytics partners as described above); and to not be discriminated against for exercising these rights. Sensitive personal information under the CCPA — which includes data revealing sexual orientation and religious beliefs — is used only as necessary to provide the Service and is not used to infer characteristics about you for advertising purposes.
+                  </p>
+                  <p className="mt-3">
+                    To exercise any of these rights, contact us using the details in the "Contact Us" section below. We may need to verify your identity before fulfilling a request.
+                  </p>
                 </div>
 
                 {/* Cookies */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">6. Cookies & Tracking</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">7. Cookies & Tracking</h2>
                   <p>
                     We use cookies and similar technologies to enhance your experience, analyze usage, and personalize content. You can control cookie preferences through your browser settings.
                   </p>
@@ -125,15 +185,15 @@ export default function Privacy() {
 
                 {/* Children's Privacy */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">7. Children's Privacy</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">8. Children's Privacy</h2>
                   <p>
-                    PassorMatch is not intended for users under 18. We do not knowingly collect data from minors. If we become aware of such data, we will take steps to delete it promptly.
+                    PassorMatch is strictly for users 18 years of age and older. It is not intended for, and may not be used by, anyone under 18. We do not knowingly collect data from minors. If we become aware that we have collected personal data from someone under 18, we will take steps to delete it promptly and, where applicable, terminate the associated account.
                   </p>
                 </div>
 
                 {/* Contact Us */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">8. Contact Us</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">9. Contact Us</h2>
                   <p>
                     If you have privacy concerns or requests, please contact us at:
                   </p>
@@ -145,7 +205,7 @@ export default function Privacy() {
 
                 {/* Changes to Policy */}
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-3">9. Changes to This Policy</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">10. Changes to This Policy</h2>
                   <p>
                     We may update this Privacy Policy periodically. Changes will be posted on this page with an updated "Last updated" date. Your continued use of our services indicates acceptance of the revised policy.
                   </p>
