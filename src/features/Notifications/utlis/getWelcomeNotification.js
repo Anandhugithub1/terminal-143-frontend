@@ -43,12 +43,21 @@ export function normalizeNotification(n) {
       message = `${n.fromUsername} matched with you`
       break
 
+    case "MATCH_REQUEST":
+      message = `${n.fromUsername} sent you a match request`
+      break
+
     case "REQUEST_ACCEPTED":
       message = `${n.fromUsername} accepted your request`
       break
 
     case "MESSAGE":
+    case "CHAT_MESSAGE":
       message = `New message from ${n.fromUsername}`
+      break
+
+    case "SUPPORT_REPLY":
+      message = "Support sent you a reply"
       break
 
     case "REPORT_RESOLVED":
