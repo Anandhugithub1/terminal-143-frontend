@@ -112,6 +112,10 @@
   },
   "myPosts": {
     "header": "โพสต์ของฉัน",
+    "subtitle": "ทุกสิ่งที่คุณแชร์ในเซอร์เคิลต่าง ๆ",
+    "statPosts": "โพสต์",
+    "statCircles": "เซอร์เคิล",
+    "filterAll": "ทั้งหมด",
     "noPostsYetTitle": "ยังไม่มีโพสต์",
     "noPostsYetSubtitle": "โพสต์ที่คุณแชร์ในเซอร์เคิลใด ๆ จะแสดงที่นี่",
     "loadFailedTitle": "โหลดโพสต์ของคุณไม่สำเร็จ",

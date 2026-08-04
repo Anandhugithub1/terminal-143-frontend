@@ -118,6 +118,10 @@
   },
   "myPosts": {
     "header": "My Posts",
+    "subtitle": "Everything you've shared across circles",
+    "statPosts": "Posts",
+    "statCircles": "Circles",
+    "filterAll": "All",
     "noPostsYetTitle": "No posts yet",
     "noPostsYetSubtitle": "Posts you share in any circle will show up here.",
     "loadFailedTitle": "Couldn't load your posts",

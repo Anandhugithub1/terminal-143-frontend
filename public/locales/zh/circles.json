@@ -112,6 +112,10 @@
   },
   "myPosts": {
     "header": "我的动态",
+    "subtitle": "你在各个圈子分享的所有内容",
+    "statPosts": "动态",
+    "statCircles": "圈子",
+    "filterAll": "全部",
     "noPostsYetTitle": "暂无动态",
     "noPostsYetSubtitle": "您在任何圈子分享的动态都会显示在这里。",
     "loadFailedTitle": "加载动态失败",

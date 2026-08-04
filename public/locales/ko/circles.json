@@ -112,6 +112,10 @@
   },
   "myPosts": {
     "header": "내 게시물",
+    "subtitle": "여러 서클에서 공유한 모든 게시물",
+    "statPosts": "게시물",
+    "statCircles": "서클",
+    "filterAll": "전체",
     "noPostsYetTitle": "아직 게시물이 없습니다",
     "noPostsYetSubtitle": "어느 서클에서든 공유한 게시물이 여기에 표시됩니다.",
     "loadFailedTitle": "게시물을 불러오지 못했습니다",

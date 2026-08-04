@@ -112,6 +112,10 @@
   },
   "myPosts": {
     "header": "Hantaran Saya",
+    "subtitle": "Semua yang anda kongsi merentasi bulatan",
+    "statPosts": "Hantaran",
+    "statCircles": "Bulatan",
+    "filterAll": "Semua",
     "noPostsYetTitle": "Belum ada hantaran",
     "noPostsYetSubtitle": "Hantaran yang anda kongsi dalam mana-mana bulatan akan dipaparkan di sini.",
     "loadFailedTitle": "Gagal memuatkan hantaran anda",
