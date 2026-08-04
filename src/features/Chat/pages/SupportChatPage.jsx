@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useSupportHistory, useSendSupportMessage, useMarkSupportRead, uploadSupportImage } from '../api'
 import { useVisualViewportHeight } from '../../../shared/hooks/useVisualViewportHeight'
+import DateDivider from '../components/DateDivider'
+import { formatDateDivider, isNewDay } from '../utils/formatMessageDate'
 
 const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const MAX_IMAGE_BYTES = 10 * 1024 * 1024
@@ -199,52 +201,57 @@ export default function SupportChatPage() {
           <p className="text-center text-sm text-gray-400 mt-4">{t('support.emptyPrompt')}</p>
         )}
 
-        {messages.map((msg) =>
-          msg.imageUrl ? (
-            // Photo message: the image stays the dominant element in its own
-            // rounded top section, capped so it can't blow out the thread —
-            // caption + time sit below on a plain surface (same treatment as
-            // an incoming text bubble), not a full-width accent block, so
-            // they never fight the photo's own colors.
-            <div key={msg.id} className={`flex ${msg.mine ? 'justify-end' : 'justify-start'}`}>
-              <div
-                className={`max-w-[62%] rounded-2xl overflow-hidden bg-white border border-gray-100 ${
-                  msg.mine ? 'rounded-br-sm' : 'rounded-bl-sm'
-                }`}
-              >
-                <img
-                  src={msg.imageUrl}
-                  alt=""
-                  loading="lazy"
-                  className="w-full max-h-64 object-cover"
-                />
-                <div className="px-3 pt-1.5 pb-2">
-                  {msg.text && (
-                    <p className="text-sm text-gray-800 whitespace-pre-wrap break-words">{msg.text}</p>
-                  )}
-                  <p className="text-[10px] mt-1 text-right text-gray-400">
+        {messages.map((msg, index) => (
+          <div key={msg.id}>
+            {isNewDay(messages, index) && (
+              <DateDivider label={formatDateDivider(msg.sentAt, t)} />
+            )}
+            {msg.imageUrl ? (
+              // Photo message: the image stays the dominant element in its own
+              // rounded top section, capped so it can't blow out the thread —
+              // caption + time sit below on a plain surface (same treatment as
+              // an incoming text bubble), not a full-width accent block, so
+              // they never fight the photo's own colors.
+              <div className={`flex ${msg.mine ? 'justify-end' : 'justify-start'}`}>
+                <div
+                  className={`max-w-[62%] rounded-2xl overflow-hidden bg-white border border-gray-100 ${
+                    msg.mine ? 'rounded-br-sm' : 'rounded-bl-sm'
+                  }`}
+                >
+                  <img
+                    src={msg.imageUrl}
+                    alt=""
+                    loading="lazy"
+                    className="w-full max-h-64 object-cover"
+                  />
+                  <div className="px-3 pt-1.5 pb-2">
+                    {msg.text && (
+                      <p className="text-sm text-gray-800 whitespace-pre-wrap break-words">{msg.text}</p>
+                    )}
+                    <p className="text-[10px] mt-1 text-right text-gray-400">
+                      {formatMessageTime(msg.sentAt)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className={`flex ${msg.mine ? 'justify-end' : 'justify-start'}`}>
+                <div
+                  className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm ${
+                    msg.mine
+                      ? 'bg-primary text-white rounded-br-sm'
+                      : 'bg-white text-gray-800 border border-gray-100 rounded-bl-sm'
+                  }`}
+                >
+                  <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+                  <p className={`text-[10px] mt-1 text-right ${msg.mine ? 'text-white/70' : 'text-gray-400'}`}>
                     {formatMessageTime(msg.sentAt)}
                   </p>
                 </div>
               </div>
-            </div>
-          ) : (
-            <div key={msg.id} className={`flex ${msg.mine ? 'justify-end' : 'justify-start'}`}>
-              <div
-                className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm ${
-                  msg.mine
-                    ? 'bg-primary text-white rounded-br-sm'
-                    : 'bg-white text-gray-800 border border-gray-100 rounded-bl-sm'
-                }`}
-              >
-                <p className="whitespace-pre-wrap break-words">{msg.text}</p>
-                <p className={`text-[10px] mt-1 text-right ${msg.mine ? 'text-white/70' : 'text-gray-400'}`}>
-                  {formatMessageTime(msg.sentAt)}
-                </p>
-              </div>
-            </div>
-          )
-        )}
+            )}
+          </div>
+        ))}
       </div>
 
       <form onSubmit={handleSend} className="border-t border-gray-100 bg-white pb-[env(safe-area-inset-bottom)]">

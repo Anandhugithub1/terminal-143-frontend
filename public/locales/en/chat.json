@@ -41,6 +41,8 @@
   "conversation": {
     "back": "Back",
     "online": "Online",
+    "dateToday": "Today",
+    "dateYesterday": "Yesterday",
     "chatFallback": "Chat",
     "yourMatchFallback": "Your match",
     "sayHelloPrompt": "Say hello 👋",

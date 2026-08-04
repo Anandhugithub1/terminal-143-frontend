@@ -14,6 +14,8 @@ import { useLongPress } from '../hooks/useLongPress'
 import BottomSheetModal from '../../../shared/components/BottomSheetModal'
 import { useVisualViewportHeight } from '../../../shared/hooks/useVisualViewportHeight'
 import ReportUserModal from '../../UserHome/components/Modals/ReportUserModal'
+import DateDivider from '../components/DateDivider'
+import { formatDateDivider, isNewDay } from '../utils/formatMessageDate'
 
 // How long to wait for chat-service's SENT_ACK before treating a send as
 // failed. Generous — this only fires for a genuinely stuck/lost frame, not
@@ -680,14 +682,18 @@ export default function ChatConversationPage() {
                 {isFetchingNextPage && <Skeleton circle width={20} height={20} />}
               </div>
             )}
-            {messages.map((msg) => (
-              <MessageBubble
-                key={msg.id}
-                msg={msg}
-                onLongPress={() => setMessageActionTarget(msg)}
-                onRetry={handleRetry}
-                t={t}
-              />
+            {messages.map((msg, index) => (
+              <div key={msg.id}>
+                {isNewDay(messages, index) && (
+                  <DateDivider label={formatDateDivider(msg.sentAt, t)} />
+                )}
+                <MessageBubble
+                  msg={msg}
+                  onLongPress={() => setMessageActionTarget(msg)}
+                  onRetry={handleRetry}
+                  t={t}
+                />
+              </div>
             ))}
           </>
         )}

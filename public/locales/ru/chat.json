@@ -41,6 +41,8 @@
   "conversation": {
     "back": "Назад",
     "online": "В сети",
+    "dateToday": "Сегодня",
+    "dateYesterday": "Вчера",
     "chatFallback": "Чат",
     "yourMatchFallback": "Ваше совпадение",
     "sayHelloPrompt": "Поздоровайтесь 👋",

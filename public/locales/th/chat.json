@@ -41,6 +41,8 @@
   "conversation": {
     "back": "ย้อนกลับ",
     "online": "ออนไลน์",
+    "dateToday": "วันนี้",
+    "dateYesterday": "เมื่อวาน",
     "chatFallback": "แชท",
     "yourMatchFallback": "แมตช์ของคุณ",
     "sayHelloPrompt": "ทักทายกันหน่อยสิ 👋",

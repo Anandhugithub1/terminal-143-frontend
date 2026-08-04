@@ -41,6 +41,8 @@
   "conversation": {
     "back": "返回",
     "online": "在线",
+    "dateToday": "今天",
+    "dateYesterday": "昨天",
     "chatFallback": "聊天",
     "yourMatchFallback": "你的匹配对象",
     "sayHelloPrompt": "打个招呼吧 👋",

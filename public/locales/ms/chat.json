@@ -41,6 +41,8 @@
   "conversation": {
     "back": "Kembali",
     "online": "Dalam talian",
+    "dateToday": "Hari ini",
+    "dateYesterday": "Semalam",
     "chatFallback": "Sembang",
     "yourMatchFallback": "Padanan anda",
     "sayHelloPrompt": "Mulakan dengan menyapa 👋",
