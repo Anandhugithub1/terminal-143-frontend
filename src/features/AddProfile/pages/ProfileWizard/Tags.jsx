@@ -133,10 +133,20 @@ export default function Tags() {
 
       await completeMutation.mutateAsync(payload);
       clearFormData();
-    } catch {
+    } catch (err) {
       submittingRef.current = false;
       setIsSubmitting(false);
-      toast.error(t("wizard.tags.somethingWentWrong"));
+      // completeMutation's onError already toasted for a failure coming from
+      // the API call itself — only toast here for failures before that (e.g.
+      // photo upload), so this isn't a second, contradictory-looking toast.
+      if (!completeMutation.isError) {
+        toast.error(t("wizard.tags.somethingWentWrong"));
+      }
+      // Rethrown so OnboardingPage's handleComplete (which awaits this
+      // function) sees the failure and stops before joining circles /
+      // navigating to /home — otherwise it treats a failed profile
+      // completion as success.
+      throw err;
     }
   };
 

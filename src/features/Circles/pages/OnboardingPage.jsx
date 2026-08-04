@@ -76,8 +76,15 @@ export default function OnboardingPage({ onComplete, onBack }) {
     setIsCompleting(true);
     try {
       if (onComplete) {
-        // Complete profile first so circle joins have an authenticated profile
-        await onComplete(selectedCirclesData);
+        // Complete profile first so circle joins have an authenticated profile.
+        // onComplete (Tags.jsx's handleComplete) already shows its own error
+        // toast and rethrows on failure — stop here without a second,
+        // redundant toast, and without joining circles or navigating.
+        try {
+          await onComplete(selectedCirclesData);
+        } catch {
+          return;
+        }
       }
 
       // Join circles after profile is ready
