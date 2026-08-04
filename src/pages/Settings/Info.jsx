@@ -9,45 +9,55 @@ const Infopage = () => {
 
   const infoItems = [
     {
-      icon: <HeartHandshake size={24} />,
+      icon: <HeartHandshake size={20} />,
       title: t('missionTitle'),
       description: t('missionDesc'),
     },
     {
-      icon: <Users size={24} />,
+      icon: <Users size={20} />,
       title: t('communityTitle'),
       description: t('communityDesc'),
     },
     {
-      icon: <Globe size={24} />,
+      icon: <Globe size={20} />,
       title: t('globalTitle'),
       description: t('globalDesc'),
     },
   ];
 
   return (
-    <div className="min-h-[100dvh] bg-white font-inter">
+    <div className="min-h-[100dvh] bg-gray-50 font-inter">
       <PageHeader title={t('aboutApp')} />
 
-      <div className="p-4 space-y-6">
-        <p className="text-gray-700 text-base leading-relaxed">
-          {t('intro')}
-        </p>
+      <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
+          <img
+            src="/images/logo.png"
+            alt="PassorMatch"
+            className="w-14 h-14 rounded-2xl object-contain mb-4"
+          />
+          <h2 className="text-lg font-bold text-gray-900 mb-2">{t('aboutApp')}</h2>
+          <p className="text-sm text-gray-500 leading-relaxed">
+            {t('intro')}
+          </p>
+        </div>
 
-        <div className="space-y-4">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-100">
           {infoItems.map(({ icon, title, description }, idx) => (
-            <div key={idx} className="flex items-start space-x-4">
-              <div className="text-pink-500">{icon}</div>
-              <div>
-                <h3 className="text-md font-semibold text-gray-800">{title}</h3>
-                <p className="text-sm text-gray-600 mt-1">{description}</p>
+            <div key={idx} className="flex items-start gap-3.5 p-5">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                {icon}
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
+                <p className="text-sm text-gray-500 mt-1 leading-relaxed">{description}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <p className="text-xs text-gray-400 mt-8 text-center">
-          © {new Date().getFullYear()} Terminal143. {t('rightsReserved')}
+        <p className="text-xs text-gray-400 text-center pt-2">
+          © {new Date().getFullYear()} PassorMatch. {t('rightsReserved')}
         </p>
       </div>
     </div>

@@ -22,6 +22,17 @@
     "stdStatusPositive": "阳性",
     "stdStatusUnknown": "不愿透露",
     "testedOn": "检测日期",
+
+    "aboutApp": "关于 PassorMatch",
+    "intro": "PassorMatch 是一个现代化的交友平台，致力于在泰国各地建立真诚的联系。我们珍视文化、爱情，以及每个角落有意义的关系。",
+    "missionTitle": "我们的使命",
+    "missionDesc": "通过有意义、相互尊重且安全的交友体验，在泰国连接人与人。",
+    "communityTitle": "社区优先",
+    "communityDesc": "我们致力打造一个友善、互相尊重的社区，让用户感到安全并被倾听。",
+    "globalTitle": "泰式初心，全球连接",
+    "globalDesc": "根植泰国文化，我们的影响力延伸至全球，欢迎跨国界的缘分相遇。",
+    "rightsReserved": "版权所有。",
+
     "title": "欢迎！👋",
     "subtitle": "让我们从基础开始",
     "fullName": "全名 *",
