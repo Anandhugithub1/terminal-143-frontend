@@ -11,6 +11,7 @@ import EmptyState from '../../../shared/components/EmptyState'
 import MatchRow from '../components/MatchRow'
 import SupportRow from '../components/SupportRow'
 import NewMatchesStrip from '../components/NewMatchesStrip'
+import ChatListSkeleton from '../components/ChatListSkeleton'
 
 export default function ChatListPage() {
   const { t } = useTranslation('chat')
@@ -112,18 +113,7 @@ export default function ChatListPage() {
   if (isLoading) {
     return (
       <PageLayout className="bg-white">
-        <div className="p-4 pt-6 space-y-4">
-          <h1 className="text-2xl font-bold">{t('list.loadingChats')}</h1>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="flex gap-3 items-center">
-              <Skeleton circle width={56} height={56} />
-              <div className="flex-1">
-                <Skeleton height={16} width="40%" />
-                <Skeleton height={14} width="65%" />
-              </div>
-            </div>
-          ))}
-        </div>
+        <ChatListSkeleton />
       </PageLayout>
     )
   }
