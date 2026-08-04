@@ -1,4 +1,4 @@
-import { Flag, Heart, MoreVertical, Trash2 } from "lucide-react";
+import { Flag, Heart, Loader2, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,6 +17,7 @@ export default function CommentCard({
   onReport,
   onAuthorClick,
   isReply = false,
+  isPending = false,
   replySlot,
   replies = [],
 }) {
@@ -26,7 +27,7 @@ export default function CommentCard({
   const displayName = name || t("common.anonymous");
 
   return (
-    <div className={`flex gap-3 ${isReply ? "ml-4 mt-2" : ""}`}>
+    <div className={`flex gap-3 ${isReply ? "ml-4 mt-2" : ""} ${isPending ? "opacity-60" : ""}`}>
       <img
         src={avatar}
         alt={displayName}
@@ -42,7 +43,8 @@ export default function CommentCard({
               onClick={onAuthorClick}
               className={`font-semibold text-gray-800 text-sm ${onAuthorClick ? "cursor-pointer active:opacity-60 transition-opacity" : ""}`}
             >{displayName}</h4>
-            {onDelete && !confirmDelete && (
+            {isPending && <Loader2 className="w-3.5 h-3.5 text-gray-400 animate-spin" />}
+            {!isPending && onDelete && !confirmDelete && (
               <button
                 onClick={() => setConfirmDelete(true)}
                 className="p-1 hover:bg-gray-200 rounded-full transition-colors"
@@ -50,7 +52,7 @@ export default function CommentCard({
                 <MoreVertical className={isReply ? "w-3.5 h-3.5 text-gray-400" : "w-4 h-4 text-gray-400"} />
               </button>
             )}
-            {onDelete && confirmDelete && (
+            {!isPending && onDelete && confirmDelete && (
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => { onDelete(); setConfirmDelete(false); }}
@@ -66,7 +68,7 @@ export default function CommentCard({
                 </button>
               </div>
             )}
-            {!onDelete && onReport && !showReportOption && (
+            {!isPending && !onDelete && onReport && !showReportOption && (
               <button
                 onClick={() => setShowReportOption(true)}
                 className="p-1 hover:bg-gray-200 rounded-full transition-colors"
@@ -74,7 +76,7 @@ export default function CommentCard({
                 <MoreVertical className={isReply ? "w-3.5 h-3.5 text-gray-400" : "w-4 h-4 text-gray-400"} />
               </button>
             )}
-            {!onDelete && onReport && showReportOption && (
+            {!isPending && !onDelete && onReport && showReportOption && (
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => { onReport(); setShowReportOption(false); }}
@@ -90,7 +92,7 @@ export default function CommentCard({
                 </button>
               </div>
             )}
-            {!onDelete && !onReport && (
+            {!isPending && !onDelete && !onReport && (
               <button className="p-1 hover:bg-gray-200 rounded-full transition-colors">
                 <MoreVertical className={isReply ? "w-3.5 h-3.5 text-gray-400" : "w-4 h-4 text-gray-400"} />
               </button>
@@ -100,14 +102,16 @@ export default function CommentCard({
         </div>
         <div className="flex items-center gap-4 mt-1.5 px-2">
           {time && <span className="text-xs text-gray-400">{time}</span>}
-          <button
-            onClick={onLike}
-            className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <Heart className="w-3.5 h-3.5" />
-            {likes}
-          </button>
-          {!isReply && onReply && (
+          {!isPending && (
+            <button
+              onClick={onLike}
+              className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <Heart className="w-3.5 h-3.5" />
+              {likes}
+            </button>
+          )}
+          {!isPending && !isReply && onReply && (
             <button
               onClick={onReply}
               className="text-xs text-gray-400 hover:text-gray-600 transition-colors font-semibold"
@@ -128,6 +132,7 @@ export default function CommentCard({
             text={reply.text}
             time={reply.time}
             likes={reply.likes}
+            isPending={reply.isPending}
             onAuthorClick={reply.onAuthorClick}
             onDelete={reply.onDelete}
             onReport={reply.onReport}
