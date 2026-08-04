@@ -33,7 +33,8 @@
     "rejected": "ปฏิเสธคำขอจับคู่แล้ว",
     "genericError": "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง",
     "pass": "ผ่าน",
-    "passed": "ผ่านแล้ว"
+    "passed": "ผ่านแล้ว",
+    "matchRequestSent": "ส่งคำขอจับคู่แล้ว"
   },
 
   "confirmation": {

@@ -9,6 +9,19 @@
     "tapMatchToStart": "点击上方的匹配对象打个招呼，开始聊天吧。",
     "chatSectionLabel": "聊天"
   },
+  "support": {
+    "title": "客服支持",
+    "rowSubtitle": "获取我们团队的帮助",
+    "loading": "正在加载消息...",
+    "emptyPrompt": "有疑问或遇到问题？给我们发消息，我们的团队会尽快回复您。",
+    "attachImage": "添加照片",
+    "removeImage": "移除照片",
+    "invalidImageType": "请选择 JPG、PNG 或 WEBP 格式的图片",
+    "imageTooLarge": "图片大小需小于 10MB",
+    "imageUploadFailed": "图片上传失败，请重试。",
+    "sendFailed": "消息发送失败，请重试。",
+    "retry": "重试"
+  },
   "matchesStrip": {
     "label": "匹配"
   },
@@ -38,6 +51,8 @@
     "moreOptions": "更多选项",
     "blockUser": "屏蔽 {{name}}",
     "unblockUser": "取消屏蔽 {{name}}",
+    "reportUser": "举报 {{name}}",
+    "reportMessageAction": "举报消息",
     "blockConfirmTitle": "屏蔽 {{name}}？",
     "blockConfirmBody": "对方将无法给您发送消息，您也无法给对方发送消息。",
     "blockConfirmAction": "屏蔽",

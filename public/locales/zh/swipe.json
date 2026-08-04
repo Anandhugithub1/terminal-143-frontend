@@ -33,7 +33,8 @@
     "rejected": "已拒绝匹配请求",
     "genericError": "出了点问题，请重试。",
     "pass": "跳过",
-    "passed": "已跳过"
+    "passed": "已跳过",
+    "matchRequestSent": "匹配请求已发送"
   },
 
   "confirmation": {

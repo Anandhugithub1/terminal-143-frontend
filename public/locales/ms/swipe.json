@@ -33,7 +33,8 @@
     "rejected": "Permintaan padanan ditolak",
     "genericError": "Sesuatu tidak kena. Sila cuba lagi.",
     "pass": "Langkau",
-    "passed": "Dilangkau"
+    "passed": "Dilangkau",
+    "matchRequestSent": "Permintaan padanan telah dihantar"
   },
 
   "confirmation": {

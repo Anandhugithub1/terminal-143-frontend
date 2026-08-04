@@ -13,7 +13,14 @@
     "title": "Sokongan",
     "rowSubtitle": "Dapatkan bantuan daripada pasukan kami",
     "loading": "Memuatkan mesej...",
-    "emptyPrompt": "Ada soalan atau menghadapi masalah? Hantar mesej kepada kami dan pasukan kami akan menghubungi anda semula."
+    "emptyPrompt": "Ada soalan atau menghadapi masalah? Hantar mesej kepada kami dan pasukan kami akan menghubungi anda semula.",
+    "attachImage": "Lampirkan foto",
+    "removeImage": "Buang foto",
+    "invalidImageType": "Sila pilih imej JPG, PNG, atau WEBP",
+    "imageTooLarge": "Saiz imej mesti kurang daripada 10MB",
+    "imageUploadFailed": "Gagal memuat naik imej. Sila cuba lagi.",
+    "sendFailed": "Gagal menghantar mesej. Sila cuba lagi.",
+    "retry": "Cuba lagi"
   },
   "matchesStrip": {
     "label": "Padanan"

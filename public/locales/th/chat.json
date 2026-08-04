@@ -9,6 +9,19 @@
     "tapMatchToStart": "แตะแมตช์ด้านบนเพื่อทักทายและเริ่มแชท",
     "chatSectionLabel": "แชท"
   },
+  "support": {
+    "title": "ฝ่ายสนับสนุน",
+    "rowSubtitle": "รับความช่วยเหลือจากทีมงานของเรา",
+    "loading": "กำลังโหลดข้อความ...",
+    "emptyPrompt": "มีคำถามหรือพบปัญหาใช่ไหม? ส่งข้อความถึงเรา แล้วทีมงานจะติดต่อกลับ",
+    "attachImage": "แนบรูปภาพ",
+    "removeImage": "ลบรูปภาพ",
+    "invalidImageType": "โปรดเลือกรูปภาพประเภท JPG, PNG หรือ WEBP",
+    "imageTooLarge": "รูปภาพต้องมีขนาดไม่เกิน 10MB",
+    "imageUploadFailed": "อัปโหลดรูปภาพไม่สำเร็จ โปรดลองอีกครั้ง",
+    "sendFailed": "ส่งข้อความไม่สำเร็จ โปรดลองอีกครั้ง",
+    "retry": "ลองอีกครั้ง"
+  },
   "matchesStrip": {
     "label": "แมตช์"
   },
@@ -38,6 +51,8 @@
     "moreOptions": "ตัวเลือกเพิ่มเติม",
     "blockUser": "บล็อก {{name}}",
     "unblockUser": "เลิกบล็อก {{name}}",
+    "reportUser": "รายงาน {{name}}",
+    "reportMessageAction": "รายงานข้อความ",
     "blockConfirmTitle": "บล็อก {{name}}?",
     "blockConfirmBody": "พวกเขาจะไม่สามารถส่งข้อความหาคุณได้ และคุณก็จะไม่สามารถส่งข้อความหาพวกเขาได้เช่นกัน",
     "blockConfirmAction": "บล็อก",

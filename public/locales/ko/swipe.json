@@ -33,7 +33,8 @@
     "rejected": "매칭 요청을 거절했습니다",
     "genericError": "문제가 발생했습니다. 다시 시도해 주세요.",
     "pass": "패스",
-    "passed": "패스했습니다"
+    "passed": "패스했습니다",
+    "matchRequestSent": "매칭 요청을 보냈습니다"
   },
 
   "confirmation": {
