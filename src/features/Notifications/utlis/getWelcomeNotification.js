@@ -81,3 +81,25 @@ export function normalizeNotification(n) {
     message
   }
 }
+
+// Where tapping a notification should take the user, so they can see exactly
+// what got hidden/resolved rather than just reading a generic message. Only
+// CONTENT_HIDDEN carries enough identity to deep-link today; other types
+// return null (no-op tap) until they need the same treatment.
+export function getNotificationLink(n) {
+  if (n.type !== "CONTENT_HIDDEN") return null
+
+  const { sourceType, sourceId, circleId, postId } = n.payload || {}
+
+  switch (sourceType) {
+    case "POST":
+    case "COMMENT":
+      return circleId && postId ? `/circles/${circleId}/posts/${postId}` : null
+    case "CIRCLE_COVER":
+      return sourceId ? `/circles/${sourceId}` : null
+    case "USER_PHOTO":
+      return "/profile"
+    default:
+      return null
+  }
+}
