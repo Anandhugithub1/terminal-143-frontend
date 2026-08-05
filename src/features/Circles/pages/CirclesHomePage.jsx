@@ -198,6 +198,16 @@ export default function CirclesHomePage() {
     setIsCreatePostOpen(true);
   };
 
+  // When a circle tab is already active, skip the picker and post straight
+  // to that circle — only "For You" (no circle selected) needs the picker.
+  const handleStartPost = () => {
+    if (selectedCircle) {
+      handlePickCircle(selectedCircle);
+    } else {
+      setIsCirclePickerOpen(true);
+    }
+  };
+
   const handlePostCreated = () => {
     setIsCreatePostOpen(false);
     if (postTargetCircle?.circleId) {
@@ -429,7 +439,7 @@ export default function CirclesHomePage() {
 
         {/* Inline create-post prompt */}
         <button
-          onClick={() => setIsCirclePickerOpen(true)}
+          onClick={handleStartPost}
           className="w-full bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3 flex items-center gap-3 active:scale-[0.99] transition-transform"
         >
           <img

@@ -101,6 +101,7 @@ const LoginForm = () => {
           placeholder={t("emailOrPhone")}
           disabled={isPending}
         />
+        <p className="-mt-2 text-xs text-gray-400">{t("loginPhoneHint")}</p>
 
         <PasswordInput
           value={password}

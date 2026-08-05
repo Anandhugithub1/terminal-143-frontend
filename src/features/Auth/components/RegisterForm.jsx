@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { InputField } from "../../../shared/common";
 import PasswordInput from "../../../shared/Passinput";
@@ -9,24 +9,26 @@ import { useRegister } from "../useAuth";
 import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 import { toast } from "sonner"
 import ReactCountryFlag from "react-country-flag";
-import CountryCodeSelect from "./CountryCodeSelect";
-import { DEFAULT_COUNTRY_CODE, findCountryByCode } from "../utils/countryCallingCodes";
+import PhoneNumberInput from "./PhoneNumberInput";
 
-// A single "email or phone" field has to guess which one the user means as
-// they type. Digits-first (optionally with a leading +) reads as a phone
-// number in progress; anything else (starts with a letter, or already has
-// an @) is treated as an email — matching how the backend itself
-// disambiguates the combined field (see authApi.js's `.includes('@')`).
-function looksLikePhone(value) {
-  return /^\+?[0-9\s-]*$/.test(value) && value.trim() !== "";
-}
+// Deliberately simple format check (not RFC 5322) — just enough to catch
+// obvious typos like a missing "@" or domain before hitting the backend.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const RegisterForm = () => {
   const { t, ready } = useTranslation("auth");
   const { t: tCommon } = useTranslation("common");
 
-  const [emailPhone, setEmailPhone] = useState("");
-  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY_CODE);
+  // Explicit tabs rather than one field guessing which the user means —
+  // PhoneInput (react-phone-number-input) owns the phone case entirely
+  // (country select, formatting, E.164 output), so it can't share a raw
+  // text field with an email value the way a hand-rolled picker could.
+  const [mode, setMode] = useState("email");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState(""); // E.164, e.g. "+66812345678"
+  // null = empty field (not yet judged invalid), true/false = intl-tel-input's
+  // isValidNumber() result for the current country + digits.
+  const [phoneValid, setPhoneValid] = useState(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
@@ -37,35 +39,36 @@ const RegisterForm = () => {
 
   const { mutate, isPending, isError, isSuccess, data, error } = useRegister();
 
-  const isPhoneInput = looksLikePhone(emailPhone);
-  const callingCode = useMemo(
-    () => findCountryByCode(countryCode)?.callingCode,
-    [countryCode]
-  );
-  // What actually gets submitted/shown post-registration: the country's
-  // dial code combined with the digits the user typed, so they never have
-  // to type "+66" themselves. A user who pastes a full international number
-  // (already starting with +) is trusted as-is rather than double-prefixed;
-  // anything else (email) passes through unchanged.
-  const submittedValue = !isPhoneInput
-    ? emailPhone
-    : emailPhone.trim().startsWith("+")
-      ? emailPhone.replace(/[\s-]/g, "")
-      : `+${callingCode}${emailPhone.replace(/[\s-]/g, "").replace(/^0+/, "")}`;
+  const emailPhone = mode === "email" ? email.trim() : (phone || "").trim();
 
 useEffect(() => {
   if (isSuccess) {
     toast.success(t("registrationSuccessful"))
 
     navigate(
-      `/verify?email=${encodeURIComponent(submittedValue)}`
+      `/verify?email=${encodeURIComponent(emailPhone)}`
     )
   }
-}, [isSuccess, navigate, submittedValue, t])
+}, [isSuccess, navigate, emailPhone, t])
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!emailPhone) {
+      setLocalError(mode === "email" ? t("emailRequired", "Please enter your email.") : t("phoneRequired", "Please enter your phone number."));
+      return;
+    }
+
+    if (mode === "email" && !EMAIL_PATTERN.test(emailPhone)) {
+      setLocalError(t("emailInvalid", "Please enter a valid email address."));
+      return;
+    }
+
+    if (mode === "phone" && phoneValid === false) {
+      setLocalError(t("phoneInvalid", "Please enter a valid phone number."));
+      return;
+    }
 
     if (password !== confirmPassword) {
       setLocalError(t("passwordMismatch"));
@@ -83,30 +86,60 @@ useEffect(() => {
     }
 
     setLocalError("");
-    mutate({ emailPhone: submittedValue, password, gender, agreedToTerms });
+    mutate({ emailPhone, password, gender, agreedToTerms });
   };
 
   if (!ready) return null;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="flex gap-2">
-        {isPhoneInput && (
-          <CountryCodeSelect value={countryCode} onChange={setCountryCode} />
-        )}
-        <InputField
-          value={emailPhone}
-          onChange={(e) => setEmailPhone(e.target.value)}
-          placeholder={t("emailOrPhone")}
-          className="flex-1 min-w-0"
-        />
+      <div className="flex rounded-xl bg-gray-100 p-1">
+        <button
+          type="button"
+          onClick={() => setMode("email")}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            mode === "email" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+          }`}
+        >
+          {t("email", "Email")}
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode("phone")}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
+            mode === "phone" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500"
+          }`}
+        >
+          {t("phone", "Phone")}
+        </button>
       </div>
 
-      <div className="text-xs text-gray-500">
-        {isPhoneInput
-          ? t("phoneCountryHint", "We'll add the country code automatically — just enter your number.")
-          : t("emailOrPhoneHint", "Enter your email, or start typing your phone number to pick a country code.")}
-      </div>
+      {mode === "email" ? (
+        <InputField
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("emailPlaceholder", "Email address")}
+        />
+      ) : (
+        <PhoneNumberInput
+          defaultCountry="th"
+          value={phone}
+          onChange={setPhone}
+          onValidityChange={setPhoneValid}
+          placeholder={t("phonePlaceholder", "Phone number")}
+        />
+      )}
+      {mode === "email" && email.trim() && !EMAIL_PATTERN.test(email.trim()) && (
+        <p className="-mt-2 text-xs text-red-500">
+          {t("emailInvalid", "Please enter a valid email address.")}
+        </p>
+      )}
+      {mode === "phone" && phoneValid === false && (
+        <p className="-mt-2 text-xs text-red-500">
+          {t("phoneInvalid", "Please enter a valid phone number.")}
+        </p>
+      )}
 
 <div className="relative">
   <select

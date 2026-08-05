@@ -118,6 +118,29 @@ img {
 }
 
 
+/* intl-tel-input's .iti wrapper is inline-block by default and reserves
+   left padding (via CSS vars) for its flag/dial-code button, which is
+   absolutely positioned inside it — match the app's other form inputs
+   (rounded-xl, gray border, pink focus ring) via the library's own
+   theming variables rather than fighting its internal layout math. */
+.iti {
+  display: block;
+  width: 100%;
+  --iti-border-color: #d1d5db; /* border-gray-300 */
+  --iti-hover-color: #f9fafb; /* gray-50 */
+}
+.iti input.iti__tel-input {
+  width: 100%;
+  border-radius: 0.75rem; /* rounded-xl */
+  border: 1px solid var(--iti-border-color);
+  font-size: 16px; /* matches the iOS-zoom-prevention rule below */
+}
+.iti input.iti__tel-input:focus {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 2px #ec4899; /* ring-pink-500 */
+}
+
 /* Chrome, Edge, Safari */
 input[type="date"].with-custom-date-icon::-webkit-calendar-picker-indicator {
   opacity: 0;           /* make it invisible */

@@ -6,6 +6,9 @@ import { useTranslation } from 'react-i18next';
 // translated name per language per locale, we localise the display name at
 // runtime with Intl.DisplayNames (keyed on the active i18n language), falling
 // back to the English name from S3 for anything the platform can't resolve.
+// Shown first, in this order, ahead of the alphabetised remainder of the S3 list.
+const POPULAR_LANGUAGE_CODES = ['en', 'th', 'ru', 'zh', 'ko', 'ms'];
+
 function makeLocaliser(locale) {
   try {
     const dn = new Intl.DisplayNames([locale || 'en'], { type: 'language' });
@@ -79,9 +82,18 @@ export default function useLanguages(
           return { value, label };
         });
 
-        normalised.sort((a, b) =>
-          a.label.localeCompare(b.label, locale || undefined, { sensitivity: 'base' })
-        );
+        normalised.sort((a, b) => {
+          const aIndex = POPULAR_LANGUAGE_CODES.indexOf(a.value);
+          const bIndex = POPULAR_LANGUAGE_CODES.indexOf(b.value);
+
+          if (aIndex !== -1 || bIndex !== -1) {
+            if (aIndex === -1) return 1;
+            if (bIndex === -1) return -1;
+            return aIndex - bIndex;
+          }
+
+          return a.label.localeCompare(b.label, locale || undefined, { sensitivity: 'base' });
+        });
 
         if (mounted) setLanguagesList(normalised);
       } catch (err) {
