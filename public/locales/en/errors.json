@@ -9,6 +9,7 @@
   "server": "Something went wrong on our end. Please try again shortly.",
   "badRequest": "Please check your input and try again.",
   "generic": "Something went wrong. Please try again.",
+  "invalidCredentials": "Incorrect email/phone or password.",
 
   "profileAlreadyExists": "You already have a profile.",
   "profileNotFound": "Profile not found.",

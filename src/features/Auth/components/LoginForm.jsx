@@ -121,7 +121,7 @@ const LoginForm = () => {
 
         {isError && (
           <p className="text-red-500 text-sm">
-            {getErrorMessage(error)}
+            {getErrorMessage(error, 'invalidCredentials')}
           </p>
         )}
 

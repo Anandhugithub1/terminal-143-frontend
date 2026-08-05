@@ -9,6 +9,7 @@
   "server": "Terdapat masalah di pihak kami. Sila cuba lagi sebentar lagi.",
   "badRequest": "Sila semak input anda dan cuba lagi.",
   "generic": "Sesuatu telah berlaku tidak kena. Sila cuba lagi.",
+  "invalidCredentials": "E-mel/telefon atau kata laluan tidak sah.",
 
   "profileAlreadyExists": "Anda sudah mempunyai profil.",
   "profileNotFound": "Profil tidak dijumpai.",

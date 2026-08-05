@@ -69,7 +69,12 @@ export function getErrorMessage(err, fallbackKey = 'generic') {
   const messageKey = keyForBackendMessage(backendMessage);
   if (messageKey) return t(`errors:${messageKey}`);
 
-  const statusKey = keyForStatus(err?.response?.status);
+  const status = err?.response?.status;
+  // 401 defaults to "session expired," which is wrong for a call site like
+  // login where a 401 just means bad credentials and there was never a
+  // session to expire. An explicit fallbackKey signals that case — honor it
+  // instead of the generic status mapping.
+  const statusKey = status === 401 && fallbackKey !== 'generic' ? null : keyForStatus(status);
   if (statusKey) return t(`errors:${statusKey}`);
 
   if (err?.code === 'ECONNABORTED') return t('errors:timeout');

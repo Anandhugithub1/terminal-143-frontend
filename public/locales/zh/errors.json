@@ -9,6 +9,7 @@
   "server": "服务器出现问题，请稍后重试。",
   "badRequest": "请检查您输入的信息后重试。",
   "generic": "出现了一些问题，请重试。",
+  "invalidCredentials": "邮箱/手机号或密码不正确。",
 
   "profileAlreadyExists": "您已经拥有个人资料。",
   "profileNotFound": "未找到个人资料。",
