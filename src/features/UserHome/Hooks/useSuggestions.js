@@ -2,14 +2,15 @@ import { useEffect, useState, useCallback, useRef } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getSuggestions } from "../../Profiles/profilesapi"
 
-const AUTO_REFRESH_INTERVAL_MS = 30000
-const AUTO_REFRESH_TIMEOUT_MS = 120000
+const AUTO_REFRESH_INTERVAL_MS = 15000
+const AUTO_REFRESH_TIMEOUT_MS = 90000
 
 export function useSuggestions({ shouldAutoRefresh = false } = {}) {
   const queryClient = useQueryClient()
   const [idx, setIdx] = useState(0)
   const [suggestionError, setSuggestionError] = useState("")
   const [currentSource, setCurrentSource] = useState(null)
+  const [autoRefreshExpired, setAutoRefreshExpired] = useState(false)
 
   /* ---------------- NORMAL FETCH ---------------- */
 
@@ -69,6 +70,15 @@ export function useSuggestions({ shouldAutoRefresh = false } = {}) {
   const nextRefreshInSeconds =
     data?.nextRefreshInSeconds ?? 0
 
+  // Right after profile completion the backend can also just return an
+  // empty pool (no explicit computing: true) while it finishes indexing —
+  // treat that the same as "computing" for as long as we're still
+  // auto-retrying, so callers don't flash a "no matches" state first.
+  const isEmptyResult = !exhausted && profiles.length === 0
+  const awaitingPostCompletion =
+    shouldAutoRefresh && !autoRefreshExpired && isEmptyResult && !suggestionError
+  const showComputing = computing || awaitingPostCompletion
+
   /* -------- Track source -------- */
 
   useEffect(() => {
@@ -88,28 +98,42 @@ export function useSuggestions({ shouldAutoRefresh = false } = {}) {
   const refreshMutationRef = useRef(refreshMutation)
   refreshMutationRef.current = refreshMutation
 
-  useEffect(() => {
-    if (!shouldAutoRefresh || !computing) return
+  const showComputingRef = useRef(showComputing)
+  showComputingRef.current = showComputing
 
+  useEffect(() => {
+    if (!shouldAutoRefresh) return
+    setAutoRefreshExpired(false)
+  }, [shouldAutoRefresh])
+
+  useEffect(() => {
+    if (!shouldAutoRefresh) return
+
+    // Read showComputingRef live inside the tick, rather than depending on
+    // showComputing directly, so a mutate() response mid-window doesn't
+    // tear down and restart the interval/timeout — it just stops polling
+    // once the pool is no longer empty, without resetting the 90s budget.
     const intervalId = window.setInterval(() => {
+      if (!showComputingRef.current) return
       refreshMutationRef.current.mutate()
     }, AUTO_REFRESH_INTERVAL_MS)
 
     const timeoutId = window.setTimeout(() => {
       window.clearInterval(intervalId)
+      setAutoRefreshExpired(true)
     }, AUTO_REFRESH_TIMEOUT_MS)
 
     return () => {
       window.clearInterval(intervalId)
       window.clearTimeout(timeoutId)
     }
-  }, [shouldAutoRefresh, computing])
+  }, [shouldAutoRefresh])
 
   return {
     profiles,
     idx,
     setIdx,
-    computing,
+    computing: showComputing,
     hadPool,
     exhausted,
     canRefresh,

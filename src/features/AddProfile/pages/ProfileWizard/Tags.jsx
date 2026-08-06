@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useWizard } from "../../contexts/ProfileWizard";
 import { normalizeGeoForApi } from "../../utlis/geo";
@@ -20,6 +20,7 @@ export default function Tags() {
   const { t } = useTranslation("common");
   const { formData, clearFormData } = useWizard();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const gender = localStorage.getItem("gender");
   const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender);
@@ -132,6 +133,11 @@ export default function Tags() {
       if (normalizedLocation) payload.location = normalizedLocation;
 
       await completeMutation.mutateAsync(payload);
+      // DefaultHomeRoute reads ["my-profile"] to decide where to send the
+      // user right after this — without invalidating, it can still see the
+      // pre-completion cached 404 (staleTime: 5min) and bounce to /login,
+      // dropping the profileJustCompleted state before Home.jsx ever mounts.
+      await queryClient.invalidateQueries({ queryKey: ["my-profile"] });
       clearFormData();
     } catch (err) {
       submittingRef.current = false;
