@@ -215,7 +215,9 @@ const [showReport, setShowReport] = useState(false);
       />
 
       <div className="relative flex-1">
-        {exhausted && canRefresh ? (
+        {computing ? (
+          <ComputingLoading onRefresh={handleRefresh} isRefreshing={isRefreshing} />
+        ) : exhausted && canRefresh ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
             <div className="text-sm text-gray-500 mb-4">
               {t("caughtUp.message")}
@@ -235,8 +237,6 @@ const [showReport, setShowReport] = useState(false);
           </div>
         ) : isLoading && profiles.length === 0 && !exhausted ? (
           <ProfileSkeletonContent />
-        ) : computing ? (
-          <ComputingLoading />
         ) : suggestionError ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
             <h2 className="text-xl font-semibold">{t("unexpectedError.title")}</h2>

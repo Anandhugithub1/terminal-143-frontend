@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react"
 
-export default function ComputingLoading() {
+export default function ComputingLoading({ onRefresh, isRefreshing }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 text-center">
 
@@ -27,6 +27,20 @@ export default function ComputingLoading() {
         <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-150" />
         <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-300" />
       </div>
+
+      {onRefresh && (
+        <button
+          onClick={onRefresh}
+          disabled={isRefreshing}
+          className={`mt-8 px-6 py-2 rounded-full shadow-md transition duration-200 ${
+            isRefreshing
+              ? "bg-primary/70 text-white cursor-wait"
+              : "bg-primary text-white hover:opacity-90 active:scale-95"
+          }`}
+        >
+          {isRefreshing ? "Refreshing..." : "Refresh"}
+        </button>
+      )}
 
     </div>
   )

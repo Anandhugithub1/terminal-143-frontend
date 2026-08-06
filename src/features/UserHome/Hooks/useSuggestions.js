@@ -70,13 +70,14 @@ export function useSuggestions({ shouldAutoRefresh = false } = {}) {
   const nextRefreshInSeconds =
     data?.nextRefreshInSeconds ?? 0
 
-  // Right after profile completion the backend can also just return an
-  // empty pool (no explicit computing: true) while it finishes indexing —
-  // treat that the same as "computing" for as long as we're still
-  // auto-retrying, so callers don't flash a "no matches" state first.
-  const isEmptyResult = !exhausted && profiles.length === 0
+  // Right after profile completion the backend can return an empty pool
+  // without computing: true (still indexing) — and can even mark it
+  // exhausted/canRefresh, which is meaningless for a user who has never
+  // seen anyone yet. Treat any empty pool as "computing" for as long as
+  // we're still auto-retrying, so callers don't flash "no matches" or
+  // "caught up" before the pool has had a chance to fill.
   const awaitingPostCompletion =
-    shouldAutoRefresh && !autoRefreshExpired && isEmptyResult && !suggestionError
+    shouldAutoRefresh && !autoRefreshExpired && profiles.length === 0 && !suggestionError
   const showComputing = computing || awaitingPostCompletion
 
   /* -------- Track source -------- */
