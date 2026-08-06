@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react"
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react"
+import { saveWizardPhotos, loadWizardPhotos, clearWizardPhotos } from "./wizardPhotoStore"
 
 const WizardContext = createContext()
 
@@ -52,6 +53,48 @@ export const WizardProvider = ({ children }) => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(rest))
   }, [formData])
 
+  // Recover picked photos (File objects can't live in sessionStorage) after
+  // a refresh mid-wizard, e.g. from network lag or a mobile reload.
+  useEffect(() => {
+    let cancelled = false
+
+    loadWizardPhotos().then((stored) => {
+      if (cancelled || !stored) return
+      setFormDataState((prev) => ({
+        ...prev,
+        profilePhoto: prev.profilePhoto ?? stored.profilePhoto ?? null,
+        profilePhotos:
+          prev.profilePhotos?.length ? prev.profilePhotos : stored.profilePhotos || [],
+      }))
+    }).catch((err) => {
+      console.warn("Failed to restore wizard photos", err)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const isInitialPhotoMount = useRef(true)
+
+  useEffect(() => {
+    if (isInitialPhotoMount.current) {
+      isInitialPhotoMount.current = false
+      return
+    }
+
+    const { profilePhoto, profilePhotos } = formData
+    const hasAnyPhoto = Boolean(profilePhoto) || (profilePhotos || []).some(Boolean)
+
+    const op = hasAnyPhoto
+      ? saveWizardPhotos({ profilePhoto, profilePhotos })
+      : clearWizardPhotos()
+
+    op.catch((err) => {
+      console.warn("Failed to persist wizard photos", err)
+    })
+  }, [formData.profilePhoto, formData.profilePhotos])
+
 const setFormData = (updater) => {
   setFormDataState(prev => {
     const next =
@@ -66,6 +109,9 @@ const setFormData = (updater) => {
 
   const clearFormData = useCallback(() => {
     sessionStorage.removeItem(STORAGE_KEY)
+    clearWizardPhotos().catch((err) => {
+      console.warn("Failed to clear wizard photos", err)
+    })
     setFormDataState(getDefaultFormData())
   }, [])
 

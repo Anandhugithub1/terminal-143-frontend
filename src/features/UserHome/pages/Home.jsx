@@ -38,6 +38,7 @@ export default function UserHomePage() {
   const { t } = useTranslation("swipe");
   const { data: myProfile } = useMyProfile();
   const queryClient = useQueryClient();
+  const location = useLocation();
   const restoreMutation = useMutation({
     mutationFn: restoreMyAccount,
     onSuccess: () => {
@@ -61,9 +62,10 @@ const { mutate: reportUser } = useReportUser();
     isFetching,
     isRefreshing,
     refetch,
-  } = useSuggestions();
+  } = useSuggestions({
+    shouldAutoRefresh: Boolean(location.state?.profileJustCompleted),
+  });
 const [showReport, setShowReport] = useState(false);
-  const location = useLocation();
   const [showBraveHelp, setShowBraveHelp] = useState(false);
   const [direction, setDirection] = useState(0);
   const [requestError, setRequestError] = useState("");

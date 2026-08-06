@@ -1,8 +1,11 @@
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { getSuggestions } from "../../Profiles/profilesapi"
 
-export function useSuggestions() {
+const AUTO_REFRESH_INTERVAL_MS = 30000
+const AUTO_REFRESH_TIMEOUT_MS = 120000
+
+export function useSuggestions({ shouldAutoRefresh = false } = {}) {
   const queryClient = useQueryClient()
   const [idx, setIdx] = useState(0)
   const [suggestionError, setSuggestionError] = useState("")
@@ -79,6 +82,28 @@ export function useSuggestions() {
       setIdx(0)
     }
   }, [computing])
+
+  /* -------- Auto-retry while computing (post profile-completion) -------- */
+
+  const refreshMutationRef = useRef(refreshMutation)
+  refreshMutationRef.current = refreshMutation
+
+  useEffect(() => {
+    if (!shouldAutoRefresh || !computing) return
+
+    const intervalId = window.setInterval(() => {
+      refreshMutationRef.current.mutate()
+    }, AUTO_REFRESH_INTERVAL_MS)
+
+    const timeoutId = window.setTimeout(() => {
+      window.clearInterval(intervalId)
+    }, AUTO_REFRESH_TIMEOUT_MS)
+
+    return () => {
+      window.clearInterval(intervalId)
+      window.clearTimeout(timeoutId)
+    }
+  }, [shouldAutoRefresh, computing])
 
   return {
     profiles,
