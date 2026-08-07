@@ -36,5 +36,7 @@
   "invalidModerationAction": "该操作无效。",
 
   "ratingRange": "请选择1到5之间的评分。",
-  "reviewTextLength": "评价内容应为5到300个字符之间。"
+  "reviewTextLength": "评价内容应为5到300个字符之间。",
+  "passwordTooShort": "密码长度必须至少为8个字符。",
+  "invalidOtp": "验证码不正确或已过期，请重试或重新获取验证码。"
 }

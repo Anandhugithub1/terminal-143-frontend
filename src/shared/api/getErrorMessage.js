@@ -30,6 +30,9 @@ const MESSAGE_KEY_MAP = [
   [/invalid moderation action/i, 'invalidModerationAction'],
   [/rating must be 1-5/i, 'ratingRange'],
   [/text must be 5-300 chars/i, 'reviewTextLength'],
+  [/password did not conform with policy|password.*not long enough/i, 'passwordTooShort'],
+  [/invalid verification code|invalid code provided/i, 'invalidOtp'],
+  [/attempt limit exceeded/i, 'tooManyRequests'],
 ];
 
 const STATUS_KEY_MAP = {

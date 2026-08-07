@@ -36,5 +36,7 @@
   "invalidModerationAction": "Tindakan itu tidak sah.",
 
   "ratingRange": "Sila pilih penarafan antara 1 dan 5.",
-  "reviewTextLength": "Ulasan anda hendaklah antara 5 hingga 300 aksara."
+  "reviewTextLength": "Ulasan anda hendaklah antara 5 hingga 300 aksara.",
+  "passwordTooShort": "Kata laluan anda mestilah sekurang-kurangnya 8 aksara.",
+  "invalidOtp": "Kod itu salah atau telah tamat tempoh. Sila cuba lagi atau minta kod baharu."
 }
