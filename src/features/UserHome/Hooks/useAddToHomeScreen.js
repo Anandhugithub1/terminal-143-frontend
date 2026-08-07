@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react"
+import { Capacitor } from "@capacitor/core"
 
 const STORAGE_KEY = "a2hs_last_shown"
 const DISMISS_KEY = "a2hs_dismissed"
@@ -25,6 +26,9 @@ export function useAddToHomeScreen() {
   const [isIOSDevice, setIsIOSDevice] = useState(false)
 
   useEffect(() => {
+    // Never show the install banner inside the wrapped iOS/Android app —
+    // it's already installed there, this only makes sense on mobile web.
+    if (Capacitor.isNativePlatform()) return
     if (isStandalone()) return
 
     const ios = isIOS()
