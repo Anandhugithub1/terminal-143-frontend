@@ -96,6 +96,8 @@ const LoginForm = () => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <InputField
+          name="username"
+          autoComplete="username"
           value={emailPhone}
           onChange={(e) => setEmailPhone(e.target.value)}
           placeholder={t("emailOrPhone")}

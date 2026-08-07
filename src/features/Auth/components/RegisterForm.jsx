@@ -117,6 +117,8 @@ useEffect(() => {
       {mode === "email" ? (
         <InputField
           type="email"
+          name="email"
+          autoComplete="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("emailPlaceholder", "Email address")}
@@ -183,6 +185,7 @@ useEffect(() => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder={t("createPassword")}
+        inputProps={{ name: "new-password", autoComplete: "new-password" }}
       />
 
       <div className="text-xs text-gray-500">{t("passwordRequirements")}</div>
@@ -191,6 +194,7 @@ useEffect(() => {
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
         placeholder={t("confirmPassword")}
+        inputProps={{ name: "confirm-password", autoComplete: "new-password" }}
       />
 
       <div className="flex items-start gap-2">
