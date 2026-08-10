@@ -33,6 +33,17 @@ const webFetch = (...args) => {
 }
 
 const DEFAULT_TIMEOUT_MS = 30000
+// A flat 30s timeout was cutting off large-but-legitimate uploads on slow
+// mobile connections before they could finish, then retrying the same file
+// at the same timeout — guaranteed to time out again for the same reason.
+// Budgeting time by file size (assuming a conservative ~300kbps floor) gives
+// bigger files proportionally more time while keeping small ones snappy.
+const MIN_UPLOAD_KBPS = 300
+const MS_PER_BYTE = 8000 / (MIN_UPLOAD_KBPS * 1000)
+const MAX_TIMEOUT_MS = 120000
+export function timeoutForFileSize(bytes) {
+  return Math.min(MAX_TIMEOUT_MS, Math.max(DEFAULT_TIMEOUT_MS, Math.round(bytes * MS_PER_BYTE)))
+}
 const MAX_RETRIES = 2
 // Exponential backoff with jitter: 500ms, 1000ms (+ up to 250ms jitter each),
 // capped low since this blocks a human waiting to send a chat message — not
@@ -105,7 +116,7 @@ function putOnce(presignedUrl, file, { onProgress, timeoutMs }) {
 // Retries transient failures (network error, timeout, 5xx) up to MAX_RETRIES
 // times with exponential backoff; a 4xx (bad request/signature mismatch)
 // fails immediately since retrying an identical request can't fix it.
-export async function uploadToS3(presignedUrl, file, { onProgress, timeoutMs = DEFAULT_TIMEOUT_MS } = {}) {
+export async function uploadToS3(presignedUrl, file, { onProgress, timeoutMs = timeoutForFileSize(file.size) } = {}) {
   let lastErr
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {

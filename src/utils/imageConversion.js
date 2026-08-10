@@ -4,6 +4,14 @@ export const NORMALIZED_IMAGE_TYPE = "image/webp";
 export const NORMALIZED_IMAGE_EXT = "webp";
 export const IMAGE_CONVERT_QUALITY = 0.85;
 
+// Camera photos (12-48MP) re-encode to several MB even after a format
+// conversion, since format alone doesn't reduce pixel count — that's what
+// was pushing uploads past uploadToS3's timeout on slower connections. A
+// profile photo is never displayed larger than a modal-sized image, so
+// downscaling the long edge to this before encoding costs no visible
+// quality but cuts typical file size by 5-10x.
+export const MAX_IMAGE_DIMENSION = 1600;
+
 // <img>/canvas can't decode HEIC/HEIF outside Safari, so those files never
 // reach convertImageToWebp's img.onload — they'd previously fail decode and
 // fall through to being "converted" as their original (rejected) type. iOS
@@ -59,16 +67,19 @@ export const convertImageToWebp = (file) =>
     const img = new Image();
 
     img.onload = () => {
+      const { naturalWidth: width, naturalHeight: height } = img;
+      const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(width, height));
+
       const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
+      canvas.width = Math.round(width * scale);
+      canvas.height = Math.round(height * scale);
 
       const ctx = canvas.getContext("2d");
       // Fill white first: source formats with transparency (PNG/HEIC) would
       // otherwise turn black when encoded to JPEG, which has no alpha channel.
       ctx.fillStyle = "#fff";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       const useWebp = supportsWebpEncoding();
       const outputType = useWebp ? NORMALIZED_IMAGE_TYPE : "image/jpeg";
@@ -104,8 +115,11 @@ export const convertImageToWebp = (file) =>
 // error toast on a thrown upload, so silently uploading a doomed file (the
 // old behavior) just traded a clear error for a confusing one downstream.
 export const ensureNormalizedImage = async (file) => {
+  // Already the right format doesn't mean already small — some phones shoot
+  // WebP natively at full camera resolution, so this still needs the resize
+  // pass rather than passing the original bytes straight through.
   if (file.type === NORMALIZED_IMAGE_TYPE) {
-    return file;
+    return convertImageToWebp(file);
   }
 
   if (isHeicFile(file)) {
