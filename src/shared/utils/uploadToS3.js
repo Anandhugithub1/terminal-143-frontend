@@ -92,22 +92,27 @@ function putOnce(presignedUrl, file, { onProgress, timeoutMs }) {
       return
     }
 
-    let xhr
+    const xhr = new XHRClass()
+    xhr.open('PUT', presignedUrl, true)
+    // native-bridge.js patches XMLHttpRequest.prototype in place rather than
+    // handing back a truly separate class — "fullObject" instances inherit
+    // the patched setRequestHeader, whose _headers own-property is only ever
+    // set up by the patched constructor function, not by `new fullObject()`.
+    // That mismatch throws "Cannot set properties of undefined (setting
+    // 'Content-Type')" on some Android builds — a bug in Capacitor's shim,
+    // not something fixable here.
+    //
+    // getPresignedUrl is called with this file's type, so the backend likely
+    // signs the URL against that exact Content-Type — sending the request
+    // without it risks trading this error for a 403 SignatureDoesNotMatch
+    // instead. That's still strictly better than failing every time: a
+    // signature mismatch surfaces as a normal retryable-looking upload
+    // failure via the existing status handling below, rather than crashing
+    // the whole submit before any request is even sent.
     try {
-      xhr = new XHRClass()
-      xhr.open('PUT', presignedUrl, true)
-      // native-bridge.js patches XMLHttpRequest.prototype in place rather
-      // than handing back a truly separate class — "fullObject" instances
-      // inherit the patched setRequestHeader, whose _headers own-property is
-      // only ever set up by the patched constructor function, not by `new
-      // fullObject()`. That mismatch throws "Cannot set properties of
-      // undefined (setting 'Content-Type')" here on some Android builds.
-      // Nothing on our side can fix Capacitor's shim, so fall back to fetch
-      // (which never calls setRequestHeader) instead of failing the upload.
       if (file.type) xhr.setRequestHeader('Content-Type', file.type)
     } catch {
-      putViaFetch(presignedUrl, file).then(resolve, reject)
-      return
+      // continue without the header — see above
     }
     xhr.timeout = timeoutMs
 
