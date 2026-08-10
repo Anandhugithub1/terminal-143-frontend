@@ -144,23 +144,16 @@ export default function Tags() {
 
       let photos;
       try {
-        // Sequential, not Promise.all: uploading 2-3 photos at once over
-        // CapacitorHttp's native layer has been intermittently failing with
-        // "Failed to fetch" on some Android devices — consistent with the
-        // native HTTP stack hitting a connection/concurrency limit under
-        // simultaneous large uploads rather than a real, deterministic CORS
-        // or network problem (which would fail every time, not sometimes).
-        // One at a time is slower but far more reliable here.
-        photos = [];
-        for (let i = 0; i < files.length; i++) {
-          const url = await uploadSinglePhoto(files[i]);
-          photos.push({
-            url,
-            role: i === 0 ? "profile" : "gallery",
-            slot: i,
-            order: i,
-          });
-        }
+        photos = await Promise.all(
+          files.map((file, i) =>
+            uploadSinglePhoto(file).then((url) => ({
+              url,
+              role: i === 0 ? "profile" : "gallery",
+              slot: i,
+              order: i,
+            }))
+          )
+        );
       } catch (uploadErr) {
         // Re-thrown as a tagged error (carrying the original cause) so the
         // outer catch can show the real reason the upload failed instead of
