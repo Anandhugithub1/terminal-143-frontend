@@ -138,6 +138,29 @@ function putOnce(presignedUrl, file, { onProgress, timeoutMs }) {
 // 403 SignatureDoesNotMatch on any mismatch. The browser sets Content-Length
 // from the body itself; it's a forbidden header we can't set by hand.
 //
+// A freshly-picked File on Android can wrap a content:// URI whose backing
+// stream isn't reliably readable yet the instant it's handed to us — the
+// first upload attempt fails with a raw transport-level error (xhr.onerror,
+// "Upload network error"/"Failed to fetch") even though the exact same file
+// object succeeds a few seconds later (e.g. after the user backs out and
+// reselects, which does nothing but buy time). Retrying by re-sending the
+// same File doesn't help because a content:// stream that failed a partial
+// read isn't guaranteed re-readable from the start. Reading the whole file
+// into memory once, up front, sidesteps this: once materialized, the bytes
+// no longer depend on that stream at all, so every retry sends the exact
+// same real, already-verified data.
+async function materialize(file) {
+  try {
+    const buffer = await file.arrayBuffer()
+    return new File([buffer], file.name, { type: file.type, lastModified: file.lastModified })
+  } catch (err) {
+    // Same retryable classification as a network-level failure — an unready
+    // content:// stream is exactly the transient condition retrying (with
+    // backoff) is meant to ride out.
+    throw Object.assign(err instanceof Error ? err : new Error(String(err)), { status: 0 })
+  }
+}
+
 // onProgress(fraction: 0..1) is called as the upload progresses, if provided.
 // Retries transient failures (network error, timeout, 5xx) up to MAX_RETRIES
 // times with exponential backoff; a 4xx (bad request/signature mismatch)
@@ -146,7 +169,12 @@ export async function uploadToS3(presignedUrl, file, { onProgress, timeoutMs = t
   let lastErr
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
-      await putOnce(presignedUrl, file, { onProgress, timeoutMs })
+      // Re-materialized every attempt, not just once up front: if the
+      // backing stream genuinely isn't ready yet, doing this inside the loop
+      // means a failure here also benefits from the same backoff delay
+      // between attempts as a network-level failure would.
+      const uploadFile = await materialize(file)
+      await putOnce(presignedUrl, uploadFile, { onProgress, timeoutMs })
       return
     } catch (err) {
       lastErr = err
