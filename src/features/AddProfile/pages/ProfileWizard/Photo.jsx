@@ -72,17 +72,19 @@ const Photo = () => {
     setError("");
     setUploading(true);
 
-    const clonedFile = new File([file], file.name, {
-      type: file.type,
-      lastModified: file.lastModified
-    });
-
+    // Used to re-wrap the picked file via `new File([file], ...)` here. On
+    // Android WebView, a File handed back from the native picker wraps a
+    // content:// URI whose bytes aren't guaranteed to be readable the instant
+    // onChange fires — cloning it at that moment could capture 0 bytes, which
+    // then failed to decode much later at final submit ("Could not decode
+    // image"), far from where the real problem was. The picked File object
+    // itself is safe to hold onto directly; no clone needed.
     if (isSinglePhoto) {
-      setFormData(p => ({ ...p, profilePhoto: clonedFile }));
+      setFormData(p => ({ ...p, profilePhoto: file }));
     } else {
       setFormData(p => {
         const next = [...photos];
-        next[index] = clonedFile;
+        next[index] = file;
         return { ...p, profilePhotos: next };
       });
     }

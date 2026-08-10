@@ -115,6 +115,16 @@ export const convertImageToWebp = (file) =>
 // error toast on a thrown upload, so silently uploading a doomed file (the
 // old behavior) just traded a clear error for a confusing one downstream.
 export const ensureNormalizedImage = async (file) => {
+  // On Android WebView a File handed back from the native picker (or
+  // restored from IndexedDB after the app was backgrounded) can carry
+  // correct metadata but 0 readable bytes if its backing content:// URI
+  // wasn't fully materialized — that fails opaquely much later, deep inside
+  // canvas decode ("Could not decode image"). Catching it here instead gives
+  // a message that actually points at the real problem.
+  if (file.size === 0) {
+    throw new Error("Image file is empty — please try selecting the photo again");
+  }
+
   // Already the right format doesn't mean already small — some phones shoot
   // WebP natively at full camera resolution, so this still needs the resize
   // pass rather than passing the original bytes straight through.
