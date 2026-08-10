@@ -11,13 +11,14 @@ import {
 } from '../../shared/auth/tokenStore';
 import { getErrorMessage } from '../../shared/api/getErrorMessage';
 // REGISTER
-export const apiRegister = async ({ emailPhone, password, gender, agreedToTerms }) => {
+export const apiRegister = async ({ emailPhone, password, gender, agreedToTerms, agreedToMatchingData }) => {
   const payload = {
     email: emailPhone.includes('@') ? emailPhone : '',
     phoneNumber: !emailPhone.includes('@') ? emailPhone : '',
     gender,
     password,
     agreedToTerms,
+    agreedToMatchingData,
   };
   const { data } = await client.post('/v0.2/register', payload);
   return data;

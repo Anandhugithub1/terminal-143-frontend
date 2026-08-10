@@ -33,6 +33,12 @@ const RegisterForm = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [gender, setGender] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  // Separate from agreedToTerms: gender/orientation-based matching is
+  // special-category data under GDPR Art. 9, which requires its own
+  // explicit, unbundled consent — it can't ride along on general ToS
+  // acceptance. Keep this gate distinct even though both currently block
+  // signup the same way.
+  const [agreedToMatchingData, setAgreedToMatchingData] = useState(false);
   const [localError, setLocalError] = useState("");
 
   const navigate = useNavigate();
@@ -85,8 +91,13 @@ useEffect(() => {
       return;
     }
 
+    if (!agreedToMatchingData) {
+      setLocalError(t("mustAgreeToMatchingData"));
+      return;
+    }
+
     setLocalError("");
-    mutate({ emailPhone, password, gender, agreedToTerms });
+    mutate({ emailPhone, password, gender, agreedToTerms, agreedToMatchingData });
   };
 
   if (!ready) return null;
@@ -217,6 +228,19 @@ useEffect(() => {
         </label>
       </div>
 
+      <div className="flex items-start gap-2">
+        <input
+          id="agreedToMatchingData"
+          type="checkbox"
+          checked={agreedToMatchingData}
+          onChange={(e) => setAgreedToMatchingData(e.target.checked)}
+          className="mt-1 h-4 w-4 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+        />
+        <label htmlFor="agreedToMatchingData" className="text-sm text-gray-600">
+          {t("agreeToMatchingData")}
+        </label>
+      </div>
+
       {(localError || isError) && (
         <p className="text-red-500 text-sm">
           {localError || getErrorMessage(error)}
@@ -225,7 +249,7 @@ useEffect(() => {
 
       {isSuccess && <p className="text-green-600 text-sm">{data?.message}</p>}
 
-      <Button type="submit" disabled={isPending || !agreedToTerms}>
+      <Button type="submit" disabled={isPending || !agreedToTerms || !agreedToMatchingData}>
         {isPending ? t("registering") : t("getStarted")}
       </Button>
 <div className="mt-4 text-center text-sm text-gray-500">
