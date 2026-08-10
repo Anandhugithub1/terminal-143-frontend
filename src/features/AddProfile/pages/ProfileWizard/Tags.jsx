@@ -16,6 +16,11 @@ import { useTranslation } from "react-i18next";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM", "OT"];
 
+// Marks a failure as having happened during photo upload specifically, so
+// the catch block below can show "your photo didn't upload" instead of a
+// generic error — Promise.all alone loses which step of the submit failed.
+class PhotoUploadError extends Error {}
+
 export default function Tags() {
   const { t } = useTranslation("common");
   const { formData, clearFormData } = useWizard();
@@ -106,16 +111,26 @@ export default function Tags() {
         ? [formData.profilePhoto].filter(Boolean)
         : (formData.profilePhotos || []).filter(Boolean);
 
-      const photos = await Promise.all(
-        files.map((file, i) =>
-          uploadSinglePhoto(file).then((url) => ({
-            url,
-            role: i === 0 ? "profile" : "gallery",
-            slot: i,
-            order: i,
-          }))
-        )
-      );
+      let photos;
+      try {
+        photos = await Promise.all(
+          files.map((file, i) =>
+            uploadSinglePhoto(file).then((url) => ({
+              url,
+              role: i === 0 ? "profile" : "gallery",
+              slot: i,
+              order: i,
+            }))
+          )
+        );
+      } catch (uploadErr) {
+        // Re-thrown as a tagged error so the outer catch can tell "a photo
+        // failed to upload" apart from "the profile save itself failed" —
+        // without this, both showed the same unhelpful generic toast, and
+        // the user had no way to know it was specifically their photo(s)
+        // that needed re-selecting.
+        throw new PhotoUploadError(uploadErr?.message || "Photo upload failed");
+      }
 
       // Exclude interest category keys — interests are derived from circles now
       const { interests: _i, ...restFormData } = formData;
@@ -146,7 +161,11 @@ export default function Tags() {
       // the API call itself — only toast here for failures before that (e.g.
       // photo upload), so this isn't a second, contradictory-looking toast.
       if (!completeMutation.isError) {
-        toast.error(t("wizard.tags.somethingWentWrong"));
+        toast.error(
+          err instanceof PhotoUploadError
+            ? t("wizard.tags.photoUploadFailed")
+            : t("wizard.tags.somethingWentWrong")
+        );
       }
       // Rethrown so OnboardingPage's handleComplete (which awaits this
       // function) sees the failure and stops before joining circles /

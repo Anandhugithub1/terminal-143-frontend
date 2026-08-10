@@ -5,17 +5,13 @@
     "pricing": "Pricing",
     "login": "Sign In",
     "places": "Places",
-
-     "blog": "Blog"
+    "blog": "Blog"
   },
   "cta": {
     "createProfile": "Create Free Profile",
     "viewPricing": "View Pricing"
   },
-
-
-    "healthDisclosure": "Health Disclosure",
-
+  "healthDisclosure": "Health Disclosure",
   "aboutMe": "About me",
   "locationUnknown": "Unknown",
   "languages": "Languages",
@@ -26,8 +22,6 @@
   "stdStatusPositive": "Positive",
   "stdStatusUnknown": "Prefer not to say",
   "testedOn": "Tested on",
-
-
   "aboutApp": "About Pass or Match",
   "intro": "Pass or Match is a modern dating platform designed for authentic connections across Thailand. We celebrate culture, love, and meaningful relationships in every corner of the country.",
   "missionTitle": "Our Mission",
@@ -37,8 +31,6 @@
   "globalTitle": "Thai Heart, Global Reach",
   "globalDesc": "Though rooted in Thai culture, our reach extends globally, welcoming matches across borders.",
   "rightsReserved": "All rights reserved.",
-
-
   "title": "Welcome! 👋",
   "subtitle": "Let's start with the basics",
   "fullName": "Full Name *",
@@ -64,12 +56,8 @@
   "socialChoosePlatform": "Choose platform",
   "socialUsernameOrLink": "Username or Link",
   "socialAdd": "Add",
-
-
   "locationRequired": "Please select a location",
-  
   "location": "Location",
-  
   "locationHelper": "City or area where you live",
   "typeOrSearchLocation": "Search for your city or area...",
   "useMyCurrentLocation": "Use My Current Location",
@@ -85,12 +73,10 @@
   "rangeCity": "Within city",
   "rangeRegion": "Regional",
   "rangeAnywhere": "Anywhere",
-
   "regionGate": {
     "availableIn": "Our app is available across Southeast Asia",
     "availableInDetail": "Now available in Thailand, Philippines, Indonesia, Cambodia, Vietnam, Malaysia — and more SEA countries"
   },
-
   "wizard": {
     "stepOf": "Step {{step}} of {{totalSteps}}",
     "back": "Back",
@@ -118,6 +104,12 @@
         "HTD": "Happy to Discuss"
       }
     },
+    "photo": {
+      "required": "Please add at least one photo to continue",
+      "invalidType": "Please choose a JPG, PNG, or WEBP image",
+      "tooLarge": "That image is too large — please choose one under 10MB",
+      "uploadFailed": "We couldn't process that photo. Please try a different one"
+    },
     "tags": {
       "missingName": "Name",
       "missingBio": "Bio",
@@ -129,7 +121,9 @@
       "missingPhoto": "At least one photo",
       "pleaseComplete": "Please complete: {{fields}}",
       "completionFailed": "Profile completion failed",
-      "somethingWentWrong": "Something went wrong"
+      "somethingWentWrong": "Something went wrong",
+      "photoUploadFailed": "We couldn't upload your photo. Please check your connection and try again"
     }
-  }
+  },
+  "exitConfirm": "Press back again to exit"
 }

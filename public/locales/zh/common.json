@@ -1,109 +1,111 @@
 {
-    "appName": "PassorMatch",
-    "links": {
-      "about": "关于我们",
-      "pricing": "价格",
-      "login": "登录",
-        "blog": "博客",
-      "places": "地点"
-    },
-    "cta": {
-      "createProfile": "创建免费资料",
-      "viewPricing": "查看价格"
-    },
-
-    "aboutMe": "关于我",
-    "locationUnknown": "未知",
-    "languages": "语言",
-    "interests": "兴趣",
-    "healthStatus": "健康状况",
-    "stdStatusLabel": "性病状态",
-    "stdStatusNegative": "阴性",
-    "stdStatusPositive": "阳性",
-    "stdStatusUnknown": "不愿透露",
-    "testedOn": "检测日期",
-
-    "aboutApp": "关于 PassorMatch",
-    "intro": "PassorMatch 是一个现代化的交友平台，致力于在泰国各地建立真诚的联系。我们珍视文化、爱情，以及每个角落有意义的关系。",
-    "missionTitle": "我们的使命",
-    "missionDesc": "通过有意义、相互尊重且安全的交友体验，在泰国连接人与人。",
-    "communityTitle": "社区优先",
-    "communityDesc": "我们致力打造一个友善、互相尊重的社区，让用户感到安全并被倾听。",
-    "globalTitle": "泰式初心，全球连接",
-    "globalDesc": "根植泰国文化，我们的影响力延伸至全球，欢迎跨国界的缘分相遇。",
-    "rightsReserved": "版权所有。",
-
-    "title": "欢迎！👋",
-    "subtitle": "让我们从基础开始",
-    "fullName": "全名 *",
-    "dob": "出生日期 *",
-    "dobError": "您必须年满18岁才能继续。",
-    "nameError": "全名是必填项。",
-    "preferencesTitle": "您对谁感兴趣？",
-    "preferences": {
-      "M": "男性",
-      "F": "女性",
-      "TF": "跨性别女性",
-      "TM": "跨性别男性",
-      "Ot": "其他"
-    },
-    "socialLabel": "添加社交媒体链接",
-    "socialOptional": "（可选）",
-    "continue": "继续",
-    "invalidLink": "无效的链接。必须以 https:// 开头或为用户名。",
-    "dobRequired": "请填写出生日期。",
-    "maxTwoPreferences": "最多只能选择 5 项。",
-    "socialRequired": "至少需要一个社交媒体链接。",
-    "socialPrivacyNote": "您的社交链接将保持私密，仅在配对成功时才会分享。",
-    "socialChoosePlatform": "选择平台",
-    "socialUsernameOrLink": "用户名或链接",
-    "socialAdd": "添加",
-
-    "regionGate": {
-      "availableIn": "我们的应用已覆盖东南亚地区",
-      "availableInDetail": "目前已在泰国、菲律宾、印度尼西亚、柬埔寨、越南、马来西亚等更多东南亚国家上线"
-    },
-
-    "wizard": {
-      "stepOf": "第 {{step}} 步，共 {{totalSteps}} 步",
-      "back": "上一步",
-      "next": "下一步",
-      "bio": {
-        "yourStory": "你的故事",
-        "placeholder": "我热衷于...",
-        "required": "请填写个人简介以继续",
-        "languagesKnown": "您会的语言（可选）",
-        "healthDisclosures": "健康信息披露",
-        "optional": "（可选）",
-        "selectIfShare": "如果您愿意分享，请选择",
-        "preferNotToSay": "不愿透露",
-        "removeLabel": "移除 {{label}}",
-        "multiSelectHint": "您可以选择多个选项",
-        "disclosureOptions": {
-          "SHC": "性健康状况",
-          "MHC": "心理健康状况",
-          "ADHD": "注意力缺陷多动障碍",
-          "ASD": "自闭症",
-          "LPC": "长期身体状况",
-          "SUR": "物质使用康复",
-          "AN": "无障碍需求",
-          "PNS": "不愿透露",
-          "HTD": "乐意讨论"
-        }
-      },
-      "tags": {
-        "missingName": "姓名",
-        "missingBio": "个人简介",
-        "missingDob": "出生日期",
-        "missingValidAge": "有效年龄（18岁以上）",
-        "missingPreference": "至少一项偏好设置",
-        "missingSocialLink": "至少一个社交媒体链接",
-        "missingLocation": "位置",
-        "missingPhoto": "至少一张照片",
-        "pleaseComplete": "请完善：{{fields}}",
-        "completionFailed": "资料完善失败",
-        "somethingWentWrong": "出了点问题"
+  "appName": "PassorMatch",
+  "links": {
+    "about": "关于我们",
+    "pricing": "价格",
+    "login": "登录",
+    "blog": "博客",
+    "places": "地点"
+  },
+  "cta": {
+    "createProfile": "创建免费资料",
+    "viewPricing": "查看价格"
+  },
+  "aboutMe": "关于我",
+  "locationUnknown": "未知",
+  "languages": "语言",
+  "interests": "兴趣",
+  "healthStatus": "健康状况",
+  "stdStatusLabel": "性病状态",
+  "stdStatusNegative": "阴性",
+  "stdStatusPositive": "阳性",
+  "stdStatusUnknown": "不愿透露",
+  "testedOn": "检测日期",
+  "aboutApp": "关于 PassorMatch",
+  "intro": "PassorMatch 是一个现代化的交友平台，致力于在泰国各地建立真诚的联系。我们珍视文化、爱情，以及每个角落有意义的关系。",
+  "missionTitle": "我们的使命",
+  "missionDesc": "通过有意义、相互尊重且安全的交友体验，在泰国连接人与人。",
+  "communityTitle": "社区优先",
+  "communityDesc": "我们致力打造一个友善、互相尊重的社区，让用户感到安全并被倾听。",
+  "globalTitle": "泰式初心，全球连接",
+  "globalDesc": "根植泰国文化，我们的影响力延伸至全球，欢迎跨国界的缘分相遇。",
+  "rightsReserved": "版权所有。",
+  "title": "欢迎！👋",
+  "subtitle": "让我们从基础开始",
+  "fullName": "全名 *",
+  "dob": "出生日期 *",
+  "dobError": "您必须年满18岁才能继续。",
+  "nameError": "全名是必填项。",
+  "preferencesTitle": "您对谁感兴趣？",
+  "preferences": {
+    "M": "男性",
+    "F": "女性",
+    "TF": "跨性别女性",
+    "TM": "跨性别男性",
+    "Ot": "其他"
+  },
+  "socialLabel": "添加社交媒体链接",
+  "socialOptional": "（可选）",
+  "continue": "继续",
+  "invalidLink": "无效的链接。必须以 https:// 开头或为用户名。",
+  "dobRequired": "请填写出生日期。",
+  "maxTwoPreferences": "最多只能选择 5 项。",
+  "socialRequired": "至少需要一个社交媒体链接。",
+  "socialPrivacyNote": "您的社交链接将保持私密，仅在配对成功时才会分享。",
+  "socialChoosePlatform": "选择平台",
+  "socialUsernameOrLink": "用户名或链接",
+  "socialAdd": "添加",
+  "regionGate": {
+    "availableIn": "我们的应用已覆盖东南亚地区",
+    "availableInDetail": "目前已在泰国、菲律宾、印度尼西亚、柬埔寨、越南、马来西亚等更多东南亚国家上线"
+  },
+  "wizard": {
+    "stepOf": "第 {{step}} 步，共 {{totalSteps}} 步",
+    "back": "上一步",
+    "next": "下一步",
+    "bio": {
+      "yourStory": "你的故事",
+      "placeholder": "我热衷于...",
+      "required": "请填写个人简介以继续",
+      "languagesKnown": "您会的语言（可选）",
+      "healthDisclosures": "健康信息披露",
+      "optional": "（可选）",
+      "selectIfShare": "如果您愿意分享，请选择",
+      "preferNotToSay": "不愿透露",
+      "removeLabel": "移除 {{label}}",
+      "multiSelectHint": "您可以选择多个选项",
+      "disclosureOptions": {
+        "SHC": "性健康状况",
+        "MHC": "心理健康状况",
+        "ADHD": "注意力缺陷多动障碍",
+        "ASD": "自闭症",
+        "LPC": "长期身体状况",
+        "SUR": "物质使用康复",
+        "AN": "无障碍需求",
+        "PNS": "不愿透露",
+        "HTD": "乐意讨论"
       }
+    },
+    "photo": {
+      "required": "请至少添加一张照片以继续",
+      "invalidType": "请选择 JPG、PNG 或 WEBP 格式的图片",
+      "tooLarge": "图片太大，请选择小于 10MB 的图片",
+      "uploadFailed": "无法处理该照片，请尝试其他照片"
+    },
+    "tags": {
+      "missingName": "姓名",
+      "missingBio": "个人简介",
+      "missingDob": "出生日期",
+      "missingValidAge": "有效年龄（18岁以上）",
+      "missingPreference": "至少一项偏好设置",
+      "missingSocialLink": "至少一个社交媒体链接",
+      "missingLocation": "位置",
+      "photoUploadFailed": "无法上传您的照片。请检查网络连接后重试",
+      "missingPhoto": "至少一张照片",
+      "pleaseComplete": "请完善：{{fields}}",
+      "completionFailed": "资料完善失败",
+      "somethingWentWrong": "出了点问题"
     }
-  }
-  
+  },
+  "exitConfirm": "再按一次返回键退出"
+}

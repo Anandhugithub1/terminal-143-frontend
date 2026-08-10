@@ -7,6 +7,8 @@ import { Button } from "../../../../shared/Button";
 import { useTranslation } from "react-i18next";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM", "OT"];
+const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 const Photo = () => {
   const { t } = useTranslation("common");
@@ -14,6 +16,7 @@ const Photo = () => {
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
   const gender = localStorage.getItem("gender");
   const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender);
@@ -27,8 +30,11 @@ const Photo = () => {
     return arr;
   }, [formData, isSinglePhoto, maxSlots]);
 
+  const hasAnyPhoto = photos.some(Boolean);
+
   const handleSlotChange = (index) => {
     if (uploading) return;
+    setError("");
     inputRef.current.dataset.index = index;
     inputRef.current.click();
   };
@@ -43,13 +49,27 @@ const Photo = () => {
     }
   };
 
+  const isAcceptedType = (file) =>
+    ACCEPTED_TYPES.includes(file.type) || /\.hei[cf]$/i.test(file.name || "");
+
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-
     const index = Number(e.target.dataset.index) || 0;
     e.target.value = "";
 
+    if (!file) return;
+
+    if (!isAcceptedType(file)) {
+      setError(t("wizard.photo.invalidType"));
+      return;
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      setError(t("wizard.photo.tooLarge"));
+      return;
+    }
+
+    setError("");
     setUploading(true);
 
     const clonedFile = new File([file], file.name, {
@@ -68,6 +88,15 @@ const Photo = () => {
     }
 
     setUploading(false);
+  };
+
+  const handleNext = () => {
+    if (!hasAnyPhoto) {
+      setError(t("wizard.photo.required"));
+      return;
+    }
+    setError("");
+    navigate("/complete/tags");
   };
 
   return (
@@ -90,6 +119,11 @@ const Photo = () => {
   onChange={handlePhotoUpload}
 />
 
+      {error && (
+        <div className="mt-4 rounded-xl bg-red-50 border border-red-200 px-4 py-3">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
 
       <div className="mt-8 flex gap-4">
         <Button
@@ -104,7 +138,7 @@ const Photo = () => {
         </Button>
 
         <Button
-          onClick={() => navigate("/complete/tags")}
+          onClick={handleNext}
           className="flex-1 py-3 transition-all hover:bg-pink-600 active:scale-95"
         >
           {t("wizard.next")}

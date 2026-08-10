@@ -1,40 +1,36 @@
 {
-    "appName": "Pass or Match",
-    "links": {
-      "about": "Tentang Kami",
-      "pricing": "Harga",
-      "login": "Log Masuk",
-        "blog": "Blog",
-      "places": "Tempat"
-    },
-    "cta": {
-      "createProfile": "Cipta Profil Percuma",
-      "viewPricing": "Lihat Harga"
-    },
-
-    "aboutMe": "Tentang saya",
-    "locationUnknown": "Tidak diketahui",
-    "languages": "Bahasa",
-    "interests": "Minat",
-    "healthStatus": "Status Kesihatan",
-    "stdStatusLabel": "Status STD",
-    "stdStatusNegative": "Negatif",
-    "stdStatusPositive": "Positif",
-    "stdStatusUnknown": "Tidak mahu menyatakan",
-    "testedOn": "Tarikh diuji",
-
-    "aboutApp": "Tentang PassorMatch",
-    "intro": "PassorMatch ialah platform temu janji moden yang direka untuk hubungan sebenar di seluruh Thailand. Kami meraikan budaya, cinta, dan hubungan bermakna di setiap pelosok negara.",
-    "missionTitle": "Misi Kami",
-    "missionDesc": "Menghubungkan orang ramai melalui pengalaman temu janji yang bermakna, penuh hormat, dan selamat di Thailand.",
-    "communityTitle": "Komuniti Diutamakan",
-    "communityDesc": "Kami memupuk komuniti yang mesra dan penuh hormat di mana pengguna berasa selamat dan didengari.",
-    "globalTitle": "Hati Thai, Capaian Global",
-    "globalDesc": "Walaupun berakar umbi dalam budaya Thai, capaian kami meluas ke seluruh dunia, menyambut padanan merentasi sempadan.",
-    "rightsReserved": "Hak cipta terpelihara.",
-
-
-    "title": "Selamat datang! 👋",
+  "appName": "Pass or Match",
+  "links": {
+    "about": "Tentang Kami",
+    "pricing": "Harga",
+    "login": "Log Masuk",
+    "blog": "Blog",
+    "places": "Tempat"
+  },
+  "cta": {
+    "createProfile": "Cipta Profil Percuma",
+    "viewPricing": "Lihat Harga"
+  },
+  "aboutMe": "Tentang saya",
+  "locationUnknown": "Tidak diketahui",
+  "languages": "Bahasa",
+  "interests": "Minat",
+  "healthStatus": "Status Kesihatan",
+  "stdStatusLabel": "Status STD",
+  "stdStatusNegative": "Negatif",
+  "stdStatusPositive": "Positif",
+  "stdStatusUnknown": "Tidak mahu menyatakan",
+  "testedOn": "Tarikh diuji",
+  "aboutApp": "Tentang PassorMatch",
+  "intro": "PassorMatch ialah platform temu janji moden yang direka untuk hubungan sebenar di seluruh Thailand. Kami meraikan budaya, cinta, dan hubungan bermakna di setiap pelosok negara.",
+  "missionTitle": "Misi Kami",
+  "missionDesc": "Menghubungkan orang ramai melalui pengalaman temu janji yang bermakna, penuh hormat, dan selamat di Thailand.",
+  "communityTitle": "Komuniti Diutamakan",
+  "communityDesc": "Kami memupuk komuniti yang mesra dan penuh hormat di mana pengguna berasa selamat dan didengari.",
+  "globalTitle": "Hati Thai, Capaian Global",
+  "globalDesc": "Walaupun berakar umbi dalam budaya Thai, capaian kami meluas ke seluruh dunia, menyambut padanan merentasi sempadan.",
+  "rightsReserved": "Hak cipta terpelihara.",
+  "title": "Selamat datang! 👋",
   "subtitle": "Mari mulakan dengan asasnya",
   "fullName": "Nama Penuh *",
   "dob": "Tarikh Lahir *",
@@ -59,12 +55,10 @@
   "socialChoosePlatform": "Pilih platform",
   "socialUsernameOrLink": "Nama pengguna atau Pautan",
   "socialAdd": "Tambah",
-
   "regionGate": {
     "availableIn": "Aplikasi kami tersedia di seluruh Asia Tenggara",
     "availableInDetail": "Kini tersedia di Thailand, Filipina, Indonesia, Kemboja, Vietnam, Malaysia — dan lebih banyak negara Asia Tenggara"
   },
-
   "wizard": {
     "stepOf": "Langkah {{step}} daripada {{totalSteps}}",
     "back": "Kembali",
@@ -92,6 +86,12 @@
         "HTD": "Sedia Berbincang"
       }
     },
+    "photo": {
+      "required": "Sila tambah sekurang-kurangnya satu foto untuk teruskan",
+      "invalidType": "Sila pilih imej JPG, PNG, atau WEBP",
+      "tooLarge": "Imej itu terlalu besar — sila pilih imej di bawah 10MB",
+      "uploadFailed": "Kami tidak dapat memproses foto itu. Sila cuba foto lain"
+    },
     "tags": {
       "missingName": "Nama",
       "missingBio": "Bio",
@@ -100,11 +100,12 @@
       "missingPreference": "Sekurang-kurangnya satu keutamaan",
       "missingSocialLink": "Sekurang-kurangnya satu pautan sosial",
       "missingLocation": "Lokasi",
+      "photoUploadFailed": "Kami tidak dapat memuat naik foto anda. Sila semak sambungan anda dan cuba lagi",
       "missingPhoto": "Sekurang-kurangnya satu gambar",
       "pleaseComplete": "Sila lengkapkan: {{fields}}",
       "completionFailed": "Gagal melengkapkan profil",
       "somethingWentWrong": "Sesuatu tidak kena"
     }
-  }
-  }
-  
+  },
+  "exitConfirm": "Tekan kembali sekali lagi untuk keluar"
+}
