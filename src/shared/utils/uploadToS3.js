@@ -62,6 +62,20 @@ function isRetryableStatus(status) {
   return status === 0 || status >= 500
 }
 
+// Plain-fetch fallback used both when there's no XHR class at all and when
+// the XHR path throws before it can send (see putOnce) — no progress
+// reporting, but it never touches XMLHttpRequest at all so it can't hit the
+// native-bridge bug below.
+function putViaFetch(presignedUrl, file) {
+  return webFetch(presignedUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file })
+    .then((res) => {
+      if (!res.ok) throw Object.assign(new Error(`Upload failed: ${res.status}`), { status: res.status })
+    })
+    .catch((err) => {
+      throw Object.assign(err, { status: err.status ?? 0 })
+    })
+}
+
 // Single attempt via the unpatched XHR — this is what gives us real upload
 // progress (fetch has no request-body progress API at all) and a hard
 // timeout (fetch's AbortController path is one more thing that could itself
@@ -74,15 +88,27 @@ function putOnce(presignedUrl, file, { onProgress, timeoutMs }) {
     if (!XHRClass) {
       // No window at all (shouldn't happen in this app) — fall back to fetch
       // with no progress reporting rather than throwing.
-      webFetch(presignedUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file })
-        .then((res) => (res.ok ? resolve() : reject(Object.assign(new Error(`Upload failed: ${res.status}`), { status: res.status }))))
-        .catch((err) => reject(Object.assign(err, { status: 0 })))
+      putViaFetch(presignedUrl, file).then(resolve, reject)
       return
     }
 
-    const xhr = new XHRClass()
-    xhr.open('PUT', presignedUrl, true)
-    xhr.setRequestHeader('Content-Type', file.type)
+    let xhr
+    try {
+      xhr = new XHRClass()
+      xhr.open('PUT', presignedUrl, true)
+      // native-bridge.js patches XMLHttpRequest.prototype in place rather
+      // than handing back a truly separate class — "fullObject" instances
+      // inherit the patched setRequestHeader, whose _headers own-property is
+      // only ever set up by the patched constructor function, not by `new
+      // fullObject()`. That mismatch throws "Cannot set properties of
+      // undefined (setting 'Content-Type')" here on some Android builds.
+      // Nothing on our side can fix Capacitor's shim, so fall back to fetch
+      // (which never calls setRequestHeader) instead of failing the upload.
+      if (file.type) xhr.setRequestHeader('Content-Type', file.type)
+    } catch {
+      putViaFetch(presignedUrl, file).then(resolve, reject)
+      return
+    }
     xhr.timeout = timeoutMs
 
     if (xhr.upload && onProgress) {
