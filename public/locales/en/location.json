@@ -21,6 +21,7 @@
   "locationMinLength": "Enter at least 2 characters",
   "locationSearchFailed": "Search failed. Please try again.",
   "detecting": "Detecting...",
+  "searching": "Searching...",
   "preferencesRequired": "Please select at least one preference.",
   "distanceRangeTitle": "Preferred Distance Range",
   "distanceRangeHelp": "How far are you willing to connect with others?",

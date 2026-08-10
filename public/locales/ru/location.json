@@ -21,6 +21,7 @@
   "locationMinLength": "Введите не менее 2 символов",
   "locationSearchFailed": "Поиск не удался. Попробуйте снова.",
   "detecting": "Определение...",
+  "searching": "Поиск...",
   "preferencesRequired": "Пожалуйста, выберите хотя бы одно предпочтение.",
   "distanceRangeTitle": "Предпочитаемый диапазон расстояния",
   "distanceRangeHelp": "На каком расстоянии вы готовы общаться с другими?",

@@ -21,6 +21,7 @@
   "locationMinLength": "กรอกอย่างน้อย 2 ตัวอักษร",
   "locationSearchFailed": "การค้นหาล้มเหลว โปรดลองอีกครั้ง",
   "detecting": "กำลังตรวจจับ...",
+  "searching": "กำลังค้นหา...",
   "preferencesRequired": "โปรดเลือกอย่างน้อยหนึ่งตัวเลือก",
   "distanceRangeTitle": "ระยะทางที่ต้องการ",
   "distanceRangeHelp": "คุณยินดีที่จะเชื่อมต่อกับผู้อื่นในระยะทางเท่าใด?",

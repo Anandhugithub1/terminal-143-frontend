@@ -232,23 +232,31 @@ const handleAutoDetect = useCallback(async () => {
           className="relative flex-1"
         >
           <div className="relative">
-            <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            {loading ? (
+              <Spinner size={18} className="absolute left-3 top-1/2 -translate-y-1/2" />
+            ) : (
+              <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            )}
 
             <ComboboxInput
               ref={inputRef}
-              className="w-full pl-11 pr-16 py-4 rounded-xl bg-gray-50
-  border border-gray-300
+              className={`w-full pl-11 ${loading ? "pr-24" : "pr-16"} py-4 rounded-xl bg-gray-50
+  border transition-colors
   focus:outline-none
   focus:border-transparent
-  focus:ring-2 focus:ring-pink-500"
+  focus:ring-2 focus:ring-pink-500
+  ${loading ? "border-pink-300 ring-2 ring-pink-100" : "border-gray-300"}`}
               displayValue={displayValue}
               onChange={(e) => handleSearch(e.target.value)}
               placeholder={t("typeOrSearchLocation") || "Search location"}
+              aria-busy={loading}
             />
 
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
               {loading ? (
-                <Spinner size={16} />
+                <span className="flex items-center gap-1.5 text-xs font-medium text-pink-600 animate-pulse">
+                  {t("searching") || "Searching..."}
+                </span>
               ) : (
                 query && (
                   <IconButton onClick={handleClear}>

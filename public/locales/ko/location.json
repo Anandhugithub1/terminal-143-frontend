@@ -21,6 +21,7 @@
   "locationMinLength": "2자 이상 입력해 주세요",
   "locationSearchFailed": "검색에 실패했습니다. 다시 시도해 주세요.",
   "detecting": "감지 중...",
+  "searching": "검색 중...",
   "preferencesRequired": "최소 하나 이상의 선호도를 선택해 주세요.",
   "distanceRangeTitle": "선호하는 거리 범위",
   "distanceRangeHelp": "얼마나 먼 거리까지 연결하고 싶으신가요?",

@@ -21,6 +21,7 @@
   "locationMinLength": "请至少输入 2 个字符",
   "locationSearchFailed": "搜索失败，请重试。",
   "detecting": "正在检测...",
+  "searching": "搜索中...",
   "preferencesRequired": "请至少选择一项偏好。",
   "distanceRangeTitle": "偏好的距离范围",
   "distanceRangeHelp": "您愿意与多远的人建立联系？",
