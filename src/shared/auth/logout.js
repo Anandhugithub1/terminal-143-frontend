@@ -9,6 +9,7 @@ import { clearSession } from './tokenStore';
 import { queryClient } from '../lib/client';
 import { CapacitorCookies } from '@capacitor/core';
 import { router } from '../../main.jsx';
+import { clearWizardPhotos } from '../../features/AddProfile/contexts/wizardPhotoStore';
 
 // Order mirrors the original Settings.jsx logoutMutation:
 //   1. signOut() network call (best-effort — see below)
@@ -17,7 +18,8 @@ import { router } from '../../main.jsx';
 //   4. clear the native cookie jar (best-effort)
 //   5. clear the token store (access/id/refresh tokens + session meta)
 //   6. clear the React Query cache
-//   7. navigate to /login
+//   7. clear IndexedDB-persisted wizard photos (best-effort)
+//   8. navigate to /login
 //
 // Unlike the original, step 1's failure no longer blocks steps 2-7: signOut()
 // already clears the token store internally on both success and failure (see
@@ -58,6 +60,17 @@ export const performLogout = async () => {
   // session's cached queries (e.g. useMyProfile's ["my-profile"] key carries
   // no user id) until they individually go stale.
   queryClient.clear();
+
+  // localStorage.clear() above doesn't touch IndexedDB — an in-progress
+  // profile wizard's picked photos (File objects can't live in
+  // localStorage/sessionStorage, see wizardPhotoStore.js) would otherwise
+  // survive logout and get silently restored into the next account's wizard
+  // session on this device.
+  try {
+    await clearWizardPhotos();
+  } catch (err) {
+    console.warn('Failed to clear wizard photos on logout', err);
+  }
 
   // router.navigate keeps this an in-SPA transition (matches the existing
   // router.navigate(url) usage for push-notification taps in main.jsx)

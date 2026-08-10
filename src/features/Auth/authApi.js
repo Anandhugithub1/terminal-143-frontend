@@ -10,6 +10,8 @@ import {
   markSessionActive,
 } from '../../shared/auth/tokenStore';
 import { getErrorMessage } from '../../shared/api/getErrorMessage';
+import { queryClient } from '../../shared/lib/client';
+import { clearWizardPhotos } from '../AddProfile/contexts/wizardPhotoStore';
 // REGISTER
 export const apiRegister = async ({ emailPhone, password, gender, agreedToTerms, agreedToMatchingData }) => {
   const payload = {
@@ -33,6 +35,18 @@ export const apiLogin = async ({ emailPhone, password }) => {
   const { data } = await client.post('/v0.2/login', payload, {
     withCredentials: true,
     headers: isNativeClient() ? { 'X-Client-Type': 'capacitor' } : undefined,
+  });
+
+  // A prior session on this device (killed without hitting logout, or a
+  // different account signing in right after another) can leave React Query
+  // cache and IndexedDB-persisted wizard photos behind — without this, this
+  // new login would inherit stale data scoped to a completely different
+  // user until each cache entry individually goes stale. performLogout()
+  // clears the same two things on the way out; this covers the login path
+  // for sessions that never went through that.
+  queryClient.clear();
+  clearWizardPhotos().catch((err) => {
+    console.warn('Failed to clear wizard photos on login', err);
   });
 
   if (isNativeClient() && data.tokens) {
