@@ -100,7 +100,23 @@ export default function Tags() {
   });
 
   const uploadSinglePhoto = async (file) => {
-    const uploadFile = await ensureNormalizedImage(file);
+    let uploadFile;
+    try {
+      uploadFile = await ensureNormalizedImage(file);
+    } catch (conversionErr) {
+      // Some Android WebView + device combinations fail to canvas-decode an
+      // otherwise-valid photo (large bitmap decode limits, codec quirks) —
+      // the picked file itself is fine, only the WebP re-encode step isn't
+      // working on this device. Uploading the original bytes as-is is far
+      // better than blocking profile completion entirely over a
+      // conversion step that was only ever a size/format optimization.
+      if (file.size > 0 && file.type?.startsWith("image")) {
+        uploadFile = file;
+      } else {
+        throw conversionErr;
+      }
+    }
+
     const { presignedUrl, publicUrl } = await getPresignedUrl({
       fileType: uploadFile.type,
     });
