@@ -24,7 +24,7 @@ export default function Privacy() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-sm p-8 border-l-4 border-[#D2449D]">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-              <p className="text-gray-500 text-sm mb-8">Last updated: August 4, 2026</p>
+              <p className="text-gray-500 text-sm mb-8">Last updated: August 10, 2026</p>
 
               <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
 
@@ -155,6 +155,9 @@ export default function Privacy() {
                     <li>Opt-out of marketing communications</li>
                     <li>Data portability</li>
                   </ul>
+                  <p className="mt-3">
+                    <strong>Withdrawing your consent to gender-based matching:</strong> At signup, you separately agree to let us use your gender to show you and other users relevant matches. Because gender-based matching is core to how the Service works, the way to withdraw this consent is to delete your account in Settings — this immediately stops all matching and removes your profile from other users' view. We do not currently offer a way to keep an active account while opting out of matching alone.
+                  </p>
 
                   <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">Thailand — Personal Data Protection Act (PDPA)</h3>
                   <p>
