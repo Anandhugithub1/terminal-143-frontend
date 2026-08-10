@@ -11,15 +11,30 @@ import {
 } from "../../../UserProfile/api/profile";
 import { ensureNormalizedImage } from "../../../../utils/imageConversion";
 import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
+import { getErrorMessage } from "../../../../shared/api/getErrorMessage";
 import OnboardingPage from "../../../Circles/pages/OnboardingPage";
 import { useTranslation } from "react-i18next";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM", "OT"];
 
 // Marks a failure as having happened during photo upload specifically, so
-// the catch block below can show "your photo didn't upload" instead of a
-// generic error — Promise.all alone loses which step of the submit failed.
-class PhotoUploadError extends Error {}
+// the catch block below can show the real reason (network error, S3
+// rejection, unsupported file, etc.) instead of the generic completion
+// error — Promise.all alone loses which step of the submit failed.
+class PhotoUploadError extends Error {
+  constructor(cause) {
+    super(cause?.message || "Photo upload failed");
+    this.cause = cause;
+  }
+}
+
+// getErrorMessage only understands axios-shaped errors (err.response); the
+// upload pipeline mostly throws plain Errors with their own useful message
+// (uploadToS3: "Upload failed: 403", "Upload timed out"; ensureNormalizedImage:
+// "Unsupported file type") — those already say exactly what went wrong, so
+// show them as-is instead of masking them behind a generic string.
+const photoErrorMessage = (cause) =>
+  cause?.response ? getErrorMessage(cause, "photoUploadFailed") : cause?.message || "Photo upload failed";
 
 export default function Tags() {
   const { t } = useTranslation("common");
@@ -124,12 +139,10 @@ export default function Tags() {
           )
         );
       } catch (uploadErr) {
-        // Re-thrown as a tagged error so the outer catch can tell "a photo
-        // failed to upload" apart from "the profile save itself failed" —
-        // without this, both showed the same unhelpful generic toast, and
-        // the user had no way to know it was specifically their photo(s)
-        // that needed re-selecting.
-        throw new PhotoUploadError(uploadErr?.message || "Photo upload failed");
+        // Re-thrown as a tagged error (carrying the original cause) so the
+        // outer catch can show the real reason the upload failed instead of
+        // a generic completion-failed toast.
+        throw new PhotoUploadError(uploadErr);
       }
 
       // Exclude interest category keys — interests are derived from circles now
@@ -163,7 +176,7 @@ export default function Tags() {
       if (!completeMutation.isError) {
         toast.error(
           err instanceof PhotoUploadError
-            ? t("wizard.tags.photoUploadFailed")
+            ? photoErrorMessage(err.cause)
             : t("wizard.tags.somethingWentWrong")
         );
       }
