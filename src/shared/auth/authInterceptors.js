@@ -19,8 +19,14 @@ import {
 // CapacitorHttp patches XMLHttpRequest, and axios's AxiosHeaders wrapper does
 // not always survive that round trip — assigning through .set() when it exists
 // keeps this working whether headers arrive as an instance or a plain object.
+// axios-retry re-dispatches the request on retry, and config.headers has been
+// observed to come back undefined on that second pass under CapacitorHttp
+// (rather than the AxiosHeaders instance or plain object seen on the first
+// attempt) — guard here too, not just at the call site, since this is the
+// line that actually dereferences it.
 const setHeader = (config, name, value) => {
-  if (typeof config.headers?.set === 'function') config.headers.set(name, value);
+  config.headers = config.headers || {};
+  if (typeof config.headers.set === 'function') config.headers.set(name, value);
   else config.headers[name] = value;
 };
 
