@@ -13,6 +13,14 @@ const MAX_RECONNECT_DELAY_MS = 30000;
 const BASE_RECONNECT_DELAY_MS = 1000;
 // Backgrounding/tab-switch: close after this long hidden, reconnect on return.
 const HIDDEN_CLOSE_DELAY_MS = 2 * 60 * 1000;
+// A WebSocket that never fires onopen OR onclose (a stalled TCP handshake, a
+// proxy silently dropping the upgrade) leaves `connecting` stuck true forever
+// — every later connect() call (from _scheduleReconnect, _resume, a queued
+// send's safety net) then hits the `if (this.connecting) return` guard and
+// does nothing, so the UI shows "Reconnecting…" with no actual retry ever
+// happening again. This bounds how long a single attempt can sit unresolved
+// before it's torn down and retried.
+const CONNECT_ATTEMPT_TIMEOUT_MS = 10000;
 
 export const SocketState = {
   IDLE: "idle",
@@ -56,6 +64,7 @@ class SocketManager {
     this.sendQueue = [];
     this.heartbeatTimer = null;
     this.reconnectTimer = null;
+    this.connectTimeoutTimer = null;
     this.reconnectAttempts = 0;
     this.explicitClose = false;
     this.refCount = 0;
@@ -119,9 +128,23 @@ class SocketManager {
     this.ws = new WebSocket(`${WS_URL}?ticket=${encodeURIComponent(ticket)}`);
     let openedAt = null;
 
+    // If neither onopen nor onclose ever fires for this attempt (a stalled
+    // handshake, a proxy dropping the upgrade silently), force it closed so
+    // `connecting` doesn't stay stuck true forever — see the constant's
+    // comment. ws.close() on a CONNECTING socket still fires onclose per the
+    // WebSocket spec, which is what actually clears `connecting` and
+    // schedules the next retry; this is just what breaks a hang open.
+    this._clearConnectTimeout();
+    this.connectTimeoutTimer = setTimeout(() => {
+      socketTrace("connect-attempt-timeout", this);
+      this.connectTimeoutTimer = null;
+      if (this.ws) this.ws.close();
+    }, CONNECT_ATTEMPT_TIMEOUT_MS);
+
     this.ws.onopen = () => {
       openedAt = Date.now();
       socketTrace("onopen", this);
+      this._clearConnectTimeout();
       this.connecting = false;
       this.reconnectAttempts = 0;
       this._setState(SocketState.OPEN);
@@ -146,6 +169,7 @@ class SocketManager {
         wasClean: event?.wasClean ?? null,
         openedForMs: openedAt ? Date.now() - openedAt : null,
       });
+      this._clearConnectTimeout();
       this.connecting = false;
       this._stopHeartbeat();
       this._setState(SocketState.CLOSED);
@@ -210,6 +234,13 @@ class SocketManager {
     if (this.hiddenTimer) {
       clearTimeout(this.hiddenTimer);
       this.hiddenTimer = null;
+    }
+  }
+
+  _clearConnectTimeout() {
+    if (this.connectTimeoutTimer) {
+      clearTimeout(this.connectTimeoutTimer);
+      this.connectTimeoutTimer = null;
     }
   }
 
@@ -358,6 +389,7 @@ class SocketManager {
     // message becomes "Not sent", so the trace needs to name the caller.
     socketTrace("teardown", this, { caller: new Error().stack?.split("\n")[2]?.trim() ?? null });
     this._stopHeartbeat();
+    this._clearConnectTimeout();
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
