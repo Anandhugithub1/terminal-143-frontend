@@ -14,3 +14,45 @@ circleId =>
   api.post(
     `${BASE}/${circleId}/leave`
   );
+
+// Private circles only — joinCircle 403s on these; the caller lands in a
+// pending state instead, resolved by a moderator via acceptRequest/rejectRequest.
+export const requestJoinCircle =
+(circleId, message = '') =>
+  api.post(
+    `${BASE}/${circleId}/requests`,
+    { message }
+  );
+
+// Owner/moderator only — backend 403s anyone else.
+export const listCircleRequests =
+circleId =>
+  api.get(
+    `${BASE}/${circleId}/requests`
+  );
+
+export const acceptCircleRequest =
+(circleId, userId) =>
+  api.post(
+    `${BASE}/${circleId}/requests/${userId}/accept`
+  );
+
+export const rejectCircleRequest =
+(circleId, userId) =>
+  api.post(
+    `${BASE}/${circleId}/requests/${userId}/reject`
+  );
+
+export const removeCircleMember =
+(circleId, userId) =>
+  api.delete(
+    `${BASE}/${circleId}/members/${userId}`
+  );
+
+// role must be 'moderator' or 'member' — owner-only server-side.
+export const setCircleMemberRole =
+(circleId, userId, role) =>
+  api.patch(
+    `${BASE}/${circleId}/members/${userId}/role`,
+    { role }
+  );

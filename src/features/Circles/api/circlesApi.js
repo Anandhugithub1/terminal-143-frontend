@@ -31,6 +31,13 @@ export const updateCircle =
     payload
   );
 
+// Owner/moderator only — backend 403s anyone else, not just a hidden UI.
+export const getCircleStats =
+circleId =>
+  api.get(
+    `${BASE}${circleId}/stats`
+  );
+
 // Prefix search over circle names, served from the Redis index (never scans
 // DynamoDB). Returns { query, count, circles, nextOffset } — page by echoing
 // nextOffset back as `offset`.

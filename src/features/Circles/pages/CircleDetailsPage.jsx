@@ -3,7 +3,9 @@ import {
   Users,
   Calendar,
   Image,
+  Lock,
   MessageSquare,
+  ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
 import CircleChatThread from "../components/chat/CircleChatThread";
@@ -19,8 +21,9 @@ import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import ConfirmDialog from "../components/common/ConfirmDialog";
 import { useCircle, useCircles } from "../hooks/useCircles";
-import { useJoinCircle, useLeaveCircle } from "../hooks/useMembership";
+import { useJoinCircle, useLeaveCircle, useRequestJoinCircle } from "../hooks/useMembership";
 import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
+import { useCircleMembers } from "../api/circleChatApi";
 import { getPost } from "../api/postsApi";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
@@ -30,9 +33,12 @@ import { queryKeys } from "../queries/queryKeys";
 import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
+import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
 import EmptyState from "../../../shared/components/EmptyState";
 import { toast } from "sonner";
+
+const MODERATOR_ROLES = ["owner", "moderator"];
 
 export default function CircleDetailsPage() {
   const { t } = useTranslation("circles");
@@ -48,6 +54,8 @@ export default function CircleDetailsPage() {
   const [reportPost, setReportPost] = useState(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
+  const [moderateConfirm, setModerateConfirm] = useState(null);
+  const [requestMessage, setRequestMessage] = useState("");
 
   const { previews: circlePreviews } = useCircleChatPreviews();
   const chatUnreadCount = circlePreviews[circleId]?.unreadCount || 0;
@@ -63,6 +71,7 @@ export default function CircleDetailsPage() {
   const { send: sendMatchRequest } = useSendMatchRequest();
   const { mutate: joinCircle, isPending: isJoining } = useJoinCircle();
   const { mutate: leaveCircle, isPending: isLeaving } = useLeaveCircle();
+  const { mutate: requestJoinCircle, isPending: isRequesting } = useRequestJoinCircle();
   const { mutate: reportUser } = useReportUser();
 
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
@@ -75,6 +84,20 @@ export default function CircleDetailsPage() {
   const posts = (postsData?.items || []).filter((p) => p.status !== "deleted");
 
   const isOwner = !!myId && myId === data?.ownerId;
+  const isPrivate = data?.visibility === "private";
+
+  // Membership roster only matters once we're actually a member (chat-service
+  // 403s the whole endpoint otherwise) — role drives both the "Manage" entry
+  // point and every post's per-card moderation affordance below.
+  const { byUserId: membersByUserId } = useCircleMembers(isJoined ? circleId : null);
+  const myRole = isOwner ? "owner" : membersByUserId.get(myId)?.role ?? null;
+  const canModerate = MODERATOR_ROLES.includes(myRole);
+
+  // Tracks a request already sent this session so the CTA flips to "pending"
+  // without waiting on a dedicated GET — the backend has no "my request
+  // status" endpoint, and re-deriving it from useCircleRequests would need
+  // moderator role the requester doesn't have.
+  const [justRequested, setJustRequested] = useState(false);
 
   if (isLoading && !data) {
     return <CircleHeaderSkeleton />;
@@ -108,6 +131,26 @@ export default function CircleDetailsPage() {
         toast.error(t("circleDetails.joinFailedToast"));
       },
     });
+  };
+
+  const handleRequestJoin = () => {
+    requestJoinCircle(
+      { circleId, message: requestMessage.trim() },
+      {
+        onSuccess: (res) => {
+          if (res?.data?.alreadyRequested) {
+            toast.info(t("circleDetails.requestAlreadyPendingToast"));
+          } else {
+            toast.success(t("circleDetails.requestSentToast", { name: data.name }));
+          }
+          setJustRequested(true);
+          setRequestMessage("");
+        },
+        onError: (err) => {
+          toast.error(getErrorMessage(err, "circleRequestFailed"));
+        },
+      }
+    );
   };
 
   const handleLeaveCircle = () => {
@@ -170,6 +213,14 @@ export default function CircleDetailsPage() {
     setDeleteConfirm(post);
   };
 
+  // Moderator/owner removing someone else's post — same deletePost mutation
+  // and endpoint as the author's own delete (the role check lives server-side
+  // in deletePost.js), just a separate confirm copy so it reads as
+  // moderation rather than "delete your own post."
+  const handleModeratePost = (post) => {
+    setModerateConfirm(post);
+  };
+
   const handleSaveEdit = (payload) => {
     if (!editPost) return;
     updatePostMutation.mutate(
@@ -193,6 +244,7 @@ export default function CircleDetailsPage() {
         circleName={data.name}
         circleId={circleId}
         authorData={{ name: myProfile?.name, avatar: myProfile?.profilePhoto }}
+        canAnnounce={canModerate}
       />
 
       <CommentSection
@@ -224,6 +276,31 @@ export default function CircleDetailsPage() {
         }
         title={t("circleDetails.deletePostTitle")}
         message={t("circleDetails.deletePostMessage")}
+      />
+
+      <ConfirmDialog
+        isOpen={!!moderateConfirm}
+        onClose={() => setModerateConfirm(null)}
+        onConfirm={() => {
+          deletePostMutation.mutate(
+            {
+              postId: moderateConfirm.postId,
+              createdAtEpoch: moderateConfirm.createdAtEpoch,
+            },
+            {
+              onSuccess: () => {
+                toast.success(t("circleDetails.postRemovedToast"));
+                setModerateConfirm(null);
+              },
+              onError: (err) => {
+                toast.error(getErrorMessage(err, "circleModerateFailed"));
+              },
+            }
+          );
+        }}
+        title={t("circleDetails.removePostTitle")}
+        message={t("circleDetails.removePostMessage")}
+        confirmLabel={t("circleDetails.removePost")}
       />
 
       <ConfirmDialog
@@ -266,6 +343,15 @@ export default function CircleDetailsPage() {
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
+          {canModerate && activeTab === "posts" && (
+            <button
+              onClick={() => navigate(`/circles/${circleId}/manage`)}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-black/25 backdrop-blur-sm rounded-full text-white text-xs font-semibold active:bg-black/40 transition-colors"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              {t("circleDetails.manage")}
+            </button>
+          )}
         </div>
 
         {/* Circle info overlay */}
@@ -286,6 +372,12 @@ export default function CircleDetailsPage() {
                 <Users className="w-4 h-4" />
                 <span>{t("common.membersCount", { count: data.memberCount ?? 0 })}</span>
               </div>
+              {isPrivate && (
+                <div className="flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5" />
+                  <span>{t("circleDetails.privateBadge")}</span>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -328,35 +420,65 @@ export default function CircleDetailsPage() {
 
         {/* Action Buttons */}
         <div className="bg-white rounded-2xl shadow-lg p-3">
-          <div className="flex gap-2">
-            {isJoined ? (
-              <>
-                <button
-                  onClick={handleShareCircle}
-                  className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
-                >
-                  {t("circleDetails.share")}
-                </button>
-                {!isOwner && (
-                  <button
-                    onClick={() => setShowLeaveConfirm(true)}
-                    disabled={isLeaving}
-                    className="flex-1 rounded-xl py-2.5 text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-60 transition-colors"
-                  >
-                    {isLeaving ? t("circleDetails.leaving") : t("circleDetails.leaveCircle")}
-                  </button>
-                )}
-              </>
-            ) : (
+          {isJoined ? (
+            <div className="flex gap-2">
               <button
-                onClick={handleJoinCircle}
-                disabled={isJoining}
-                className="flex-1 btn-filled rounded-xl py-3 disabled:opacity-60"
+                onClick={handleShareCircle}
+                className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
               >
-                {isJoining ? t("circleDetails.joining") : t("circleDetails.joinCircle")}
+                {t("circleDetails.share")}
               </button>
-            )}
-          </div>
+              {!isOwner && (
+                <button
+                  onClick={() => setShowLeaveConfirm(true)}
+                  disabled={isLeaving}
+                  className="flex-1 rounded-xl py-2.5 text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-60 transition-colors"
+                >
+                  {isLeaving ? t("circleDetails.leaving") : t("circleDetails.leaveCircle")}
+                </button>
+              )}
+            </div>
+          ) : isPrivate ? (
+            justRequested ? (
+              /* Pending state, not a dead end — no re-request button, just a
+                 status banner, so it's unambiguous the request went through. */
+              <div className="flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-100 p-3">
+                <Lock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-amber-800">{t("circleDetails.requestPendingTitle")}</p>
+                  <p className="text-xs text-amber-700 mt-0.5">{t("circleDetails.requestPendingBody")}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <textarea
+                  value={requestMessage}
+                  onChange={(e) => {
+                    if (e.target.value.length <= 300) setRequestMessage(e.target.value);
+                  }}
+                  placeholder={t("circleDetails.requestMessagePlaceholder")}
+                  rows={2}
+                  maxLength={300}
+                  className="w-full px-3 py-2 bg-gray-50 text-gray-800 placeholder-gray-400 border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none text-sm"
+                />
+                <button
+                  onClick={handleRequestJoin}
+                  disabled={isRequesting}
+                  className="w-full btn-filled rounded-xl py-3 disabled:opacity-60"
+                >
+                  {isRequesting ? t("circleDetails.requesting") : t("circleDetails.requestToJoin")}
+                </button>
+              </div>
+            )
+          ) : (
+            <button
+              onClick={handleJoinCircle}
+              disabled={isJoining}
+              className="w-full btn-filled rounded-xl py-3 disabled:opacity-60"
+            >
+              {isJoining ? t("circleDetails.joining") : t("circleDetails.joinCircle")}
+            </button>
+          )}
         </div>
 
         {/* About */}
@@ -400,7 +522,21 @@ export default function CircleDetailsPage() {
           </div>
         )}
 
+        {/* Private + not-joined: no create-post card, no post list — a
+            gated circle never shows its feed to non-members, only the
+            banner/description/member-count above already have. */}
+        {!isJoined && isPrivate ? (
+          <div className="bg-white rounded-2xl shadow-sm">
+            <EmptyState
+              icon={Lock}
+              title={t("circleDetails.lockedFeedTitle")}
+              subtitle={t("circleDetails.lockedFeedBody")}
+            />
+          </div>
+        ) : (
+          <>
         {/* Create Post Card */}
+        {isJoined && (
         <div className="bg-white rounded-2xl shadow-sm p-4">
           <div className="flex items-center gap-3">
             <img
@@ -432,6 +568,7 @@ export default function CircleDetailsPage() {
             </button>
           </div>
         </div>
+        )}
 
         {/* Posts Section */}
         <div>
@@ -457,12 +594,14 @@ export default function CircleDetailsPage() {
                   title={t("circleDetails.noPostsYetTitle")}
                   subtitle={t("circleDetails.noPostsYetSubtitle")}
                   action={
-                    <button
-                      onClick={() => setIsCreatePostModalOpen(true)}
-                      className="px-6 py-2.5 btn-filled text-sm rounded-full"
-                    >
-                      {t("circleDetails.createPost")}
-                    </button>
+                    isJoined && (
+                      <button
+                        onClick={() => setIsCreatePostModalOpen(true)}
+                        className="px-6 py-2.5 btn-filled text-sm rounded-full"
+                      >
+                        {t("circleDetails.createPost")}
+                      </button>
+                    )
                   }
                 />
               </div>
@@ -482,6 +621,9 @@ export default function CircleDetailsPage() {
                   media={post.media}
                   tags={post.tags || []}
                   isAuthor={isAuthor}
+                  canModerate={canModerate}
+                  onModerate={() => handleModeratePost(post)}
+                  isAnnouncement={post.postType === "announcement"}
                   onEdit={() => setEditPost(post)}
                   onDelete={() => handleDeletePost(post)}
                   onShare={() => handleSharePost(post)}
@@ -503,6 +645,8 @@ export default function CircleDetailsPage() {
             })}
           </div>
         </div>
+        </>
+        )}
       </div>
       </>
       )}

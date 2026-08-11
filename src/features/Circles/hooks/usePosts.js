@@ -92,6 +92,44 @@ usePosts(
   });
 }
 
+// A single bounded page (default 50, never paginated further) of a circle's
+// most recent posts — purpose-built for the moderator dashboard's
+// client-computed metrics (top posts, most active members, activity trend).
+// Deliberately its own query key/hook rather than reusing usePosts(circleId):
+// that hook's cache entry backs the live feed and gets invalidated on every
+// create/edit/delete, and mixing a capped dashboard fetch into the same slot
+// would either truncate the feed or refetch a full page every post action.
+// The DynamoDB read underneath is a Query on the circle's own partition key
+// (see listPosts.js) — not a Scan — so this is one bounded, indexed read,
+// not a table-wide cost regardless of circle size.
+export function
+useCirclePostsForStats(
+  circleId,
+  { limit = 50 } = {}
+) {
+  return useQuery({
+    queryKey:
+      [...queryKeys.posts(circleId), 'stats', limit],
+
+    queryFn:
+      async () => {
+        const res =
+          await listPosts(
+            circleId,
+            { limit }
+          );
+
+        return res.data;
+      },
+
+    enabled:
+      !!circleId,
+
+    staleTime:
+      1000 * 60
+  });
+}
+
 export function
 usePost(
   circleId,

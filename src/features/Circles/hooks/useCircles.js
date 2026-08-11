@@ -10,6 +10,7 @@ import {
   listUserCircles,
   createCircle,
   getCircle,
+  getCircleStats,
   searchCircles,
   searchCirclesByTag,
   searchPostsByTag
@@ -160,6 +161,21 @@ export function useCircle(circleId) {
 
     staleTime:
       1000 * 60 * 5,
+  });
+}
+
+// Owner/moderator only — backend 403s anyone else. Short-ish staleTime: a
+// moderator opening the dashboard expects the numbers to be close to live,
+// but this isn't a chat-style hot path either.
+export function useCircleStats(circleId) {
+  return useQuery({
+    queryKey: queryKeys.circleStats(circleId),
+    queryFn: async () => {
+      const res = await getCircleStats(circleId);
+      return res.data;
+    },
+    enabled: !!circleId,
+    staleTime: 1000 * 30,
   });
 }
 

@@ -14,9 +14,10 @@ export const createPost =
   );
 
 export const listPosts =
-circleId =>
+(circleId, { limit } = {}) =>
   api.get(
-    `${BASE}/${circleId}/posts`
+    `${BASE}/${circleId}/posts`,
+    { params: limit ? { limit } : undefined }
   );
 
 export const listMyPosts =

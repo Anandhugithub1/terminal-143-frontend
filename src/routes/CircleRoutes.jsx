@@ -18,6 +18,10 @@ const CircleDetailsPage = lazy(() =>
   import("../features/Circles/pages/CircleDetailsPage.jsx")
 )
 
+const ModeratorDashboardPage = lazy(() =>
+  import("../features/Circles/pages/ModeratorDashboardPage.jsx")
+)
+
 const PostDetailsPage = lazy(() =>
   import("../features/Circles/pages/PostDetailsPage.jsx")
 )
@@ -69,6 +73,14 @@ export const CircleRoutes = (
       element={
         <Suspense fallback={<LoadingSpinner />}>
           <CircleDetailsPage />
+        </Suspense>
+      }
+    />
+    <Route
+      path="circles/:circleId/manage"
+      element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <ModeratorDashboardPage />
         </Suspense>
       }
     />

@@ -5,6 +5,7 @@ import {
   Send,
   Hash,
   Loader2,
+  Megaphone,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
@@ -21,7 +22,7 @@ import { DEFAULT_AVATAR } from "../../utils/postDisplay";
 import BottomSheetModal from "../common/BottomSheetModal";
 import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
 
-export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData }) {
+export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName, circleId, authorData, canAnnounce = false }) {
   const { t } = useTranslation("circles");
   const { data: myProfile } = useMyProfile();
   const [postContent, setPostContent] = useState("");
@@ -29,6 +30,11 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
   const [showTagInput, setShowTagInput] = useState(false);
   const [tagInput, setTagInput] = useState("");
   const [includeLocation, setIncludeLocation] = useState(true);
+  // Only offered to owner/moderator (canAnnounce) — the backend enforces the
+  // same rule server-side (createPost.js 403s a plain member sending
+  // postType: 'announcement'), this just keeps the control from ever
+  // appearing for someone it would fail for.
+  const [isAnnouncement, setIsAnnouncement] = useState(false);
 
   const profileLocation = myProfile?.location ?? null;
 
@@ -105,6 +111,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
         // backend recognize a retried create as the same post instead of
         // creating a duplicate. See createPost.js's clientPostId handling.
         clientPostId: postId,
+        postType: canAnnounce && isAnnouncement ? "announcement" : "standard",
       };
 
       const res = await createPost(circleId, payload);
@@ -117,6 +124,7 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       setSelectedTags([]);
       resetMedia();
       setIncludeLocation(true);
+      setIsAnnouncement(false);
       onClose();
     } catch (err) {
       console.error(err);
@@ -136,7 +144,9 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
       {/* Header */}
             <div className="flex-shrink-0 p-4 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-gray-800">{t("createPostModal.header")}</h3>
+                <h3 className="text-lg font-bold text-gray-800">
+                  {isAnnouncement ? t("createPostModal.announcementHeader") : t("createPostModal.header")}
+                </h3>
                 {circleName && (
                   <p className="text-xs text-gray-500 mt-0.5">{t("createPostModal.inCircle")}{circleName}</p>
                 )}
@@ -164,6 +174,38 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                 </div>
               </div>
 
+              {/* Announcement toggle — owner/moderator only, mirrors the
+                  server-side gate in createPost.js (postType: 'announcement'
+                  403s for a plain member). */}
+              {canAnnounce && (
+                <button
+                  type="button"
+                  onClick={() => setIsAnnouncement((v) => !v)}
+                  className={`w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-medium border transition-colors ${
+                    isAnnouncement
+                      ? "bg-primary/10 border-primary/30 text-primary"
+                      : "bg-gray-50 border-gray-200 text-gray-500 hover:bg-gray-100"
+                  }`}
+                >
+                  <Megaphone className="w-4 h-4 shrink-0" />
+                  <span className="flex-1 text-left">{t("createPostModal.announcementToggle")}</span>
+                  <span
+                    className={`w-9 h-5 rounded-full relative transition-colors shrink-0 ${
+                      isAnnouncement ? "bg-primary" : "bg-gray-300"
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform ${
+                        isAnnouncement ? "translate-x-4.5 left-0.5" : "left-0.5"
+                      }`}
+                    />
+                  </span>
+                </button>
+              )}
+              {canAnnounce && isAnnouncement && (
+                <p className="text-xs text-primary/80 -mt-1">{t("createPostModal.announcementHint")}</p>
+              )}
+
               {/* Post Input */}
               <textarea
                 value={postContent}
@@ -172,10 +214,18 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                     setPostContent(e.target.value);
                   }
                 }}
-                placeholder={t("createPostModal.placeholder")}
+                placeholder={
+                  isAnnouncement
+                    ? t("createPostModal.announcementPlaceholder")
+                    : t("createPostModal.placeholder")
+                }
                 rows={5}
                 maxLength={1000}
-                className="w-full px-4 py-3 bg-white text-gray-800 placeholder-gray-400 border border-gray-300 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all resize-none text-sm"
+                className={`w-full px-4 py-3 bg-white text-gray-800 placeholder-gray-400 border rounded-xl focus:outline-none focus:ring-2 transition-all resize-none text-sm ${
+                  isAnnouncement
+                    ? "border-primary/40 focus:border-primary focus:ring-primary/20"
+                    : "border-gray-300 focus:border-primary focus:ring-primary/20"
+                }`}
               />
               <div className="flex items-center justify-between gap-2">
                 {/* Nudge toward tags while they're writing — tags are a
@@ -396,7 +446,11 @@ export default function CreatePostModal({ isOpen, onClose, onSubmit, circleName,
                   ) : (
                     <Send className="w-4 h-4" />
                   )}
-                  {isSubmitting ? t("createPostModal.posting") : t("createPostModal.post")}
+                  {isSubmitting
+                    ? t("createPostModal.posting")
+                    : isAnnouncement
+                    ? t("createPostModal.postAnnouncement")
+                    : t("createPostModal.post")}
                 </button>
               </div>
             </div>

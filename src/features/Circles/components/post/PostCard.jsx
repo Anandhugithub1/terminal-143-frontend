@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronRight, Flag, Heart, MoreVertical, Pencil, Send, Share2, Trash2 } from "lucide-react";
+import { ChevronRight, Flag, Heart, Megaphone, MoreVertical, Pencil, Send, Share2, ShieldX, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import PostMedia from "./PostMedia";
 import BottomSheetModal from "../common/BottomSheetModal";
@@ -16,6 +16,14 @@ export default function PostCard({
   onEdit,
   onDelete,
   isAuthor = false,
+  // True when the viewer holds owner/moderator role in this post's circle
+  // (and is NOT the author — isAuthor already covers that case with its own
+  // "Delete Post" entry). Adds a distinct "Remove Post" menu item, matching
+  // the backend's separate allowance in deletePost.js for a role-based
+  // delete versus an author's own delete.
+  canModerate = false,
+  onModerate,
+  isAnnouncement = false,
   heading,
   onHeadingClick,
   onAuthorClick,
@@ -36,10 +44,20 @@ export default function PostCard({
   const hasMedia = !!(media?.[0]?.url || image);
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+    <div className={`bg-white rounded-2xl shadow-sm overflow-hidden ${isAnnouncement ? "ring-1 ring-primary/30" : ""}`}>
+
+      {/* Announcement strip — mirrors the tag createPost.js writes into
+          postType, so a moderator update reads as official at a glance
+          without repeating the author's own name/role badge treatment. */}
+      {isAnnouncement && (
+        <div className="flex items-center gap-1.5 px-4 pt-3 text-[11px] font-bold uppercase tracking-wide text-primary">
+          <Megaphone className="w-3.5 h-3.5" />
+          {t("postCard.announcement")}
+        </div>
+      )}
 
       {/* Header */}
-      <div className="flex items-start justify-between gap-2 px-4 pt-4 pb-3">
+      <div className={`flex items-start justify-between gap-2 px-4 pb-3 ${isAnnouncement ? "pt-1.5" : "pt-4"}`}>
         <div
           className={`flex items-center gap-3 min-w-0 ${onAuthorClick ? "cursor-pointer active:opacity-60 transition-opacity" : ""}`}
           onClick={onAuthorClick}
@@ -196,6 +214,15 @@ export default function PostCard({
           >
             <Flag className="w-5 h-5" />
             {t("postCard.reportPost")}
+          </button>
+        )}
+        {!isAuthor && canModerate && (
+          <button
+            onClick={() => { setIsMenuOpen(false); onModerate?.(); }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
+          >
+            <ShieldX className="w-5 h-5" />
+            {t("postCard.removePost")}
           </button>
         )}
       </BottomSheetModal>
