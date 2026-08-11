@@ -5,6 +5,9 @@ import {
   Image,
   Lock,
   MessageSquare,
+  MoreVertical,
+  Share2,
+  LogOut,
   ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
@@ -14,6 +17,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import BottomNav from "../../../components/Layout/BottomNavigation";
+import BottomSheetModal from "../components/common/BottomSheetModal";
 import CreatePostModal from "../components/post/CreatePostModal";
 import PostCard from "../components/post/PostCard";
 import EditPostModal from "../components/post/EditPostModal";
@@ -53,6 +57,7 @@ export default function CircleDetailsPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [reportPost, setReportPost] = useState(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("posts");
   const [moderateConfirm, setModerateConfirm] = useState(null);
   const [requestMessage, setRequestMessage] = useState("");
@@ -70,7 +75,7 @@ export default function CircleDetailsPage() {
   const deletePostMutation = useDeletePost(circleId);
   const { send: sendMatchRequest } = useSendMatchRequest();
   const { mutate: joinCircle, isPending: isJoining } = useJoinCircle();
-  const { mutate: leaveCircle, isPending: isLeaving } = useLeaveCircle();
+  const { mutate: leaveCircle } = useLeaveCircle();
   const { mutate: requestJoinCircle, isPending: isRequesting } = useRequestJoinCircle();
   const { mutate: reportUser } = useReportUser();
 
@@ -312,6 +317,39 @@ export default function CircleDetailsPage() {
         confirmLabel={t("circleDetails.leaveCircle")}
       />
 
+      {/* Overflow menu — Share / Leave, moved off the primary view and
+          behind the header's three-dot button so a returning member isn't
+          shown two full-width action buttons on every visit. */}
+      <BottomSheetModal
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        centered
+        panelClassName="rounded-2xl overflow-hidden"
+      >
+        <button
+          onClick={() => {
+            setIsMenuOpen(false);
+            handleShareCircle();
+          }}
+          className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100"
+        >
+          <Share2 className="w-5 h-5 text-gray-500" />
+          {t("circleDetails.share")}
+        </button>
+        {!isOwner && (
+          <button
+            onClick={() => {
+              setIsMenuOpen(false);
+              setShowLeaveConfirm(true);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium text-rose-600 hover:bg-gray-50 transition-colors"
+          >
+            <LogOut className="w-5 h-5" />
+            {t("circleDetails.leaveCircle")}
+          </button>
+        )}
+      </BottomSheetModal>
+
       <ReportUserModal
         open={!!reportPost}
         onClose={() => setReportPost(null)}
@@ -339,18 +377,31 @@ export default function CircleDetailsPage() {
         <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 bg-black/25 backdrop-blur-sm rounded-full active:bg-black/40 transition-colors"
+            className="w-9 h-9 flex items-center justify-center bg-black/25 backdrop-blur-sm rounded-full active:bg-black/40 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-white" />
           </button>
-          {canModerate && activeTab === "posts" && (
-            <button
-              onClick={() => navigate(`/circles/${circleId}/manage`)}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-black/25 backdrop-blur-sm rounded-full text-white text-xs font-semibold active:bg-black/40 transition-colors"
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              {t("circleDetails.manage")}
-            </button>
+          {activeTab === "posts" && (
+            <div className="flex items-center gap-2.5">
+              {canModerate && (
+                <button
+                  onClick={() => navigate(`/circles/${circleId}/manage`)}
+                  className="flex items-center gap-1.5 h-9 px-3.5 bg-black/25 backdrop-blur-sm rounded-full text-white text-xs font-semibold active:bg-black/40 transition-colors"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  {t("circleDetails.manage")}
+                </button>
+              )}
+              {isJoined && (
+                <button
+                  onClick={() => setIsMenuOpen(true)}
+                  className="w-9 h-9 flex items-center justify-center bg-black/25 backdrop-blur-sm rounded-full active:bg-black/40 transition-colors"
+                  aria-label={t("circleDetails.moreOptions")}
+                >
+                  <MoreVertical className="w-5 h-5 text-white" />
+                </button>
+              )}
+            </div>
           )}
         </div>
 
@@ -416,29 +467,19 @@ export default function CircleDetailsPage() {
       ) : (
       <>
       {/* Main content */}
-      <div className="max-w-3xl mx-auto px-3 -mt-4 relative z-10 space-y-3">
+      <div className="max-w-3xl mx-auto px-3 pt-3 relative z-10 space-y-3">
 
-        {/* Action Buttons */}
-        <div className="bg-white rounded-2xl shadow-lg p-3">
-          {isJoined ? (
-            <div className="flex gap-2">
-              <button
-                onClick={handleShareCircle}
-                className="flex-1 btn-filled rounded-xl py-2.5 text-sm"
-              >
-                {t("circleDetails.share")}
-              </button>
-              {!isOwner && (
-                <button
-                  onClick={() => setShowLeaveConfirm(true)}
-                  disabled={isLeaving}
-                  className="flex-1 rounded-xl py-2.5 text-sm font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-60 transition-colors"
-                >
-                  {isLeaving ? t("circleDetails.leaving") : t("circleDetails.leaveCircle")}
-                </button>
-              )}
-            </div>
-          ) : isPrivate ? (
+        {/* Action Buttons — only rendered pre-join now; once joined, Share
+            and Leave live in the header's overflow menu instead (see
+            isMenuOpen sheet below) rather than sitting as primary buttons
+            on every visit. The -mt-4 lives on the card itself (not the
+            wrapper) so it only overlaps the tab bar when this card is
+            actually the first thing on screen — otherwise About/Rules flow
+            with normal top spacing instead of an empty gap where the
+            card used to be. */}
+        {!isJoined && (
+        <div className="bg-white rounded-2xl shadow-lg p-3 -mt-7">
+          {isPrivate ? (
             justRequested ? (
               /* Pending state, not a dead end — no re-request button, just a
                  status banner, so it's unambiguous the request went through. */
@@ -480,6 +521,7 @@ export default function CircleDetailsPage() {
             </button>
           )}
         </div>
+        )}
 
         {/* About */}
         <div className="bg-gray-100 rounded-2xl shadow-sm p-4">

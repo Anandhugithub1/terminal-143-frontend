@@ -117,7 +117,8 @@
     "createPost": "发布动态",
     "postReportedAlert": "已举报该动态",
     "postsTab": "Posts",
-    "chatTab": "Chat"
+    "chatTab": "Chat",
+    "moreOptions": "More options"
   },
   "myPosts": {
     "header": "我的动态",

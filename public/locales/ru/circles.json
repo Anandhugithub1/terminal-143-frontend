@@ -117,7 +117,8 @@
     "createPost": "Создать публикацию",
     "postReportedAlert": "Публикация отправлена в жалобу",
     "postsTab": "Posts",
-    "chatTab": "Chat"
+    "chatTab": "Chat",
+    "moreOptions": "More options"
   },
   "myPosts": {
     "header": "Мои публикации",

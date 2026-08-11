@@ -117,7 +117,8 @@
     "createPost": "สร้างโพสต์",
     "postReportedAlert": "รายงานโพสต์แล้ว",
     "postsTab": "Posts",
-    "chatTab": "Chat"
+    "chatTab": "Chat",
+    "moreOptions": "More options"
   },
   "myPosts": {
     "header": "โพสต์ของฉัน",

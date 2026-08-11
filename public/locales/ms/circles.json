@@ -117,7 +117,8 @@
     "createPost": "Cipta Hantaran",
     "postReportedAlert": "Hantaran telah dilaporkan",
     "postsTab": "Posts",
-    "chatTab": "Chat"
+    "chatTab": "Chat",
+    "moreOptions": "More options"
   },
   "myPosts": {
     "header": "Hantaran Saya",

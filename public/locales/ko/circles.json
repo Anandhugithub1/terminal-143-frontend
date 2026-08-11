@@ -117,7 +117,8 @@
     "createPost": "게시물 작성",
     "postReportedAlert": "게시물이 신고되었습니다",
     "postsTab": "Posts",
-    "chatTab": "Chat"
+    "chatTab": "Chat",
+    "moreOptions": "More options"
   },
   "myPosts": {
     "header": "내 게시물",
