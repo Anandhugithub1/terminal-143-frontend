@@ -6,6 +6,10 @@ import { MessageCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useInfiniteMatches, SendProfileFeeback } from '../../UserHome/api'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
+import { useCircles } from '../../Circles/hooks/useCircles'
+import { useCircleChatPreviews } from '../../Circles/hooks/useCircleChatPreviews'
+import { useTranslatedCircleName } from '../../Circles/constants/onboardingCircles'
+import CircleChatRow from '../../Circles/components/chat/CircleChatRow'
 import PageLayout from '../../../shared/components/PageLayout'
 import EmptyState from '../../../shared/components/EmptyState'
 import MatchRow from '../components/MatchRow'
@@ -25,6 +29,11 @@ export default function ChatListPage() {
   } = useInfiniteMatches()
   const { previews } = useConversationPreviews()
   const { mutate: sendFeedback } = SendProfileFeeback()
+
+  const { data: circlesData } = useCircles()
+  const myCircles = circlesData?.circles || []
+  const { previews: circlePreviews } = useCircleChatPreviews()
+  const getCircleName = useTranslatedCircleName()
 
   const [sentFeedback, setSentFeedback] = useState({})
   const [loadingUser, setLoadingUser] = useState(null)
@@ -110,6 +119,22 @@ export default function ChatListPage() {
     return { newMatches: fresh, conversations: active }
   }, [matches, previews])
 
+  // Circle Chats section — a separate, labeled group above Direct rather
+  // than merged into one recency-sorted list, so a person-thread and a
+  // group-thread stay easy to tell apart at a glance (see the design
+  // discussion: avatar shape alone isn't enough once chat volume grows).
+  // Only circles with SOME chat state (a message ever sent, or unread) are
+  // listed — mirrors how Direct excludes matches with no conversation yet.
+  const circleConversations = useMemo(() => {
+    return myCircles
+      .filter((c) => circlePreviews[c.circleId]?.lastMessageAt)
+      .sort((a, b) => {
+        const aT = new Date(circlePreviews[a.circleId]?.lastMessageAt || 0)
+        const bT = new Date(circlePreviews[b.circleId]?.lastMessageAt || 0)
+        return bT - aT
+      })
+  }, [myCircles, circlePreviews])
+
   if (isLoading) {
     return (
       <PageLayout className="bg-white">
@@ -120,8 +145,13 @@ export default function ChatListPage() {
 
   // Support is always reachable, independent of whether this user has any
   // real matches — it must never be hidden behind the no-matches/error empty
-  // states below.
-  if (isError || matches.length === 0) {
+  // states below. This full-page empty state is only correct when there's
+  // NOTHING to show at all — a user with zero 1:1 matches but an active
+  // circle chat must still fall through to the main return below, which
+  // renders the Circle Chats section regardless of `matches`. Checking
+  // matches.length alone here previously hid every circle conversation
+  // behind "No matches yet" whenever the user had no direct matches yet.
+  if (isError || (matches.length === 0 && circleConversations.length === 0)) {
     return (
       <PageLayout className="bg-white">
         <SupportRow onOpenChat={() => navigate('/matches/support/chat')} preview={previews.SUPPORT} />
@@ -147,6 +177,26 @@ export default function ChatListPage() {
       />
 
       <div className="border-t border-gray-100" />
+
+      {circleConversations.length > 0 && (
+        <>
+          <div className="flex-1">
+            <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
+              {t('circleList.sectionLabel')}
+            </p>
+            {circleConversations.map((circle, index) => (
+              <CircleChatRow
+                key={circle.circleId}
+                circle={{ ...circle, name: getCircleName(circle.circleId, circle.name) }}
+                preview={circlePreviews[circle.circleId]}
+                index={index}
+                onOpenChat={() => navigate(`/circles/${circle.circleId}/chat`)}
+              />
+            ))}
+          </div>
+          <div className="border-t border-gray-100" />
+        </>
+      )}
 
       <div className="flex-1">
         <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">

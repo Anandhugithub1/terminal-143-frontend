@@ -85,7 +85,8 @@
     "loadFailedTitle": "Gagal memuatkan bulatan anda",
     "loadFailedBody": "Semak sambungan anda dan cuba lagi.",
     "retry": "Cuba lagi",
-    "myPosts": "Hantaran Saya"
+    "myPosts": "Hantaran Saya",
+    "openCircleChatAria": "Open {{name}} chat"
   },
   "circleDetails": {
     "notFound": "Bulatan tidak dijumpai",
@@ -114,7 +115,9 @@
     "noPostsYetTitle": "Belum ada hantaran",
     "noPostsYetSubtitle": "Jadilah yang pertama berkongsi sesuatu dengan bulatan ini!",
     "createPost": "Cipta Hantaran",
-    "postReportedAlert": "Hantaran telah dilaporkan"
+    "postReportedAlert": "Hantaran telah dilaporkan",
+    "postsTab": "Posts",
+    "chatTab": "Chat"
   },
   "myPosts": {
     "header": "Hantaran Saya",

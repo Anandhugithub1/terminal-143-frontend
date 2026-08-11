@@ -68,5 +68,34 @@
     "sending": "전송 중…",
     "sendFailed": "전송 실패",
     "retrySend": "다시 시도하려면 탭하세요"
+  },
+  "circleConversation": {
+    "back": "Back",
+    "memberCount": "{{count}} member",
+    "memberCount_other": "{{count}} members",
+    "sayHelloPrompt": "Say hello to the circle 👋",
+    "couldNotLoad": "Couldn't load this chat",
+    "checkConnection": "Please check your connection and try again.",
+    "messagePlaceholder": "Message {{name}}…",
+    "sendMessage": "Send message",
+    "sending": "Sending…",
+    "sendFailed": "Not sent",
+    "retrySend": "Tap to retry",
+    "reconnecting": "Reconnecting…",
+    "chatDisabled": "Chat is off for this circle. History stays visible — new messages are paused by an admin.",
+    "chatEnabledToast": "Chat turned on for this circle",
+    "chatDisabledToast": "Chat turned off for this circle",
+    "toggleChatFailed": "Couldn't update chat setting. Please try again.",
+    "turnChatOn": "Turn chat on",
+    "turnChatOff": "Turn chat off",
+    "viewMembersAria": "View {{name}} members",
+    "roleOwner": "Owner",
+    "roleAdmin": "Admin"
+  },
+  "circleList": {
+    "sectionLabel": "Circle Chats",
+    "sayHi": "Say hi 👋",
+    "youPrefix": "You: ",
+    "chatOffBadge": "Chat off"
   }
 }

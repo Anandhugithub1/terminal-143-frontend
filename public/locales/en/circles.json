@@ -85,7 +85,8 @@
     "loadFailedTitle": "Couldn't load your circles",
     "loadFailedBody": "Check your connection and try again.",
     "retry": "Retry",
-    "myPosts": "My Posts"
+    "myPosts": "My Posts",
+    "openCircleChatAria": "Open {{name}} chat"
   },
   "circleDetails": {
     "notFound": "Circle not found",
@@ -114,7 +115,9 @@
     "noPostsYetTitle": "No posts yet",
     "noPostsYetSubtitle": "Be the first to share something with this circle!",
     "createPost": "Create Post",
-    "postReportedAlert": "Post reported"
+    "postReportedAlert": "Post reported",
+    "postsTab": "Posts",
+    "chatTab": "Chat"
   },
   "myPosts": {
     "header": "My Posts",

@@ -85,7 +85,8 @@
     "loadFailedTitle": "加载圈子失败",
     "loadFailedBody": "请检查网络连接后重试。",
     "retry": "重试",
-    "myPosts": "我的动态"
+    "myPosts": "我的动态",
+    "openCircleChatAria": "Open {{name}} chat"
   },
   "circleDetails": {
     "notFound": "未找到圈子",
@@ -114,7 +115,9 @@
     "noPostsYetTitle": "暂无动态",
     "noPostsYetSubtitle": "成为第一个与此圈子分享内容的人！",
     "createPost": "发布动态",
-    "postReportedAlert": "已举报该动态"
+    "postReportedAlert": "已举报该动态",
+    "postsTab": "Posts",
+    "chatTab": "Chat"
   },
   "myPosts": {
     "header": "我的动态",

@@ -85,7 +85,8 @@
     "loadFailedTitle": "서클을 불러오지 못했습니다",
     "loadFailedBody": "연결 상태를 확인하고 다시 시도해 주세요.",
     "retry": "다시 시도",
-    "myPosts": "내 게시물"
+    "myPosts": "내 게시물",
+    "openCircleChatAria": "Open {{name}} chat"
   },
   "circleDetails": {
     "notFound": "서클을 찾을 수 없습니다",
@@ -114,7 +115,9 @@
     "noPostsYetTitle": "아직 게시물이 없습니다",
     "noPostsYetSubtitle": "이 서클에 첫 게시물을 공유해 보세요!",
     "createPost": "게시물 작성",
-    "postReportedAlert": "게시물이 신고되었습니다"
+    "postReportedAlert": "게시물이 신고되었습니다",
+    "postsTab": "Posts",
+    "chatTab": "Chat"
   },
   "myPosts": {
     "header": "내 게시물",

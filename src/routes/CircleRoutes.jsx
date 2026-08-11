@@ -22,6 +22,10 @@ const PostDetailsPage = lazy(() =>
   import("../features/Circles/pages/PostDetailsPage.jsx")
 )
 
+const CircleChatPage = lazy(() =>
+  import("../features/Circles/pages/CircleChatPage.jsx")
+)
+
 const MyPostsPage = lazy(() =>
   import("../features/Circles/pages/MyPostsPage.jsx")
 )
@@ -73,6 +77,14 @@ export const CircleRoutes = (
       element={
         <Suspense fallback={<LoadingSpinner />}>
           <PostDetailsPage />
+        </Suspense>
+      }
+    />
+    <Route
+      path="circles/:circleId/chat"
+      element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <CircleChatPage />
         </Suspense>
       }
     />

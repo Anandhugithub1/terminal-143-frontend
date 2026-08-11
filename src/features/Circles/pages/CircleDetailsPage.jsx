@@ -6,6 +6,8 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { useState } from "react";
+import CircleChatThread from "../components/chat/CircleChatThread";
+import { useCircleChatPreviews } from "../hooks/useCircleChatPreviews";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -45,6 +47,10 @@ export default function CircleDetailsPage() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [reportPost, setReportPost] = useState(null);
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [activeTab, setActiveTab] = useState("posts");
+
+  const { previews: circlePreviews } = useCircleChatPreviews();
+  const chatUnreadCount = circlePreviews[circleId]?.unreadCount || 0;
 
   const queryClient = useQueryClient();
 
@@ -173,7 +179,13 @@ export default function CircleDetailsPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-gray-50 pb-24">
+    <div
+      className={
+        activeTab === "chat"
+          ? "flex flex-col h-[100dvh] bg-gray-50 overflow-hidden"
+          : "min-h-[100dvh] bg-gray-50 pb-24"
+      }
+    >
       <CreatePostModal
         isOpen={isCreatePostModalOpen}
         onClose={() => setIsCreatePostModalOpen(false)}
@@ -235,7 +247,7 @@ export default function CircleDetailsPage() {
       />
 
       {/* Cover Image */}
-      <div className="relative h-48 sm:h-64 bg-gradient-to-br from-rose-400 to-orange-400">
+      <div className={`relative shrink-0 bg-gradient-to-br from-rose-400 to-orange-400 transition-all ${activeTab === "chat" ? "h-24" : "h-48 sm:h-64"}`}>
         {data.coverPhoto && (
           <img
             src={data.coverPhoto}
@@ -258,23 +270,59 @@ export default function CircleDetailsPage() {
 
         {/* Circle info overlay */}
         <div className="absolute bottom-0 left-0 right-0 px-4 pb-4">
-          <div className="flex items-end gap-2 mb-2">
-            <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">
-              {data.category}
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold text-white leading-tight mb-2">
+          {activeTab === "posts" && (
+            <div className="flex items-end gap-2 mb-2">
+              <span className="text-xs font-semibold text-white/70 uppercase tracking-wider">
+                {data.category}
+              </span>
+            </div>
+          )}
+          <h1 className={`font-bold text-white leading-tight ${activeTab === "chat" ? "text-lg mb-0" : "text-2xl mb-2"}`}>
             {data.name}
           </h1>
-          <div className="flex items-center gap-4 text-white/80 text-sm">
-            <div className="flex items-center gap-1.5">
-              <Users className="w-4 h-4" />
-              <span>{t("common.membersCount", { count: data.memberCount ?? 0 })}</span>
+          {activeTab === "posts" && (
+            <div className="flex items-center gap-4 text-white/80 text-sm">
+              <div className="flex items-center gap-1.5">
+                <Users className="w-4 h-4" />
+                <span>{t("common.membersCount", { count: data.memberCount ?? 0 })}</span>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
+      {/* Posts | Chat tabs — flush under the hero as an underline control,
+          not a floating card (see the design revision that replaced the
+          original stacked-cards layout: chat is a peer view of the same
+          circle, not a separate destination). */}
+      <div className="flex bg-white border-b border-gray-100 relative z-10 shrink-0">
+        <button
+          onClick={() => setActiveTab("posts")}
+          className={`flex-1 text-center text-sm font-semibold py-2.5 border-b-2 transition-colors ${
+            activeTab === "posts" ? "text-primary border-primary" : "text-gray-400 border-transparent"
+          }`}
+        >
+          {t("circleDetails.postsTab")}
+        </button>
+        <button
+          onClick={() => setActiveTab("chat")}
+          className={`flex-1 flex items-center justify-center gap-1.5 text-sm font-semibold py-2.5 border-b-2 transition-colors ${
+            activeTab === "chat" ? "text-primary border-primary" : "text-gray-400 border-transparent"
+          }`}
+        >
+          {t("circleDetails.chatTab")}
+          {chatUnreadCount > 0 && (
+            <span className="min-w-[16px] h-[16px] px-1 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center leading-none">
+              {chatUnreadCount > 99 ? "99+" : chatUnreadCount}
+            </span>
+          )}
+        </button>
+      </div>
+
+      {activeTab === "chat" ? (
+        <CircleChatThread circleId={circleId} circleName={data.name} />
+      ) : (
+      <>
       {/* Main content */}
       <div className="max-w-3xl mx-auto px-3 -mt-4 relative z-10 space-y-3">
 
@@ -456,8 +504,10 @@ export default function CircleDetailsPage() {
           </div>
         </div>
       </div>
+      </>
+      )}
 
-      <BottomNav />
+      {activeTab === "posts" && <BottomNav />}
     </div>
   );
 }

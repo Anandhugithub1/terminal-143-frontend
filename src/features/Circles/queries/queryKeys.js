@@ -64,5 +64,21 @@ export const queryKeys =
     tag => [
       'postTagSearch',
       tag
+    ],
+
+  circleChatHistory:
+    circleId => [
+      'circleChatHistory',
+      circleId
+    ],
+
+  circleChatUnread: [
+    'circleChatUnread'
+  ],
+
+  circleMembers:
+    circleId => [
+      'circleMembers',
+      circleId
     ]
 };

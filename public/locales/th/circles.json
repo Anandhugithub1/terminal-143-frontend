@@ -85,7 +85,8 @@
     "loadFailedTitle": "โหลดเซอร์เคิลของคุณไม่สำเร็จ",
     "loadFailedBody": "โปรดตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง",
     "retry": "ลองอีกครั้ง",
-    "myPosts": "โพสต์ของฉัน"
+    "myPosts": "โพสต์ของฉัน",
+    "openCircleChatAria": "Open {{name}} chat"
   },
   "circleDetails": {
     "notFound": "ไม่พบเซอร์เคิล",
@@ -114,7 +115,9 @@
     "noPostsYetTitle": "ยังไม่มีโพสต์",
     "noPostsYetSubtitle": "เป็นคนแรกที่แชร์อะไรบางอย่างกับเซอร์เคิลนี้!",
     "createPost": "สร้างโพสต์",
-    "postReportedAlert": "รายงานโพสต์แล้ว"
+    "postReportedAlert": "รายงานโพสต์แล้ว",
+    "postsTab": "Posts",
+    "chatTab": "Chat"
   },
   "myPosts": {
     "header": "โพสต์ของฉัน",
