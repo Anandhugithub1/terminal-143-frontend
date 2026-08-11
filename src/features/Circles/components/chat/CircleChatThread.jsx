@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import { AlertCircle, MessageCircleOff, Send, WifiOff } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -46,17 +47,46 @@ function formatMessageTime(iso) {
   return new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
 }
 
-// `member` is this sender's entry from useCircleMembers (name/avatarUrl),
-// or undefined if the member directory hasn't loaded yet / the sender left
-// the circle since sending — falls back to a colored-initials circle and
-// the raw userId in either case, same as before this existed. Deliberately
-// no onClick/route to a profile here even with a real photo: circle members
-// are visible in the thread but never tappable-to-profile, by design.
-function CircleMessageBubble({ msg, member, t, onRetry }) {
+// Same link-parsing fallback as ChatConversationPage's goToProfile / the
+// member sheet's version.
+function goToProfile(navigate, profileLink) {
+  if (!profileLink) return
+  try {
+    navigate(new URL(profileLink).pathname, { state: { isMatch: true } })
+  } catch {
+    navigate(profileLink, { state: { isMatch: true } })
+  }
+}
+
+// `member` is this sender's entry from useCircleMembers (name/avatarUrl/
+// isCompatible/profileLink), or undefined if the member directory hasn't
+// loaded yet / the sender left the circle since sending — falls back to a
+// colored-initials circle and the raw userId in either case. The avatar and
+// name label become tappable-to-profile ONLY when the server marked this
+// sender isCompatible (a mutual gender/preference match with the viewer,
+// computed server-side) — everyone else stays visible but not tappable, by
+// design. The bubble body itself is never a tap target either way.
+function CircleMessageBubble({ msg, member, t, onRetry, navigate }) {
   const failed = msg.status === 'failed'
   const pending = msg.status === 'pending'
   const color = colorForMember(msg.senderId)
   const displayName = member?.name || msg.senderId
+  const canViewProfile = !msg.mine && member?.isCompatible && member?.profileLink
+
+  const avatar = member?.avatarUrl ? (
+    <img
+      src={member.avatarUrl}
+      alt=""
+      className="w-6 h-6 rounded-full shrink-0 object-cover select-none"
+    />
+  ) : (
+    <div
+      className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-white text-[9px] font-bold select-none"
+      style={{ backgroundColor: color }}
+    >
+      {initialsFor(displayName)}
+    </div>
+  )
 
   return (
     <div className={`flex gap-1.5 items-end ${msg.mine ? 'justify-end' : 'justify-start'}`}>
@@ -71,26 +101,34 @@ function CircleMessageBubble({ msg, member, t, onRetry }) {
         </button>
       )}
       {!msg.mine && (
-        member?.avatarUrl ? (
-          <img
-            src={member.avatarUrl}
-            alt=""
-            className="w-6 h-6 rounded-full shrink-0 object-cover select-none"
-          />
-        ) : (
-          <div
-            className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-white text-[9px] font-bold select-none"
-            style={{ backgroundColor: color }}
+        canViewProfile ? (
+          <button
+            type="button"
+            onClick={() => goToProfile(navigate, member.profileLink)}
+            aria-label={t('circleConversation.viewProfileAria', { name: displayName })}
           >
-            {initialsFor(displayName)}
-          </div>
+            {avatar}
+          </button>
+        ) : (
+          avatar
         )
       )}
       <div className={`flex flex-col ${msg.mine ? 'items-end' : 'items-start'} max-w-[74%]`}>
         {!msg.mine && (
-          <span className="text-[10.5px] font-semibold mb-0.5 ml-0.5 select-none" style={{ color }}>
-            {displayName}
-          </span>
+          canViewProfile ? (
+            <button
+              type="button"
+              onClick={() => goToProfile(navigate, member.profileLink)}
+              className="text-[10.5px] font-semibold mb-0.5 ml-0.5 select-none underline decoration-dotted underline-offset-2"
+              style={{ color }}
+            >
+              {displayName}
+            </button>
+          ) : (
+            <span className="text-[10.5px] font-semibold mb-0.5 ml-0.5 select-none" style={{ color }}>
+              {displayName}
+            </span>
+          )
         )}
         <div
           className={`px-4 py-2 rounded-2xl text-sm select-none transition-opacity ${pending ? 'opacity-60' : ''} ${
@@ -123,6 +161,7 @@ function CircleMessageBubble({ msg, member, t, onRetry }) {
 // duplicates it.
 export default function CircleChatThread({ circleId, circleName }) {
   const { t } = useTranslation('chat')
+  const navigate = useNavigate()
   const myUsername = getCurrentUsername()
 
   const {
@@ -407,7 +446,7 @@ export default function CircleChatThread({ circleId, circleName }) {
             {messages.map((msg, index) => (
               <div key={msg.id}>
                 {isNewDay(messages, index) && <DateDivider label={formatDateDivider(msg.sentAt, t)} />}
-                <CircleMessageBubble msg={msg} member={members.get(msg.senderId)} t={t} onRetry={handleRetry} />
+                <CircleMessageBubble msg={msg} member={members.get(msg.senderId)} t={t} onRetry={handleRetry} navigate={navigate} />
               </div>
             ))}
           </>

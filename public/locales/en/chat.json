@@ -91,7 +91,9 @@
     "turnChatOff": "Turn chat off",
     "viewMembersAria": "View {{name}} members",
     "roleOwner": "Owner",
-    "roleAdmin": "Admin"
+    "roleAdmin": "Admin",
+    "viewProfileAria": "View {{name}}'s profile",
+    "compatibleMember": "You're a compatible match"
   },
   "circleList": {
     "sectionLabel": "Circle Chats",
