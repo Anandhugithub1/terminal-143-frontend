@@ -125,23 +125,44 @@ class SocketManager {
       return;
     }
 
-    this.ws = new WebSocket(`${WS_URL}?ticket=${encodeURIComponent(ticket)}`);
+    const attemptWs = this.ws = new WebSocket(`${WS_URL}?ticket=${encodeURIComponent(ticket)}`);
     let openedAt = null;
 
     // If neither onopen nor onclose ever fires for this attempt (a stalled
     // handshake, a proxy dropping the upgrade silently), force it closed so
     // `connecting` doesn't stay stuck true forever — see the constant's
-    // comment. ws.close() on a CONNECTING socket still fires onclose per the
-    // WebSocket spec, which is what actually clears `connecting` and
-    // schedules the next retry; this is just what breaks a hang open.
+    // comment. This does NOT just call ws.close() and wait for onclose to
+    // clean up: onclose itself is not guaranteed to fire for a socket that
+    // never finished opening (observed in the wild on some mobile network
+    // stacks/proxies) — relying on it here would just mean the hang has to
+    // fail twice (the original stall, then the forced close's own silent
+    // onclose) instead of once. So this clears `connecting`/state directly,
+    // detaches the dead socket's handlers so a LATE onclose can't double-
+    // fire cleanup against a connection attempt that's already been retried,
+    // and schedules the next attempt itself.
     this._clearConnectTimeout();
     this.connectTimeoutTimer = setTimeout(() => {
       socketTrace("connect-attempt-timeout", this);
       this.connectTimeoutTimer = null;
-      if (this.ws) this.ws.close();
+      attemptWs.onopen = null;
+      attemptWs.onmessage = null;
+      attemptWs.onclose = null;
+      attemptWs.onerror = null;
+      attemptWs.close();
+      if (this.ws === attemptWs) this.ws = null;
+      this.connecting = false;
+      this._stopHeartbeat();
+      this._setState(SocketState.CLOSED);
+      if (!this.explicitClose) this._scheduleReconnect();
     }, CONNECT_ATTEMPT_TIMEOUT_MS);
 
-    this.ws.onopen = () => {
+    attemptWs.onopen = () => {
+      // A timed-out attempt that gets superseded (this.ws reassigned to a
+      // newer attempt, or nulled by the timeout handler above) can still
+      // have its onopen fire late — a real-world race, not hypothetical,
+      // once the timeout path can run concurrently with a slow-but-not-dead
+      // handshake. Only apply this event if it's still the current attempt.
+      if (this.ws !== attemptWs) return;
       openedAt = Date.now();
       socketTrace("onopen", this);
       this._clearConnectTimeout();
@@ -152,7 +173,8 @@ class SocketManager {
       this._flushQueue();
     };
 
-    this.ws.onmessage = (event) => {
+    attemptWs.onmessage = (event) => {
+      if (this.ws !== attemptWs) return;
       let payload;
       try {
         payload = JSON.parse(event.data);
@@ -162,7 +184,11 @@ class SocketManager {
       this._dispatch(payload);
     };
 
-    this.ws.onclose = (event) => {
+    attemptWs.onclose = (event) => {
+      // Same staleness guard as onopen — a late onclose from an attempt the
+      // timeout already cleaned up must not re-schedule a second, redundant
+      // reconnect on top of the one the timeout handler already scheduled.
+      if (this.ws !== attemptWs) return;
       socketTrace("onclose", this, {
         code: event?.code ?? null,
         reason: event?.reason || null,
@@ -171,6 +197,7 @@ class SocketManager {
       });
       this._clearConnectTimeout();
       this.connecting = false;
+      this.ws = null;
       this._stopHeartbeat();
       this._setState(SocketState.CLOSED);
       if (!this.explicitClose) {
@@ -178,7 +205,7 @@ class SocketManager {
       }
     };
 
-    this.ws.onerror = () => {
+    attemptWs.onerror = () => {
       // onclose fires right after; reconnect handled there.
     };
   }
