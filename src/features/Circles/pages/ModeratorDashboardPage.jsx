@@ -264,7 +264,7 @@ export default function ModeratorDashboardPage() {
       {/* Header */}
       <div className="bg-white border-b border-gray-100 px-4 py-3 flex items-center gap-3 sticky top-0 z-10">
         <button
-          onClick={() => navigate(`/circles/${circleId}`)}
+          onClick={() => navigate(-1)}
           className="p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-gray-600" />

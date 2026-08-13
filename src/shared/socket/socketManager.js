@@ -109,9 +109,27 @@ class SocketManager {
     // every connection attempt, including reconnects. The auth cookie
     // rides along on this request; the ticket itself goes on the WS URL
     // since the upgrade request can't carry the cookie cross-site.
+    //
+    // axios's own `timeout` is not trusted to bound this on its own —
+    // CapacitorHttp patches the underlying transport on native, and other
+    // requests through it have already been observed not to behave exactly
+    // like a normal XHR/fetch (see the header-handling note in
+    // authInterceptors.js). If that request-timeout silently doesn't fire,
+    // this await never settles, `connecting` stays stuck true forever, and
+    // every later connect() call hits the guard above and does nothing —
+    // the same "Reconnecting..." hang CONNECT_ATTEMPT_TIMEOUT_MS exists to
+    // prevent, just one step earlier, before the WebSocket itself even
+    // exists to have its own timeout apply. Race the fetch against an
+    // independent timer so this stage can't hang regardless of what the
+    // HTTP layer does.
     let ticket;
     try {
-      ticket = await fetchConnectTicket();
+      ticket = await Promise.race([
+        fetchConnectTicket(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("ticket fetch timed out")), CONNECT_ATTEMPT_TIMEOUT_MS)
+        ),
+      ]);
     } catch {
       this.connecting = false;
       this._setState(SocketState.CLOSED);
