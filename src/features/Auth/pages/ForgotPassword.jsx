@@ -71,8 +71,8 @@ export const ForgotAndResetPassword = () => {
     confirmForgotPassword.mutate(
       {
         email,
-        ConfirmationCode,
-        Password: newPassword,
+        code: ConfirmationCode,
+        newPassword,
       },
       {
         onSuccess: () => {

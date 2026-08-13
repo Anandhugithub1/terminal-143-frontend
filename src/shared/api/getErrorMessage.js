@@ -83,6 +83,15 @@ export function getErrorMessage(err, fallbackKey = 'generic') {
   const retryAfterSeconds = data?.retryAfterSeconds;
   const hasRetryAfter = typeof retryAfterSeconds === 'number';
 
+  // OTP/password-reset verify lockout (auth-service's recordFailedAttempt —
+  // 5 wrong codes locks further attempts) is a 429 like any other rate limit,
+  // but reason: 'lockout' distinguishes it so the message can say "too many
+  // incorrect codes" rather than the generic "too many requests" — checked
+  // first since it's a narrower, more specific signal than either lookup below.
+  if (data?.reason === 'lockout' && hasRetryAfter) {
+    return t('errors:tooManyIncorrectCodes', { seconds: retryAfterSeconds });
+  }
+
   const messageKey = keyForBackendMessage(backendMessage);
   if (messageKey) {
     if (messageKey === 'tooManyRequests' && hasRetryAfter) {

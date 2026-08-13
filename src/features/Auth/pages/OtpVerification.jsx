@@ -7,15 +7,31 @@ import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import { getErrorMessage } from '../../../shared/api/getErrorMessage'
 
+// Fixed cooldown after any resend attempt (success or failure) — the
+// backend now rate-limits resend-otp (5/hr email, 3/hr SMS; see
+// auth-service/src/lambda/resend-otp.js), so disabling the button for a
+// stretch after every tap keeps normal use well under that limit rather
+// than just reacting to the 429 after the fact.
+const RESEND_COOLDOWN_SECONDS = 30
+
 const EmailOTPVerification = () => {
   const { t } = useTranslation('auth')
   const [code, setCode] = useState('')
+  const [resendCooldown, setResendCooldown] = useState(0)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const email = searchParams.get('email')
 
   const verifyOtp = useVerifyOtp()
   const resendOtp = useResendOtp()
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const timer = setInterval(() => {
+      setResendCooldown((s) => Math.max(0, s - 1))
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [resendCooldown])
 
   useEffect(() => {
     if (!email) {
@@ -40,7 +56,8 @@ const EmailOTPVerification = () => {
   }
 
   const handleResend = () => {
-    if (!email) return
+    if (!email || resendCooldown > 0) return
+    setResendCooldown(RESEND_COOLDOWN_SECONDS)
     resendOtp.mutate({ email })
   }
 const isPhone = email && /^\+?\d+$/.test(email);
@@ -81,11 +98,21 @@ const isPhone = email && /^\+?\d+$/.test(email);
           <button
             type="button"
             onClick={handleResend}
-            disabled={resendOtp.isPending || !email}
+            disabled={resendOtp.isPending || !email || resendCooldown > 0}
             className="text-sm font-medium text-pink-500 hover:text-pink-600 hover:underline disabled:text-pink-300 disabled:cursor-not-allowed transition-colors"
           >
-            {resendOtp.isPending ? t('otp.resending') : t('otp.resend')}
+            {resendOtp.isPending
+              ? t('otp.resending')
+              : resendCooldown > 0
+              ? t('otp.resendCooldown', { seconds: resendCooldown })
+              : t('otp.resend')}
           </button>
+
+          {resendOtp.isError && (
+            <p className="text-red-500 text-sm mt-2">
+              {getErrorMessage(resendOtp.error)}
+            </p>
+          )}
         </div>
 
         <p className="mt-6 text-center text-sm text-gray-500">

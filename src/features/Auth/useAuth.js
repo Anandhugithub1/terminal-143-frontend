@@ -53,11 +53,11 @@ export const useForgotPassword = () => {
 // ─── CONFIRM FORGOT PASSWORD ─────────────────
 export const useConfirmForgotPassword = () => {
   return useMutation({
-    mutationFn: ({ email, ConfirmationCode, Password }) =>
+    mutationFn: ({ email, code, newPassword }) =>
       apiConfirmForgotPassword({
         email,
-        ConfirmationCode,
-        Password,
+        code,
+        newPassword,
       }),
   });
 };

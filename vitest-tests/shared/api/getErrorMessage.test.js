@@ -44,4 +44,25 @@ describe('getErrorMessage', () => {
     const err = axiosError({ status: 404, data: { error: 'not found' } })
     expect(getErrorMessage(err)).toBe('errors:notFound')
   })
+
+  it('maps a lockout 429 (reason: "lockout") to the distinct tooManyIncorrectCodes key, not the generic one', () => {
+    const err = axiosError({
+      status: 429,
+      data: { error: 'Too many incorrect attempts', retryAfterSeconds: 1800, reason: 'lockout' },
+    })
+    expect(getErrorMessage(err)).toBe('errors:tooManyIncorrectCodes::{"seconds":1800}')
+  })
+
+  it('a lockout reason without retryAfterSeconds falls back to the generic tooManyRequests key', () => {
+    const err = axiosError({
+      status: 429,
+      data: { error: 'Too many incorrect attempts', reason: 'lockout' },
+    })
+    expect(getErrorMessage(err)).toBe('errors:tooManyRequests')
+  })
+
+  it('a plain 429 without reason: "lockout" still uses the ordinary tooManyRequestsWithRetry key', () => {
+    const err = axiosError({ status: 429, data: { error: 'Too many requests', retryAfterSeconds: 20 } })
+    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"seconds":20}')
+  })
 })
