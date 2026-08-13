@@ -91,6 +91,7 @@
     "turnChatOn": "Turn chat on",
     "turnChatOff": "Turn chat off",
     "viewMembersAria": "View {{name}} members",
+    "viewCircle": "View circle",
     "roleOwner": "Owner",
     "roleAdmin": "Admin",
     "viewProfileAria": "View {{name}}'s profile",

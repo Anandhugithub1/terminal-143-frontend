@@ -1,4 +1,4 @@
-import { Heart } from 'lucide-react'
+import { Heart, Users } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import Skeleton from 'react-loading-skeleton'
@@ -83,6 +83,22 @@ export default function CircleMembersSheet({ isOpen, onClose, circleId, circleNa
         <p className="text-base font-semibold text-gray-900 truncate">{circleName}</p>
         <p className="text-xs text-gray-400">{t('circleConversation.memberCount', { count: memberCount })}</p>
       </div>
+
+      <button
+        type="button"
+        onClick={() => {
+          onClose()
+          navigate(`/circles/${circleId}`)
+        }}
+        className="w-full flex items-center gap-3 px-4 py-2.5 border-b border-gray-100 hover:bg-gray-50 active:bg-gray-100 transition-colors shrink-0"
+      >
+        <span className="w-9 h-9 rounded-full shrink-0 flex items-center justify-center bg-primary/10">
+          <Users className="w-4 h-4 text-primary" />
+        </span>
+        <span className="flex-1 min-w-0 text-[14px] font-semibold text-gray-900 truncate text-left">
+          {t('circleConversation.viewCircle')}
+        </span>
+      </button>
 
       <div className="overflow-y-auto flex-1">
         {isLoading ? (
