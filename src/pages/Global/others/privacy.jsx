@@ -24,7 +24,7 @@ export default function Privacy() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-sm p-8 border-l-4 border-[#D2449D]">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-              <p className="text-gray-500 text-sm mb-8">Last updated: August 10, 2026</p>
+              <p className="text-gray-500 text-sm mb-8">Last updated: August 13, 2026</p>
 
               <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
 
@@ -56,7 +56,13 @@ export default function Privacy() {
                     <li>Usage data (features accessed, time spent, actions taken)</li>
                     <li>Location data, used to show your approximate distance to other users and to match you with people nearby (if you grant permission)</li>
                     <li>Cookies and similar technologies</li>
+                    <li>App and website usage analytics, collected via Google Firebase Analytics — see "Analytics" below</li>
                   </ul>
+
+                  <h3 className="text-xl font-semibold text-gray-800 mt-4 mb-2">Analytics:</h3>
+                  <p>
+                    We use Google Firebase Analytics to understand how the Service is used — for example, which screens are viewed, how often the app is opened, and general session activity. This is first-party product analytics: we use it to improve the Service and are not currently using it for ad personalization or cross-app/cross-device ad tracking. Firebase Analytics may collect your approximate location (derived from IP address, not precise GPS), device and app information, and an app-instance identifier. This data is processed by Google as our service provider and is not linked to your name or contact details in our analytics reporting.
+                  </p>
                   <p className="mt-3">
                     <strong>Your location is never shown to other users as an exact address or precise coordinate.</strong> Any distance or location shown to other users is approximate ("fuzzed" — for example, rounded to the nearest few kilometers or shown as a general area), not your exact position, and is not sufficient on its own to identify your precise home, workplace, or real-time location.
                   </p>
