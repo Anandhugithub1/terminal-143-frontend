@@ -11,6 +11,7 @@ import {
   createCircle,
   getCircle,
   getCircleStats,
+  updateCircle,
   searchCircles,
   searchCirclesByTag,
   searchPostsByTag
@@ -176,6 +177,21 @@ export function useCircleStats(circleId) {
     },
     enabled: !!circleId,
     staleTime: 1000 * 30,
+  });
+}
+
+// Owner/moderator/admin only — backend 403s anyone else (see the
+// updateCircle auth fix in circlesHandler.js). Used for visibility toggling
+// from the moderator dashboard as well as any future settings edit.
+export function useUpdateCircle(circleId) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload) => updateCircle(circleId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.circle(circleId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.circles });
+    },
   });
 }
 

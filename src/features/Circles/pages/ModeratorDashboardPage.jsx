@@ -13,12 +13,14 @@ import {
   Flame,
   Heart,
   MessageCircle,
+  Lock,
+  Globe,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { useCircle, useCircleStats } from "../hooks/useCircles";
+import { useCircle, useCircleStats, useUpdateCircle } from "../hooks/useCircles";
 import {
   useCircleRequests,
   useAcceptCircleRequest,
@@ -42,8 +44,7 @@ import {
   getTotalEngagement,
 } from "../utils/circleInsights";
 import { CircleHeaderSkeleton } from "../components/common/Skeletons";
-
-const MODERATOR_ROLES = ["owner", "moderator"];
+import { MODERATOR_ROLES } from "../constants/circleRoles";
 
 // Deterministic pastel background per user, so avatars without a photo still
 // read as distinct people in a list rather than all being the same gray
@@ -101,7 +102,9 @@ function RolePill({ role, t }) {
       </span>
     );
   }
-  if (role === "moderator") {
+  // 'admin' is the legacy equivalent of 'moderator' (see circleRoles.js) —
+  // same badge, since they carry identical power in this circle.
+  if (role === "moderator" || role === "admin") {
     return (
       <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full shrink-0">
         <ShieldCheck className="w-2.5 h-2.5" />
@@ -118,6 +121,11 @@ export default function ModeratorDashboardPage() {
   const navigate = useNavigate();
 
   const [removeConfirm, setRemoveConfirm] = useState(null);
+  // Holds the target visibility ('private' | 'public') while the confirm
+  // dialog is open — switching to private is the consequential direction
+  // (existing non-members lose feed access immediately), so both directions
+  // get a confirm rather than a bare instant toggle.
+  const [visibilityConfirm, setVisibilityConfirm] = useState(null);
 
   const { data: circle, isLoading: isLoadingCircle } = useCircle(circleId);
   const { data: stats, isLoading: isLoadingStats } = useCircleStats(circleId);
@@ -129,6 +137,7 @@ export default function ModeratorDashboardPage() {
   const rejectMutation = useRejectCircleRequest(circleId);
   const removeMutation = useRemoveCircleMember(circleId);
   const setRoleMutation = useSetCircleMemberRole(circleId);
+  const updateCircleMutation = useUpdateCircle(circleId);
 
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
   const isOwner = !!myId && myId === circle?.ownerId;
@@ -248,7 +257,29 @@ export default function ModeratorDashboardPage() {
     );
   };
 
+  const handleConfirmVisibilityChange = () => {
+    if (!visibilityConfirm) return;
+    updateCircleMutation.mutate(
+      { visibility: visibilityConfirm },
+      {
+        onSuccess: () => {
+          toast.success(
+            visibilityConfirm === "private"
+              ? t("moderatorDashboard.circleMadePrivateToast")
+              : t("moderatorDashboard.circleMadePublicToast")
+          );
+          setVisibilityConfirm(null);
+        },
+        onError: (err) => {
+          toast.error(getErrorMessage(err, "circleModerateFailed"));
+          setVisibilityConfirm(null);
+        },
+      }
+    );
+  };
+
   const pendingCount = stats?.requests?.pending ?? requests.length;
+  const isPrivate = circle?.visibility === "private";
 
   return (
     <div className="min-h-[100dvh] bg-gray-50 pb-10">
@@ -259,6 +290,27 @@ export default function ModeratorDashboardPage() {
         title={t("moderatorDashboard.removeMemberTitle")}
         message={t("moderatorDashboard.removeMemberMessage", { name: removeConfirm?.name || removeConfirm?.userId })}
         confirmLabel={t("moderatorDashboard.removeMember")}
+      />
+
+      <ConfirmDialog
+        isOpen={!!visibilityConfirm}
+        onClose={() => setVisibilityConfirm(null)}
+        onConfirm={handleConfirmVisibilityChange}
+        title={
+          visibilityConfirm === "private"
+            ? t("moderatorDashboard.makePrivateTitle")
+            : t("moderatorDashboard.makePublicTitle")
+        }
+        message={
+          visibilityConfirm === "private"
+            ? t("moderatorDashboard.makePrivateMessage")
+            : t("moderatorDashboard.makePublicMessage")
+        }
+        confirmLabel={
+          visibilityConfirm === "private"
+            ? t("moderatorDashboard.makePrivate")
+            : t("moderatorDashboard.makePublic")
+        }
       />
 
       {/* Header */}
@@ -311,6 +363,46 @@ export default function ModeratorDashboardPage() {
               />
             </div>
           )}
+        </div>
+
+        {/* Circle visibility — owner/moderator/admin only, matches the
+            updateCircle endpoint's role gate exactly. Both directions get a
+            confirm: flipping to private immediately cuts off non-members'
+            feed access, flipping to public opens it back up. */}
+        <div>
+          <h2 className="text-[11px] font-bold uppercase tracking-wide text-gray-400 mb-2 px-1">
+            {t("moderatorDashboard.visibility")}
+          </h2>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 flex items-center gap-3">
+            <div
+              className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                isPrivate ? "bg-primary/10" : "bg-emerald-50"
+              }`}
+            >
+              {isPrivate ? (
+                <Lock className="w-4 h-4 text-primary" />
+              ) : (
+                <Globe className="w-4 h-4 text-emerald-600" />
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-gray-900">
+                {isPrivate ? t("moderatorDashboard.private") : t("moderatorDashboard.public")}
+              </p>
+              <p className="text-xs text-gray-400">
+                {isPrivate
+                  ? t("moderatorDashboard.privateDescription")
+                  : t("moderatorDashboard.publicDescription")}
+              </p>
+            </div>
+            <button
+              onClick={() => setVisibilityConfirm(isPrivate ? "public" : "private")}
+              disabled={updateCircleMutation.isPending || !circle}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-60 transition-colors shrink-0 whitespace-nowrap"
+            >
+              {isPrivate ? t("moderatorDashboard.makePublic") : t("moderatorDashboard.makePrivate")}
+            </button>
+          </div>
         </div>
 
         {/* Insights — computed from the circle's most recent posts, not a
@@ -562,10 +654,14 @@ export default function ModeratorDashboardPage() {
             {!isLoadingMembers &&
               members.map((member, idx) => {
                 const isMemberOwner = member.role === "owner";
-                const isMemberModerator = member.role === "moderator";
+                // 'admin' is the legacy equivalent of 'moderator' (see
+                // circleRoles.js) — treated identically here so peer
+                // protection and the promote/demote label are symmetric
+                // across both role names, matching removeMember.js/setRole.js.
+                const isMemberModerator = member.role === "moderator" || member.role === "admin";
                 // A moderator cannot act on the owner or on a fellow
-                // moderator — matches removeMember.js/setRole.js exactly;
-                // only the owner sees controls on another moderator's row.
+                // moderator/admin — matches removeMember.js/setRole.js
+                // exactly; only the owner sees controls on that row.
                 const canActOnThisMember =
                   !isMemberOwner && (isOwner || (canModerate && !isMemberModerator));
 

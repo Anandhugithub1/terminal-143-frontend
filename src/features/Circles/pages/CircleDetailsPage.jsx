@@ -40,9 +40,8 @@ import { shareLink } from "../utils/share";
 import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
 import EmptyState from "../../../shared/components/EmptyState";
+import { MODERATOR_ROLES } from "../constants/circleRoles";
 import { toast } from "sonner";
-
-const MODERATOR_ROLES = ["owner", "moderator"];
 
 export default function CircleDetailsPage() {
   const { t } = useTranslation("circles");
