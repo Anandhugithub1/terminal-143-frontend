@@ -63,6 +63,18 @@ function keyForStatus(status) {
   return null;
 }
 
+// A raw retryAfterSeconds can be minutes or hours (e.g. a 5/hr rate-limit
+// window can leave ~3600s remaining) — showing "3600s" reads badly. Round up
+// to the coarsest unit that keeps the number small and legible; callers
+// interpolate this pre-formatted string rather than a bare seconds count.
+function formatRetryDuration(seconds) {
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.ceil(seconds / 60);
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.ceil(minutes / 60);
+  return `${hours}h`;
+}
+
 // getErrorMessage(err, fallbackKey?) -> translated string
 // fallbackKey lets a call site pick a more specific default (an errors.json
 // key) than the generic one when nothing else matches.
@@ -89,13 +101,13 @@ export function getErrorMessage(err, fallbackKey = 'generic') {
   // incorrect codes" rather than the generic "too many requests" — checked
   // first since it's a narrower, more specific signal than either lookup below.
   if (data?.reason === 'lockout' && hasRetryAfter) {
-    return t('errors:tooManyIncorrectCodes', { seconds: retryAfterSeconds });
+    return t('errors:tooManyIncorrectCodes', { duration: formatRetryDuration(retryAfterSeconds) });
   }
 
   const messageKey = keyForBackendMessage(backendMessage);
   if (messageKey) {
     if (messageKey === 'tooManyRequests' && hasRetryAfter) {
-      return t('errors:tooManyRequestsWithRetry', { seconds: retryAfterSeconds });
+      return t('errors:tooManyRequestsWithRetry', { duration: formatRetryDuration(retryAfterSeconds) });
     }
     return t(`errors:${messageKey}`);
   }
@@ -108,7 +120,7 @@ export function getErrorMessage(err, fallbackKey = 'generic') {
   const statusKey = status === 401 && fallbackKey !== 'generic' ? null : keyForStatus(status);
   if (statusKey) {
     if (statusKey === 'tooManyRequests' && hasRetryAfter) {
-      return t('errors:tooManyRequestsWithRetry', { seconds: retryAfterSeconds });
+      return t('errors:tooManyRequestsWithRetry', { duration: formatRetryDuration(retryAfterSeconds) });
     }
     return t(`errors:${statusKey}`);
   }

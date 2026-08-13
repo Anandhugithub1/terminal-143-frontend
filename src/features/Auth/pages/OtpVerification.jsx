@@ -58,7 +58,22 @@ const EmailOTPVerification = () => {
   const handleResend = () => {
     if (!email || resendCooldown > 0) return
     setResendCooldown(RESEND_COOLDOWN_SECONDS)
-    resendOtp.mutate({ email })
+    resendOtp.mutate(
+      { email },
+      {
+        onError: (err) => {
+          // A real 429 tells us exactly how long to wait — trust that over
+          // the fixed 30s guess. Extending (never shortening) the cooldown
+          // to match also stops the button re-enabling while the error
+          // message above it still says "try again in 42m," which read as
+          // contradictory/misleading.
+          const retryAfterSeconds = err?.response?.data?.retryAfterSeconds
+          if (typeof retryAfterSeconds === 'number' && retryAfterSeconds > RESEND_COOLDOWN_SECONDS) {
+            setResendCooldown(retryAfterSeconds)
+          }
+        },
+      }
+    )
   }
 const isPhone = email && /^\+?\d+$/.test(email);
   return (
@@ -103,6 +118,12 @@ const isPhone = email && /^\+?\d+$/.test(email);
           >
             {resendOtp.isPending
               ? t('otp.resending')
+              // The error message below already states the real wait time
+              // (from the backend's retryAfterSeconds) — showing the plain
+              // "Resend in Xs" countdown on top of that read as two
+              // conflicting hints, so it's suppressed while an error is active.
+              : resendOtp.isError
+              ? t('otp.resend')
               : resendCooldown > 0
               ? t('otp.resendCooldown', { seconds: resendCooldown })
               : t('otp.resend')}

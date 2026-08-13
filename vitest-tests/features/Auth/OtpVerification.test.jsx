@@ -32,7 +32,7 @@ vi.mock('../../../src/shared/api/getErrorMessage', () => ({ getErrorMessage }))
 const OtpVerification = (await import('../../../src/features/Auth/pages/OtpVerification')).default
 
 beforeEach(() => {
-  vi.clearAllMocks()
+  vi.resetAllMocks()
   verifyState = { isPending: false, isError: false, error: null, isSuccess: false }
   resendState = { isPending: false, isError: false, error: null }
   vi.useFakeTimers()
@@ -63,8 +63,44 @@ describe('OtpVerification resend UX', () => {
     const resendButton = screen.getByText('otp.resend')
     fireEvent.click(resendButton)
 
-    expect(resendMutate).toHaveBeenCalledWith({ email: 'alice@example.com' })
+    expect(resendMutate).toHaveBeenCalledWith({ email: 'alice@example.com' }, expect.objectContaining({ onError: expect.any(Function) }))
     expect(screen.getByText('otp.resendCooldown::{"seconds":30}')).toBeInTheDocument()
+  })
+
+  // Regression guard: a real 429 gives an authoritative wait time — showing
+  // the fixed 30s "Resend in Xs" countdown on top of an error that already
+  // says e.g. "try again in 42m" is contradictory (button would re-enable in
+  // seconds while the error claims minutes). The countdown label must be
+  // suppressed whenever an error is active; the error message is the only
+  // wait-time hint shown.
+  it('does not show the "Resend in Xs" countdown while a rate-limit error is active — only the error message', () => {
+    resendState = { isPending: false, isError: true, error: { response: { status: 429, data: { retryAfterSeconds: 2520 } } } }
+
+    render(<OtpVerification />)
+
+    expect(screen.queryByText(/otp.resendCooldown/)).not.toBeInTheDocument()
+    expect(screen.getByText('mapped: too many requests, retry in 30s')).toBeInTheDocument()
+  })
+
+  it('extends the disabled cooldown to match a real retryAfterSeconds longer than the fixed 30s guess', () => {
+    resendMutate.mockImplementation((_vars, { onError }) => {
+      onError({ response: { data: { retryAfterSeconds: 120 } } })
+    })
+
+    render(<OtpVerification />)
+    fireEvent.click(screen.getByText('otp.resend'))
+
+    act(() => {
+      vi.advanceTimersByTime(30000)
+    })
+    // Would have re-enabled at the fixed 30s mark if the real 120s wait
+    // hadn't overridden it.
+    expect(screen.queryByText('otp.resend')).not.toBeInTheDocument()
+
+    act(() => {
+      vi.advanceTimersByTime(90000)
+    })
+    expect(screen.getByText('otp.resend')).toBeInTheDocument()
   })
 
   it('re-enables resend once the cooldown elapses', () => {

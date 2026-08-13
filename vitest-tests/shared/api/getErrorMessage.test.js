@@ -25,9 +25,24 @@ describe('getErrorMessage', () => {
     expect(getErrorMessage(err)).toBe('errors:tooManyRequests')
   })
 
-  it('maps a 429 with retryAfterSeconds to the countdown key, interpolating seconds', () => {
+  it('maps a 429 with retryAfterSeconds to the countdown key, interpolating a formatted duration', () => {
     const err = axiosError({ status: 429, data: { error: 'Too many requests', retryAfterSeconds: 42 } })
-    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"seconds":42}')
+    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"duration":"42s"}')
+  })
+
+  it('formats a retryAfterSeconds in the minutes range (e.g. a 1hr window with ~44min left) as minutes, not raw seconds', () => {
+    const err = axiosError({ status: 429, data: { error: 'Too many requests', retryAfterSeconds: 2647 } })
+    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"duration":"45m"}')
+  })
+
+  it('formats a retryAfterSeconds over an hour as hours', () => {
+    const err = axiosError({ status: 429, data: { error: 'Too many requests', retryAfterSeconds: 7200 } })
+    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"duration":"2h"}')
+  })
+
+  it('rounds up rather than down so the shown wait is never shorter than the real one', () => {
+    const err = axiosError({ status: 429, data: { error: 'Too many requests', retryAfterSeconds: 61 } })
+    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"duration":"2m"}')
   })
 
   it('ignores a non-numeric retryAfterSeconds and falls back to the generic key', () => {
@@ -37,7 +52,7 @@ describe('getErrorMessage', () => {
 
   it('applies the retry countdown even when matched via the message-substring path (existing auth limiter)', () => {
     const err = axiosError({ status: 400, data: { error: 'Attempt limit exceeded, try later', retryAfterSeconds: 15 } })
-    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"seconds":15}')
+    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"duration":"15s"}')
   })
 
   it('still maps other statuses normally (unaffected by the new branch)', () => {
@@ -50,7 +65,7 @@ describe('getErrorMessage', () => {
       status: 429,
       data: { error: 'Too many incorrect attempts', retryAfterSeconds: 1800, reason: 'lockout' },
     })
-    expect(getErrorMessage(err)).toBe('errors:tooManyIncorrectCodes::{"seconds":1800}')
+    expect(getErrorMessage(err)).toBe('errors:tooManyIncorrectCodes::{"duration":"30m"}')
   })
 
   it('a lockout reason without retryAfterSeconds falls back to the generic tooManyRequests key', () => {
@@ -63,6 +78,6 @@ describe('getErrorMessage', () => {
 
   it('a plain 429 without reason: "lockout" still uses the ordinary tooManyRequestsWithRetry key', () => {
     const err = axiosError({ status: 429, data: { error: 'Too many requests', retryAfterSeconds: 20 } })
-    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"seconds":20}')
+    expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"duration":"20s"}')
   })
 })
