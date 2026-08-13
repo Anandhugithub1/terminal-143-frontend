@@ -67,6 +67,7 @@
     "messageDeleted": "Сообщение удалено",
     "sending": "Отправка…",
     "sendFailed": "Не отправлено",
+    "sendRateLimited": "Слишком быстро — нажмите, чтобы повторить",
     "retrySend": "Нажмите, чтобы повторить"
   },
   "circleConversation": {

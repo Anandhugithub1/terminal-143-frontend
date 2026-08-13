@@ -75,7 +75,13 @@ function MessageBubble({ msg, onLongPress, onRetry, t }) {
             failed ? 'text-rose-500' : msg.mine ? 'text-white/70' : 'text-gray-400'
           }`}
         >
-          {failed ? t('conversation.sendFailed') : pending ? t('conversation.sending') : formatMessageTime(msg.sentAt)}
+          {failed
+            ? msg.failReason === 'rateLimited'
+              ? t('conversation.sendRateLimited')
+              : t('conversation.sendFailed')
+            : pending
+            ? t('conversation.sending')
+            : formatMessageTime(msg.sentAt)}
         </p>
       </div>
     </div>
@@ -347,6 +353,14 @@ export default function ChatConversationPage() {
     if (payload?.clientMessageId) markSendFailed(payload.clientMessageId)
   })
 
+  // chat-service's explicit push when a send is rejected by the per-chat
+  // token-bucket rate limit (see sendMessage.js) — fires immediately rather
+  // than waiting the full ACK_TIMEOUT_MS, since the backend already knows
+  // the send was rejected rather than merely slow/lost.
+  useSocketEvent('RATE_LIMITED', (payload) => {
+    if (payload?.clientMessageId) markSendFailed(payload.clientMessageId, 'rateLimited')
+  })
+
   // Fallback timers must not outlive the component (or a conversation
   // switch — a stale timer firing for the wrong matchId's now-unmounted
   // bubbles is harmless since setLiveMessages targets state that's already
@@ -418,17 +432,23 @@ export default function ChatConversationPage() {
 
   const online = !!previews[matchId]?.online
 
-  // Marks a locally-sent bubble failed (both on ack timeout and on the
-  // socket layer's own SEND_FAILED for a torn-down queue entry) and clears
-  // whichever fallback timer is still tracking it.
-  function markSendFailed(clientMessageId) {
+  // Marks a locally-sent bubble failed (on ack timeout, the socket layer's
+  // own SEND_FAILED for a torn-down queue entry, or a backend RATE_LIMITED
+  // rejection) and clears whichever fallback timer is still tracking it.
+  // reason distinguishes why for the bubble label — plain timeout/teardown
+  // vs an explicit rate-limit rejection from chat-service.
+  function markSendFailed(clientMessageId, reason = 'timeout') {
     const timer = ackTimersRef.current.get(clientMessageId)
     if (timer) {
       clearTimeout(timer)
       ackTimersRef.current.delete(clientMessageId)
     }
     setLiveMessages((prev) =>
-      prev.map((m) => (m.clientMessageId === clientMessageId && m.status === 'pending' ? { ...m, status: 'failed' } : m))
+      prev.map((m) =>
+        m.clientMessageId === clientMessageId && m.status === 'pending'
+          ? { ...m, status: 'failed', failReason: reason }
+          : m
+      )
     )
   }
 

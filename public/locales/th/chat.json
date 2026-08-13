@@ -67,6 +67,7 @@
     "messageDeleted": "ลบข้อความแล้ว",
     "sending": "กำลังส่ง…",
     "sendFailed": "ส่งไม่สำเร็จ",
+    "sendRateLimited": "ส่งเร็วเกินไป — แตะเพื่อลองอีกครั้ง",
     "retrySend": "แตะเพื่อลองอีกครั้ง"
   },
   "circleConversation": {

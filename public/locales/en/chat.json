@@ -67,6 +67,7 @@
     "messageDeleted": "Message deleted",
     "sending": "Sending…",
     "sendFailed": "Not sent",
+    "sendRateLimited": "Sending too fast — tap to retry",
     "retrySend": "Tap to retry",
     "reconnecting": "Reconnecting…"
   },

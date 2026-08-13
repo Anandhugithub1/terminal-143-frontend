@@ -6,6 +6,7 @@
   "notFound": "We couldn't find what you were looking for.",
   "conflict": "This already exists.",
   "tooManyRequests": "You're doing that too often. Please wait a moment and try again.",
+  "tooManyRequestsWithRetry": "You're doing that too often. Try again in {{seconds}}s.",
   "server": "Something went wrong on our end. Please try again shortly.",
   "badRequest": "Please check your input and try again.",
   "generic": "Something went wrong. Please try again.",

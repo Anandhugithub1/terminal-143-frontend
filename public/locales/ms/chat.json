@@ -67,6 +67,7 @@
     "messageDeleted": "Mesej dipadam",
     "sending": "Menghantar…",
     "sendFailed": "Tidak dihantar",
+    "sendRateLimited": "Terlalu pantas — ketik untuk cuba semula",
     "retrySend": "Ketik untuk cuba semula"
   },
   "circleConversation": {

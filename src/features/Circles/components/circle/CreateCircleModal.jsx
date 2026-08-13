@@ -13,6 +13,8 @@ import {
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
+import { getErrorMessage } from "../../../../shared/api/getErrorMessage";
+
 import {
   circleCategories
 } from "../../constants/circleCategories";
@@ -328,11 +330,10 @@ export default function CreateCircleModal({
         );
 
         toast.error(
-          err
-            ?.response
-            ?.data
-            ?.error ||
-            t("createCircleModal.failedToCreate")
+          getErrorMessage(
+            err,
+            "circleRequestFailed"
+          )
         );
       }
     };

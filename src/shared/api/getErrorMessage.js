@@ -75,8 +75,21 @@ export function getErrorMessage(err, fallbackKey = 'generic') {
     (typeof data?.message === 'string' && data.message) ||
     null;
 
+  // A rate-limited response carries a retryAfterSeconds field alongside the
+  // message/status — checked ahead of the generic key lookups below so a 429
+  // with a known wait time gets the more specific countdown string instead of
+  // the plain "too many requests" one, for both the message-substring match
+  // (e.g. the pre-existing auth attempt-limiter) and the status-code match.
+  const retryAfterSeconds = data?.retryAfterSeconds;
+  const hasRetryAfter = typeof retryAfterSeconds === 'number';
+
   const messageKey = keyForBackendMessage(backendMessage);
-  if (messageKey) return t(`errors:${messageKey}`);
+  if (messageKey) {
+    if (messageKey === 'tooManyRequests' && hasRetryAfter) {
+      return t('errors:tooManyRequestsWithRetry', { seconds: retryAfterSeconds });
+    }
+    return t(`errors:${messageKey}`);
+  }
 
   const status = err?.response?.status;
   // 401 defaults to "session expired," which is wrong for a call site like
@@ -84,7 +97,12 @@ export function getErrorMessage(err, fallbackKey = 'generic') {
   // session to expire. An explicit fallbackKey signals that case — honor it
   // instead of the generic status mapping.
   const statusKey = status === 401 && fallbackKey !== 'generic' ? null : keyForStatus(status);
-  if (statusKey) return t(`errors:${statusKey}`);
+  if (statusKey) {
+    if (statusKey === 'tooManyRequests' && hasRetryAfter) {
+      return t('errors:tooManyRequestsWithRetry', { seconds: retryAfterSeconds });
+    }
+    return t(`errors:${statusKey}`);
+  }
 
   if (err?.code === 'ECONNABORTED') return t('errors:timeout');
   if (!err?.response && (err?.message === 'Network Error' || err?.code === 'ERR_NETWORK')) {

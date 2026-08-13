@@ -67,6 +67,7 @@
     "messageDeleted": "消息已删除",
     "sending": "发送中…",
     "sendFailed": "未发送",
+    "sendRateLimited": "发送太快 — 点击重试",
     "retrySend": "点击重试"
   },
   "circleConversation": {
