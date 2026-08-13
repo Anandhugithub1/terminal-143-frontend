@@ -24,6 +24,16 @@ allprojects {
     }
 }
 
+// Build output is redirected outside OneDrive: the sync client locks/deletes
+// files in this tree while Gradle is mid-write (many small resource files
+// under merged_res_blame_folder / incremental), causing intermittent
+// AccessDeniedException / "Unable to delete directory" build failures.
+def externalBuildDir = new File("C:/GradleBuilds/terminal-143-frontend")
+rootProject.buildDir = new File(externalBuildDir, "root")
+subprojects {
+    project.buildDir = new File(externalBuildDir, project.name)
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
