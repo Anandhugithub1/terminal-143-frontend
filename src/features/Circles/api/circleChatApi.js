@@ -159,3 +159,39 @@ export function appendToCircleHistoryCache(queryClient, circleId, message) {
     }
   })
 }
+
+// Mirrors 1:1's useDeleteMessage.onSuccess cache patch — the deleted
+// message could be on any page, not just the newest, since a delete can
+// target something scrolled past long ago.
+export function removeFromCircleHistoryCache(queryClient, circleId, messageId) {
+  queryClient.setQueryData(queryKeys.circleChatHistory(circleId), (old) => {
+    if (!old) return old
+    return {
+      ...old,
+      pages: old.pages.map((page) => ({
+        ...page,
+        messages: page.messages.filter((msg) => msg.id !== messageId),
+      })),
+    }
+  })
+}
+
+// Delete-for-EVERYONE (unlike 1:1's delete-for-me) — only the message's own
+// author can call this successfully; chat-service 403s anyone else. See
+// deleteCircleMessage.js.
+export function useDeleteCircleMessage(circleId) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (messageId) => {
+      const res = await chatApi.delete(
+        `/circles/${circleId}/messages/${messageId}`,
+        { withCredentials: true }
+      )
+      return res.data
+    },
+    onSuccess: (_data, messageId) => {
+      removeFromCircleHistoryCache(queryClient, circleId, messageId)
+    },
+  })
+}

@@ -93,7 +93,13 @@
     "roleOwner": "Owner",
     "roleAdmin": "Admin",
     "viewProfileAria": "View {{name}}'s profile",
-    "compatibleMember": "You're a compatible match"
+    "compatibleMember": "You're a compatible match",
+    "deleteMessageTitle": "Delete this message?",
+    "deleteMessageBody": "This removes it for everyone in the circle. This can't be undone.",
+    "deleteMessageAction": "Delete for everyone",
+    "cancelAction": "Cancel",
+    "messageDeleted": "Message deleted",
+    "deleteMessageFailed": "Couldn't delete message. Please try again."
   },
   "circleList": {
     "sectionLabel": "Circle Chats",

@@ -1,18 +1,23 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import { AlertCircle, MessageCircleOff, Send, WifiOff } from 'lucide-react'
+import { AlertCircle, MessageCircleOff, Send, Trash2, WifiOff } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import {
   useCircleChatHistory,
   useCircleMembers,
+  useDeleteCircleMessage,
   appendToCircleHistoryCache,
+  removeFromCircleHistoryCache,
   normalizeIncomingCircleMessage,
 } from '../../api/circleChatApi'
 import { useCircleChatPreviews } from '../../hooks/useCircleChatPreviews'
 import { useSocket, useSocketEvent } from '../../../../shared/socket/useSocket'
+import { useLongPress } from '../../../Chat/hooks/useLongPress'
+import BottomSheetModal from '../../../../shared/components/BottomSheetModal'
 import DateDivider from '../../../Chat/components/DateDivider'
 import { formatDateDivider, isNewDay } from '../../../Chat/utils/formatMessageDate'
 import { getCurrentUsername } from '../../../../shared/utils/getCurrentUsername'
@@ -66,12 +71,16 @@ function goToProfile(navigate, profileLink) {
 // sender isCompatible (a mutual gender/preference match with the viewer,
 // computed server-side) — everyone else stays visible but not tappable, by
 // design. The bubble body itself is never a tap target either way.
-function CircleMessageBubble({ msg, member, t, onRetry, navigate }) {
+function CircleMessageBubble({ msg, member, t, onRetry, onLongPress, navigate }) {
   const failed = msg.status === 'failed'
   const pending = msg.status === 'pending'
   const color = colorForMember(msg.senderId)
   const displayName = member?.name || msg.senderId
   const canViewProfile = !msg.mine && member?.isCompatible && member?.profileLink
+  // Only your own messages can be long-pressed to delete — delete-for-
+  // everyone in a circle is ownership-gated server-side too (see
+  // deleteCircleMessage.js), this is just the client-side entry point.
+  const longPressHandlers = useLongPress(msg.mine ? () => onLongPress(msg) : () => {})
 
   const avatar = member?.avatarUrl ? (
     <img
@@ -131,7 +140,8 @@ function CircleMessageBubble({ msg, member, t, onRetry, navigate }) {
           )
         )}
         <div
-          className={`px-4 py-2 rounded-2xl text-sm select-none transition-opacity ${pending ? 'opacity-60' : ''} ${
+          {...(msg.mine ? longPressHandlers : {})}
+          className={`px-4 py-2 rounded-2xl text-sm select-none touch-none transition-opacity ${pending ? 'opacity-60' : ''} ${
             failed
               ? 'bg-rose-50 text-rose-900 border border-rose-200 rounded-br-sm'
               : msg.mine
@@ -179,10 +189,12 @@ export default function CircleChatThread({ circleId, circleName }) {
   const { previews, markRead, recordSentMessage } = useCircleChatPreviews()
   const chatEnabled = previews[circleId]?.chatEnabled !== false
   const { byUserId: members } = useCircleMembers(circleId)
+  const { mutate: deleteCircleMessage, isPending: isDeleting } = useDeleteCircleMessage(circleId)
 
   const [liveMessages, setLiveMessages] = useState([])
   const liveMessagesRef = useRef([])
   liveMessagesRef.current = liveMessages
+  const [messageToDelete, setMessageToDelete] = useState(null)
   const [draft, setDraft] = useState('')
   const scrollRef = useRef(null)
   const hasScrolledRef = useRef(false)
@@ -252,6 +264,18 @@ export default function CircleChatThread({ circleId, circleName }) {
     markRead(circleId)
     if (msg.id) send({ action: 'readCircleReceipt', circleId, messageId: msg.id })
     queryClient.invalidateQueries({ queryKey: ['circleChatUnread'] })
+  })
+
+  // Someone else's delete-for-everyone landing live — this thread never
+  // sent the request (that's useDeleteCircleMessage's onSuccess, which
+  // already patched the cache for the deleter's own view), so this is the
+  // ONLY path that removes the message from every OTHER open viewer's
+  // screen without them needing to refetch.
+  useSocketEvent('CIRCLE_MESSAGE_DELETED', (payload) => {
+    const { circleId: eventCircleId, messageId } = payload || {}
+    if (!eventCircleId || eventCircleId !== circleId || !messageId) return
+    setLiveMessages((prev) => prev.filter((m) => m.id !== messageId))
+    removeFromCircleHistoryCache(queryClient, circleId, messageId)
   })
 
   useSocketEvent('SENT_ACK', (payload) => {
@@ -382,6 +406,33 @@ export default function CircleChatThread({ circleId, circleName }) {
     sendBubble(msg.id, msg.text)
   }
 
+  function handleConfirmDelete() {
+    if (!messageToDelete) return
+    const id = messageToDelete.id
+
+    // A pending/failed bubble hasn't been assigned a real server messageId
+    // yet — nothing to call the delete endpoint with, just drop it locally,
+    // same as 1:1's identical case.
+    if (messageToDelete.status && messageToDelete.status !== 'sent') {
+      setLiveMessages((prev) => prev.filter((m) => m.id !== id))
+      setMessageToDelete(null)
+      toast.success(t('circleConversation.messageDeleted'))
+      return
+    }
+
+    deleteCircleMessage(id, {
+      onSuccess: () => {
+        setLiveMessages((prev) => prev.filter((m) => m.id !== id))
+        setMessageToDelete(null)
+        toast.success(t('circleConversation.messageDeleted'))
+      },
+      onError: () => {
+        setMessageToDelete(null)
+        toast.error(t('circleConversation.deleteMessageFailed'))
+      },
+    })
+  }
+
   function handleSend(e) {
     e.preventDefault()
     if (!chatEnabled) return
@@ -446,7 +497,7 @@ export default function CircleChatThread({ circleId, circleName }) {
             {messages.map((msg, index) => (
               <div key={msg.id}>
                 {isNewDay(messages, index) && <DateDivider label={formatDateDivider(msg.sentAt, t)} />}
-                <CircleMessageBubble msg={msg} member={members.get(msg.senderId)} t={t} onRetry={handleRetry} navigate={navigate} />
+                <CircleMessageBubble msg={msg} member={members.get(msg.senderId)} t={t} onRetry={handleRetry} onLongPress={setMessageToDelete} navigate={navigate} />
               </div>
             ))}
           </>
@@ -480,6 +531,40 @@ export default function CircleChatThread({ circleId, circleName }) {
           <p className="flex-1 text-sm text-gray-500">{t('circleConversation.chatDisabled')}</p>
         </div>
       )}
+
+      {/* Delete-for-everyone confirmation — only reachable via long-press on
+          your own message (see CircleMessageBubble's useLongPress gate). */}
+      <BottomSheetModal
+        isOpen={!!messageToDelete}
+        onClose={() => setMessageToDelete(null)}
+        centered
+        panelClassName="rounded-2xl overflow-hidden p-5"
+      >
+        <h2 className="text-base font-semibold text-gray-900 mb-2">
+          {t('circleConversation.deleteMessageTitle')}
+        </h2>
+        <p className="text-sm text-gray-500 mb-5">
+          {t('circleConversation.deleteMessageBody')}
+        </p>
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={handleConfirmDelete}
+            disabled={isDeleting}
+            className="w-full py-3 rounded-full bg-rose-600 text-white text-sm font-semibold disabled:opacity-40"
+          >
+            <span className="inline-flex items-center gap-1.5 justify-center">
+              <Trash2 className="w-4 h-4" />
+              {t('circleConversation.deleteMessageAction')}
+            </span>
+          </button>
+          <button
+            onClick={() => setMessageToDelete(null)}
+            className="w-full py-3 rounded-full bg-gray-100 text-gray-700 text-sm font-semibold"
+          >
+            {t('circleConversation.cancelAction')}
+          </button>
+        </div>
+      </BottomSheetModal>
     </div>
   )
 }
