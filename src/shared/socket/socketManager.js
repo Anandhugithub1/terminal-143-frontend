@@ -435,6 +435,16 @@ class SocketManager {
     socketTrace("teardown", this, { caller: new Error().stack?.split("\n")[2]?.trim() ?? null });
     this._stopHeartbeat();
     this._clearConnectTimeout();
+    // A release()/closeSession()/_suspend() can land while a connect() call
+    // is still in flight (awaiting the ticket fetch, or mid-handshake before
+    // its own timeout fires) — without resetting this here, that in-flight
+    // attempt's `connecting = true` outlives the teardown. The next acquire()
+    // sees state IDLE and calls connect() again, but that call hits the
+    // `if (this.connecting) return` guard and does nothing — permanently,
+    // since nothing left running will ever clear the flag. Confirmed via
+    // device logs: state stuck "idle", readyState "no-socket", connecting
+    // true, with every subsequent resume/visibilitychange/send a no-op.
+    this.connecting = false;
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
