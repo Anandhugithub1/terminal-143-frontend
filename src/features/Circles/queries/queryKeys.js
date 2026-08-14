@@ -92,5 +92,11 @@ export const queryKeys =
     circleId => [
       'circleStats',
       circleId
+    ],
+
+  myCircleRequestStatus:
+    circleId => [
+      'myCircleRequestStatus',
+      circleId
     ]
 };

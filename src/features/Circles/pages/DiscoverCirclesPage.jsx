@@ -73,6 +73,19 @@ export default function DiscoverCirclesPage() {
   };
 
   const handleJoin = (circle) => {
+    // Private circles are excluded from both the curated starter list
+    // (onboardingCircles.js filters to visibility === "public") and search
+    // results (circleSearchIndex.js never indexes a private circle), so
+    // this instant-join path should be unreachable for one today. Kept as
+    // a defensive branch rather than an assumption: if a private circle's
+    // card ever does render here, send the user to its details page (which
+    // has the real request-to-join flow, message field included) instead
+    // of instant-joining into a guaranteed 403.
+    if (circle.visibility === "private") {
+      navigate(`/circles/${circle.circleId}`);
+      return;
+    }
+
     setJoiningId(circle.circleId);
     joinCircle(circle.circleId, {
       onSuccess: () => {
@@ -210,6 +223,8 @@ export default function DiscoverCirclesPage() {
                         ? t("discoverCircles.joining")
                         : isJoined
                         ? t("circleSearch.joinedBadge")
+                        : circle.visibility === "private"
+                        ? t("discoverCircles.requestToJoin")
                         : t("discoverCircles.joinCircle")}
                     </button>
                   </div>

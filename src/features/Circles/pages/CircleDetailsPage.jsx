@@ -25,7 +25,7 @@ import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import ConfirmDialog from "../components/common/ConfirmDialog";
 import { useCircle, useCircles } from "../hooks/useCircles";
-import { useJoinCircle, useLeaveCircle, useRequestJoinCircle } from "../hooks/useMembership";
+import { useJoinCircle, useLeaveCircle, useRequestJoinCircle, useMyCircleRequestStatus } from "../hooks/useMembership";
 import { usePosts, useUpdatePost, useDeletePost } from "../hooks/usePosts";
 import { useCircleMembers } from "../api/circleChatApi";
 import { getPost } from "../api/postsApi";
@@ -97,11 +97,14 @@ export default function CircleDetailsPage() {
   const myRole = isOwner ? "owner" : membersByUserId.get(myId)?.role ?? null;
   const canModerate = MODERATOR_ROLES.includes(myRole);
 
-  // Tracks a request already sent this session so the CTA flips to "pending"
-  // without waiting on a dedicated GET — the backend has no "my request
-  // status" endpoint, and re-deriving it from useCircleRequests would need
-  // moderator role the requester doesn't have.
-  const [justRequested, setJustRequested] = useState(false);
+  // Persisted server-side (GET /circles/{id}/requests/me — any caller may
+  // check their own status, no moderator role needed), so the pending
+  // indicator survives a refresh or navigating away and back, unlike the
+  // old local-only React state this replaced.
+  const { data: myRequestStatus } = useMyCircleRequestStatus(
+    !isJoined && isPrivate ? circleId : null
+  );
+  const hasPendingRequest = myRequestStatus?.status === "pending";
 
   if (isLoading && !data) {
     return <CircleHeaderSkeleton />;
@@ -147,7 +150,9 @@ export default function CircleDetailsPage() {
           } else {
             toast.success(t("circleDetails.requestSentToast", { name: data.name }));
           }
-          setJustRequested(true);
+          // No local state to flip here — useRequestJoinCircle's onSuccess
+          // already invalidates myCircleRequestStatus, and that refetch is
+          // what actually drives hasPendingRequest below.
           setRequestMessage("");
         },
         onError: (err) => {
@@ -479,9 +484,11 @@ export default function CircleDetailsPage() {
         {!isJoined && (
         <div className="bg-white rounded-2xl shadow-lg p-3 -mt-7">
           {isPrivate ? (
-            justRequested ? (
+            hasPendingRequest ? (
               /* Pending state, not a dead end — no re-request button, just a
-                 status banner, so it's unambiguous the request went through. */
+                 status banner, so it's unambiguous the request went through.
+                 Persisted server-side (useMyCircleRequestStatus), so this
+                 survives a refresh instead of resetting to the form. */
               <div className="flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-100 p-3">
                 <Lock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <div>
@@ -491,6 +498,9 @@ export default function CircleDetailsPage() {
               </div>
             ) : (
               <div className="space-y-2">
+                {myRequestStatus?.status === "rejected" && (
+                  <p className="text-xs text-gray-500">{t("circleDetails.requestPreviouslyDeclined")}</p>
+                )}
                 <textarea
                   value={requestMessage}
                   onChange={(e) => {

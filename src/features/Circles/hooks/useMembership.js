@@ -11,6 +11,7 @@ import {
   leaveCircle,
   requestJoinCircle,
   listCircleRequests,
+  getMyCircleRequestStatus,
   acceptCircleRequest,
   rejectCircleRequest,
   removeCircleMember,
@@ -50,9 +51,33 @@ useLeaveCircle() {
 // Private circles only — joinCircle 403s on those, this is the follow-up
 // call the UI makes instead. Does not touch queryKeys.circles: a pending
 // request is not membership, so "my circles" must not change yet.
+// Invalidates myCircleRequestStatus so the pending indicator picks up
+// immediately rather than waiting out its own staleTime.
 export function useRequestJoinCircle() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ({ circleId, message }) => requestJoinCircle(circleId, message),
+    onSuccess: (_data, { circleId }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.myCircleRequestStatus(circleId) });
+    },
+  });
+}
+
+// Any member's own request status for a circle — 'none' | 'pending' |
+// 'accepted' | 'rejected'. Persists the pending indicator across a
+// refresh/navigation, unlike the old local-only React state. staleTime
+// mirrors useCircleRequests: a status the requester is actively watching
+// for should feel close to live.
+export function useMyCircleRequestStatus(circleId) {
+  return useQuery({
+    queryKey: queryKeys.myCircleRequestStatus(circleId),
+    queryFn: async () => {
+      const res = await getMyCircleRequestStatus(circleId);
+      return res.data;
+    },
+    enabled: !!circleId,
+    staleTime: 1000 * 15,
   });
 }
 

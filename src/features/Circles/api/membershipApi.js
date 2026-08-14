@@ -31,6 +31,17 @@ circleId =>
     `${BASE}/${circleId}/requests`
   );
 
+// Any authenticated caller may check their OWN request status (no
+// moderator role needed) — returns { status: 'none' | 'pending' |
+// 'accepted' | 'rejected', message?, createdAt? }. Lets the UI persist a
+// pending indicator across a refresh/navigation instead of only tracking
+// it in local React state.
+export const getMyCircleRequestStatus =
+circleId =>
+  api.get(
+    `${BASE}/${circleId}/requests/me`
+  );
+
 export const acceptCircleRequest =
 (circleId, userId) =>
   api.post(

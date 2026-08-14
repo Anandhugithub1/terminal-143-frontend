@@ -33,6 +33,7 @@
     "searchPlaceholderWithTags": "Search circles or #tag...",
     "joining": "Joining...",
     "joinCircle": "Join Circle",
+    "requestToJoin": "Request to Join",
     "searching": "Searching…",
     "memberCount": "{{count}} members"
   },
@@ -130,6 +131,7 @@
     "requestAlreadyPendingToast": "You already have a pending request for this circle",
     "requestPendingTitle": "Request pending",
     "requestPendingBody": "A moderator will review your request. You'll be notified either way.",
+    "requestPreviouslyDeclined": "Your last request here was declined — you can send a new one.",
     "removePostTitle": "Remove this post?",
     "removePostMessage": "This post will be removed from the circle. The author will not be notified.",
     "removePost": "Remove Post",
