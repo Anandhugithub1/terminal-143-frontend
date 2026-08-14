@@ -20,12 +20,18 @@ function RoleBadge({ role, t }) {
 // server sends a full URL (profileLink is persisted as `${BASE_URL}/profile/
 // {username}`), so navigate by its pathname; fall back to the raw string if
 // URL parsing fails for any reason.
+//
+// Unlike the 1:1 chat contexts, circle members are only "compatible"
+// (mutual preference match), not necessarily already matched — so, unlike
+// those callers, we don't pass isMatch:true here. That flag hides the
+// send-request action button on PublicProfile, and compatible circle
+// members should still be able to send a match request from their profile.
 function goToProfile(navigate, profileLink) {
   if (!profileLink) return
   try {
-    navigate(new URL(profileLink).pathname, { state: { isMatch: true } })
+    navigate(new URL(profileLink).pathname)
   } catch {
-    navigate(profileLink, { state: { isMatch: true } })
+    navigate(profileLink)
   }
 }
 

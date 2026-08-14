@@ -53,13 +53,15 @@ function formatMessageTime(iso) {
 }
 
 // Same link-parsing fallback as ChatConversationPage's goToProfile / the
-// member sheet's version.
+// member sheet's version. No isMatch:true here — circle members are only
+// "compatible" (mutual preference match), not necessarily already matched,
+// so the profile page's send-request action button should still show.
 function goToProfile(navigate, profileLink) {
   if (!profileLink) return
   try {
-    navigate(new URL(profileLink).pathname, { state: { isMatch: true } })
+    navigate(new URL(profileLink).pathname)
   } catch {
-    navigate(profileLink, { state: { isMatch: true } })
+    navigate(profileLink)
   }
 }
 
