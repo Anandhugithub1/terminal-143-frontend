@@ -320,6 +320,8 @@
     "circleMadePrivateToast": "Circle is now private",
     "circleMadePublicToast": "Circle is now public",
     "founder": "Founder",
+    "adminBotName": "Circle Admin",
+    "adminBotSubtitle": "Automatically owns circles left without a moderator",
     "insights": "Insights",
     "activityTrend": "Activity, last 7 days",
     "engagementRate": "Engagement",

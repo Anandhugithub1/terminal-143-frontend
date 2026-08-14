@@ -15,6 +15,7 @@ import {
   MessageCircle,
   Lock,
   Globe,
+  Bot,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -44,7 +45,7 @@ import {
   getTotalEngagement,
 } from "../utils/circleInsights";
 import { CircleHeaderSkeleton } from "../components/common/Skeletons";
-import { MODERATOR_ROLES } from "../constants/circleRoles";
+import { MODERATOR_ROLES, isCircleAdminBot } from "../constants/circleRoles";
 
 // Deterministic pastel background per user, so avatars without a photo still
 // read as distinct people in a list rather than all being the same gray
@@ -659,11 +660,17 @@ export default function ModeratorDashboardPage() {
                 // protection and the promote/demote label are symmetric
                 // across both role names, matching removeMember.js/setRole.js.
                 const isMemberModerator = member.role === "moderator" || member.role === "admin";
+                const isBot = isCircleAdminBot(member.userId);
                 // A moderator cannot act on the owner or on a fellow
                 // moderator/admin — matches removeMember.js/setRole.js
-                // exactly; only the owner sees controls on that row.
+                // exactly; only the owner sees controls on that row. The
+                // bot is never actionable at all: leaveCircle.js is the
+                // only thing that assigns or clears its ownership, not a
+                // moderator promote/remove click.
                 const canActOnThisMember =
-                  !isMemberOwner && (isOwner || (canModerate && !isMemberModerator));
+                  !isMemberOwner && !isBot && (isOwner || (canModerate && !isMemberModerator));
+
+                const displayName = isBot ? t("moderatorDashboard.adminBotName") : member.name || member.userId;
 
                 return (
                   <div
@@ -672,22 +679,31 @@ export default function ModeratorDashboardPage() {
                       idx !== members.length - 1 ? "border-b border-gray-50" : ""
                     }`}
                   >
-                    {member.avatarUrl ? (
+                    {isBot ? (
+                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                        <Bot className="w-5 h-5 text-gray-500" />
+                      </div>
+                    ) : member.avatarUrl ? (
                       <img
                         src={member.avatarUrl}
-                        alt={member.name || member.userId}
+                        alt={displayName}
                         className="w-10 h-10 rounded-full object-cover shrink-0"
                       />
                     ) : (
-                      <InitialAvatar name={member.name || member.userId} />
+                      <InitialAvatar name={displayName} />
                     )}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5 flex-wrap">
                         <p className="text-sm font-semibold text-gray-900 truncate">
-                          {member.name || member.userId}
+                          {displayName}
                         </p>
                         <RolePill role={member.role} t={t} />
                       </div>
+                      {isBot && (
+                        <p className="text-[11px] text-gray-400 truncate">
+                          {t("moderatorDashboard.adminBotSubtitle")}
+                        </p>
+                      )}
                     </div>
 
                     {canActOnThisMember ? (
@@ -714,7 +730,7 @@ export default function ModeratorDashboardPage() {
                         </button>
                       </div>
                     ) : (
-                      isMemberOwner && (
+                      isMemberOwner && !isBot && (
                         <span className="text-[11px] text-gray-300 font-medium shrink-0">
                           {t("moderatorDashboard.founder")}
                         </span>
