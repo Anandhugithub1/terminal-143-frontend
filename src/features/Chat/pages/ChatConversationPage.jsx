@@ -597,7 +597,10 @@ export default function ChatConversationPage() {
       className="flex flex-col bg-gray-50 h-[100dvh]"
       style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
     >
-      <header className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white">
+      <header
+        className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-white"
+        style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}
+      >
         <button
           onClick={() => navigate(-1)}
           className="p-1.5 -ml-1.5 hover:bg-gray-100 rounded-full transition-colors shrink-0"
