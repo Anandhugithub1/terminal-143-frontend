@@ -180,7 +180,7 @@ export default function ChatListPage() {
 
       {circleConversations.length > 0 && (
         <>
-          <div className="flex-1">
+          <div>
             <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
               {t('circleList.sectionLabel')}
             </p>
@@ -198,7 +198,7 @@ export default function ChatListPage() {
         </>
       )}
 
-      <div className="flex-1">
+      <div className={conversations.length === 0 ? 'flex-1 flex flex-col' : ''}>
         <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
           {t('list.chatSectionLabel')}
         </p>
