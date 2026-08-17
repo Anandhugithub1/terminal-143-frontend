@@ -41,7 +41,7 @@ export function useInfiniteMatches() {
   });
 
   const matches = useMemo(
-    () => query.data?.pages.flatMap((page) => page.matches) ?? [],
+    () => query.data?.pages?.flatMap((page) => page.matches) ?? [],
     [query.data]
   );
 

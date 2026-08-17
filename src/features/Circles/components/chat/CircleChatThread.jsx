@@ -143,7 +143,8 @@ function CircleMessageBubble({ msg, member, t, onRetry, onLongPress, navigate })
         )}
         <div
           {...(msg.mine ? longPressHandlers : {})}
-          className={`px-4 py-2 rounded-2xl text-sm select-none touch-none transition-opacity ${pending ? 'opacity-60' : ''} ${
+          style={{ touchAction: 'pan-y' }}
+          className={`px-4 py-2 rounded-2xl text-sm select-none transition-opacity ${pending ? 'opacity-60' : ''} ${
             failed
               ? 'bg-rose-50 text-rose-900 border border-rose-200 rounded-br-sm'
               : msg.mine

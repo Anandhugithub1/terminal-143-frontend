@@ -427,7 +427,7 @@ export default function CirclesHomePage() {
                         : chatPreview?.hasMessages
                           ? "read"
                           : "available",
-                    onClick: () => navigate(`/circles/${circle.circleId}/chat`),
+                    onClick: () => navigate(`/matches/circles/${circle.circleId}/chat`),
                     ariaLabel: t("circlesHome.openCircleChatAria", { name: circleName }),
                   };
               return (

@@ -262,7 +262,7 @@ export default function ChatListPage() {
                       circle={{ ...circle, name: getCircleName(circle.circleId, circle.name) }}
                       preview={circlePreviews[circle.circleId]}
                       index={index}
-                      onOpenChat={() => navigate(`/circles/${circle.circleId}/chat`)}
+                      onOpenChat={() => navigate(`/matches/circles/${circle.circleId}/chat`)}
                     />
                   ))}
                 </div>
@@ -311,7 +311,7 @@ export default function ChatListPage() {
                 circle={{ ...circle, name: getCircleName(circle.circleId, circle.name) }}
                 preview={circlePreviews[circle.circleId]}
                 index={index}
-                onOpenChat={() => navigate(`/circles/${circle.circleId}/chat`)}
+                onOpenChat={() => navigate(`/matches/circles/${circle.circleId}/chat`)}
               />
             ))}
             {!isCircleChatsExpanded && hiddenCircleConversations.length > 0 && (

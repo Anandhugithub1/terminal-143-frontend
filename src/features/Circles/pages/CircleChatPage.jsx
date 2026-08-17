@@ -36,7 +36,7 @@ export default function CircleChatPage() {
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}
       >
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/matches')}
           className="p-1.5 -ml-1.5 hover:bg-gray-100 rounded-full transition-colors shrink-0"
           aria-label={t('circleConversation.back')}
         >

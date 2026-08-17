@@ -206,7 +206,7 @@ useUserPosts(authorId, { limit = 5 } = {}) {
   });
 
   const posts = useMemo(
-    () => query.data?.pages.flatMap(page => page.items) ?? [],
+    () => query.data?.pages?.flatMap(page => page.items) ?? [],
     [query.data]
   );
 

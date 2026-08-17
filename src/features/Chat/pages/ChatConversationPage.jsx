@@ -59,7 +59,8 @@ function MessageBubble({ msg, onLongPress, onRetry, t }) {
       )}
       <div
         {...longPressHandlers}
-        className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm select-none touch-none transition-opacity ${
+        style={{ touchAction: 'pan-y' }}
+        className={`max-w-[75%] px-4 py-2 rounded-2xl text-sm select-none transition-opacity ${
           pending ? 'opacity-60' : ''
         } ${
           failed
@@ -602,7 +603,7 @@ export default function ChatConversationPage() {
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 0.75rem)" }}
       >
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/matches')}
           className="p-1.5 -ml-1.5 hover:bg-gray-100 rounded-full transition-colors shrink-0"
           aria-label={t('conversation.back')}
         >

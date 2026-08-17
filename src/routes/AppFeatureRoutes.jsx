@@ -6,8 +6,10 @@ import DefaultHomeRoute from "./DefaultHomeRoute.jsx"
 const ChatListPage = lazy(() => import("../features/Chat/pages/ChatListPage.jsx"))
 const ChatConversationPage = lazy(() => import("../features/Chat/pages/ChatConversationPage.jsx"))
 const SupportChatPage = lazy(() => import("../features/Chat/pages/SupportChatPage.jsx"))
+const CircleChatPage = lazy(() => import("../features/Circles/pages/CircleChatPage.jsx"))
 const RequestsPage = lazy(() => import("../features/UserHome/pages/Request.jsx"))
 import NotificationsPage from "../features/Notifications/pages/NotificationsPage.jsx"
+import ChatListShell from "../features/Chat/pages/ChatListShell.jsx"
 export const AppFeatureRoutes = (
   <>
     <Route index element={<DefaultHomeRoute />} />
@@ -16,29 +18,38 @@ export const AppFeatureRoutes = (
     <Route
       path="matches"
       element={
-        <Suspense fallback={<LoadingSpinner />}>
-          <ChatListPage />
-        </Suspense>
+        <ChatListShell>
+          <Suspense fallback={<LoadingSpinner />}>
+            <ChatListPage />
+          </Suspense>
+        </ChatListShell>
       }
-    />
-
-    <Route
-      path="matches/:matchId/chat"
-      element={
-        <Suspense fallback={<LoadingSpinner />}>
-          <ChatConversationPage />
-        </Suspense>
-      }
-    />
-
-    <Route
-      path="matches/support/chat"
-      element={
-        <Suspense fallback={<LoadingSpinner />}>
-          <SupportChatPage />
-        </Suspense>
-      }
-    />
+    >
+      <Route
+        path=":matchId/chat"
+        element={
+          <Suspense fallback={<LoadingSpinner />}>
+            <ChatConversationPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="circles/:circleId/chat"
+        element={
+          <Suspense fallback={<LoadingSpinner />}>
+            <CircleChatPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="support/chat"
+        element={
+          <Suspense fallback={<LoadingSpinner />}>
+            <SupportChatPage />
+          </Suspense>
+        }
+      />
+    </Route>
 
     <Route
       path="requests"
