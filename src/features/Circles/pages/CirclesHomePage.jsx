@@ -1,4 +1,4 @@
-import { Compass, FileText, MapPin, MessageCircleMore, PenLine, Plus, Rss } from "lucide-react";
+import { Compass, FileText, MapPin, PenLine, Plus, Rss } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -20,7 +20,6 @@ import BottomSheetModal from "../components/common/BottomSheetModal";
 import ConfirmDialog from "../components/common/ConfirmDialog";
 import CircleSearchBar from "../components/circle/CircleSearchBar";
 import { useCircles } from "../hooks/useCircles";
-import { useCircleChatPreviews } from "../hooks/useCircleChatPreviews";
 import { useTranslatedCircleName } from "../constants/onboardingCircles";
 import { useFeed, usePosts, useUpdateFeedPost, useDeleteFeedPost } from "../hooks/usePosts";
 import { listPosts } from "../api/postsApi";
@@ -44,22 +43,7 @@ const RING_GRADIENTS = [
   "from-orange-400 to-amber-500",
 ];
 
-// `chatBadge`, when passed, is a small chat-bubble overlay clipped to the
-// ring's bottom-right corner — a distinct SHAPE from MatchRow's numeric
-// unread pill (a bubble icon, not a number) so it can't be misread as a
-// post/like count on the same ring. Its own onClick stops propagation so
-// tapping the badge jumps straight into that circle's chat, while tapping
-// the ring itself keeps doing what it does today (filter the feed).
-//
-// Three variants (chatBadge.variant), all rendered as the same solid filled
-// circle (no outline state) so nothing reads as a disabled control:
-//   "unread"    filled pink — unread messages waiting
-//   "available" filled pink — chat is enabled but nobody's used it yet; same
-//               fill as unread since both mean "there's a reason to tap this"
-//   "read"      filled gray — has message history, nothing unread
-// No badge at all when chat is disabled for the circle — nothing to
-// advertise.
-function StoryAvatar({ isActive, onClick, label, sublabel, children, gradientClass = "from-primary to-pink-500", chatBadge }) {
+function StoryAvatar({ isActive, onClick, label, sublabel, children, gradientClass = "from-primary to-pink-500" }) {
   return (
     <div className="flex-shrink-0 flex flex-col items-center gap-1.5 w-[4.5rem]">
       <button
@@ -78,28 +62,6 @@ function StoryAvatar({ isActive, onClick, label, sublabel, children, gradientCla
             {children}
           </div>
         </div>
-        {chatBadge && (
-          <span
-            role="button"
-            tabIndex={0}
-            onClick={(e) => {
-              e.stopPropagation();
-              chatBadge.onClick();
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.stopPropagation();
-                chatBadge.onClick();
-              }
-            }}
-            aria-label={chatBadge.ariaLabel}
-            className={`absolute -bottom-1 -right-1 w-[22px] h-[22px] rounded-full flex items-center justify-center border-2 border-white shadow-sm ${
-              chatBadge.variant === "read" ? "bg-gray-400" : "bg-primary"
-            }`}
-          >
-            <MessageCircleMore className="w-3 h-3 text-white" strokeWidth={2.4} />
-          </span>
-        )}
       </button>
       <span className={`text-[11px] font-semibold truncate w-full text-center leading-tight ${isActive ? "text-primary" : "text-gray-500"}`}>
         {label}
@@ -131,7 +93,6 @@ export default function CirclesHomePage() {
 
   const { data: circlesData, isLoading: isLoadingCircles, isError: isCirclesError, refetch: refetchCircles } = useCircles();
   const myCircles = circlesData?.circles || [];
-  const { previews: circlePreviews } = useCircleChatPreviews();
   // Lets search results badge the circles you're already in.
   const joinedCircleIds = new Set(myCircles.map((c) => c.circleId));
 
@@ -410,26 +371,6 @@ export default function CirclesHomePage() {
             {!isLoadingCircles && myCircles.map((circle, index) => {
               const isActive = selectedCircleId === circle.circleId;
               const circleName = getCircleName(circle.circleId, circle.name);
-              const chatPreview = circlePreviews[circle.circleId];
-              // No badge at all once chat is confirmed disabled for this
-              // circle — nothing to advertise. Otherwise: unread (filled
-              // pink) > has-history-nothing-unread (filled gray) >
-              // available-but-empty (outline) — see StoryAvatar's own
-              // comment for why "available" exists (so the feature is
-              // discoverable before anyone's used it, not indistinguishable
-              // from "chat off").
-              const chatBadge = chatPreview && chatPreview.chatEnabled === false
-                ? null
-                : {
-                    variant:
-                      (chatPreview?.unreadCount || 0) > 0
-                        ? "unread"
-                        : chatPreview?.hasMessages
-                          ? "read"
-                          : "available",
-                    onClick: () => navigate(`/matches/circles/${circle.circleId}/chat`),
-                    ariaLabel: t("circlesHome.openCircleChatAria", { name: circleName }),
-                  };
               return (
                 <StoryAvatar
                   key={circle.circleId}
@@ -437,7 +378,6 @@ export default function CirclesHomePage() {
                   onClick={() => setSelectedCircleId(circle.circleId)}
                   label={circleName}
                   gradientClass={RING_GRADIENTS[index % RING_GRADIENTS.length]}
-                  chatBadge={chatBadge}
                 >
                   {circle.coverPhoto ? (
                     <img
