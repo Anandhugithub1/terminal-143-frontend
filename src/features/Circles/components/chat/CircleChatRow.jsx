@@ -37,7 +37,7 @@ export default function CircleChatRow({ circle, preview, index, onOpenChat }) {
     ? t('circleList.chatOffBadge')
     : hasConversation
       ? `${preview.lastMessageMine ? t('circleList.youPrefix') : ''}${preview.lastMessage}`
-      : t('circleList.sayHi')
+      : t('circleConversation.memberCount', { count: circle.memberCount ?? 0 })
   const gradient = RING_GRADIENTS[index % RING_GRADIENTS.length]
 
   return (
@@ -58,6 +58,11 @@ export default function CircleChatRow({ circle, preview, index, onOpenChat }) {
           {!chatEnabled && (
             <span className="shrink-0 text-[9px] font-bold uppercase tracking-wide text-gray-400 bg-gray-100 rounded-full px-1.5 py-0.5">
               {t('circleList.chatOffBadge')}
+            </span>
+          )}
+          {chatEnabled && !hasConversation && (
+            <span className="shrink-0 text-[9px] font-bold uppercase tracking-wide text-primary bg-primary/10 rounded-full px-1.5 py-0.5">
+              {t('circleList.newBadge')}
             </span>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { Compass, FileText, MapPin, MessageCircle, PenLine, Plus, Rss } from "lucide-react";
+import { Compass, FileText, MapPin, MessageCircleMore, PenLine, Plus, Rss } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -51,13 +51,12 @@ const RING_GRADIENTS = [
 // tapping the badge jumps straight into that circle's chat, while tapping
 // the ring itself keeps doing what it does today (filter the feed).
 //
-// Three variants (chatBadge.variant):
-//   "unread"    filled pink  — unread messages waiting
-//   "read"      filled gray  — has message history, nothing unread
-//   "available" gray outline — chat is enabled but nobody's used it yet;
-//               lets a member DISCOVER the feature exists before any
-//               activity has happened, instead of looking identical to a
-//               circle with chat turned off entirely.
+// Three variants (chatBadge.variant), all rendered as the same solid filled
+// circle (no outline state) so nothing reads as a disabled control:
+//   "unread"    filled pink — unread messages waiting
+//   "available" filled pink — chat is enabled but nobody's used it yet; same
+//               fill as unread since both mean "there's a reason to tap this"
+//   "read"      filled gray — has message history, nothing unread
 // No badge at all when chat is disabled for the circle — nothing to
 // advertise.
 function StoryAvatar({ isActive, onClick, label, sublabel, children, gradientClass = "from-primary to-pink-500", chatBadge }) {
@@ -94,17 +93,11 @@ function StoryAvatar({ isActive, onClick, label, sublabel, children, gradientCla
               }
             }}
             aria-label={chatBadge.ariaLabel}
-            className={`absolute -bottom-0.5 -right-0.5 w-[19px] h-[19px] rounded-full flex items-center justify-center ${
-              chatBadge.variant === "available"
-                ? "bg-white border-2 border-gray-300"
-                : `border-2 border-white ${chatBadge.variant === "unread" ? "bg-primary" : "bg-gray-300"}`
+            className={`absolute -bottom-1 -right-1 w-[22px] h-[22px] rounded-full flex items-center justify-center border-2 border-white shadow-sm ${
+              chatBadge.variant === "read" ? "bg-gray-400" : "bg-primary"
             }`}
           >
-            {chatBadge.variant === "available" ? (
-              <MessageCircle className="w-2.5 h-2.5 text-gray-400" strokeWidth={2.5} />
-            ) : (
-              <MessageCircle className="w-2.5 h-2.5 text-white" fill="white" strokeWidth={0} />
-            )}
+            <MessageCircleMore className="w-3 h-3 text-white" strokeWidth={2.4} />
           </span>
         )}
       </button>

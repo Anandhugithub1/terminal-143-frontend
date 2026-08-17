@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useNavigate } from 'react-router-dom'
-import { MessageCircle } from 'lucide-react'
+import { ChevronDown, MessageCircle } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useInfiniteMatches, SendProfileFeeback } from '../../UserHome/api'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
@@ -37,6 +37,7 @@ export default function ChatListPage() {
 
   const [sentFeedback, setSentFeedback] = useState({})
   const [loadingUser, setLoadingUser] = useState(null)
+  const [isCircleChatsExpanded, setIsCircleChatsExpanded] = useState(false)
   const navigate = useNavigate()
 
   // Fetch the next page of matches as the sentinel at the bottom of the
@@ -123,17 +124,37 @@ export default function ChatListPage() {
   // than merged into one recency-sorted list, so a person-thread and a
   // group-thread stay easy to tell apart at a glance (see the design
   // discussion: avatar shape alone isn't enough once chat volume grows).
-  // Only circles with SOME chat state (a message ever sent, or unread) are
-  // listed — mirrors how Direct excludes matches with no conversation yet.
+  // Unlike Direct, every joined circle is listed here — including ones with
+  // no messages yet — so a freshly joined circle is immediately discoverable
+  // as a place to say hi, rather than waiting for its first message before
+  // it can even appear.
+  //
+  // Circles with no message yet sort first (there's no lastMessageAt to
+  // compare against a real conversation's recency, and a circle just joined
+  // is more likely to be top-of-mind than one that's been quiet for weeks),
+  // in listUserCircles' own response order — the API carries no per-member
+  // join timestamp today, so that's the closest available proxy for "most
+  // recently joined." Circles WITH messages then follow, newest first.
   const circleConversations = useMemo(() => {
-    return myCircles
-      .filter((c) => circlePreviews[c.circleId]?.lastMessageAt)
-      .sort((a, b) => {
-        const aT = new Date(circlePreviews[a.circleId]?.lastMessageAt || 0)
-        const bT = new Date(circlePreviews[b.circleId]?.lastMessageAt || 0)
-        return bT - aT
-      })
+    const withMessages = []
+    const empty = []
+    for (const c of myCircles) {
+      if (circlePreviews[c.circleId]?.lastMessageAt) withMessages.push(c)
+      else empty.push(c)
+    }
+    withMessages.sort((a, b) => {
+      const aT = new Date(circlePreviews[a.circleId]?.lastMessageAt || 0)
+      const bT = new Date(circlePreviews[b.circleId]?.lastMessageAt || 0)
+      return bT - aT
+    })
+    return [...empty, ...withMessages]
   }, [myCircles, circlePreviews])
+
+  const CIRCLE_CHATS_VISIBLE_COUNT = 3
+  const visibleCircleConversations = isCircleChatsExpanded
+    ? circleConversations
+    : circleConversations.slice(0, CIRCLE_CHATS_VISIBLE_COUNT)
+  const hiddenCircleConversations = circleConversations.slice(CIRCLE_CHATS_VISIBLE_COUNT)
 
   if (isLoading) {
     return (
@@ -184,7 +205,7 @@ export default function ChatListPage() {
             <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
               {t('circleList.sectionLabel')}
             </p>
-            {circleConversations.map((circle, index) => (
+            {visibleCircleConversations.map((circle, index) => (
               <CircleChatRow
                 key={circle.circleId}
                 circle={{ ...circle, name: getCircleName(circle.circleId, circle.name) }}
@@ -193,6 +214,40 @@ export default function ChatListPage() {
                 onOpenChat={() => navigate(`/circles/${circle.circleId}/chat`)}
               />
             ))}
+            {!isCircleChatsExpanded && hiddenCircleConversations.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setIsCircleChatsExpanded(true)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-left"
+              >
+                <div className="flex -space-x-2 shrink-0">
+                  {hiddenCircleConversations.slice(0, 3).map((circle, i) => {
+                    const name = getCircleName(circle.circleId, circle.name)
+                    return circle.coverPhoto ? (
+                      <img
+                        key={circle.circleId}
+                        src={circle.coverPhoto}
+                        alt=""
+                        className="w-6 h-6 rounded-full object-cover border-2 border-white"
+                        style={{ zIndex: 3 - i }}
+                      />
+                    ) : (
+                      <div
+                        key={circle.circleId}
+                        className="w-6 h-6 rounded-full border-2 border-white bg-gradient-to-br from-primary to-pink-400 flex items-center justify-center"
+                        style={{ zIndex: 3 - i }}
+                      >
+                        <span className="text-[10px] font-bold text-white">{name?.[0]?.toUpperCase()}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+                <span className="flex-1 text-[13.5px] font-semibold text-primary">
+                  {t('circleList.showMore', { count: hiddenCircleConversations.length })}
+                </span>
+                <ChevronDown className="w-4 h-4 text-primary shrink-0" />
+              </button>
+            )}
           </div>
           <div className="border-t border-gray-100" />
         </>
