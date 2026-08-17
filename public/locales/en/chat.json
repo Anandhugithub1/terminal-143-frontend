@@ -7,7 +7,11 @@
     "startSwiping": "Start swiping to find someone special — your matches will show up here as chats.",
     "noConversationsYet": "No conversations yet",
     "tapMatchToStart": "Tap a match above to say hi and start chatting.",
-    "chatSectionLabel": "Chat"
+    "chatSectionLabel": "Chat",
+    "searchPlaceholder": "Search chats",
+    "clearSearch": "Clear search",
+    "noSearchResults": "No chats match \"{{query}}\"",
+    "noSearchResultsHint": "Search only looks at chat and circle names, not message text."
   },
   "support": {
     "title": "Support",

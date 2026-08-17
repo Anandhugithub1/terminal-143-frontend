@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useNavigate } from 'react-router-dom'
-import { ChevronDown, MessageCircle } from 'lucide-react'
+import { ChevronDown, MessageCircle, Search, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useInfiniteMatches, SendProfileFeeback } from '../../UserHome/api'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
@@ -38,6 +38,7 @@ export default function ChatListPage() {
   const [sentFeedback, setSentFeedback] = useState({})
   const [loadingUser, setLoadingUser] = useState(null)
   const [isCircleChatsExpanded, setIsCircleChatsExpanded] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
 
   // Fetch the next page of matches as the sentinel at the bottom of the
@@ -156,6 +157,29 @@ export default function ChatListPage() {
     : circleConversations.slice(0, CIRCLE_CHATS_VISIBLE_COUNT)
   const hiddenCircleConversations = circleConversations.slice(CIRCLE_CHATS_VISIBLE_COUNT)
 
+  // Search filters by NAME ONLY (circle name or match name), never message
+  // text — it's a client-side filter over data already in memory, not a
+  // server search over message history. While searching, both the 3-row
+  // collapse and the New Matches/Direct split are set aside: a query should
+  // surface every matching thread at once rather than making the searcher
+  // also expand a "show more" or scroll past an unrelated strip first.
+  const trimmedQuery = searchQuery.trim().toLowerCase()
+  const isSearching = trimmedQuery.length > 0
+
+  const searchedCircleConversations = useMemo(() => {
+    if (!isSearching) return []
+    return circleConversations.filter((c) =>
+      getCircleName(c.circleId, c.name)?.toLowerCase().includes(trimmedQuery)
+    )
+  }, [isSearching, trimmedQuery, circleConversations, getCircleName])
+
+  const searchedDirectConversations = useMemo(() => {
+    if (!isSearching) return []
+    return [...conversations, ...newMatches].filter((m) =>
+      m.name?.toLowerCase().includes(trimmedQuery)
+    )
+  }, [isSearching, trimmedQuery, conversations, newMatches])
+
   if (isLoading) {
     return (
       <PageLayout className="bg-white">
@@ -192,6 +216,82 @@ export default function ChatListPage() {
     <PageLayout className="bg-white">
       <div className="pt-3" />
 
+      <div className="px-4 pb-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t('list.searchPlaceholder')}
+            className="w-full pl-9 pr-9 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label={t('list.clearSearch')}
+            >
+              <X className="w-4 h-4 text-gray-400" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {isSearching ? (
+        <div className="flex-1 flex flex-col">
+          {searchedCircleConversations.length === 0 && searchedDirectConversations.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center">
+              <EmptyState
+                icon={Search}
+                title={t('list.noSearchResults', { query: searchQuery.trim() })}
+                subtitle={t('list.noSearchResultsHint')}
+              />
+            </div>
+          ) : (
+            <>
+              {searchedCircleConversations.length > 0 && (
+                <div>
+                  <p className="px-4 pt-1 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
+                    {t('circleList.sectionLabel')}
+                  </p>
+                  {searchedCircleConversations.map((circle, index) => (
+                    <CircleChatRow
+                      key={circle.circleId}
+                      circle={{ ...circle, name: getCircleName(circle.circleId, circle.name) }}
+                      preview={circlePreviews[circle.circleId]}
+                      index={index}
+                      onOpenChat={() => navigate(`/circles/${circle.circleId}/chat`)}
+                    />
+                  ))}
+                </div>
+              )}
+              {searchedDirectConversations.length > 0 && (
+                <div>
+                  <p className="px-4 pt-3 pb-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
+                    {t('list.chatSectionLabel')}
+                  </p>
+                  {searchedDirectConversations.map((match) => (
+                    <MatchRow
+                      key={match.PK}
+                      match={match}
+                      preview={previews[match.PK]}
+                      feedbackState={sentFeedback[match.PK] || match.feedback}
+                      feedbackDisabled={loadingUser === match.PK}
+                      onOpenChat={() => navigate(`/matches/${match.PK}/chat`)}
+                      onOpenProfile={() => goToProfile(match.profileLink)}
+                      onLike={() => handleFeedback(match.PK, true)}
+                      onDislike={() => handleFeedback(match.PK, false)}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      ) : (
+        <>
       <NewMatchesStrip
         matches={newMatches}
         onOpenChat={(matchId) => navigate(`/matches/${matchId}/chat`)}
@@ -294,6 +394,8 @@ export default function ChatListPage() {
           </>
         )}
       </div>
+        </>
+      )}
     </PageLayout>
   )
 }
