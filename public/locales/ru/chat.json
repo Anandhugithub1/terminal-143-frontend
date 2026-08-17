@@ -7,7 +7,11 @@
     "startSwiping": "Начните листать анкеты, чтобы найти особенного человека — ваши совпадения появятся здесь в виде чатов.",
     "noConversationsYet": "Пока нет разговоров",
     "tapMatchToStart": "Нажмите на совпадение выше, чтобы поздороваться и начать общение.",
-    "chatSectionLabel": "Чат"
+    "chatSectionLabel": "Чат",
+    "searchPlaceholder": "Поиск по чатам",
+    "clearSearch": "Очистить поиск",
+    "noSearchResults": "Нет чатов, соответствующих «{{query}}»",
+    "noSearchResultsHint": "Поиск ищет только по названиям чатов и кругов, а не по тексту сообщений."
   },
   "support": {
     "title": "Поддержка",
@@ -103,9 +107,12 @@
     "deleteMessageFailed": "Couldn't delete message. Please try again."
   },
   "circleList": {
-    "sectionLabel": "Circle Chats",
-    "sayHi": "Say hi 👋",
-    "youPrefix": "You: ",
-    "chatOffBadge": "Chat off"
+    "sectionLabel": "Чаты кругов",
+    "sayHi": "Поздоровайтесь первым",
+    "youPrefix": "Вы: ",
+    "chatOffBadge": "Чат выключен",
+    "newBadge": "Новый",
+    "showMore": "Показать ещё {{count}}",
+    "showMore_other": "Показать ещё {{count}}"
   }
 }

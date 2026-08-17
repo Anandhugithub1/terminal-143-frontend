@@ -7,7 +7,11 @@
     "startSwiping": "เริ่มปัดเพื่อค้นหาคนพิเศษ — แมตช์ของคุณจะปรากฏที่นี่เป็นแชท",
     "noConversationsYet": "ยังไม่มีการสนทนา",
     "tapMatchToStart": "แตะแมตช์ด้านบนเพื่อทักทายและเริ่มแชท",
-    "chatSectionLabel": "แชท"
+    "chatSectionLabel": "แชท",
+    "searchPlaceholder": "ค้นหาแชท",
+    "clearSearch": "ล้างการค้นหา",
+    "noSearchResults": "ไม่พบแชทที่ตรงกับ \"{{query}}\"",
+    "noSearchResultsHint": "การค้นหาจะดูเฉพาะชื่อแชทและเซอร์เคิลเท่านั้น ไม่รวมข้อความ"
   },
   "support": {
     "title": "ฝ่ายสนับสนุน",
@@ -103,9 +107,11 @@
     "deleteMessageFailed": "Couldn't delete message. Please try again."
   },
   "circleList": {
-    "sectionLabel": "Circle Chats",
-    "sayHi": "Say hi 👋",
-    "youPrefix": "You: ",
-    "chatOffBadge": "Chat off"
+    "sectionLabel": "แชทเซอร์เคิล",
+    "sayHi": "ทักทายเป็นคนแรก",
+    "youPrefix": "คุณ: ",
+    "chatOffBadge": "ปิดแชท",
+    "newBadge": "ใหม่",
+    "showMore": "แสดงอีก {{count}} รายการ"
   }
 }

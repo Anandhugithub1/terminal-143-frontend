@@ -7,7 +7,11 @@
     "startSwiping": "Mula leret untuk mencari seseorang yang istimewa — padanan anda akan dipaparkan di sini sebagai sembang.",
     "noConversationsYet": "Belum ada perbualan",
     "tapMatchToStart": "Ketik padanan di atas untuk menyapa dan mula bersembang.",
-    "chatSectionLabel": "Sembang"
+    "chatSectionLabel": "Sembang",
+    "searchPlaceholder": "Cari sembang",
+    "clearSearch": "Kosongkan carian",
+    "noSearchResults": "Tiada sembang sepadan dengan \"{{query}}\"",
+    "noSearchResultsHint": "Carian hanya melihat nama sembang dan bulatan, bukan teks mesej."
   },
   "support": {
     "title": "Sokongan",
@@ -103,9 +107,12 @@
     "deleteMessageFailed": "Couldn't delete message. Please try again."
   },
   "circleList": {
-    "sectionLabel": "Circle Chats",
-    "sayHi": "Say hi 👋",
-    "youPrefix": "You: ",
-    "chatOffBadge": "Chat off"
+    "sectionLabel": "Sembang Bulatan",
+    "sayHi": "Jadi orang pertama yang menyapa",
+    "youPrefix": "Anda: ",
+    "chatOffBadge": "Sembang dimatikan",
+    "newBadge": "Baharu",
+    "showMore": "Tunjuk {{count}} lagi",
+    "showMore_other": "Tunjuk {{count}} lagi"
   }
 }

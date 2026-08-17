@@ -7,7 +7,11 @@
     "startSwiping": "스와이프를 시작해 특별한 사람을 찾아보세요 — 매치가 여기 채팅으로 표시됩니다.",
     "noConversationsYet": "아직 대화가 없습니다",
     "tapMatchToStart": "위에서 매치를 눌러 인사를 건네고 대화를 시작해 보세요.",
-    "chatSectionLabel": "채팅"
+    "chatSectionLabel": "채팅",
+    "searchPlaceholder": "채팅 검색",
+    "clearSearch": "검색어 지우기",
+    "noSearchResults": "\"{{query}}\"와(과) 일치하는 채팅이 없습니다",
+    "noSearchResultsHint": "검색은 메시지 내용이 아닌 채팅 및 서클 이름만 확인합니다."
   },
   "support": {
     "title": "지원",
@@ -103,9 +107,12 @@
     "deleteMessageFailed": "Couldn't delete message. Please try again."
   },
   "circleList": {
-    "sectionLabel": "Circle Chats",
-    "sayHi": "Say hi 👋",
-    "youPrefix": "You: ",
-    "chatOffBadge": "Chat off"
+    "sectionLabel": "서클 채팅",
+    "sayHi": "먼저 인사를 건네보세요",
+    "youPrefix": "나: ",
+    "chatOffBadge": "채팅 꺼짐",
+    "newBadge": "신규",
+    "showMore": "{{count}}개 더 보기",
+    "showMore_other": "{{count}}개 더 보기"
   }
 }
