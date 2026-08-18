@@ -32,6 +32,10 @@
 	<string>PassorMatch needs photo library access so you can upload profile photos</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>PassorMatch uses your approximate location to show nearby matches and circles</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
