@@ -24,7 +24,7 @@ export default function Privacy() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-sm p-8 border-l-4 border-[#D2449D]">
               <h1 className="text-4xl font-bold text-gray-900 mb-2">Privacy Policy</h1>
-              <p className="text-gray-500 text-sm mb-8">Last updated: August 13, 2026</p>
+              <p className="text-gray-500 text-sm mb-8">Last updated: August 18, 2026</p>
 
               <div className="prose prose-lg max-w-none space-y-6 text-gray-700">
 
@@ -47,6 +47,7 @@ export default function Privacy() {
                     <li>Communication data (messages, support inquiries)</li>
                     <li>Payment information (processed securely by third-party providers)</li>
                     <li>Preference information (interests, dating preferences, gender)</li>
+                    <li>Health disclosures you choose to add to your profile (see "Health Disclosures" below)</li>
                     <li>Reports, blocks, and safety-related information you or others submit about your account</li>
                   </ul>
 
@@ -93,6 +94,20 @@ export default function Privacy() {
                   </p>
                 </div>
 
+                {/* Health Disclosures */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">Health Disclosures</h2>
+                  <p>
+                    As part of completing your profile, you may optionally share a health disclosure — for example, a sexual health condition, mental health condition, ADHD, autism, a long-term physical condition, or that you are in substance use recovery. This is entirely optional and is only visible on your profile if you choose to add it.
+                  </p>
+                  <p className="mt-3">
+                    <strong>Because a health disclosure you add is shown on your profile, it is visible to other users of the Service</strong> in the same way as your other profile information (see "Photos & Profile Visibility" above). We do not share your health disclosure with advertising partners, ad networks, or analytics/tracking partners, and it is never used to build advertising profiles or sold to third parties.
+                  </p>
+                  <p className="mt-3">
+                    You may add, change, or remove your health disclosure at any time in your profile settings.
+                  </p>
+                </div>
+
                 {/* How We Use Information */}
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">2. How We Use Your Information</h2>
@@ -122,7 +137,7 @@ export default function Privacy() {
                     <li>Other users (profile information you choose to display, and limited details in connection with a report you file or that is filed against you)</li>
                   </ul>
                   <p className="mt-3">
-                    <strong>Exception for sensitive Circle membership:</strong> As described in "Sensitive Information & Community Groups" above, your membership in a Circle that reveals sexual orientation, religion, race, or a similar sensitive category is never shared with our advertising or analytics service providers, and is excluded from the analytics sharing described above.
+                    <strong>Exception for sensitive Circle membership and health disclosures:</strong> As described in "Sensitive Information & Community Groups" and "Health Disclosures" above, your membership in a Circle that reveals sexual orientation, religion, race, or a similar sensitive category, and any health disclosure you add to your profile, are never shared with our advertising or analytics service providers, and are excluded from the analytics sharing described above.
                   </p>
                 </div>
 
@@ -167,17 +182,17 @@ export default function Privacy() {
 
                   <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">Thailand — Personal Data Protection Act (PDPA)</h3>
                   <p>
-                    If you are located in Thailand, we process your personal data as a data controller under the Personal Data Protection Act B.E. 2562 (2019). In addition to the rights above, you have the right to withdraw consent at any time (where processing is based on consent), the right to object to processing, and the right to lodge a complaint with the Personal Data Protection Committee (PDPC). Sensitive data under the PDPA (which includes data revealing sexual orientation and religion, such as certain Circle memberships described above) is processed only with your explicit consent or another legal basis permitted under the PDPA, and is handled with the heightened protections the PDPA requires.
+                    If you are located in Thailand, we process your personal data as a data controller under the Personal Data Protection Act B.E. 2562 (2019). In addition to the rights above, you have the right to withdraw consent at any time (where processing is based on consent), the right to object to processing, and the right to lodge a complaint with the Personal Data Protection Committee (PDPC). Sensitive data under the PDPA (which includes data revealing sexual orientation and religion, such as certain Circle memberships described above, and health data, such as an optional health disclosure you add to your profile) is processed only with your explicit consent or another legal basis permitted under the PDPA, and is handled with the heightened protections the PDPA requires.
                   </p>
 
                   <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">European Economic Area & UK — GDPR</h3>
                   <p>
-                    If you are located in the EEA or UK, we process your personal data in accordance with the General Data Protection Regulation (GDPR) / UK GDPR. Our legal bases for processing include your consent, performance of our contract with you (providing the Service), our legitimate interests (such as safety and fraud prevention), and compliance with legal obligations. You have the right to access, rectify, erase, restrict, or port your data, to object to processing (including profiling), to withdraw consent at any time, and to lodge a complaint with your local supervisory authority. Special category data (including data revealing sexual orientation and religion) is processed only where a valid GDPR condition applies, such as your explicit consent.
+                    If you are located in the EEA or UK, we process your personal data in accordance with the General Data Protection Regulation (GDPR) / UK GDPR. Our legal bases for processing include your consent, performance of our contract with you (providing the Service), our legitimate interests (such as safety and fraud prevention), and compliance with legal obligations. You have the right to access, rectify, erase, restrict, or port your data, to object to processing (including profiling), to withdraw consent at any time, and to lodge a complaint with your local supervisory authority. Special category data (including data revealing sexual orientation and religion, and health data such as an optional health disclosure you add to your profile) is processed only where a valid GDPR condition applies, such as your explicit consent.
                   </p>
 
                   <h3 className="text-xl font-semibold text-gray-800 mt-5 mb-2">United States — CCPA/CPRA and other state privacy laws</h3>
                   <p>
-                    If you are a California resident, the California Consumer Privacy Act (CCPA), as amended by the CPRA, and other applicable U.S. state privacy laws give you the right to know what personal information we collect, use, and disclose; to request deletion or correction of your information; to opt out of the "sale" or "sharing" of personal information (we do not sell your personal information, and do not share sensitive Circle membership with advertising or analytics partners as described above); and to not be discriminated against for exercising these rights. Sensitive personal information under the CCPA — which includes data revealing sexual orientation and religious beliefs — is used only as necessary to provide the Service and is not used to infer characteristics about you for advertising purposes.
+                    If you are a California resident, the California Consumer Privacy Act (CCPA), as amended by the CPRA, and other applicable U.S. state privacy laws give you the right to know what personal information we collect, use, and disclose; to request deletion or correction of your information; to opt out of the "sale" or "sharing" of personal information (we do not sell your personal information, and do not share sensitive Circle membership or health disclosures with advertising or analytics partners as described above); and to not be discriminated against for exercising these rights. Sensitive personal information under the CCPA — which includes data revealing sexual orientation and religious beliefs, and health information such as an optional health disclosure you add to your profile — is used only as necessary to provide the Service and is not used to infer characteristics about you for advertising purposes.
                   </p>
                   <p className="mt-3">
                     To exercise any of these rights, contact us using the details in the "Contact Us" section below. We may need to verify your identity before fulfilling a request.
