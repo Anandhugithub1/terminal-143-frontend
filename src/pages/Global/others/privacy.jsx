@@ -80,10 +80,10 @@ export default function Privacy() {
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">Sensitive Information & Community Groups ("Circles")</h2>
                   <p>
-                    The Service lets you join optional interest- and identity-based community groups ("Circles"), some of which may reveal sensitive personal information about you — for example, your sexual orientation or gender identity (such as an LGBTQ+-oriented Circle) or your religion (such as a Religion & Spirituality Circle).
+                    The Service lets you join optional interest- and identity-based community groups ("Circles"), some of which may reveal sensitive personal information about you — for example, your sexual orientation or gender identity (such as an LGBTQ+-oriented Circle), your religion (such as a Religion & Spirituality Circle), or your race or ethnicity (such as a race- or ethnicity-based Circle).
                   </p>
                   <p className="mt-3">
-                    <strong>We never share your membership in a sensitive Circle — or the fact that it reveals your sexual orientation, religion, or any similar sensitive category — with advertising partners, ad networks, or analytics/tracking partners.</strong> This information is used solely for in-app purposes: to show you relevant Circles, to power in-app matching and content within the Service, and for safety and moderation. It is never sold, and never used to build advertising profiles, whether by us or by any third party.
+                    <strong>We never share your membership in a sensitive Circle — or the fact that it reveals your sexual orientation, religion, race, or any similar sensitive category — with advertising partners, ad networks, or analytics/tracking partners.</strong> This information is used solely for in-app purposes: to show you relevant Circles, to power in-app matching and content within the Service, and for safety and moderation. It is never sold, and never used to build advertising profiles, whether by us or by any third party.
                   </p>
                   <p className="mt-3">
                     We also do not use your sensitive Circle membership to enrich or supplement location-based profiling of you — for example, we do not combine your Circle memberships with location data to infer or share more precise information about where you spend time.
@@ -122,7 +122,7 @@ export default function Privacy() {
                     <li>Other users (profile information you choose to display, and limited details in connection with a report you file or that is filed against you)</li>
                   </ul>
                   <p className="mt-3">
-                    <strong>Exception for sensitive Circle membership:</strong> As described in "Sensitive Information & Community Groups" above, your membership in a Circle that reveals sexual orientation, religion, or a similar sensitive category is never shared with our advertising or analytics service providers, and is excluded from the analytics sharing described above.
+                    <strong>Exception for sensitive Circle membership:</strong> As described in "Sensitive Information & Community Groups" above, your membership in a Circle that reveals sexual orientation, religion, race, or a similar sensitive category is never shared with our advertising or analytics service providers, and is excluded from the analytics sharing described above.
                   </p>
                 </div>
 
