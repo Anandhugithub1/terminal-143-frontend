@@ -30,7 +30,7 @@ i18n
       loadPath: `/locales/{{lng}}/{{ns}}.json?v=${__APP_BUILD_ID__}`,
     },
 
-    ns: ['common', 'home', 'nav' ,'auth','settings','location','circles','chat','swipe','onboardingCircles','errors'],
+    ns: ['common', 'home', 'nav' ,'auth','settings','location','circles','chat','swipe','onboardingCircles','errors','legal'],
     defaultNS: 'common',
 
     // turn on/react options

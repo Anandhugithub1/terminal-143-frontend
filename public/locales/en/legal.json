@@ -1,0 +1,255 @@
+{
+  "privacy": {
+    "pageTitle": "Privacy Policy",
+    "lastUpdated": "Last updated: August 18, 2026",
+    "introduction": {
+      "heading": "Introduction",
+      "body": "PassorMatch (\"we,\" \"us,\" \"our,\" or \"Company\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services."
+    },
+    "infoCollect": {
+      "heading": "1. Information We Collect",
+      "providedHeading": "Information You Provide:",
+      "provided": {
+        "account": "Account information (name, email, phone, date of birth)",
+        "profile": "Profile information (photos, bio, location preferences)",
+        "communication": "Communication data (messages, support inquiries)",
+        "payment": "Payment information (processed securely by third-party providers)",
+        "preference": "Preference information (interests, dating preferences, gender)",
+        "health": "Health disclosures you choose to add to your profile (see \"Health Disclosures\" below)",
+        "reports": "Reports, blocks, and safety-related information you or others submit about your account"
+      },
+      "autoHeading": "Automatically Collected Information:",
+      "auto": {
+        "device": "Device information (IP address, device type, browser type)",
+        "usage": "Usage data (features accessed, time spent, actions taken)",
+        "location": "Location data, used to show your approximate distance to other users and to match you with people nearby (if you grant permission)",
+        "cookies": "Cookies and similar technologies",
+        "analytics": "App and website usage analytics, collected via Google Firebase Analytics — see \"Analytics\" below"
+      },
+      "analyticsHeading": "Analytics:",
+      "analyticsBody1": "We use Google Firebase Analytics to understand how the Service is used — for example, which screens are viewed, how often the app is opened, and general session activity. This is first-party product analytics: we use it to improve the Service and are not currently using it for ad personalization or cross-app/cross-device ad tracking. Firebase Analytics may collect your approximate location (derived from IP address, not precise GPS), device and app information, and an app-instance identifier. This data is processed by Google as our service provider and is not linked to your name or contact details in our analytics reporting.",
+      "analyticsBody2Strong": "Your location is never shown to other users as an exact address or precise coordinate.",
+      "analyticsBody2Rest": "Any distance or location shown to other users is approximate (\"fuzzed\" — for example, rounded to the nearest few kilometers or shown as a general area), not your exact position, and is not sufficient on its own to identify your precise home, workplace, or real-time location."
+    },
+    "photos": {
+      "heading": "Photos & Profile Visibility",
+      "body": "Your profile photos, bio, and other profile details you choose to display are visible to other users of the Service as part of its core matching functionality. We may use automated tools and human review to screen uploaded photos and content for policy violations (e.g. nudity, impersonation, or illegal content) before or after they become visible to other users."
+    },
+    "circles": {
+      "heading": "Sensitive Information & Community Groups (\"Circles\")",
+      "body1": "The Service lets you join optional interest- and identity-based community groups (\"Circles\"), some of which may reveal sensitive personal information about you — for example, your sexual orientation or gender identity (such as an LGBTQ+-oriented Circle), your religion (such as a Religion & Spirituality Circle), or your race or ethnicity (such as a race- or ethnicity-based Circle).",
+      "body2Strong": "We never share your membership in a sensitive Circle — or the fact that it reveals your sexual orientation, religion, race, or any similar sensitive category — with advertising partners, ad networks, or analytics/tracking partners.",
+      "body2Rest": "This information is used solely for in-app purposes: to show you relevant Circles, to power in-app matching and content within the Service, and for safety and moderation. It is never sold, and never used to build advertising profiles, whether by us or by any third party.",
+      "body3": "We also do not use your sensitive Circle membership to enrich or supplement location-based profiling of you — for example, we do not combine your Circle memberships with location data to infer or share more precise information about where you spend time.",
+      "body4": "You choose which Circles to join, and you may leave a Circle at any time; leaving removes it from your visible memberships going forward."
+    },
+    "health": {
+      "heading": "Health Disclosures",
+      "body1": "As part of completing your profile, you may optionally share a health disclosure — for example, a sexual health condition, mental health condition, ADHD, autism, a long-term physical condition, or that you are in substance use recovery. This is entirely optional and is only visible on your profile if you choose to add it.",
+      "body2Strong": "Because a health disclosure you add is shown on your profile, it is visible to other users of the Service",
+      "body2Rest": "in the same way as your other profile information (see \"Photos & Profile Visibility\" above). We do not share your health disclosure with advertising partners, ad networks, or analytics/tracking partners, and it is never used to build advertising profiles or sold to third parties.",
+      "body3": "You may add, change, or remove your health disclosure at any time in your profile settings."
+    },
+    "howWeUse": {
+      "heading": "2. How We Use Your Information",
+      "items": {
+        "improve": "Provide and improve our services",
+        "account": "Create and manage your account",
+        "match": "Facilitate connections and matches",
+        "updates": "Send service-related updates and communications",
+        "fraud": "Prevent fraud and ensure safety",
+        "legal": "Comply with legal obligations",
+        "marketing": "Marketing and promotional purposes (with your consent)"
+      },
+      "scanningStrong": "Automated content & message scanning:",
+      "scanningRest": "To detect violations of our Acceptable Use Policy — such as harassment, scams, explicit or illegal content, and other safety risks — content and messages you post or send through the Service may be automatically scanned using third-party moderation tools. This scanning is used for trust and safety purposes only, is not used for advertising, and does not replace your ability to report content or users directly."
+    },
+    "sharing": {
+      "heading": "3. Data Sharing & Disclosure",
+      "intro": "We do not sell your personal information. We may share data with:",
+      "items": {
+        "providers": "Service providers (hosting, payment processing, analytics)",
+        "lawEnforcement": "Law enforcement (when legally required, including in response to safety reports involving harassment, threats, or suspected criminal activity)",
+        "otherUsers": "Other users (profile information you choose to display, and limited details in connection with a report you file or that is filed against you)"
+      },
+      "exceptionStrong": "Exception for sensitive Circle membership and health disclosures:",
+      "exceptionRest": "As described in \"Sensitive Information & Community Groups\" and \"Health Disclosures\" above, your membership in a Circle that reveals sexual orientation, religion, race, or a similar sensitive category, and any health disclosure you add to your profile, are never shared with our advertising or analytics service providers, and are excluded from the analytics sharing described above."
+    },
+    "security": {
+      "heading": "4. Data Security",
+      "body": "We implement industry-standard security measures to protect your information, including encryption, secure servers, and access controls. However, no method of transmission over the internet is 100% secure."
+    },
+    "retention": {
+      "heading": "5. Data Retention",
+      "intro": "When you delete your account, we delete your account data within 30 days, except for data we are required or permitted to retain longer for:",
+      "items": {
+        "safety": "Safety purposes (e.g. records related to reports, blocks, bans, or safety investigations, to prevent banned users from rejoining)",
+        "legal": "Legal obligations (e.g. tax, accounting, or regulatory recordkeeping requirements)",
+        "fraud": "Fraud prevention (e.g. information needed to detect and prevent fraudulent accounts or payments)"
+      },
+      "outro": "Data retained for these purposes is kept only as long as necessary for that purpose and is subject to the same security protections described above."
+    },
+    "rights": {
+      "heading": "6. Your Privacy Rights",
+      "intro": "Depending on your location, you may have the right to:",
+      "items": {
+        "access": "Access your personal information",
+        "correction": "Request correction of inaccurate data",
+        "deletion": "Request deletion of your data",
+        "optOut": "Opt-out of marketing communications",
+        "portability": "Data portability"
+      },
+      "withdrawStrong": "Withdrawing your consent to gender-based matching:",
+      "withdrawRest": "At signup, you separately agree to let us use your gender to show you and other users relevant matches. Because gender-based matching is core to how the Service works, the way to withdraw this consent is to delete your account in Settings — this immediately stops all matching and removes your profile from other users' view. We do not currently offer a way to keep an active account while opting out of matching alone.",
+      "thailandHeading": "Thailand — Personal Data Protection Act (PDPA)",
+      "thailandBody": "If you are located in Thailand, we process your personal data as a data controller under the Personal Data Protection Act B.E. 2562 (2019). In addition to the rights above, you have the right to withdraw consent at any time (where processing is based on consent), the right to object to processing, and the right to lodge a complaint with the Personal Data Protection Committee (PDPC). Sensitive data under the PDPA (which includes data revealing sexual orientation and religion, such as certain Circle memberships described above, and health data, such as an optional health disclosure you add to your profile) is processed only with your explicit consent or another legal basis permitted under the PDPA, and is handled with the heightened protections the PDPA requires.",
+      "gdprHeading": "European Economic Area & UK — GDPR",
+      "gdprBody": "If you are located in the EEA or UK, we process your personal data in accordance with the General Data Protection Regulation (GDPR) / UK GDPR. Our legal bases for processing include your consent, performance of our contract with you (providing the Service), our legitimate interests (such as safety and fraud prevention), and compliance with legal obligations. You have the right to access, rectify, erase, restrict, or port your data, to object to processing (including profiling), to withdraw consent at any time, and to lodge a complaint with your local supervisory authority. Special category data (including data revealing sexual orientation and religion, and health data such as an optional health disclosure you add to your profile) is processed only where a valid GDPR condition applies, such as your explicit consent.",
+      "ccpaHeading": "United States — CCPA/CPRA and other state privacy laws",
+      "ccpaBody": "If you are a California resident, the California Consumer Privacy Act (CCPA), as amended by the CPRA, and other applicable U.S. state privacy laws give you the right to know what personal information we collect, use, and disclose; to request deletion or correction of your information; to opt out of the \"sale\" or \"sharing\" of personal information (we do not sell your personal information, and do not share sensitive Circle membership or health disclosures with advertising or analytics partners as described above); and to not be discriminated against for exercising these rights. Sensitive personal information under the CCPA — which includes data revealing sexual orientation and religious beliefs, and health information such as an optional health disclosure you add to your profile — is used only as necessary to provide the Service and is not used to infer characteristics about you for advertising purposes.",
+      "exerciseRights": "To exercise any of these rights, contact us using the details in the \"Contact Us\" section below. We may need to verify your identity before fulfilling a request."
+    },
+    "cookies": {
+      "heading": "7. Cookies & Tracking",
+      "body": "We use cookies and similar technologies to enhance your experience, analyze usage, and personalize content. You can control cookie preferences through your browser settings."
+    },
+    "children": {
+      "heading": "8. Children's Privacy",
+      "body": "PassorMatch is strictly for users 18 years of age and older. It is not intended for, and may not be used by, anyone under 18. We do not knowingly collect data from minors. If we become aware that we have collected personal data from someone under 18, we will take steps to delete it promptly and, where applicable, terminate the associated account."
+    },
+    "contact": {
+      "heading": "9. Contact Us",
+      "intro": "If you have privacy concerns or requests, please contact us at:",
+      "emailLabel": "Email:",
+      "email": "privacy@passormatch.com",
+      "addressLabel": "Address:",
+      "address": "PassorMatch, Bangkok, Thailand"
+    },
+    "changes": {
+      "heading": "10. Changes to This Policy",
+      "body": "We may update this Privacy Policy periodically. Changes will be posted on this page with an updated \"Last updated\" date. Your continued use of our services indicates acceptance of the revised policy."
+    },
+    "cta": {
+      "heading": "Have questions about your privacy?",
+      "subheading": "Our support team is here to help",
+      "button": "Contact Support"
+    }
+  },
+  "support": {
+    "pageTitle": "Support",
+    "subtitle": "Need help? We're here for you.",
+    "heading": "Contact Support",
+    "body": "For any questions, issues, or feedback about PassorMatch, please reach out to us by email and our team will get back to you as soon as possible.",
+    "emailLabel": "Email:",
+    "email": "support@passormatch.com"
+  },
+  "terms": {
+    "pageTitle": "Terms of Service",
+    "lastUpdated": "Last updated: August 4, 2026",
+    "acceptance": {
+      "heading": "1. Acceptance of Terms",
+      "body": "By accessing and using PassorMatch (\"Service\"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service."
+    },
+    "license": {
+      "heading": "2. Use License",
+      "intro": "Permission is granted to temporarily download one copy of the materials (information or software) on PassorMatch for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:",
+      "items": {
+        "modify": "Modifying or copying the materials",
+        "commercial": "Using the materials for any commercial purpose or for any public display",
+        "reverseEngineer": "Attempting to decompile or reverse engineer any software contained on the site",
+        "notices": "Removing any copyright or other proprietary notations from the materials",
+        "transfer": "Transferring the materials to another person or \"mirroring\" the materials on any other server"
+      }
+    },
+    "accounts": {
+      "heading": "3. User Accounts",
+      "intro": "When you create an account on PassorMatch, you must:",
+      "items": {
+        "accurate": "Provide accurate and complete information",
+        "age": "Be at least 18 years of age — PassorMatch is strictly for adults 18 and older, with no exceptions, and we do not permit accounts for anyone under 18",
+        "confidentiality": "Maintain the confidentiality of your password",
+        "responsibility": "Accept responsibility for all activities under your account",
+        "genuine": "Use genuine photos and information",
+        "oneAccount": "Create only one account for your own personal use — accounts may not be shared, sold, or transferred"
+      }
+    },
+    "noGuarantee": {
+      "heading": "4. No Guarantee of Matches or Compatibility",
+      "body": "PassorMatch is a platform that helps you connect with other users; it is not a matchmaking, background-check, or dating-coaching service. We do not guarantee that you will find a match, that any match will be compatible with you, or that any interaction with another user will be safe, truthful, or appropriate. You are solely responsible for your interactions with other users, both on and off the Service."
+    },
+    "acceptableUse": {
+      "heading": "5. Acceptable Use Policy",
+      "intro": "You agree not to use PassorMatch to:",
+      "items": {
+        "harass": "Harass, abuse, or threaten other users",
+        "false": "Post false, misleading, or fraudulent information",
+        "impersonate": "Impersonate any person, or create a profile using another person's photos or identity (\"catfishing\")",
+        "exploitation": "Engage in sexual exploitation or trafficking",
+        "spam": "Spam, scam, or phishing attempts, including requests for money, gift cards, or financial information from other users",
+        "ip": "Violate intellectual property rights",
+        "illegal": "Engage in illegal activities",
+        "unauthorized": "Attempt to gain unauthorized access to our systems",
+        "explicit": "Post explicit, nude, or illegal content, or content involving minors",
+        "solicit": "Solicit or advertise commercial services, including sex work, to other users"
+      }
+    },
+    "safety": {
+      "heading": "6. Dating Safety & In-Person Meetings",
+      "intro": "PassorMatch does not conduct criminal background checks on its users and cannot verify the identity, intentions, or truthfulness of any user. You are responsible for exercising your own judgment and caution when communicating with other users and when deciding whether to meet someone in person. We strongly recommend that you:",
+      "items": {
+        "money": "Never send money, gift cards, or financial information to someone you have not met in person",
+        "publicPlace": "Meet for the first time in a public place, and arrange your own transportation",
+        "tellSomeone": "Tell a friend or family member where you are going and who you are meeting",
+        "avoidSharing": "Avoid sharing sensitive personal information (home address, financial details, workplace) until you have established trust",
+        "trustInstincts": "Trust your instincts and end contact with anyone who makes you feel unsafe or uncomfortable"
+      },
+      "outro": "PassorMatch is not responsible for the conduct of any user, whether online or in person, and disclaims all liability for any interactions, meetings, or relationships arising from use of the Service, to the fullest extent permitted by law."
+    },
+    "reporting": {
+      "heading": "7. Reporting, Blocking & Enforcement",
+      "body": "PassorMatch provides tools to block and report other users. If you encounter behavior that violates these Terms — including harassment, fraud, impersonation, or inappropriate content — please report it through the in-app reporting feature or by contacting us directly. We reserve the right, at our sole discretion, to investigate reports, remove content, and suspend or permanently terminate any account that violates these Terms, without prior notice and without refund of any paid features."
+    },
+    "content": {
+      "heading": "8. Content Ownership & Rights",
+      "body": "You retain ownership of content you post, but grant PassorMatch a worldwide, non-exclusive license to use, reproduce, and display your profile information for operating the Service. By posting content, you warrant that you own or have permission to use such content, that any photos are genuinely of you, and that your content does not depict any other identifiable person without their consent."
+    },
+    "warranties": {
+      "heading": "9. Disclaimer of Warranties",
+      "body": "The materials on PassorMatch are provided on an 'as is' basis. PassorMatch makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights."
+    },
+    "liability": {
+      "heading": "10. Limitation of Liability",
+      "body": "In no event shall PassorMatch or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, personal injury, or due to business interruption) arising out of the use or inability to use the materials on PassorMatch, or out of any interaction, meeting, or relationship with another user, even if PassorMatch or an authorized representative has been notified orally or in writing of the possibility of such damage."
+    },
+    "accuracy": {
+      "heading": "11. Accuracy of Materials",
+      "body": "The materials appearing on PassorMatch could include technical, typographical, or photographic errors. PassorMatch does not warrant that any of the materials on its website are accurate, complete, or current. PassorMatch may make changes to the materials contained on its website at any time without notice."
+    },
+    "links": {
+      "heading": "12. Links",
+      "body": "PassorMatch has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by PassorMatch of the site. Use of any such linked website is at the user's own risk."
+    },
+    "modifications": {
+      "heading": "13. Modifications",
+      "body": "PassorMatch may revise these Terms of Service for its website at any time without notice. By using this website, you are agreeing to be bound by the then current version of these Terms of Service."
+    },
+    "governingLaw": {
+      "heading": "14. Governing Law",
+      "body": "These Terms and Conditions are governed by and construed in accordance with the laws of Thailand, and you irrevocably submit to the exclusive jurisdiction of the courts in Bangkok. This does not affect any mandatory data protection rights you may have under the laws of the country where you live, including Thailand's Personal Data Protection Act (PDPA), the EU/UK General Data Protection Regulation (GDPR), or the California Consumer Privacy Act (CCPA), as described in our <link>Privacy Policy</link>."
+    },
+    "contact": {
+      "heading": "15. Contact Information",
+      "intro": "If you have any questions about these Terms of Service, please contact us at:",
+      "emailLabel": "Email:",
+      "email": "legal@passormatch.com",
+      "addressLabel": "Address:",
+      "address": "PassorMatch, Bangkok, Thailand"
+    },
+    "agreement": "By using PassorMatch, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.",
+    "cta": {
+      "heading": "Ready to get started?",
+      "subheading": "Join thousands of singles finding meaningful connections",
+      "button": "Create Account"
+    }
+  }
+}

@@ -1,0 +1,255 @@
+{
+  "privacy": {
+    "pageTitle": "Dasar Privasi",
+    "lastUpdated": "Kemas kini terakhir: 18 Ogos 2026",
+    "introduction": {
+      "heading": "Pengenalan",
+      "body": "PassorMatch (\"kami,\" \"kita,\" \"milik kami,\" atau \"Syarikat\") komited untuk melindungi privasi anda. Dasar Privasi ini menerangkan bagaimana kami mengumpul, menggunakan, mendedahkan, dan melindungi maklumat anda apabila anda melawat laman web kami dan menggunakan perkhidmatan kami."
+    },
+    "infoCollect": {
+      "heading": "1. Maklumat Yang Kami Kumpul",
+      "providedHeading": "Maklumat Yang Anda Berikan:",
+      "provided": {
+        "account": "Maklumat akaun (nama, e-mel, telefon, tarikh lahir)",
+        "profile": "Maklumat profil (foto, biodata, keutamaan lokasi)",
+        "communication": "Data komunikasi (mesej, pertanyaan sokongan)",
+        "payment": "Maklumat pembayaran (diproses secara selamat oleh penyedia pihak ketiga)",
+        "preference": "Maklumat keutamaan (minat, keutamaan temu janji, jantina)",
+        "health": "Pendedahan kesihatan yang anda pilih untuk ditambahkan pada profil anda (lihat \"Pendedahan Kesihatan\" di bawah)",
+        "reports": "Laporan, sekatan, dan maklumat berkaitan keselamatan yang anda atau orang lain hantar mengenai akaun anda"
+      },
+      "autoHeading": "Maklumat Yang Dikumpul Secara Automatik:",
+      "auto": {
+        "device": "Maklumat peranti (alamat IP, jenis peranti, jenis pelayar)",
+        "usage": "Data penggunaan (ciri yang diakses, masa yang digunakan, tindakan yang diambil)",
+        "location": "Data lokasi, digunakan untuk menunjukkan jarak anggaran anda kepada pengguna lain dan untuk memadankan anda dengan orang yang berdekatan (jika anda memberikan kebenaran)",
+        "cookies": "Kuki dan teknologi serupa",
+        "analytics": "Analitik penggunaan aplikasi dan laman web, dikumpul melalui Google Firebase Analytics — lihat \"Analitik\" di bawah"
+      },
+      "analyticsHeading": "Analitik:",
+      "analyticsBody1": "Kami menggunakan Google Firebase Analytics untuk memahami bagaimana Perkhidmatan digunakan — contohnya, skrin mana yang dilihat, kekerapan aplikasi dibuka, dan aktiviti sesi secara umum. Ini adalah analitik produk pihak pertama: kami menggunakannya untuk menambah baik Perkhidmatan dan pada masa ini tidak menggunakannya untuk pemperibadian iklan atau penjejakan iklan merentas aplikasi/peranti. Firebase Analytics mungkin mengumpul lokasi anggaran anda (diperoleh daripada alamat IP, bukan GPS yang tepat), maklumat peranti dan aplikasi, serta pengecam contoh aplikasi. Data ini diproses oleh Google sebagai penyedia perkhidmatan kami dan tidak dikaitkan dengan nama atau butiran hubungan anda dalam laporan analitik kami.",
+      "analyticsBody2Strong": "Lokasi anda tidak pernah ditunjukkan kepada pengguna lain sebagai alamat tepat atau koordinat yang tepat.",
+      "analyticsBody2Rest": "Sebarang jarak atau lokasi yang ditunjukkan kepada pengguna lain adalah anggaran (\"dikaburkan\" — contohnya, dibundarkan kepada beberapa kilometer terdekat atau ditunjukkan sebagai kawasan umum), bukan kedudukan tepat anda, dan tidak mencukupi dengan sendirinya untuk mengenal pasti rumah, tempat kerja, atau lokasi masa nyata anda yang tepat."
+    },
+    "photos": {
+      "heading": "Foto & Keterlihatan Profil",
+      "body": "Foto profil, biodata, dan butiran profil lain yang anda pilih untuk dipaparkan boleh dilihat oleh pengguna lain Perkhidmatan sebagai sebahagian daripada fungsi teras pemadanan. Kami mungkin menggunakan alat automatik dan semakan manusia untuk menyaring foto dan kandungan yang dimuat naik bagi pelanggaran dasar (contohnya ketelanjangan, penyamaran, atau kandungan haram) sebelum atau selepas ia dapat dilihat oleh pengguna lain."
+    },
+    "circles": {
+      "heading": "Maklumat Sensitif & Kumpulan Komuniti (\"Circles\")",
+      "body1": "Perkhidmatan ini membolehkan anda menyertai kumpulan komuniti pilihan berasaskan minat dan identiti (\"Circles\"), yang mana sesetengahnya mungkin mendedahkan maklumat peribadi sensitif tentang anda — contohnya, orientasi seksual atau identiti jantina anda (seperti Circle berorientasikan LGBTQ+), agama anda (seperti Circle Agama & Kerohanian), atau bangsa atau etnik anda (seperti Circle berasaskan bangsa atau etnik).",
+      "body2Strong": "Kami tidak sesekali berkongsi keahlian anda dalam Circle sensitif — atau fakta bahawa ia mendedahkan orientasi seksual, agama, bangsa, atau mana-mana kategori sensitif yang serupa — dengan rakan kongsi pengiklanan, rangkaian iklan, atau rakan kongsi analitik/penjejakan.",
+      "body2Rest": "Maklumat ini hanya digunakan untuk tujuan dalam aplikasi: untuk menunjukkan Circle yang berkaitan kepada anda, untuk menyokong pemadanan dan kandungan dalam aplikasi dalam Perkhidmatan, dan untuk keselamatan serta penyederhanaan. Ia tidak pernah dijual, dan tidak pernah digunakan untuk membina profil pengiklanan, sama ada oleh kami atau mana-mana pihak ketiga.",
+      "body3": "Kami juga tidak menggunakan keahlian Circle sensitif anda untuk memperkaya atau menambah pemprofilan berasaskan lokasi anda — contohnya, kami tidak menggabungkan keahlian Circle anda dengan data lokasi untuk membuat kesimpulan atau berkongsi maklumat yang lebih tepat tentang di mana anda menghabiskan masa.",
+      "body4": "Anda memilih Circle mana yang hendak disertai, dan anda boleh meninggalkan Circle pada bila-bila masa; berbuat demikian akan mengalih keluarnya daripada keahlian yang dapat dilihat pada masa hadapan."
+    },
+    "health": {
+      "heading": "Pendedahan Kesihatan",
+      "body1": "Sebagai sebahagian daripada melengkapkan profil anda, anda boleh secara pilihan berkongsi pendedahan kesihatan — contohnya, keadaan kesihatan seksual, keadaan kesihatan mental, ADHD, autisme, keadaan fizikal jangka panjang, atau bahawa anda sedang dalam pemulihan penyalahgunaan bahan. Ini sepenuhnya pilihan dan hanya dapat dilihat pada profil anda jika anda memilih untuk menambahkannya.",
+      "body2Strong": "Oleh kerana pendedahan kesihatan yang anda tambah dipaparkan pada profil anda, ia boleh dilihat oleh pengguna lain Perkhidmatan",
+      "body2Rest": "dengan cara yang sama seperti maklumat profil anda yang lain (lihat \"Foto & Keterlihatan Profil\" di atas). Kami tidak berkongsi pendedahan kesihatan anda dengan rakan kongsi pengiklanan, rangkaian iklan, atau rakan kongsi analitik/penjejakan, dan ia tidak pernah digunakan untuk membina profil pengiklanan atau dijual kepada pihak ketiga.",
+      "body3": "Anda boleh menambah, menukar, atau mengalih keluar pendedahan kesihatan anda pada bila-bila masa dalam tetapan profil anda."
+    },
+    "howWeUse": {
+      "heading": "2. Bagaimana Kami Menggunakan Maklumat Anda",
+      "items": {
+        "improve": "Menyediakan dan menambah baik perkhidmatan kami",
+        "account": "Mencipta dan menguruskan akaun anda",
+        "match": "Memudahkan hubungan dan padanan",
+        "updates": "Menghantar kemas kini dan komunikasi berkaitan perkhidmatan",
+        "fraud": "Mencegah penipuan dan memastikan keselamatan",
+        "legal": "Mematuhi kewajipan undang-undang",
+        "marketing": "Tujuan pemasaran dan promosi (dengan persetujuan anda)"
+      },
+      "scanningStrong": "Pengimbasan kandungan & mesej automatik:",
+      "scanningRest": "Untuk mengesan pelanggaran Dasar Penggunaan Boleh Diterima kami — seperti gangguan, penipuan, kandungan lucah atau haram, dan risiko keselamatan lain — kandungan dan mesej yang anda siarkan atau hantar melalui Perkhidmatan mungkin diimbas secara automatik menggunakan alat penyederhanaan pihak ketiga. Pengimbasan ini digunakan semata-mata untuk tujuan amanah dan keselamatan, tidak digunakan untuk pengiklanan, dan tidak menggantikan keupayaan anda untuk melaporkan kandungan atau pengguna secara langsung."
+    },
+    "sharing": {
+      "heading": "3. Perkongsian & Pendedahan Data",
+      "intro": "Kami tidak menjual maklumat peribadi anda. Kami mungkin berkongsi data dengan:",
+      "items": {
+        "providers": "Penyedia perkhidmatan (pengehosan, pemprosesan pembayaran, analitik)",
+        "lawEnforcement": "Penguatkuasaan undang-undang (apabila dikehendaki dari segi undang-undang, termasuk sebagai tindak balas kepada laporan keselamatan yang melibatkan gangguan, ancaman, atau aktiviti jenayah yang disyaki)",
+        "otherUsers": "Pengguna lain (maklumat profil yang anda pilih untuk dipaparkan, dan butiran terhad berkaitan laporan yang anda failkan atau yang difailkan terhadap anda)"
+      },
+      "exceptionStrong": "Pengecualian untuk keahlian Circle sensitif dan pendedahan kesihatan:",
+      "exceptionRest": "Seperti yang diterangkan dalam \"Maklumat Sensitif & Kumpulan Komuniti\" dan \"Pendedahan Kesihatan\" di atas, keahlian anda dalam Circle yang mendedahkan orientasi seksual, agama, bangsa, atau kategori sensitif yang serupa, dan sebarang pendedahan kesihatan yang anda tambah pada profil anda, tidak pernah dikongsi dengan penyedia perkhidmatan pengiklanan atau analitik kami, dan dikecualikan daripada perkongsian analitik yang diterangkan di atas."
+    },
+    "security": {
+      "heading": "4. Keselamatan Data",
+      "body": "Kami melaksanakan langkah keselamatan standard industri untuk melindungi maklumat anda, termasuk penyulitan, pelayan selamat, dan kawalan akses. Walau bagaimanapun, tiada kaedah penghantaran melalui internet yang 100% selamat."
+    },
+    "retention": {
+      "heading": "5. Pengekalan Data",
+      "intro": "Apabila anda memadam akaun anda, kami memadam data akaun anda dalam masa 30 hari, kecuali untuk data yang kami dikehendaki atau dibenarkan untuk disimpan lebih lama bagi:",
+      "items": {
+        "safety": "Tujuan keselamatan (contohnya rekod berkaitan laporan, sekatan, larangan, atau siasatan keselamatan, untuk mencegah pengguna yang dilarang daripada menyertai semula)",
+        "legal": "Kewajipan undang-undang (contohnya keperluan penyimpanan rekod cukai, perakaunan, atau kawal selia)",
+        "fraud": "Pencegahan penipuan (contohnya maklumat yang diperlukan untuk mengesan dan mencegah akaun atau pembayaran yang menipu)"
+      },
+      "outro": "Data yang disimpan untuk tujuan ini hanya disimpan selagi perlu untuk tujuan tersebut dan tertakluk kepada perlindungan keselamatan yang sama seperti yang diterangkan di atas."
+    },
+    "rights": {
+      "heading": "6. Hak Privasi Anda",
+      "intro": "Bergantung pada lokasi anda, anda mungkin mempunyai hak untuk:",
+      "items": {
+        "access": "Mengakses maklumat peribadi anda",
+        "correction": "Meminta pembetulan data yang tidak tepat",
+        "deletion": "Meminta pemadaman data anda",
+        "optOut": "Menarik diri daripada komunikasi pemasaran",
+        "portability": "Kemudahalihan data"
+      },
+      "withdrawStrong": "Menarik balik persetujuan anda untuk pemadanan berasaskan jantina:",
+      "withdrawRest": "Semasa pendaftaran, anda bersetuju secara berasingan untuk membenarkan kami menggunakan jantina anda untuk menunjukkan padanan yang berkaitan kepada anda dan pengguna lain. Oleh kerana pemadanan berasaskan jantina adalah teras kepada cara Perkhidmatan berfungsi, cara untuk menarik balik persetujuan ini adalah dengan memadam akaun anda dalam Tetapan — ini akan menghentikan semua pemadanan dengan serta-merta dan mengalih keluar profil anda daripada paparan pengguna lain. Pada masa ini kami tidak menawarkan cara untuk mengekalkan akaun aktif sambil menarik diri daripada pemadanan sahaja.",
+      "thailandHeading": "Thailand — Akta Perlindungan Data Peribadi (PDPA)",
+      "thailandBody": "Jika anda berada di Thailand, kami memproses data peribadi anda sebagai pengawal data di bawah Akta Perlindungan Data Peribadi B.E. 2562 (2019). Sebagai tambahan kepada hak-hak di atas, anda mempunyai hak untuk menarik balik persetujuan pada bila-bila masa (apabila pemprosesan berdasarkan persetujuan), hak untuk membantah pemprosesan, dan hak untuk mengemukakan aduan kepada Jawatankuasa Perlindungan Data Peribadi (PDPC). Data sensitif di bawah PDPA (yang termasuk data yang mendedahkan orientasi seksual dan agama, seperti sesetengah keahlian Circle yang diterangkan di atas, dan data kesihatan, seperti pendedahan kesihatan pilihan yang anda tambah pada profil anda) hanya diproses dengan persetujuan jelas anda atau asas undang-undang lain yang dibenarkan di bawah PDPA, dan dikendalikan dengan perlindungan yang lebih tinggi seperti yang dikehendaki oleh PDPA.",
+      "gdprHeading": "Kawasan Ekonomi Eropah & UK — GDPR",
+      "gdprBody": "Jika anda berada di EEA atau UK, kami memproses data peribadi anda mengikut Peraturan Perlindungan Data Am (GDPR) / UK GDPR. Asas undang-undang kami untuk pemprosesan termasuk persetujuan anda, pelaksanaan kontrak kami dengan anda (menyediakan Perkhidmatan), kepentingan sah kami (seperti keselamatan dan pencegahan penipuan), dan pematuhan kewajipan undang-undang. Anda mempunyai hak untuk mengakses, membetulkan, memadam, menyekat, atau memindahkan data anda, untuk membantah pemprosesan (termasuk pemprofilan), untuk menarik balik persetujuan pada bila-bila masa, dan untuk mengemukakan aduan kepada pihak berkuasa penyeliaan tempatan anda. Data kategori khas (termasuk data yang mendedahkan orientasi seksual dan agama, dan data kesihatan seperti pendedahan kesihatan pilihan yang anda tambah pada profil anda) hanya diproses apabila syarat GDPR yang sah terpakai, seperti persetujuan jelas anda.",
+      "ccpaHeading": "Amerika Syarikat — CCPA/CPRA dan undang-undang privasi negeri lain",
+      "ccpaBody": "Jika anda seorang pemastautin California, Akta Privasi Pengguna California (CCPA), sebagaimana dipinda oleh CPRA, dan undang-undang privasi negeri A.S. lain yang terpakai memberikan anda hak untuk mengetahui maklumat peribadi apa yang kami kumpul, gunakan, dan dedahkan; untuk meminta pemadaman atau pembetulan maklumat anda; untuk menarik diri daripada \"penjualan\" atau \"perkongsian\" maklumat peribadi (kami tidak menjual maklumat peribadi anda, dan tidak berkongsi keahlian Circle sensitif atau pendedahan kesihatan dengan rakan kongsi pengiklanan atau analitik seperti yang diterangkan di atas); dan untuk tidak didiskriminasi kerana menggunakan hak-hak ini. Maklumat peribadi sensitif di bawah CCPA — yang termasuk data yang mendedahkan orientasi seksual dan kepercayaan agama, dan maklumat kesihatan seperti pendedahan kesihatan pilihan yang anda tambah pada profil anda — hanya digunakan sekadar perlu untuk menyediakan Perkhidmatan dan tidak digunakan untuk membuat kesimpulan tentang ciri-ciri anda bagi tujuan pengiklanan.",
+      "exerciseRights": "Untuk menggunakan mana-mana hak ini, hubungi kami menggunakan butiran dalam bahagian \"Hubungi Kami\" di bawah. Kami mungkin perlu mengesahkan identiti anda sebelum memenuhi permintaan."
+    },
+    "cookies": {
+      "heading": "7. Kuki & Penjejakan",
+      "body": "Kami menggunakan kuki dan teknologi serupa untuk meningkatkan pengalaman anda, menganalisis penggunaan, dan memperibadikan kandungan. Anda boleh mengawal keutamaan kuki melalui tetapan pelayar anda."
+    },
+    "children": {
+      "heading": "8. Privasi Kanak-kanak",
+      "body": "PassorMatch adalah khusus untuk pengguna berumur 18 tahun ke atas. Ia tidak ditujukan untuk, dan tidak boleh digunakan oleh, sesiapa yang berumur bawah 18 tahun. Kami tidak mengumpul data daripada kanak-kanak bawah umur secara sengaja. Jika kami mendapati bahawa kami telah mengumpul data peribadi daripada seseorang yang berumur bawah 18 tahun, kami akan mengambil langkah untuk memadamnya dengan segera dan, jika berkenaan, menamatkan akaun yang berkaitan."
+    },
+    "contact": {
+      "heading": "9. Hubungi Kami",
+      "intro": "Jika anda mempunyai kebimbangan atau permintaan berkaitan privasi, sila hubungi kami di:",
+      "emailLabel": "E-mel:",
+      "email": "privacy@passormatch.com",
+      "addressLabel": "Alamat:",
+      "address": "PassorMatch, Bangkok, Thailand"
+    },
+    "changes": {
+      "heading": "10. Perubahan Kepada Dasar Ini",
+      "body": "Kami mungkin mengemas kini Dasar Privasi ini dari semasa ke semasa. Perubahan akan disiarkan pada halaman ini dengan tarikh \"Kemas kini terakhir\" yang dikemas kini. Penggunaan berterusan anda terhadap perkhidmatan kami menunjukkan penerimaan terhadap dasar yang disemak semula."
+    },
+    "cta": {
+      "heading": "Ada soalan tentang privasi anda?",
+      "subheading": "Pasukan sokongan kami sedia membantu",
+      "button": "Hubungi Sokongan"
+    }
+  },
+  "support": {
+    "pageTitle": "Sokongan",
+    "subtitle": "Perlukan bantuan? Kami sedia membantu anda.",
+    "heading": "Hubungi Sokongan",
+    "body": "Untuk sebarang soalan, isu, atau maklum balas mengenai PassorMatch, sila hubungi kami melalui e-mel dan pasukan kami akan membalas secepat mungkin.",
+    "emailLabel": "E-mel:",
+    "email": "support@passormatch.com"
+  },
+  "terms": {
+    "pageTitle": "Terma Perkhidmatan",
+    "lastUpdated": "Kemas kini terakhir: 4 Ogos 2026",
+    "acceptance": {
+      "heading": "1. Penerimaan Terma",
+      "body": "Dengan mengakses dan menggunakan PassorMatch (\"Perkhidmatan\"), anda menerima dan bersetuju untuk terikat dengan terma dan peruntukan perjanjian ini. Jika anda tidak bersetuju untuk mematuhi perkara di atas, sila jangan gunakan perkhidmatan ini."
+    },
+    "license": {
+      "heading": "2. Lesen Penggunaan",
+      "intro": "Kebenaran diberikan untuk memuat turun sementara satu salinan bahan (maklumat atau perisian) pada PassorMatch untuk tontonan peribadi, bukan komersial, dan sementara sahaja. Ini adalah pemberian lesen, bukan pemindahan hak milik, dan di bawah lesen ini anda tidak boleh:",
+      "items": {
+        "modify": "Mengubah suai atau menyalin bahan tersebut",
+        "commercial": "Menggunakan bahan tersebut untuk sebarang tujuan komersial atau untuk sebarang paparan awam",
+        "reverseEngineer": "Cuba menyahkompil atau melakukan kejuruteraan songsang terhadap sebarang perisian yang terkandung di laman ini",
+        "notices": "Mengalih keluar sebarang notis hak cipta atau notis proprietari lain daripada bahan tersebut",
+        "transfer": "Memindahkan bahan tersebut kepada orang lain atau \"mencerminkan\" bahan tersebut pada mana-mana pelayan lain"
+      }
+    },
+    "accounts": {
+      "heading": "3. Akaun Pengguna",
+      "intro": "Apabila anda mencipta akaun di PassorMatch, anda mesti:",
+      "items": {
+        "accurate": "Memberikan maklumat yang tepat dan lengkap",
+        "age": "Berumur sekurang-kurangnya 18 tahun — PassorMatch adalah khusus untuk orang dewasa berumur 18 tahun ke atas, tanpa pengecualian, dan kami tidak membenarkan akaun untuk sesiapa yang berumur bawah 18 tahun",
+        "confidentiality": "Mengekalkan kerahsiaan kata laluan anda",
+        "responsibility": "Menerima tanggungjawab bagi semua aktiviti di bawah akaun anda",
+        "genuine": "Menggunakan foto dan maklumat yang tulen",
+        "oneAccount": "Mencipta hanya satu akaun untuk kegunaan peribadi anda sendiri — akaun tidak boleh dikongsi, dijual, atau dipindah milik"
+      }
+    },
+    "noGuarantee": {
+      "heading": "4. Tiada Jaminan Padanan atau Keserasian",
+      "body": "PassorMatch adalah platform yang membantu anda berhubung dengan pengguna lain; ia bukan perkhidmatan jodoh, semakan latar belakang, atau bimbingan temu janji. Kami tidak menjamin bahawa anda akan menemui padanan, bahawa mana-mana padanan akan serasi dengan anda, atau bahawa sebarang interaksi dengan pengguna lain akan selamat, jujur, atau sesuai. Anda bertanggungjawab sepenuhnya terhadap interaksi anda dengan pengguna lain, sama ada di dalam atau di luar Perkhidmatan."
+    },
+    "acceptableUse": {
+      "heading": "5. Dasar Penggunaan Boleh Diterima",
+      "intro": "Anda bersetuju untuk tidak menggunakan PassorMatch bagi:",
+      "items": {
+        "harass": "Mengganggu, menyalahgunakan, atau mengugut pengguna lain",
+        "false": "Menyiarkan maklumat palsu, mengelirukan, atau menipu",
+        "impersonate": "Menyamar sebagai mana-mana orang, atau mencipta profil menggunakan foto atau identiti orang lain (\"catfishing\")",
+        "exploitation": "Terlibat dalam eksploitasi seksual atau pemerdagangan orang",
+        "spam": "Percubaan spam, penipuan, atau pancingan data, termasuk permintaan wang, kad hadiah, atau maklumat kewangan daripada pengguna lain",
+        "ip": "Melanggar hak harta intelek",
+        "illegal": "Terlibat dalam aktiviti haram",
+        "unauthorized": "Cuba mendapatkan akses tanpa kebenaran kepada sistem kami",
+        "explicit": "Menyiarkan kandungan lucah, telanjang, atau haram, atau kandungan yang melibatkan kanak-kanak bawah umur",
+        "solicit": "Meminta atau mengiklankan perkhidmatan komersial, termasuk kerja seks, kepada pengguna lain"
+      }
+    },
+    "safety": {
+      "heading": "6. Keselamatan Temu Janji & Pertemuan Bersemuka",
+      "intro": "PassorMatch tidak menjalankan semakan latar belakang jenayah ke atas penggunanya dan tidak dapat mengesahkan identiti, niat, atau kejujuran mana-mana pengguna. Anda bertanggungjawab untuk menggunakan pertimbangan dan kewaspadaan anda sendiri semasa berkomunikasi dengan pengguna lain dan semasa membuat keputusan sama ada untuk bertemu seseorang secara bersemuka. Kami amat mengesyorkan anda:",
+      "items": {
+        "money": "Jangan sesekali menghantar wang, kad hadiah, atau maklumat kewangan kepada seseorang yang belum pernah anda temui secara bersemuka",
+        "publicPlace": "Bertemu buat kali pertama di tempat awam, dan aturkan pengangkutan anda sendiri",
+        "tellSomeone": "Beritahu seorang rakan atau ahli keluarga ke mana anda pergi dan dengan siapa anda akan bertemu",
+        "avoidSharing": "Elakkan berkongsi maklumat peribadi sensitif (alamat rumah, butiran kewangan, tempat kerja) sehingga anda telah membina kepercayaan",
+        "trustInstincts": "Percayai naluri anda dan hentikan hubungan dengan sesiapa yang membuatkan anda berasa tidak selamat atau tidak selesa"
+      },
+      "outro": "PassorMatch tidak bertanggungjawab terhadap kelakuan mana-mana pengguna, sama ada dalam talian atau bersemuka, dan menafikan segala liabiliti bagi sebarang interaksi, pertemuan, atau hubungan yang timbul daripada penggunaan Perkhidmatan, setakat yang dibenarkan oleh undang-undang."
+    },
+    "reporting": {
+      "heading": "7. Pelaporan, Sekatan & Penguatkuasaan",
+      "body": "PassorMatch menyediakan alat untuk menyekat dan melaporkan pengguna lain. Jika anda menghadapi kelakuan yang melanggar Terma ini — termasuk gangguan, penipuan, penyamaran, atau kandungan yang tidak sesuai — sila laporkan melalui ciri pelaporan dalam aplikasi atau dengan menghubungi kami secara terus. Kami berhak, mengikut budi bicara mutlak kami, untuk menyiasat laporan, mengalih keluar kandungan, dan menggantung atau menamatkan secara kekal mana-mana akaun yang melanggar Terma ini, tanpa notis terlebih dahulu dan tanpa bayaran balik bagi sebarang ciri berbayar."
+    },
+    "content": {
+      "heading": "8. Pemilikan & Hak Kandungan",
+      "body": "Anda mengekalkan pemilikan kandungan yang anda siarkan, tetapi memberikan PassorMatch lesen sedunia, bukan eksklusif untuk menggunakan, menghasilkan semula, dan memaparkan maklumat profil anda bagi mengendalikan Perkhidmatan. Dengan menyiarkan kandungan, anda mengaku janji bahawa anda memiliki atau mempunyai kebenaran untuk menggunakan kandungan tersebut, bahawa sebarang foto adalah benar-benar gambar anda, dan bahawa kandungan anda tidak menggambarkan mana-mana orang lain yang boleh dikenal pasti tanpa persetujuan mereka."
+    },
+    "warranties": {
+      "heading": "9. Penafian Waranti",
+      "body": "Bahan-bahan pada PassorMatch disediakan atas dasar 'seadanya'. PassorMatch tidak memberikan sebarang waranti, sama ada nyata atau tersirat, dan dengan ini menafikan serta menolak semua waranti lain termasuk, tanpa had, waranti atau syarat tersirat kebolehdagangan, kesesuaian untuk tujuan tertentu, atau bukan pelanggaran hak harta intelek atau pelanggaran hak lain."
+    },
+    "liability": {
+      "heading": "10. Had Liabiliti",
+      "body": "Tidak dalam apa jua keadaan sekalipun PassorMatch atau pembekalnya bertanggungjawab bagi sebarang kerosakan (termasuk, tanpa had, kerosakan akibat kehilangan data atau keuntungan, kecederaan diri, atau akibat gangguan perniagaan) yang timbul daripada penggunaan atau ketidakupayaan untuk menggunakan bahan pada PassorMatch, atau daripada sebarang interaksi, pertemuan, atau hubungan dengan pengguna lain, walaupun PassorMatch atau wakil yang diberi kuasa telah dimaklumkan secara lisan atau bertulis mengenai kemungkinan kerosakan sedemikian."
+    },
+    "accuracy": {
+      "heading": "11. Ketepatan Bahan",
+      "body": "Bahan yang terdapat pada PassorMatch mungkin mengandungi kesilapan teknikal, tipografi, atau fotografi. PassorMatch tidak menjamin bahawa mana-mana bahan pada laman webnya adalah tepat, lengkap, atau terkini. PassorMatch boleh membuat perubahan kepada bahan yang terkandung pada laman webnya pada bila-bila masa tanpa notis."
+    },
+    "links": {
+      "heading": "12. Pautan",
+      "body": "PassorMatch tidak menyemak semua laman yang dipautkan ke laman webnya dan tidak bertanggungjawab terhadap kandungan mana-mana laman yang dipautkan tersebut. Kemasukan mana-mana pautan tidak menunjukkan pengesahan oleh PassorMatch terhadap laman tersebut. Penggunaan mana-mana laman web yang dipautkan sedemikian adalah atas risiko pengguna sendiri."
+    },
+    "modifications": {
+      "heading": "13. Pengubahsuaian",
+      "body": "PassorMatch boleh menyemak semula Terma Perkhidmatan ini bagi laman webnya pada bila-bila masa tanpa notis. Dengan menggunakan laman web ini, anda bersetuju untuk terikat dengan versi Terma Perkhidmatan yang terkini pada masa itu."
+    },
+    "governingLaw": {
+      "heading": "14. Undang-undang Yang Mentadbir",
+      "body": "Terma dan Syarat ini ditadbir oleh dan ditafsirkan mengikut undang-undang Thailand, dan anda dengan tidak boleh ditarik balik tunduk kepada bidang kuasa eksklusif mahkamah di Bangkok. Ini tidak menjejaskan sebarang hak perlindungan data mandatori yang mungkin anda miliki di bawah undang-undang negara tempat anda tinggal, termasuk Akta Perlindungan Data Peribadi Thailand (PDPA), Peraturan Perlindungan Data Am EU/UK (GDPR), atau Akta Privasi Pengguna California (CCPA), seperti yang diterangkan dalam <link>Dasar Privasi</link> kami."
+    },
+    "contact": {
+      "heading": "15. Maklumat Hubungan",
+      "intro": "Jika anda mempunyai sebarang soalan tentang Terma Perkhidmatan ini, sila hubungi kami di:",
+      "emailLabel": "E-mel:",
+      "email": "legal@passormatch.com",
+      "addressLabel": "Alamat:",
+      "address": "PassorMatch, Bangkok, Thailand"
+    },
+    "agreement": "Dengan menggunakan PassorMatch, anda mengakui bahawa anda telah membaca, memahami, dan bersetuju untuk terikat dengan Terma Perkhidmatan ini.",
+    "cta": {
+      "heading": "Bersedia untuk bermula?",
+      "subheading": "Sertai beribu-ribu bujang yang mencari hubungan yang bermakna",
+      "button": "Cipta Akaun"
+    }
+  }
+}

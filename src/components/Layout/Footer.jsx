@@ -9,7 +9,7 @@ export default function Footer() {
 
   const sections = [
     { key: 'company', links: ['blog', 'places','faq'] },
-    {key:'legal', links: ['privacy', 'terms']},
+    {key:'legal', links: ['privacy', 'terms', 'support']},
   ]
 
   // helper function to decide link type
