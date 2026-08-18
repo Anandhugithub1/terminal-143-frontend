@@ -4,6 +4,12 @@ import { PushNotifications } from "@capacitor/push-notifications"
 
 const VAPID_PUBLIC_KEY="BED0WujBmOjlCKalCfPnKuYHRmVysHIWkRTDumenI0DxfTexeo_X-5E4G0lm3vV-Y63zX4oo2KYLsRyieX1Yd_o"
 
+const debugLog = (...args) => {
+  if (import.meta.env.DEV) {
+    console.log(...args)
+  }
+}
+
 function urlBase64ToUint8Array(base64String) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4)
   const base64 = (base64String + padding)
@@ -29,7 +35,7 @@ export async function subscribeToPush() {
 }
 
 async function subscribeToFcmPush() {
-  console.log("=== subscribeToFcmPush called ===")
+  debugLog("=== subscribeToFcmPush called ===")
 
   let permission = await PushNotifications.checkPermissions()
 
@@ -54,7 +60,7 @@ async function subscribeToFcmPush() {
   await PushNotifications.register()
 
   const fcmToken = await tokenPromise
-  console.log("FCM token received")
+  debugLog("FCM token received")
 
   await axios.post(
     "https://api.passormatch.com/notifications/save-subscription",
@@ -62,33 +68,33 @@ async function subscribeToFcmPush() {
     { withCredentials: true }
   )
 
-  console.log("Backend call completed")
+  debugLog("Backend call completed")
 }
 
 async function subscribeToWebPush() {
-  console.log("=== subscribeToWebPush called ===")
+  debugLog("=== subscribeToWebPush called ===")
 
   if (!("serviceWorker" in navigator)) {
-    console.log("No serviceWorker support")
+    debugLog("No serviceWorker support")
     return
   }
 
   if (!("PushManager" in window)) {
-    console.log("No PushManager support")
+    debugLog("No PushManager support")
     return
   }
 
-  console.log("Permission state:", Notification.permission)
+  debugLog("Permission state:", Notification.permission)
 
   if (Notification.permission === "denied") {
-    console.log("Permission denied")
+    debugLog("Permission denied")
     throw new Error("permission-denied")
   }
 
   if (Notification.permission === "default") {
-    console.log("Requesting permission...")
+    debugLog("Requesting permission...")
     const permission = await Notification.requestPermission()
-    console.log("Permission result:", permission)
+    debugLog("Permission result:", permission)
 
     if (permission !== "granted") {
       throw new Error("permission-not-granted")
@@ -96,16 +102,16 @@ async function subscribeToWebPush() {
   }
 
   const registration = await navigator.serviceWorker.ready
-  console.log("Service worker ready")
+  debugLog("Service worker ready")
 
   const existing = await registration.pushManager.getSubscription()
 
   if (existing) {
-    console.log("Existing subscription found:", existing.endpoint)
+    debugLog("Existing subscription found")
     return
   }
 
-  console.log("No subscription found. Creating new one...")
+  debugLog("No subscription found. Creating new one...")
 
   const subscription = await registration.pushManager.subscribe({
     userVisibleOnly: true,
@@ -114,9 +120,9 @@ async function subscribeToWebPush() {
     )
   })
 
-  console.log("New subscription created:", subscription.endpoint)
+  debugLog("New subscription created")
 
-  console.log("Calling backend save-subscription...")
+  debugLog("Calling backend save-subscription...")
 
   await axios.post(
     "https://api.passormatch.com/notifications/save-subscription",
@@ -124,5 +130,5 @@ async function subscribeToWebPush() {
     { withCredentials: true }
   )
 
-  console.log("Backend call completed")
+  debugLog("Backend call completed")
 }
