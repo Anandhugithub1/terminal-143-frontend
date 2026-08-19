@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import {
   useCircleChatHistory,
+  useCircleMembers,
   useDeleteCircleMessage,
   appendToCircleHistoryCache,
   removeFromCircleHistoryCache,
@@ -50,14 +51,16 @@ function formatMessageTime(iso) {
   return new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
 }
 
-// Sender identity is always plain, non-interactive text/initials — no
-// member directory lookup, no tap-to-profile, by design (group-chat
-// members are visible but never a way to reach a profile).
-function CircleMessageBubble({ msg, t, onRetry, onLongPress }) {
+// `member` is this sender's entry from useCircleMembers — used ONLY for
+// display (real avatarUrl/name if we have one, colored initials/raw userId
+// otherwise). No compatibility flag, no profileLink, no tap target anywhere
+// here: sender identity is always plain, non-interactive — group-chat
+// members are visible but never a way to reach a profile.
+function CircleMessageBubble({ msg, member, t, onRetry, onLongPress }) {
   const failed = msg.status === 'failed'
   const pending = msg.status === 'pending'
   const color = colorForMember(msg.senderId)
-  const displayName = msg.senderId
+  const displayName = member?.name || msg.senderId
   // Only your own messages can be long-pressed to delete — delete-for-
   // everyone in a circle is ownership-gated server-side too (see
   // deleteCircleMessage.js), this is just the client-side entry point.
@@ -76,12 +79,20 @@ function CircleMessageBubble({ msg, t, onRetry, onLongPress }) {
         </button>
       )}
       {!msg.mine && (
-        <div
-          className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-white text-[9px] font-bold select-none"
-          style={{ backgroundColor: color }}
-        >
-          {initialsFor(displayName)}
-        </div>
+        member?.avatarUrl ? (
+          <img
+            src={member.avatarUrl}
+            alt=""
+            className="w-6 h-6 rounded-full shrink-0 object-cover select-none"
+          />
+        ) : (
+          <div
+            className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-white text-[9px] font-bold select-none"
+            style={{ backgroundColor: color }}
+          >
+            {initialsFor(displayName)}
+          </div>
+        )
       )}
       <div className={`flex flex-col ${msg.mine ? 'items-end' : 'items-start'} max-w-[74%]`}>
         {!msg.mine && (
@@ -138,6 +149,9 @@ export default function CircleChatThread({ circleId, circleName }) {
   const queryClient = useQueryClient()
   const { previews, markRead, recordSentMessage } = useCircleChatPreviews()
   const chatEnabled = previews[circleId]?.chatEnabled !== false
+  // Display-only: real avatar/name per sender in the thread. No
+  // compatibility/profile-link fields are requested or used here anymore.
+  const { byUserId: members } = useCircleMembers(circleId)
   const { mutate: deleteCircleMessage, isPending: isDeleting } = useDeleteCircleMessage(circleId)
 
   const [liveMessages, setLiveMessages] = useState([])
@@ -446,7 +460,7 @@ export default function CircleChatThread({ circleId, circleName }) {
             {messages.map((msg, index) => (
               <div key={msg.id}>
                 {isNewDay(messages, index) && <DateDivider label={formatDateDivider(msg.sentAt, t)} />}
-                <CircleMessageBubble msg={msg} t={t} onRetry={handleRetry} onLongPress={setMessageToDelete} />
+                <CircleMessageBubble msg={msg} member={members.get(msg.senderId)} t={t} onRetry={handleRetry} onLongPress={setMessageToDelete} />
               </div>
             ))}
           </>
