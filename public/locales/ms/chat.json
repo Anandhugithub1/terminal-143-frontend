@@ -107,6 +107,7 @@
     "chatOffBadge": "Sembang dimatikan",
     "newBadge": "Baharu",
     "showMore": "Tunjuk {{count}} lagi",
-    "showMore_other": "Tunjuk {{count}} lagi"
+    "showMore_other": "Tunjuk {{count}} lagi",
+    "showLess": "Tunjuk kurang"
   }
 }

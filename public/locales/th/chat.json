@@ -106,6 +106,7 @@
     "youPrefix": "คุณ: ",
     "chatOffBadge": "ปิดแชท",
     "newBadge": "ใหม่",
-    "showMore": "แสดงอีก {{count}} รายการ"
+    "showMore": "แสดงอีก {{count}} รายการ",
+    "showLess": "แสดงน้อยลง"
   }
 }

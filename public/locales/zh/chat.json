@@ -106,6 +106,7 @@
     "youPrefix": "你: ",
     "chatOffBadge": "聊天已关闭",
     "newBadge": "新",
-    "showMore": "显示另外 {{count}} 个"
+    "showMore": "显示另外 {{count}} 个",
+    "showLess": "收起"
   }
 }

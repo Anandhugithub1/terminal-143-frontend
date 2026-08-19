@@ -107,6 +107,7 @@
     "chatOffBadge": "Чат выключен",
     "newBadge": "Новый",
     "showMore": "Показать ещё {{count}}",
-    "showMore_other": "Показать ещё {{count}}"
+    "showMore_other": "Показать ещё {{count}}",
+    "showLess": "Показать меньше"
   }
 }

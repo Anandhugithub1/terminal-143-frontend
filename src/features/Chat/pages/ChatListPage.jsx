@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 import { useNavigate } from 'react-router-dom'
-import { ChevronDown, MessageCircle, Search, X } from 'lucide-react'
+import { ChevronDown, ChevronUp, MessageCircle, Search, X } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useInfiniteMatches, SendProfileFeeback } from '../../UserHome/api'
 import { useConversationPreviews } from '../hooks/useConversationPreviews'
@@ -346,6 +346,18 @@ export default function ChatListPage() {
                   {t('circleList.showMore', { count: hiddenCircleConversations.length })}
                 </span>
                 <ChevronDown className="w-4 h-4 text-primary shrink-0" />
+              </button>
+            )}
+            {isCircleChatsExpanded && hiddenCircleConversations.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setIsCircleChatsExpanded(false)}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-left"
+              >
+                <span className="flex-1 text-[13.5px] font-semibold text-primary">
+                  {t('circleList.showLess')}
+                </span>
+                <ChevronUp className="w-4 h-4 text-primary shrink-0" />
               </button>
             )}
           </div>
