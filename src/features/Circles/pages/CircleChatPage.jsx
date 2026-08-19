@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
@@ -8,19 +7,19 @@ import { useCircle } from '../hooks/useCircles'
 import { useVisualViewportHeight } from '../../../shared/hooks/useVisualViewportHeight'
 import { useTranslatedCircleName } from '../constants/onboardingCircles'
 import CircleChatThread, { colorForMember, initialsFor } from '../components/chat/CircleChatThread'
-import CircleMembersSheet from '../components/chat/CircleMembersSheet'
 
 // Standalone full-screen thread — the entry point from the Chats list and
 // the story-ring badge. Just a header (back button + circle identity) around
 // the shared CircleChatThread; CircleDetailsPage's Chat tab embeds the same
-// thread component under its own hero instead of this header.
+// thread component under its own hero instead of this header. The header's
+// circle identity is plain, non-interactive text — no member list, no
+// navigation anywhere from this screen.
 export default function CircleChatPage() {
   const { t } = useTranslation('chat')
   const { circleId } = useParams()
   const navigate = useNavigate()
   const viewportHeight = useVisualViewportHeight()
   const getCircleName = useTranslatedCircleName()
-  const [showMembers, setShowMembers] = useState(false)
 
   const { data: circle, isLoading: isCircleLoading } = useCircle(circleId)
   const circleName = circle ? getCircleName(circleId, circle.name) : ''
@@ -51,12 +50,7 @@ export default function CircleChatPage() {
             </div>
           </>
         ) : (
-          <button
-            type="button"
-            onClick={() => setShowMembers(true)}
-            className="flex items-center gap-3 flex-1 min-w-0 text-left rounded-full -my-1 py-1 pr-2 hover:bg-gray-50 transition-colors"
-            aria-label={t('circleConversation.viewMembersAria', { name: circleName })}
-          >
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             {circle?.coverPhoto ? (
               <img src={circle.coverPhoto} alt={circleName} className="w-9 h-9 rounded-full object-cover bg-gray-100 shrink-0" />
             ) : (
@@ -71,19 +65,11 @@ export default function CircleChatPage() {
               <p className="text-[15px] font-semibold text-gray-900 truncate">{circleName}</p>
               <span className="text-xs text-gray-400">{t('circleConversation.memberCount', { count: memberCount })}</span>
             </div>
-          </button>
+          </div>
         )}
       </header>
 
       {isCircleLoading ? null : <CircleChatThread circleId={circleId} circleName={circleName} />}
-
-      <CircleMembersSheet
-        isOpen={showMembers}
-        onClose={() => setShowMembers(false)}
-        circleId={circleId}
-        circleName={circleName}
-        memberCount={memberCount}
-      />
     </div>
   )
 }

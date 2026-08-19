@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from 'react-router-dom'
 import { AlertCircle, MessageCircleOff, Send, Trash2, WifiOff } from 'lucide-react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -8,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import {
   useCircleChatHistory,
-  useCircleMembers,
   useDeleteCircleMessage,
   appendToCircleHistoryCache,
   removeFromCircleHistoryCache,
@@ -52,52 +50,18 @@ function formatMessageTime(iso) {
   return new Date(iso).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
 }
 
-// Same link-parsing fallback as ChatConversationPage's goToProfile / the
-// member sheet's version. No isMatch:true here — circle members are only
-// "compatible" (mutual preference match), not necessarily already matched,
-// so the profile page's send-request action button should still show.
-function goToProfile(navigate, profileLink) {
-  if (!profileLink) return
-  try {
-    navigate(new URL(profileLink).pathname)
-  } catch {
-    navigate(profileLink)
-  }
-}
-
-// `member` is this sender's entry from useCircleMembers (name/avatarUrl/
-// isCompatible/profileLink), or undefined if the member directory hasn't
-// loaded yet / the sender left the circle since sending — falls back to a
-// colored-initials circle and the raw userId in either case. The avatar and
-// name label become tappable-to-profile ONLY when the server marked this
-// sender isCompatible (a mutual gender/preference match with the viewer,
-// computed server-side) — everyone else stays visible but not tappable, by
-// design. The bubble body itself is never a tap target either way.
-function CircleMessageBubble({ msg, member, t, onRetry, onLongPress, navigate }) {
+// Sender identity is always plain, non-interactive text/initials — no
+// member directory lookup, no tap-to-profile, by design (group-chat
+// members are visible but never a way to reach a profile).
+function CircleMessageBubble({ msg, t, onRetry, onLongPress }) {
   const failed = msg.status === 'failed'
   const pending = msg.status === 'pending'
   const color = colorForMember(msg.senderId)
-  const displayName = member?.name || msg.senderId
-  const canViewProfile = !msg.mine && member?.isCompatible && member?.profileLink
+  const displayName = msg.senderId
   // Only your own messages can be long-pressed to delete — delete-for-
   // everyone in a circle is ownership-gated server-side too (see
   // deleteCircleMessage.js), this is just the client-side entry point.
   const longPressHandlers = useLongPress(msg.mine ? () => onLongPress(msg) : () => {})
-
-  const avatar = member?.avatarUrl ? (
-    <img
-      src={member.avatarUrl}
-      alt=""
-      className="w-6 h-6 rounded-full shrink-0 object-cover select-none"
-    />
-  ) : (
-    <div
-      className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-white text-[9px] font-bold select-none"
-      style={{ backgroundColor: color }}
-    >
-      {initialsFor(displayName)}
-    </div>
-  )
 
   return (
     <div className={`flex gap-1.5 items-end ${msg.mine ? 'justify-end' : 'justify-start'}`}>
@@ -112,34 +76,18 @@ function CircleMessageBubble({ msg, member, t, onRetry, onLongPress, navigate })
         </button>
       )}
       {!msg.mine && (
-        canViewProfile ? (
-          <button
-            type="button"
-            onClick={() => goToProfile(navigate, member.profileLink)}
-            aria-label={t('circleConversation.viewProfileAria', { name: displayName })}
-          >
-            {avatar}
-          </button>
-        ) : (
-          avatar
-        )
+        <div
+          className="w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-white text-[9px] font-bold select-none"
+          style={{ backgroundColor: color }}
+        >
+          {initialsFor(displayName)}
+        </div>
       )}
       <div className={`flex flex-col ${msg.mine ? 'items-end' : 'items-start'} max-w-[74%]`}>
         {!msg.mine && (
-          canViewProfile ? (
-            <button
-              type="button"
-              onClick={() => goToProfile(navigate, member.profileLink)}
-              className="text-[10.5px] font-semibold mb-0.5 ml-0.5 select-none underline decoration-dotted underline-offset-2"
-              style={{ color }}
-            >
-              {displayName}
-            </button>
-          ) : (
-            <span className="text-[10.5px] font-semibold mb-0.5 ml-0.5 select-none" style={{ color }}>
-              {displayName}
-            </span>
-          )
+          <span className="text-[10.5px] font-semibold mb-0.5 ml-0.5 select-none" style={{ color }}>
+            {displayName}
+          </span>
         )}
         <div
           {...(msg.mine ? longPressHandlers : {})}
@@ -174,7 +122,6 @@ function CircleMessageBubble({ msg, member, t, onRetry, onLongPress, navigate })
 // duplicates it.
 export default function CircleChatThread({ circleId, circleName }) {
   const { t } = useTranslation('chat')
-  const navigate = useNavigate()
   const myUsername = getCurrentUsername()
 
   const {
@@ -191,7 +138,6 @@ export default function CircleChatThread({ circleId, circleName }) {
   const queryClient = useQueryClient()
   const { previews, markRead, recordSentMessage } = useCircleChatPreviews()
   const chatEnabled = previews[circleId]?.chatEnabled !== false
-  const { byUserId: members } = useCircleMembers(circleId)
   const { mutate: deleteCircleMessage, isPending: isDeleting } = useDeleteCircleMessage(circleId)
 
   const [liveMessages, setLiveMessages] = useState([])
@@ -500,7 +446,7 @@ export default function CircleChatThread({ circleId, circleName }) {
             {messages.map((msg, index) => (
               <div key={msg.id}>
                 {isNewDay(messages, index) && <DateDivider label={formatDateDivider(msg.sentAt, t)} />}
-                <CircleMessageBubble msg={msg} member={members.get(msg.senderId)} t={t} onRetry={handleRetry} onLongPress={setMessageToDelete} navigate={navigate} />
+                <CircleMessageBubble msg={msg} t={t} onRetry={handleRetry} onLongPress={setMessageToDelete} />
               </div>
             ))}
           </>
