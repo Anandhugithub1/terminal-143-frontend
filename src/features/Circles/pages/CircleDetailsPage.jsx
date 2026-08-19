@@ -40,7 +40,7 @@ import { shareLink } from "../utils/share";
 import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 import { CircleHeaderSkeleton, PostCardSkeleton } from "../components/common/Skeletons";
 import EmptyState from "../../../shared/components/EmptyState";
-import { MODERATOR_ROLES } from "../constants/circleRoles";
+import { MODERATOR_ROLES, isCircleAdminBot } from "../constants/circleRoles";
 import { toast } from "sonner";
 
 export default function CircleDetailsPage() {
@@ -535,6 +535,31 @@ export default function CircleDetailsPage() {
         {/* About */}
         <div className="bg-gray-100 rounded-2xl shadow-sm p-4">
           <h2 className="text-sm font-bold text-gray-800 mb-2">{t("circleDetails.about")}</h2>
+
+          {/* Private circles specifically surface who owns/runs the group —
+              someone deciding whether to request access can't otherwise
+              tell. Skipped for the bot-owner fallback (leaveCircle.js's
+              ownership handoff): there's no person to show, and getCircle.js
+              already degrades ownerName to null for it. Public circles
+              don't show this — matches how the rest of the app already
+              treats owner identity as a private-circle-specific trust
+              signal, not a general feature. */}
+          {isPrivate && data.ownerName && !isCircleAdminBot(data.ownerId) && (
+            <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-gray-200">
+              <img
+                src={data.ownerAvatarUrl || DEFAULT_AVATAR}
+                alt={data.ownerName}
+                className="w-9 h-9 rounded-full object-cover shrink-0"
+              />
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+                  {t("circleDetails.ownedBy")}
+                </p>
+                <p className="text-sm font-semibold text-gray-800 truncate">{data.ownerName}</p>
+              </div>
+            </div>
+          )}
+
           <p className="text-gray-600 text-sm leading-relaxed mb-3">{data.description}</p>
           {data.tags?.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-3">

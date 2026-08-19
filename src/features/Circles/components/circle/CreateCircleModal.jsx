@@ -1,7 +1,9 @@
 import {
   X,
   Upload,
-  Hash
+  Hash,
+  Globe,
+  Lock
 } from "lucide-react";
 
 import {
@@ -67,6 +69,11 @@ export default function CreateCircleModal({
     tags,
     setTags
   ] = useState([]);
+
+  const [
+    visibility,
+    setVisibility
+  ] = useState("public");
 
   const [
     tagInput,
@@ -271,8 +278,7 @@ export default function CreateCircleModal({
 
             category,
 
-            visibility:
-              "public",
+            visibility,
 
             tags:
               combinedTags,
@@ -310,6 +316,9 @@ export default function CreateCircleModal({
         );
         setTagInput(
           ""
+        );
+        setVisibility(
+          "public"
         );
 
         resetLocation();
@@ -512,6 +521,51 @@ export default function CreateCircleModal({
                 )
               )}
             </select>
+          </div>
+
+          {/* Visibility */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              {t("createCircleModal.visibilityLabel")}
+            </label>
+
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setVisibility("public")}
+                className={`flex flex-col items-start gap-1 px-4 py-3 rounded-xl border text-left transition-colors ${
+                  visibility === "public"
+                    ? "border-primary bg-primary/5"
+                    : "border-gray-200 hover:bg-gray-50"
+                }`}
+              >
+                <span className="flex items-center gap-1.5 text-sm font-semibold text-gray-800">
+                  <Globe className={`w-4 h-4 ${visibility === "public" ? "text-primary" : "text-gray-400"}`} />
+                  {t("createCircleModal.visibilityPublic")}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {t("createCircleModal.visibilityPublicHint")}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setVisibility("private")}
+                className={`flex flex-col items-start gap-1 px-4 py-3 rounded-xl border text-left transition-colors ${
+                  visibility === "private"
+                    ? "border-primary bg-primary/5"
+                    : "border-gray-200 hover:bg-gray-50"
+                }`}
+              >
+                <span className="flex items-center gap-1.5 text-sm font-semibold text-gray-800">
+                  <Lock className={`w-4 h-4 ${visibility === "private" ? "text-primary" : "text-gray-400"}`} />
+                  {t("createCircleModal.visibilityPrivate")}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {t("createCircleModal.visibilityPrivateHint")}
+                </span>
+              </button>
+            </div>
           </div>
 
           {/* Tags */}
