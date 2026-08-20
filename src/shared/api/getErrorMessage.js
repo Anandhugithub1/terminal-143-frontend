@@ -126,7 +126,15 @@ export function getErrorMessage(err, fallbackKey = 'generic') {
   }
 
   if (err?.code === 'ECONNABORTED') return t('errors:timeout');
-  if (!err?.response && (err?.message === 'Network Error' || err?.code === 'ERR_NETWORK')) {
+  // No response at all means the request never completed — a browser XHR
+  // failure names this "Network Error"/ERR_NETWORK, but on iOS CapacitorHttp
+  // proxies through native URLSession, whose own failure (dropped
+  // connection, DNS hiccup, backgrounded mid-request) surfaces as a raw,
+  // unrelated NSError message like "Load failed" instead. Any request that
+  // got no response is a network failure regardless of which platform's
+  // wording produced it, so key off response presence rather than matching
+  // specific error strings/codes that only cover the browser adapter.
+  if (!err?.response && err?.message !== undefined) {
     return t('errors:network');
   }
 

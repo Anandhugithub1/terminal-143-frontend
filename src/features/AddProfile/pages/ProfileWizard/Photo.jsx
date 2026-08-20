@@ -5,24 +5,54 @@ import { ProgressBar } from "./Progess";
 import PhotoGrid from "../../components/PhotoGrid";
 import { Button } from "../../../../shared/Button";
 import { useTranslation } from "react-i18next";
+import { getPresignedUrl } from "../../../UserProfile/api/profile";
+import { ensureNormalizedImage } from "../../../../utils/imageConversion";
+import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
+import { getErrorMessage } from "../../../../shared/api/getErrorMessage";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM", "OT"];
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+// A slot's upload never blocks profile completion (see Tags.jsx) — it just
+// needs to report its own status so the grid can show a spinner/retry
+// independently per-photo instead of one global "uploading" flag.
+const photoErrorMessage = (cause) =>
+  cause?.response ? getErrorMessage(cause, "photoUploadFailed") : cause?.message || "Photo upload failed";
+
+const uploadSlotFile = async (file) => {
+  let uploadFile;
+  try {
+    uploadFile = await ensureNormalizedImage(file);
+  } catch (conversionErr) {
+    // Some Android WebView + device combinations fail to canvas-decode an
+    // otherwise-valid photo — the picked file itself is fine, only the WebP
+    // re-encode step isn't working on this device. Uploading the original
+    // bytes as-is is better than failing the slot entirely.
+    if (file.size > 0 && file.type?.startsWith("image")) {
+      uploadFile = file;
+    } else {
+      throw conversionErr;
+    }
+  }
+
+  const { presignedUrl, publicUrl } = await getPresignedUrl({ fileType: uploadFile.type });
+  await uploadToS3(presignedUrl, uploadFile);
+  return publicUrl;
+};
 
 const Photo = () => {
   const { t } = useTranslation("common");
   const { formData, setFormData } = useWizard();
   const navigate = useNavigate();
   const inputRef = useRef(null);
-  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
 
   const gender = localStorage.getItem("gender");
   const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender);
   const maxSlots = isSinglePhoto ? 1 : 3;
 
-  const photos = useMemo(() => {
+  const slots = useMemo(() => {
     if (isSinglePhoto) return [formData.profilePhoto || null];
 
     const arr = [...(formData.profilePhotos || [])];
@@ -30,27 +60,54 @@ const Photo = () => {
     return arr;
   }, [formData, isSinglePhoto, maxSlots]);
 
-  const hasAnyPhoto = photos.some(Boolean);
+  const hasAnyPhoto = slots.some(Boolean);
+
+  const writeSlot = (index, value) => {
+    if (isSinglePhoto) {
+      setFormData((p) => ({ ...p, profilePhoto: value }));
+    } else {
+      setFormData((p) => {
+        const next = [...(p.profilePhotos || [])];
+        while (next.length < maxSlots) next.push(null);
+        next[index] = value;
+        return { ...p, profilePhotos: next };
+      });
+    }
+  };
 
   const handleSlotChange = (index) => {
-    if (uploading) return;
+    const current = slots[index];
+    if (current?.status === "uploading") return;
+
+    // Retrying an errored slot re-sends the same file rather than reopening
+    // the picker — the file the user already chose is still good, only the
+    // upload attempt failed.
+    if (current?.status === "error" && current.file) {
+      runUpload(index, current.file);
+      return;
+    }
+
     setError("");
     inputRef.current.dataset.index = index;
     inputRef.current.click();
   };
 
   const handleSlotRemove = (index) => {
-    if (isSinglePhoto) {
-      setFormData(p => ({ ...p, profilePhoto: null }));
-    } else {
-      const next = [...photos];
-      next[index] = null;
-      setFormData(p => ({ ...p, profilePhotos: next }));
-    }
+    writeSlot(index, null);
   };
 
   const isAcceptedType = (file) =>
     ACCEPTED_TYPES.includes(file.type) || /\.hei[cf]$/i.test(file.name || "");
+
+  const runUpload = async (index, file) => {
+    writeSlot(index, { file, status: "uploading" });
+    try {
+      const url = await uploadSlotFile(file);
+      writeSlot(index, { file, url, status: "done" });
+    } catch (err) {
+      writeSlot(index, { file, status: "error", error: photoErrorMessage(err) });
+    }
+  };
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
@@ -70,29 +127,13 @@ const Photo = () => {
     }
 
     setError("");
-    setUploading(true);
-
-    // Used to re-wrap the picked file via `new File([file], ...)` here. On
-    // Android WebView, a File handed back from the native picker wraps a
-    // content:// URI whose bytes aren't guaranteed to be readable the instant
-    // onChange fires — cloning it at that moment could capture 0 bytes, which
-    // then failed to decode much later at final submit ("Could not decode
-    // image"), far from where the real problem was. The picked File object
-    // itself is safe to hold onto directly; no clone needed.
-    if (isSinglePhoto) {
-      setFormData(p => ({ ...p, profilePhoto: file }));
-    } else {
-      setFormData(p => {
-        const next = [...photos];
-        next[index] = file;
-        return { ...p, profilePhotos: next };
-      });
-    }
-
-    setUploading(false);
+    runUpload(index, file);
   };
 
   const handleNext = () => {
+    // Not required to proceed — a photo that's still uploading, failed, or
+    // was never added doesn't block onboarding (see Tags.jsx); this is just
+    // a friendly nudge for the common "forgot a photo" case.
     if (!hasAnyPhoto) {
       setError(t("wizard.photo.required"));
       return;
@@ -106,11 +147,10 @@ const Photo = () => {
       <ProgressBar step={4} totalSteps={5} />
 
       <PhotoGrid
-        photos={photos}
+        photos={slots}
         maxSlots={maxSlots}
         onSlotChange={handleSlotChange}
         onSlotRemove={handleSlotRemove}
-        uploading={uploading}
       />
 
       <input

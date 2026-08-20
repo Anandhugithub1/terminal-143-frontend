@@ -101,6 +101,7 @@
       "missingSocialLink": "Sekurang-kurangnya satu pautan sosial",
       "missingLocation": "Lokasi",
       "photoUploadFailed": "Kami tidak dapat memuat naik foto anda. Sila semak sambungan anda dan cuba lagi",
+      "completedWithoutPhoto": "Anda sudah bersedia! Tambah foto dari profil anda apabila anda bersedia.",
       "missingPhoto": "Sekurang-kurangnya satu gambar",
       "pleaseComplete": "Sila lengkapkan: {{fields}}",
       "completionFailed": "Gagal melengkapkan profil",

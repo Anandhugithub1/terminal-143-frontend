@@ -122,7 +122,8 @@
       "pleaseComplete": "Please complete: {{fields}}",
       "completionFailed": "Profile completion failed",
       "somethingWentWrong": "Something went wrong",
-      "photoUploadFailed": "We couldn't upload your photo. Please check your connection and try again"
+      "photoUploadFailed": "We couldn't upload your photo. Please check your connection and try again",
+      "completedWithoutPhoto": "You're all set! Add a photo from your profile when you're ready."
     }
   },
   "exitConfirm": "Press back again to exit"

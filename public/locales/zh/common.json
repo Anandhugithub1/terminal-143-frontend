@@ -101,6 +101,7 @@
       "missingSocialLink": "至少一个社交媒体链接",
       "missingLocation": "位置",
       "photoUploadFailed": "无法上传您的照片。请检查网络连接后重试",
+      "completedWithoutPhoto": "设置完成！准备好后可以在个人资料中添加照片。",
       "missingPhoto": "至少一张照片",
       "pleaseComplete": "请完善：{{fields}}",
       "completionFailed": "资料完善失败",

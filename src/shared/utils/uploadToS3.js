@@ -72,6 +72,13 @@ function putViaFetch(presignedUrl, file) {
       if (!res.ok) throw Object.assign(new Error(`Upload failed: ${res.status}`), { status: res.status })
     })
     .catch((err) => {
+      // fetch's own rejection carries no HTTP status and, on WKWebView, a
+      // message as unhelpful as "Load failed" — relabel it the same way
+      // putOnce's xhr.onerror does so callers (and users) see a consistent,
+      // actionable message instead of a raw platform string.
+      if (err.status == null) {
+        throw Object.assign(new Error('Upload network error'), { status: 0 })
+      }
       throw Object.assign(err, { status: err.status ?? 0 })
     })
 }

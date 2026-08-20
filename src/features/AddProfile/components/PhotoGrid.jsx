@@ -3,7 +3,7 @@ import PhotoSlot from "./PhotoSlot";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM", "OT"];
 
-const PhotoGrid = ({ photos, maxSlots, onSlotChange, onSlotRemove, uploading }) => {
+const PhotoGrid = ({ photos, maxSlots, onSlotChange, onSlotRemove }) => {
   const gender = localStorage.getItem("gender");
   const isSinglePhoto = SINGLE_PHOTO_GENDERS.includes(gender);
 
@@ -22,7 +22,6 @@ const PhotoGrid = ({ photos, maxSlots, onSlotChange, onSlotRemove, uploading }) 
           index={index}
           onChange={onSlotChange}
           onRemove={onSlotRemove}
-          uploading={uploading}
         />
       ))}
     </div>

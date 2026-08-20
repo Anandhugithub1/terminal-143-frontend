@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from "react";
 
-const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
+const PhotoSlot = ({ file: slot, onChange, onRemove, index }) => {
   const [preview, setPreview] = useState(null);
   const [isHovered, setIsHovered] = useState(false);
 
+  const status = slot?.status;
+  const uploading = status === "uploading";
+  const hasError = status === "error";
+  const rawFile = slot?.file ?? (slot instanceof File ? slot : null);
+  const url = slot?.url ?? (typeof slot === "string" ? slot : null);
+
   useEffect(() => {
-    if (!file) {
-      setPreview(null);
+    if (!rawFile) {
+      setPreview(url || null);
       return;
     }
 
-    if (file instanceof File) {
-      const reader = new FileReader();
-      reader.onload = () => setPreview(reader.result);
-      reader.readAsDataURL(file);
-    } else if (typeof file === "string") {
-      setPreview(file);
-    }
-  }, [file]);
+    const reader = new FileReader();
+    reader.onload = () => setPreview(reader.result);
+    reader.readAsDataURL(rawFile);
+  }, [rawFile, url]);
 
   const handleSlotClick = () => {
-    if (!uploading) onChange(index);
+    onChange(index);
   };
 
   const handleRemove = (e) => {
@@ -35,6 +37,7 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
         w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44
         rounded-full
         ${preview ? "bg-gray-100" : "bg-gray-50 border-2 border-dashed border-gray-200"}
+        ${hasError ? "border-2 border-red-300" : ""}
         ${uploading ? "opacity-70 cursor-not-allowed" : "cursor-pointer hover:shadow-md hover:border-gray-300"}
         ${isHovered && preview && !uploading ? "ring-2 ring-pink-500 ring-opacity-50" : ""}
       `}
@@ -48,6 +51,7 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
           alt={`Preview ${index + 1}`}
           className={`w-full h-full rounded-full object-cover transition-transform duration-300
             ${isHovered && !uploading ? "scale-105" : "scale-100"}
+            ${hasError ? "opacity-60" : ""}
           `}
         />
       ) : (
@@ -66,7 +70,7 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
         </div>
       )}
 
-      {file && !uploading && (
+      {slot && !uploading && (
         <button
           onClick={handleRemove}
           className="absolute top-1 right-1 sm:top-2 sm:right-2
@@ -88,6 +92,21 @@ const PhotoSlot = ({ file, onChange, onRemove, uploading, index }) => {
             <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-white border-t-transparent
               rounded-full animate-spin mx-auto mb-1" />
             <span className="text-xs font-medium">Uploading</span>
+          </div>
+        </div>
+      )}
+
+      {hasError && (
+        <div className="absolute inset-0 bg-black bg-opacity-30
+          flex items-center justify-center rounded-full">
+          <div className="text-white text-center px-2">
+            <div className="w-6 h-6 sm:w-8 sm:h-8 mx-auto mb-1 rounded-full bg-red-500 flex items-center justify-center">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            </div>
+            <span className="text-xs font-medium">Tap to retry</span>
           </div>
         </div>
       )}

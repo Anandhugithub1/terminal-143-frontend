@@ -101,6 +101,7 @@
       "missingSocialLink": "최소 하나의 소셜 링크",
       "missingLocation": "위치",
       "photoUploadFailed": "사진을 업로드하지 못했습니다. 연결 상태를 확인한 후 다시 시도해 주세요",
+      "completedWithoutPhoto": "완료되었습니다! 준비되시면 프로필에서 사진을 추가해 주세요.",
       "missingPhoto": "최소 한 장의 사진",
       "pleaseComplete": "다음을 완료해 주세요: {{fields}}",
       "completionFailed": "프로필 작성을 완료하지 못했습니다",

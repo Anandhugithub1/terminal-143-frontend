@@ -5,36 +5,11 @@ import { toast } from "sonner";
 import { useWizard } from "../../contexts/ProfileWizard";
 import { normalizeGeoForApi } from "../../utlis/geo";
 import { calculateAge } from "../../utlis/index";
-import {
-  completeProfileApi,
-  getPresignedUrl,
-} from "../../../UserProfile/api/profile";
-import { ensureNormalizedImage } from "../../../../utils/imageConversion";
-import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
-import { getErrorMessage } from "../../../../shared/api/getErrorMessage";
-import OnboardingPage from "../../../Circles/pages/OnboardingPage";
+import { completeProfileApi } from "../../../UserProfile/api/profile";
 import { useTranslation } from "react-i18next";
+import OnboardingPage from "../../../Circles/pages/OnboardingPage";
 
 const SINGLE_PHOTO_GENDERS = ["M", "TM", "OT"];
-
-// Marks a failure as having happened during photo upload specifically, so
-// the catch block below can show the real reason (network error, S3
-// rejection, unsupported file, etc.) instead of the generic completion
-// error — Promise.all alone loses which step of the submit failed.
-class PhotoUploadError extends Error {
-  constructor(cause) {
-    super(cause?.message || "Photo upload failed");
-    this.cause = cause;
-  }
-}
-
-// getErrorMessage only understands axios-shaped errors (err.response); the
-// upload pipeline mostly throws plain Errors with their own useful message
-// (uploadToS3: "Upload failed: 403", "Upload timed out"; ensureNormalizedImage:
-// "Unsupported file type") — those already say exactly what went wrong, so
-// show them as-is instead of masking them behind a generic string.
-const photoErrorMessage = (cause) =>
-  cause?.response ? getErrorMessage(cause, "photoUploadFailed") : cause?.message || "Photo upload failed";
 
 export default function Tags() {
   const { t } = useTranslation("common");
@@ -75,11 +50,37 @@ export default function Tags() {
       loc.coordinates.lon == null
     )
       missing.push(t("wizard.tags.missingLocation"));
-    const files = isSinglePhoto
-      ? [formData.profilePhoto].filter(Boolean)
-      : (formData.profilePhotos || []).filter(Boolean);
-    if (!files.length) missing.push(t("wizard.tags.missingPhoto"));
+    // Photos are intentionally NOT required here: they upload as soon as
+    // they're picked (see Photo.jsx), independently of this submit, and a
+    // failed/slow photo upload must never block account creation — matching
+    // standard dating-app onboarding (Hinge/Bumble/Tinder), where a photo
+    // issue is recoverable after signup instead of losing the whole form.
     return missing;
+  };
+
+  // Slots hold {file, url, status, error} once picked (see Photo.jsx) — only
+  // "done" slots have a usable url. A slot stuck "uploading" (rare: user
+  // raced through the wizard faster than the upload finished) or "error" is
+  // simply left out rather than blocking submission.
+  const uploadedPhotos = () => {
+    const slots = isSinglePhoto
+      ? [formData.profilePhoto]
+      : formData.profilePhotos || [];
+    return slots
+      .filter((slot) => slot?.status === "done" && slot.url)
+      .map((slot, i) => ({
+        url: slot.url,
+        role: i === 0 ? "profile" : "gallery",
+        slot: i,
+        order: i,
+      }));
+  };
+
+  const hasPendingUpload = () => {
+    const slots = isSinglePhoto
+      ? [formData.profilePhoto]
+      : formData.profilePhotos || [];
+    return slots.some((slot) => slot?.status === "uploading");
   };
 
   const completeMutation = useMutation({
@@ -88,9 +89,18 @@ export default function Tags() {
     // global MutationCache handler in client.js would also toast the same
     // failure, showing two error toasts for one submit.
     meta: { silent: true },
-    onError: () => {
+    onError: (err) => {
       submittingRef.current = false;
       setIsSubmitting(false);
+      // 409 means the profile already exists — completeProfile.js returns
+      // this for a genuine double-submit (duplicate tap that raced past the
+      // client-side guard) AND for the case where an earlier attempt actually
+      // succeeded server-side but the client never saw the response (dropped
+      // connection right after the write). Either way the account exists;
+      // showing "completion failed" here would be actively wrong and send
+      // the user into a confusing retry loop against a profile that's
+      // already there. Treat it as success instead.
+      if (err?.response?.status === 409) return;
       toast.error(t("wizard.tags.completionFailed"));
     },
     onSettled: () => {
@@ -99,67 +109,35 @@ export default function Tags() {
     },
   });
 
-  const uploadSinglePhoto = async (file) => {
-    let uploadFile;
-    try {
-      uploadFile = await ensureNormalizedImage(file);
-    } catch (conversionErr) {
-      // Some Android WebView + device combinations fail to canvas-decode an
-      // otherwise-valid photo (large bitmap decode limits, codec quirks) —
-      // the picked file itself is fine, only the WebP re-encode step isn't
-      // working on this device. Uploading the original bytes as-is is far
-      // better than blocking profile completion entirely over a
-      // conversion step that was only ever a size/format optimization.
-      if (file.size > 0 && file.type?.startsWith("image")) {
-        uploadFile = file;
-      } else {
-        throw conversionErr;
-      }
-    }
-
-    const { presignedUrl, publicUrl } = await getPresignedUrl({
-      fileType: uploadFile.type,
-    });
-    await uploadToS3(presignedUrl, uploadFile);
-    return publicUrl;
-  };
-
   // Called by OnboardingPage — profile must be completed before circles are joined
   const handleComplete = async () => {
     if (submittingRef.current) return;
+    // Set immediately, before any async work (validation is sync but the
+    // pending-upload wait below is not) — otherwise a second tap during that
+    // window would re-enter this function before the ref is set and start a
+    // duplicate submit.
+    submittingRef.current = true;
+    setIsSubmitting(true);
 
     const missingFields = validateRequiredFields();
     if (missingFields.length > 0) {
+      submittingRef.current = false;
+      setIsSubmitting(false);
       toast.error(t("wizard.tags.pleaseComplete", { fields: missingFields.join(", ") }));
       return;
     }
 
-    submittingRef.current = true;
-    setIsSubmitting(true);
+    // Photos upload in the background as soon as they're picked (Photo.jsx),
+    // so by the time a user reaches the final step they're normally already
+    // done. If one is still mid-upload, give it a brief window to finish
+    // rather than immediately submitting with it missing — but never block
+    // account creation waiting on it past this.
+    if (hasPendingUpload()) {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+    }
 
     try {
-      const files = isSinglePhoto
-        ? [formData.profilePhoto].filter(Boolean)
-        : (formData.profilePhotos || []).filter(Boolean);
-
-      let photos;
-      try {
-        photos = await Promise.all(
-          files.map((file, i) =>
-            uploadSinglePhoto(file).then((url) => ({
-              url,
-              role: i === 0 ? "profile" : "gallery",
-              slot: i,
-              order: i,
-            }))
-          )
-        );
-      } catch (uploadErr) {
-        // Re-thrown as a tagged error (carrying the original cause) so the
-        // outer catch can show the real reason the upload failed instead of
-        // a generic completion-failed toast.
-        throw new PhotoUploadError(uploadErr);
-      }
+      const photos = uploadedPhotos();
 
       // Exclude interest category keys — interests are derived from circles now
       const { interests: _i, ...restFormData } = formData;
@@ -182,19 +160,32 @@ export default function Tags() {
       // pre-completion cached 404 (staleTime: 5min) and bounce to /login,
       // dropping the profileJustCompleted state before Home.jsx ever mounts.
       await queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+      // A photo that failed/never finished uploading doesn't block
+      // completion, but the user should still know to go add one — silently
+      // dropping it would be confusing ("I picked 3 photos, where'd they go").
+      if (!photos.length) {
+        toast(t("wizard.tags.completedWithoutPhoto"));
+      }
       clearFormData();
     } catch (err) {
       submittingRef.current = false;
       setIsSubmitting(false);
+
+      // 409 = profile already exists (see completeMutation.onError above) —
+      // that's a success from the user's perspective, so recover instead of
+      // failing the whole wizard: invalidate the cached profile and clear
+      // form state the same as the success path would, then let
+      // OnboardingPage continue on to joining circles / navigating home.
+      if (err?.response?.status === 409) {
+        await queryClient.invalidateQueries({ queryKey: ["my-profile"] });
+        clearFormData();
+        return;
+      }
+
       // completeMutation's onError already toasted for a failure coming from
-      // the API call itself — only toast here for failures before that (e.g.
-      // photo upload), so this isn't a second, contradictory-looking toast.
+      // the API call itself — don't show a second, contradictory-looking one.
       if (!completeMutation.isError) {
-        toast.error(
-          err instanceof PhotoUploadError
-            ? photoErrorMessage(err.cause)
-            : t("wizard.tags.somethingWentWrong")
-        );
+        toast.error(t("wizard.tags.somethingWentWrong"));
       }
       // Rethrown so OnboardingPage's handleComplete (which awaits this
       // function) sees the failure and stops before joining circles /

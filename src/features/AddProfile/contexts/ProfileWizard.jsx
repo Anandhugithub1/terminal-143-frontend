@@ -54,7 +54,14 @@ export const WizardProvider = ({ children }) => {
   }, [formData])
 
   // Recover picked photos (File objects can't live in sessionStorage) after
-  // a refresh mid-wizard, e.g. from network lag or a mobile reload.
+  // a refresh mid-wizard, e.g. from network lag or a mobile reload. A slot
+  // saved mid-upload restores with status "uploading" but no upload actually
+  // in flight anymore (the page reloaded) — reset those to "error" so the
+  // slot shows a retry affordance instead of a spinner that will never
+  // resolve.
+  const resetStuckSlot = (slot) =>
+    slot?.status === "uploading" ? { ...slot, status: "error" } : slot
+
   useEffect(() => {
     let cancelled = false
 
@@ -62,9 +69,10 @@ export const WizardProvider = ({ children }) => {
       if (cancelled || !stored) return
       setFormDataState((prev) => ({
         ...prev,
-        profilePhoto: prev.profilePhoto ?? stored.profilePhoto ?? null,
-        profilePhotos:
-          prev.profilePhotos?.length ? prev.profilePhotos : stored.profilePhotos || [],
+        profilePhoto: prev.profilePhoto ?? resetStuckSlot(stored.profilePhoto) ?? null,
+        profilePhotos: prev.profilePhotos?.length
+          ? prev.profilePhotos
+          : (stored.profilePhotos || []).map(resetStuckSlot),
       }))
     }).catch((err) => {
       console.warn("Failed to restore wizard photos", err)
