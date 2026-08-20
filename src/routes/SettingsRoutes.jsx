@@ -44,7 +44,7 @@ export const SettingsRoutes = (
     />
 
     <Route
-      path="privacy"
+      path="privacy-settings"
       element={
         <ProtectedRoute>
           <Suspense fallback={<LazyFallback />}>
