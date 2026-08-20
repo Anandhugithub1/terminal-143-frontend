@@ -1,36 +1,25 @@
-// CapacitorHttp patches window.fetch to route requests through native HTTP,
-// which is what lets the API calls bypass WKWebView's CORS. Uploads must not go
-// that way: the native bridge marshals bodies as strings/JSON, so a Blob/File
-// body is mangled or dropped (ionic-team/capacitor#6132, #6645), and the
-// presigned URL signs an exact byte count — anything but the original bytes
-// gets 403 SignatureDoesNotMatch. S3 needs no CORS bypass regardless.
-//
-// native-bridge.js (Capacitor's WebView-injected runtime, not a local file —
-// see node_modules/@capacitor/android/capacitor/src/main/assets/native-bridge.js)
-// patches BOTH window.fetch and window.XMLHttpRequest the same way, so a plain
-// XHR would hit the identical body-mangling bug. It stashes the true pre-patch
-// classes/functions before patching:
-//   - win.CapacitorWebFetch            — original fetch
-//   - win.CapacitorWebXMLHttpRequest.fullObject — original XMLHttpRequest class
-// fullObject is a complete, unpatched XHR class (not a partial method stash),
-// so `new win.CapacitorWebXMLHttpRequest.fullObject()` behaves exactly like
-// the WebView's real XHR — real xhr.upload.onprogress ticks included, unlike
-// the patched version (which only ever fires one synthetic progress event on
-// completion — see native-bridge.js's `send` override).
-//
-// Resolved per call rather than at module load, since the bridge injects
-// these before any app code runs but after this module is evaluated in some
-// bundling orders.
-function getUnpatchedXHRClass() {
-  if (typeof window === 'undefined') return null
-  const stash = window.CapacitorWebXMLHttpRequest
-  return (stash && stash.fullObject) || window.XMLHttpRequest || null
-}
+import { Capacitor } from '@capacitor/core'
+import { FileTransfer } from '@capacitor/file-transfer'
+import { Filesystem, Directory } from '@capacitor/filesystem'
 
-const webFetch = (...args) => {
-  const original = typeof window !== 'undefined' && window.CapacitorWebFetch
-  return typeof original === 'function' ? original.apply(window, args) : fetch(...args)
-}
+// Uploads used to go through window.fetch/XMLHttpRequest, patched by
+// CapacitorHttp on native iOS/Android. That patching is fine for JSON API
+// calls but actively breaks binary bodies: the native bridge marshals
+// request bodies as strings/JSON, so a Blob/File body is mangled or dropped
+// (ionic-team/capacitor#6132, #6645), and the presigned URL signs an exact
+// byte count — anything but the original bytes gets 403 SignatureDoesNotMatch.
+// Trying to dodge the patch by grabbing an "unpatched" XHR/fetch reference
+// out of the bridge's own pre-patch stash doesn't work either: the bridge
+// replaces window.XMLHttpRequest's prototype in place, and since a
+// constructor's `.prototype` is a shared mutable object rather than a copy,
+// even the stashed "original" class ends up running the same patched
+// open/send/setRequestHeader methods.
+//
+// @capacitor/file-transfer is Capacitor's own answer to this — it talks to
+// native URLSession/OkHttp upload APIs directly, bypassing the WebView
+// fetch/XHR layer (and its patching) entirely. This is now the only upload
+// path; see https://capacitorjs.com/docs/apis/file-transfer.
+const isNative = Capacitor.isNativePlatform()
 
 const DEFAULT_TIMEOUT_MS = 30000
 // A flat 30s timeout was cutting off large-but-legitimate uploads on slow
@@ -62,100 +51,96 @@ function isRetryableStatus(status) {
   return status === 0 || status >= 500
 }
 
-// Plain-fetch fallback used both when there's no XHR class at all and when
-// the XHR path throws before it can send (see putOnce) — no progress
-// reporting, but it never touches XMLHttpRequest at all so it can't hit the
-// native-bridge bug below.
-function putViaFetch(presignedUrl, file) {
-  return webFetch(presignedUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file })
-    .then((res) => {
-      if (!res.ok) throw Object.assign(new Error(`Upload failed: ${res.status}`), { status: res.status })
-    })
-    .catch((err) => {
-      // fetch's own rejection carries no HTTP status and, on WKWebView, a
-      // message as unhelpful as "Load failed" — relabel it the same way
-      // putOnce's xhr.onerror does so callers (and users) see a consistent,
-      // actionable message instead of a raw platform string.
-      if (err.status == null) {
-        throw Object.assign(new Error('Upload network error'), { status: 0 })
-      }
-      throw Object.assign(err, { status: err.status ?? 0 })
-    })
+// FileTransferError (native) carries the HTTP status at error.data.httpStatus;
+// a request that never reached the server (offline, DNS, timeout) has no
+// httpStatus at all, which isRetryableStatus treats as 0/retryable.
+function statusFromFileTransferError(err) {
+  const status = err?.data?.httpStatus
+  return typeof status === 'number' ? status : 0
 }
 
-// Single attempt via the unpatched XHR — this is what gives us real upload
-// progress (fetch has no request-body progress API at all) and a hard
-// timeout (fetch's AbortController path is one more thing that could itself
-// be patched/mangled the same way body handling is, so XHR's built-in
-// `timeout`/`ontimeout` is the safer bet here).
-function putOnce(presignedUrl, file, { onProgress, timeoutMs }) {
+// Filesystem.writeFile needs base64 data on native platforms (a raw Blob is
+// only accepted on the web fallback below) — this is the standard
+// FileReader-based conversion, stripping the "data:<type>;base64," prefix
+// writeFile doesn't want.
+function fileToBase64(file) {
   return new Promise((resolve, reject) => {
-    const XHRClass = getUnpatchedXHRClass()
-
-    if (!XHRClass) {
-      // No window at all (shouldn't happen in this app) — fall back to fetch
-      // with no progress reporting rather than throwing.
-      putViaFetch(presignedUrl, file).then(resolve, reject)
-      return
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = reader.result || ''
+      const commaIndex = result.indexOf(',')
+      resolve(commaIndex === -1 ? result : result.slice(commaIndex + 1))
     }
-
-    let xhr
-    try {
-      xhr = new XHRClass()
-      xhr.open('PUT', presignedUrl, true)
-      // native-bridge.js patches XMLHttpRequest.prototype in place rather
-      // than handing back a truly separate class — "fullObject" instances
-      // inherit the patched setRequestHeader, whose _headers own-property is
-      // only ever set up by the patched constructor function, not by `new
-      // fullObject()`. That mismatch throws "Cannot set properties of
-      // undefined (setting 'Content-Type')" here on some Android builds.
-      // Nothing on our side can fix Capacitor's shim, so fall back to fetch
-      // (which never calls setRequestHeader) instead of failing the upload.
-      if (file.type) xhr.setRequestHeader('Content-Type', file.type)
-    } catch {
-      putViaFetch(presignedUrl, file).then(resolve, reject)
-      return
-    }
-    xhr.timeout = timeoutMs
-
-    if (xhr.upload && onProgress) {
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) onProgress(e.loaded / e.total)
-      }
-    }
-
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        onProgress?.(1)
-        resolve()
-      } else {
-        reject(Object.assign(new Error(`Upload failed: ${xhr.status}`), { status: xhr.status }))
-      }
-    }
-    xhr.onerror = () => reject(Object.assign(new Error('Upload network error'), { status: 0 }))
-    xhr.ontimeout = () => reject(Object.assign(new Error('Upload timed out'), { status: 0 }))
-    xhr.onabort = () => reject(Object.assign(new Error('Upload cancelled'), { status: 0, aborted: true }))
-
-    xhr.send(file)
+    reader.onerror = () => reject(reader.error || new Error('Failed to read file'))
+    reader.readAsDataURL(file)
   })
+}
+
+// One S3 PUT attempt via @capacitor/file-transfer. On native platforms this
+// means round-tripping the file through a temp disk file first (the plugin's
+// `path` option, not `blob`, is what actually reaches native URLSession/
+// OkHttp) — cleaned up in `finally` regardless of outcome so temp files never
+// accumulate across retries or failures.
+async function putOnce(presignedUrl, file, { timeoutMs }) {
+  const commonOptions = {
+    url: presignedUrl,
+    method: 'PUT',
+    headers: { 'Content-Type': file.type },
+    connectTimeout: timeoutMs,
+    readTimeout: timeoutMs,
+  }
+
+  if (!isNative) {
+    // blob is web-only per the plugin's own docs; native ignores it and
+    // requires a filesystem `path` instead (handled below).
+    try {
+      await FileTransfer.uploadFile({ ...commonOptions, blob: file })
+    } catch (err) {
+      throw Object.assign(new Error(err?.message || 'Upload failed'), {
+        status: statusFromFileTransferError(err),
+      })
+    }
+    return
+  }
+
+  const tempPath = `wizard-uploads/${crypto.randomUUID()}`
+  const base64 = await fileToBase64(file)
+
+  const { uri } = await Filesystem.writeFile({
+    path: tempPath,
+    data: base64,
+    directory: Directory.Cache,
+    recursive: true,
+  })
+
+  try {
+    await FileTransfer.uploadFile({ ...commonOptions, path: uri })
+  } catch (err) {
+    throw Object.assign(new Error(err?.message || 'Upload failed'), {
+      status: statusFromFileTransferError(err),
+    })
+  } finally {
+    await Filesystem.deleteFile({ path: tempPath, directory: Directory.Cache }).catch(() => {
+      // Best-effort cleanup — Directory.Cache can be reclaimed by the OS
+      // anyway, so a failed delete here isn't worth surfacing to the caller.
+    })
+  }
 }
 
 // The presigned URL signs the exact byte count (see predesginedurl.js), so the
 // file must be the same one whose size was sent to /predesignedurl — S3 answers
-// 403 SignatureDoesNotMatch on any mismatch. The browser sets Content-Length
-// from the body itself; it's a forbidden header we can't set by hand.
+// 403 SignatureDoesNotMatch on any mismatch.
 //
 // A freshly-picked File on Android can wrap a content:// URI whose backing
 // stream isn't reliably readable yet the instant it's handed to us — the
-// first upload attempt fails with a raw transport-level error (xhr.onerror,
-// "Upload network error"/"Failed to fetch") even though the exact same file
-// object succeeds a few seconds later (e.g. after the user backs out and
-// reselects, which does nothing but buy time). Retrying by re-sending the
-// same File doesn't help because a content:// stream that failed a partial
-// read isn't guaranteed re-readable from the start. Reading the whole file
-// into memory once, up front, sidesteps this: once materialized, the bytes
-// no longer depend on that stream at all, so every retry sends the exact
-// same real, already-verified data.
+// first upload attempt fails with a raw transport-level error even though the
+// exact same file object succeeds a few seconds later (e.g. after the user
+// backs out and reselects, which does nothing but buy time). Retrying by
+// re-sending the same File doesn't help because a content:// stream that
+// failed a partial read isn't guaranteed re-readable from the start. Reading
+// the whole file into memory once, up front, sidesteps this: once
+// materialized, the bytes no longer depend on that stream at all, so every
+// retry sends the exact same real, already-verified data.
 async function materialize(file) {
   try {
     const buffer = await file.arrayBuffer()
@@ -168,10 +153,14 @@ async function materialize(file) {
   }
 }
 
-// onProgress(fraction: 0..1) is called as the upload progresses, if provided.
 // Retries transient failures (network error, timeout, 5xx) up to MAX_RETRIES
 // times with exponential backoff; a 4xx (bad request/signature mismatch)
 // fails immediately since retrying an identical request can't fix it.
+//
+// onProgress is accepted for API compatibility with callers but is currently
+// a no-op: FileTransfer reports progress via a global addListener('progress')
+// event (matched by url) rather than a per-call callback, which is a bigger
+// wiring change than this migration needs right now.
 export async function uploadToS3(presignedUrl, file, { onProgress, timeoutMs = timeoutForFileSize(file.size) } = {}) {
   let lastErr
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
@@ -181,7 +170,8 @@ export async function uploadToS3(presignedUrl, file, { onProgress, timeoutMs = t
       // means a failure here also benefits from the same backoff delay
       // between attempts as a network-level failure would.
       const uploadFile = await materialize(file)
-      await putOnce(presignedUrl, uploadFile, { onProgress, timeoutMs })
+      await putOnce(presignedUrl, uploadFile, { timeoutMs })
+      onProgress?.(1)
       return
     } catch (err) {
       lastErr = err
