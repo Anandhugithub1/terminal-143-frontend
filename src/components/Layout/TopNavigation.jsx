@@ -49,7 +49,6 @@ const TopNav = () => {
       <Link to="/home" className="flex items-center h-10 min-w-0 group">
         <span className="text-base sm:text-xl font-bold tracking-tight text-[#D2449D] whitespace-nowrap">
           Pass<span className="text-gray-800">or</span>Match
-          <span className="text-gray-800">.com</span>
         </span>
       </Link>
 

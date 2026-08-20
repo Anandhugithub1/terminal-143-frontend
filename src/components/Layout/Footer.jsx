@@ -54,7 +54,7 @@ export default function Footer() {
           
         
 <a href="/" className="text-2xl font-bold tracking-tight text-[#D2449D]">
-  <span className="text-white">PassorMatch.com</span>
+  <span className="text-white">PassorMatch</span>
 </a>
             </div>
             <p className="text-sm mt-2">{t('tagline')}</p>

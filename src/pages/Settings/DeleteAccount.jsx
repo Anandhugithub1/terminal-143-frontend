@@ -64,7 +64,7 @@ export default function DeleteAccountPage() {
           <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
           <div>
             <h2 className="text-sm font-semibold text-rose-900">
-              This removes your profile from PassOrMatch
+              This removes your profile from PassorMatch
             </h2>
             <p className="text-sm text-rose-800/80 mt-1">
               Your profile stops appearing to everyone right away.
