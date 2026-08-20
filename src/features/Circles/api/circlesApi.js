@@ -21,6 +21,18 @@ circleId =>
     `${BASE}${circleId}`
   );
 
+// Another user's circle memberships, for viewing their profile — distinct
+// from listUserCircles() above (which is always "my own"). Returns an empty
+// list (not an error) when the target has circle activity hidden, has
+// blocked/been blocked by the viewer, or has no circles — the backend
+// deliberately never reveals which, so the frontend can't either.
+export const listUserCirclesByAuthor =
+(authorId, { limit = 20, lastKey = null } = {}) =>
+  api.get(
+    `${BASE}users/${authorId}/circles`,
+    { params: { limit, lastKey } }
+  );
+
 export const updateCircle =
 (
   circleId,

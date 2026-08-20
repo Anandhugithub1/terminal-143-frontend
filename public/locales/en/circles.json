@@ -307,7 +307,9 @@
   "profileTabs": {
     "info": "Info",
     "posts": "Posts",
-    "seeMore": "See more"
+    "circles": "Circles",
+    "seeMore": "See more",
+    "noCirclesTitle": "No circles to show"
   },
   "moderatorDashboard": {
     "header": "Manage Circle",

@@ -34,6 +34,10 @@ export const mapProfile = (data) => {
     tobeDeleted: Boolean(data?.tobeDeleted),
     deletionDate: data?.deletionDate || null,
     expiresAt: data?.expiresAt || null,
+    // Defaults true, matching the schema default — Boolean(undefined) would
+    // silently read as false for any profile predating this field, which
+    // would show the toggle as "off" for someone who never touched it.
+    showCircleActivity: data?.showCircleActivity !== false,
     raw: data
   }
 }

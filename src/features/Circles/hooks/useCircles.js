@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 
 import {
   listUserCircles,
+  listUserCirclesByAuthor,
   createCircle,
   getCircle,
   getCircleStats,
@@ -177,6 +178,23 @@ export function useCircleStats(circleId) {
     },
     enabled: !!circleId,
     staleTime: 1000 * 30,
+  });
+}
+
+// Another user's joined circles, for a profile visit — pass null for
+// authorId to defer the fetch until the caller actually needs it (same
+// lazy-tab pattern as useUserPosts). An empty result here can mean "no
+// circles," "activity hidden," or "blocked" — the backend deliberately
+// never distinguishes which, so this hook doesn't either.
+export function useUserCircles(authorId, { limit = 20 } = {}) {
+  return useQuery({
+    queryKey: [...queryKeys.userCircles(authorId), limit],
+    queryFn: async () => {
+      const res = await listUserCirclesByAuthor(authorId, { limit });
+      return res.data;
+    },
+    enabled: !!authorId,
+    staleTime: 1000 * 60,
   });
 }
 

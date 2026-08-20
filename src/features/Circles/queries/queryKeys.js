@@ -94,6 +94,12 @@ export const queryKeys =
       circleId
     ],
 
+  userCircles:
+    authorId => [
+      'userCircles',
+      authorId
+    ],
+
   myCircleRequestStatus:
     circleId => [
       'myCircleRequestStatus',

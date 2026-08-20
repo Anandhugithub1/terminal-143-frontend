@@ -3,6 +3,7 @@
   "language": "Language",
   "changePassword": "Change Password",
   "preferences": "Preferences",
+  "privacy": "Privacy",
   "deleteAccount": "Delete Account",
   "helpCentre": "Help Centre",
   "aboutApp": "About App",
@@ -71,5 +72,16 @@
     "removePhoto": "Remove Photo",
     "removePhotoTitle": "Remove Profile Photo?",
     "removePhotoDescription": "Are you sure you want to remove your profile picture? This cannot be undone."
+  },
+
+  "privacyPage": {
+    "title": "Privacy",
+    "circleActivityHeading": "Circle Activity",
+    "circleActivityDescription": "Control whether other users can see your circle activity when they visit your profile.",
+    "showCircleActivityLabel": "Show my circle activity to others",
+    "showCircleActivityOn": "Visible — others can see the circles you've joined and your circle posts on your profile.",
+    "showCircleActivityOff": "Hidden — your circles and circle posts are hidden from everyone else. You can still see your own activity as usual.",
+    "updateSuccess": "Privacy setting updated",
+    "updateFailed": "Couldn't update this setting. Please try again."
   }
 }
