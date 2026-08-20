@@ -141,7 +141,24 @@
     "heading": "Contact Support",
     "body": "For any questions, issues, or feedback about PassorMatch, please reach out to us by email and our team will get back to you as soon as possible.",
     "emailLabel": "Email:",
-    "email": "support@passormatch.com"
+    "email": "support23@passormatch.com",
+    "contactEmailLabel": "General inquiries:",
+    "contactEmail": "contact23@passormatch.com"
+  },
+  "partnerships": {
+    "pageTitle": "Partnerships",
+    "subtitle": "Let's build something great together.",
+    "heading": "Partner with PassorMatch",
+    "body": "We're always open to partnering with brands, venues, event organizers, and affiliates who share our mission of helping people build meaningful connections. If you're interested in collaborating with PassorMatch, we'd love to hear from you.",
+    "items": {
+      "brands": "Brand collaborations and co-marketing campaigns",
+      "venues": "Venue and local business partnerships",
+      "events": "Event sponsorships and community meetups",
+      "affiliates": "Affiliate and referral programs"
+    },
+    "cta": "Tell us about your idea and how we might work together, and our partnerships team will get back to you.",
+    "emailLabel": "Email:",
+    "email": "partnerships@passormatch.com"
   },
   "terms": {
     "pageTitle": "Terms of Service",

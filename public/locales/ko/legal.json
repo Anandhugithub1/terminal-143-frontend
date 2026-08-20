@@ -141,7 +141,24 @@
     "heading": "고객지원 문의",
     "body": "PassorMatch에 대한 질문, 문제 또는 피드백이 있으시면 이메일로 문의해 주세요. 저희 팀이 최대한 빠르게 답변드리겠습니다.",
     "emailLabel": "이메일:",
-    "email": "support@passormatch.com"
+    "email": "support23@passormatch.com",
+    "contactEmailLabel": "일반 문의:",
+    "contactEmail": "contact23@passormatch.com"
+  },
+  "partnerships": {
+    "pageTitle": "파트너십",
+    "subtitle": "함께 멋진 것을 만들어가요.",
+    "heading": "PassorMatch와 파트너십 맺기",
+    "body": "저희는 의미 있는 관계 형성을 돕는다는 목표를 함께하는 브랜드, 장소, 이벤트 주최자, 제휴사와의 파트너십을 항상 환영합니다. PassorMatch와의 협업에 관심이 있으시다면 언제든지 연락해 주세요.",
+    "items": {
+      "brands": "브랜드 협업 및 공동 마케팅 캠페인",
+      "venues": "장소 및 현지 비즈니스 파트너십",
+      "events": "이벤트 후원 및 커뮤니티 모임",
+      "affiliates": "제휴 및 추천 프로그램"
+    },
+    "cta": "아이디어와 협업 방안을 알려주시면 저희 파트너십 팀이 연락드리겠습니다.",
+    "emailLabel": "이메일:",
+    "email": "partnerships@passormatch.com"
   },
   "terms": {
     "pageTitle": "서비스 이용약관",

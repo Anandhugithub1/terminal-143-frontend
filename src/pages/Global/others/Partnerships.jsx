@@ -5,7 +5,7 @@ import Skeleton from 'react-loading-skeleton'
 const Navbar = React.lazy(() => import('../../../components/Layout/Navbar'))
 const Footer = React.lazy(() => import('../../../components/Layout/Footer'))
 
-export default function Support() {
+export default function Partnerships() {
   const { t } = useTranslation('legal')
 
   useEffect(() => {
@@ -22,28 +22,29 @@ export default function Support() {
         <section className="py-16 bg-gray-50">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-sm p-8 border-l-4 border-[#D2449D] text-center">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('support.pageTitle')}</h1>
-              <p className="text-gray-500 text-sm mb-8">{t('support.subtitle')}</p>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">{t('partnerships.pageTitle')}</h1>
+              <p className="text-gray-500 text-sm mb-8">{t('partnerships.subtitle')}</p>
 
-              <div className="prose prose-lg max-w-none text-gray-700">
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('support.heading')}</h2>
-                <p>{t('support.body')}</p>
+              <div className="prose prose-lg max-w-none text-gray-700 text-left">
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('partnerships.heading')}</h2>
+                <p>{t('partnerships.body')}</p>
+
+                <ul className="mt-4 space-y-2">
+                  <li>{t('partnerships.items.brands')}</li>
+                  <li>{t('partnerships.items.venues')}</li>
+                  <li>{t('partnerships.items.events')}</li>
+                  <li>{t('partnerships.items.affiliates')}</li>
+                </ul>
+
+                <p className="mt-6">{t('partnerships.cta')}</p>
+
                 <p className="mt-6 text-xl">
-                  <strong>{t('support.emailLabel')}</strong>{' '}
+                  <strong>{t('partnerships.emailLabel')}</strong>{' '}
                   <a
-                    href={`mailto:${t('support.email')}`}
+                    href={`mailto:${t('partnerships.email')}`}
                     className="text-[#D2449D] font-semibold hover:underline"
                   >
-                    {t('support.email')}
-                  </a>
-                </p>
-                <p className="mt-2 text-xl">
-                  <strong>{t('support.contactEmailLabel')}</strong>{' '}
-                  <a
-                    href={`mailto:${t('support.contactEmail')}`}
-                    className="text-[#D2449D] font-semibold hover:underline"
-                  >
-                    {t('support.contactEmail')}
+                    {t('partnerships.email')}
                   </a>
                 </p>
               </div>

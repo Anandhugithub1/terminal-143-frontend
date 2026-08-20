@@ -141,7 +141,24 @@
     "heading": "Hubungi Sokongan",
     "body": "Untuk sebarang soalan, isu, atau maklum balas mengenai PassorMatch, sila hubungi kami melalui e-mel dan pasukan kami akan membalas secepat mungkin.",
     "emailLabel": "E-mel:",
-    "email": "support@passormatch.com"
+    "email": "support23@passormatch.com",
+    "contactEmailLabel": "Pertanyaan am:",
+    "contactEmail": "contact23@passormatch.com"
+  },
+  "partnerships": {
+    "pageTitle": "Perkongsian",
+    "subtitle": "Mari kita bina sesuatu yang hebat bersama.",
+    "heading": "Bekerjasama dengan PassorMatch",
+    "body": "Kami sentiasa terbuka untuk bekerjasama dengan jenama, tempat acara, penganjur acara, dan rakan gabungan yang berkongsi misi kami untuk membantu orang ramai membina hubungan yang bermakna. Jika anda berminat untuk bekerjasama dengan PassorMatch, kami ingin mendengar daripada anda.",
+    "items": {
+      "brands": "Kerjasama jenama dan kempen pemasaran bersama",
+      "venues": "Perkongsian tempat acara dan perniagaan tempatan",
+      "events": "Penajaan acara dan pertemuan komuniti",
+      "affiliates": "Program gabungan dan rujukan"
+    },
+    "cta": "Beritahu kami tentang idea anda dan bagaimana kita boleh bekerjasama, pasukan perkongsian kami akan menghubungi anda.",
+    "emailLabel": "E-mel:",
+    "email": "partnerships@passormatch.com"
   },
   "terms": {
     "pageTitle": "Terma Perkhidmatan",

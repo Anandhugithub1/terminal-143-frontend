@@ -141,7 +141,24 @@
     "heading": "联系支持团队",
     "body": "如果您对 PassorMatch 有任何疑问、问题或反馈，请通过电子邮件与我们联系，我们的团队会尽快回复您。",
     "emailLabel": "电子邮箱：",
-    "email": "support@passormatch.com"
+    "email": "support23@passormatch.com",
+    "contactEmailLabel": "一般咨询：",
+    "contactEmail": "contact23@passormatch.com"
+  },
+  "partnerships": {
+    "pageTitle": "合作伙伴",
+    "subtitle": "让我们携手共创美好未来。",
+    "heading": "与 PassorMatch 合作",
+    "body": "我们始终欢迎与品牌、场地、活动组织者以及联盟伙伴合作，共同践行帮助人们建立有意义联系的使命。如果您有意与 PassorMatch 合作，欢迎与我们联系。",
+    "items": {
+      "brands": "品牌合作与联合营销活动",
+      "venues": "场地及本地商家合作",
+      "events": "活动赞助与社区聚会",
+      "affiliates": "联盟与推荐计划"
+    },
+    "cta": "告诉我们您的想法以及合作方式，我们的合作团队将与您联系。",
+    "emailLabel": "电子邮箱：",
+    "email": "partnerships@passormatch.com"
   },
   "terms": {
     "pageTitle": "服务条款",
