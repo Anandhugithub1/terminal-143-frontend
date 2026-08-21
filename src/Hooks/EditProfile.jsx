@@ -29,8 +29,17 @@ export function useEditableProfile() {
   // UPDATE
   const updateMutation = useMutation({
     mutationFn: updateMyProfile,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["my-profile"])
+    // Seed the cache with the server's response directly rather than only
+    // invalidating: invalidateQueries schedules a background refetch but
+    // does not wait for it, so a caller awaiting mutateAsync can still read
+    // stale data from the cache immediately after. That mattered concretely
+    // for photo uploads/removals fired back-to-back — see uploadImage.
+    onSuccess: (data) => {
+      if (data?.user) {
+        queryClient.setQueryData(["my-profile"], data.user)
+      } else {
+        queryClient.invalidateQueries(["my-profile"])
+      }
     }
   })
 
@@ -85,11 +94,13 @@ export function useEditableProfile() {
     const updatedPhotos = [...currentPhotos]
     updatedPhotos[order] = newPhoto
 
+    // The mutation's shared onSuccess (above) seeds the cache with the
+    // server's response synchronously, so by the time mutateAsync resolves
+    // here, getQueryData(["my-profile"]) at the top of this function is
+    // guaranteed fresh for the next call — no separate invalidate needed.
     await updateMutation.mutateAsync({
       photos: updatedPhotos.filter(Boolean)
     })
-
-    queryClient.invalidateQueries(["my-profile"])
   }
 
   return {
