@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react"
-import { ChevronLeft, ChevronDownIcon } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 import { interestMap, calculateAge } from "../../../Utlis/utlis"
+import useLanguages from "../../AddProfile/Hooks/useLanguages"
+import LanguagePicker from "../../AddProfile/components/LanguagePicker"
 
 const CURRENT_YEAR = new Date().getFullYear()
 const MIN_DOB = "1950-01-01"
 const MAX_DOB = `${CURRENT_YEAR}-12-31`
-
-const LANGUAGES_CDN_URL =
-  "https://d36zx1g74mcorc.cloudfront.net/website_files/languages/languages.json"
 
 export default function FieldEditPage({
   field,
@@ -18,10 +17,14 @@ export default function FieldEditPage({
 }) {
   const [inputValue, setInputValue] = useState(value || "")
   const [selectedInterests, setSelectedInterests] = useState([])
-  const [languagesList, setLanguagesList] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
-  const [openLanguagePicker, setOpenLanguagePicker] = useState(false)
   const [dobError, setDobError] = useState("")
+
+  const {
+    languagesList,
+    loading: languagesLoading,
+    error: languagesError
+  } = useLanguages()
 
   const allInterests = useMemo(
     () =>
@@ -32,48 +35,6 @@ export default function FieldEditPage({
       })),
     []
   )
-
-  /* ---------- Load languages ---------- */
-  useEffect(() => {
-    if (field.key !== "languages") return
-
-    fetch(LANGUAGES_CDN_URL)
-      .then(res => res.json())
-      .then(data => {
-        if (!Array.isArray(data)) return
-
-        const normalized = data
-          .map((item, index) => {
-            if (typeof item === "string") {
-              return { value: item, label: item }
-            }
-
-            const value =
-              item.value ||
-              item.code ||
-              item.shortCode ||
-              item.languageCode ||
-              `lang-${index}`
-
-            const label =
-              item.label ||
-              item.name ||
-              item.language ||
-              item.nativeName ||
-              value
-
-            return { value, label }
-          })
-          .sort((a, b) =>
-            a.label.localeCompare(b.label, undefined, {
-              sensitivity: "base"
-            })
-          )
-
-        setLanguagesList(normalized)
-      })
-      .catch(() => {})
-  }, [field.key])
 
   /* ---------- Init state ---------- */
  useEffect(() => {
@@ -231,51 +192,13 @@ export default function FieldEditPage({
             ))}
           </div>
         ) : field.key === "languages" ? (
-          <>
-            <button
-              disabled={isSaving}
-              onClick={() =>
-                setOpenLanguagePicker(prev => !prev)
-              }
-              className="inline-flex w-full justify-between items-center px-4 py-2 bg-white border border-gray-300 rounded-md hover:border-[#FF3366]"
-            >
-              <span className="truncate">
-                {selectedLanguages.length
-                  ? selectedLanguages.map(l => l.label).join(", ")
-                  : "Select languages..."}
-              </span>
-              <ChevronDownIcon className="w-5 h-5 text-gray-500" />
-            </button>
-
-            {openLanguagePicker && (
-              <div className="mt-3 border rounded-lg max-h-60 overflow-y-auto">
-                {languagesList.map(lang => (
-                  <div
-                    key={lang.value}
-                    onClick={() =>
-                      !isSaving &&
-                      setSelectedLanguages(prev =>
-                        prev.some(l => l.value === lang.value)
-                          ? prev.filter(l => l.value !== lang.value)
-                          : [...prev, lang]
-                      )
-                    }
-                    className={`px-4 py-2 cursor-pointer text-sm
-                      ${
-                        selectedLanguages.some(
-                          l => l.value === lang.value
-                        )
-                          ? "bg-pink-50 text-pink-700 border-l-2 border-[#FF3366]"
-                          : "hover:bg-gray-50"
-                      }
-                    `}
-                  >
-                    {lang.label}
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
+          <LanguagePicker
+            languagesList={languagesList}
+            loading={languagesLoading}
+            error={languagesError}
+            selected={selectedLanguages}
+            onChange={isSaving ? () => {} : setSelectedLanguages}
+          />
         ) : isBioField ? (
           <textarea
             disabled={isSaving}
