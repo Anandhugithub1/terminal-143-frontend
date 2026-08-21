@@ -1,5 +1,5 @@
 export const DEFAULT_AVATAR =
-  "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop";
+  "https://d36zx1g74mcorc.cloudfront.net/websitephotos/avatar.svg";
 
 export const formatPostTime = (epochMillis) => {
   if (!epochMillis) return "";
