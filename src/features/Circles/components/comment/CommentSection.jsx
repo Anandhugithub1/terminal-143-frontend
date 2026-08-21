@@ -22,15 +22,19 @@ export default function CommentSection({ isOpen, onClose, post }) {
   const [reportComment, setReportComment] = useState(null);
 
   const postId = post?.postId;
-  const { data: commentsData, isLoading } = useComments(postId);
+  const {
+    comments,
+    isLoading,
+    fetchNextPage: fetchNextComments,
+    hasNextPage: hasMoreComments,
+    isFetchingNextPage: isFetchingMoreComments,
+  } = useComments(postId);
   const createCommentMutation = useCreateComment(postId);
   const replyCommentMutation = useReplyToComment(postId);
   const deleteCommentMutation = useDeleteComment(postId);
   const { mutate: reportUser } = useReportUser();
 
   const { data: myProfile } = useMyProfile();
-
-  const comments = commentsData?.items || commentsData?.comments || [];
 
   // Strip "USER#" prefix from PK to compare against bare authorId from post
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
@@ -219,6 +223,21 @@ export default function CommentSection({ isOpen, onClose, post }) {
               />
             );
           })}
+
+          {hasMoreComments && (
+            <div className="flex justify-center pt-1">
+              <button
+                type="button"
+                onClick={() => fetchNextComments()}
+                disabled={isFetchingMoreComments}
+                className="px-5 py-2 btn-outlined text-sm rounded-full disabled:opacity-60"
+              >
+                {isFetchingMoreComments
+                  ? t("profileTabs.seeMoreLoading")
+                  : t("profileTabs.seeMore")}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Comment Input */}

@@ -1,10 +1,12 @@
 import {
-  useQuery,
+  useInfiniteQuery,
   useMutation,
   useQueryClient
 }
 from
 '@tanstack/react-query';
+
+import { useMemo } from 'react';
 
 import {
   listComments,
@@ -21,32 +23,38 @@ import {
 from
 '../queries/queryKeys';
 
+// Paginated, 20 per page (matches the backend's default DynamoDB query
+// limit) — fetchNextPage() loads the next page via the backend's opaque
+// lastKey cursor, same encode-on-the-way-out shape as chat/matches/
+// notifications (see commentsHandler.js's _list). Comments carry replies
+// nested inside their parent (see listComments.js), so a page's `items`
+// count can legitimately be less than the page size even when more exist —
+// pagination is driven by whether the backend returned a lastKey, not by
+// how many top-level comments survived the deleted/hidden filter.
 export function
 useComments(
   postId
 ) {
-  return useQuery({
-    queryKey:
-      queryKeys.comments(
-        postId
-      ),
+  const query = useInfiniteQuery({
+    queryKey: queryKeys.comments(postId),
 
-    queryFn:
-      async () => {
-        const res =
-          await listComments(
-            postId
-          );
+    queryFn: async ({ pageParam }) => {
+      const res = await listComments(postId, { lastKey: pageParam });
+      return res.data;
+    },
 
-        return res.data;
-      },
-
-    enabled:
-      !!postId,
-
-    staleTime:
-      1000 * 15
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => lastPage.lastKey,
+    enabled: !!postId,
+    staleTime: 1000 * 15,
   });
+
+  const comments = useMemo(
+    () => query.data?.pages?.flatMap((page) => commentsListOf(page)) ?? [],
+    [query.data]
+  );
+
+  return { ...query, comments };
 }
 
 // Both `.items` and `.comments` show up across the codebase's defensive
@@ -54,6 +62,37 @@ useComments(
 // whichever key the cached data actually has.
 function commentsListKey(data) {
   return data?.items ? 'items' : 'comments';
+}
+
+function commentsListOf(page) {
+  return page?.[commentsListKey(page)] || [];
+}
+
+// Applies `updater` to every page's comment list, stopping at the first
+// page updater returns a *different array reference* for (identity check,
+// not deep-equal — updater is expected to return the same array unchanged
+// when nothing on that page matched). Used so a reply/delete only touches
+// the one page actually containing the target comment, without needing the
+// caller to know which page that is ahead of time.
+function updateFirstMatchingPage(oldData, updater) {
+  if (!oldData?.pages) return oldData;
+
+  let matched = false;
+  const pages = oldData.pages.map((page) => {
+    if (matched) return page;
+
+    const key = commentsListKey(page);
+    const list = page[key] || [];
+    const updatedList = updater(list);
+
+    if (updatedList !== list) {
+      matched = true;
+      return { ...page, [key]: updatedList };
+    }
+    return page;
+  });
+
+  return matched ? { ...oldData, pages } : oldData;
 }
 
 export function
@@ -92,10 +131,18 @@ useCreateComment(
           isPending: true,
         };
 
+        // Always prepend to the first page — a freshly created comment is
+        // the newest, so it belongs at the very top of the list regardless
+        // of how many older pages have been loaded.
         queryClient.setQueryData(queryKeys.comments(postId), (old) => {
-          const key = commentsListKey(old);
-          const list = old?.[key] || [];
-          return { ...old, [key]: [optimisticComment, ...list] };
+          if (!old?.pages?.length) return old;
+          const [firstPage, ...restPages] = old.pages;
+          const key = commentsListKey(firstPage);
+          const list = firstPage[key] || [];
+          return {
+            ...old,
+            pages: [{ ...firstPage, [key]: [optimisticComment, ...list] }, ...restPages],
+          };
         });
 
         return { previous, clientCommentId: payload.clientCommentId };
@@ -155,16 +202,20 @@ useReplyToComment(
           isPending: true,
         };
 
-        queryClient.setQueryData(queryKeys.comments(postId), (old) => {
-          const key = commentsListKey(old);
-          const list = old?.[key] || [];
-          const updated = list.map((c) => {
-            const id = c.commentId || c.id;
-            if (id !== payload.parentCommentId) return c;
-            return { ...c, replies: [...(c.replies || []), optimisticReply] };
-          });
-          return { ...old, [key]: updated };
-        });
+        // The parent comment can be on any already-loaded page — walk pages
+        // until we find the one containing it, and patch only that page.
+        queryClient.setQueryData(queryKeys.comments(postId), (old) =>
+          updateFirstMatchingPage(old, (list) => {
+            let found = false;
+            const updated = list.map((c) => {
+              const id = c.commentId || c.id;
+              if (id !== payload.parentCommentId) return c;
+              found = true;
+              return { ...c, replies: [...(c.replies || []), optimisticReply] };
+            });
+            return found ? updated : list;
+          })
+        );
 
         return { previous };
       },
@@ -202,16 +253,25 @@ export function useDeleteComment(postId) {
       await queryClient.cancelQueries({ queryKey: queryKeys.comments(postId) });
       const previous = queryClient.getQueryData(queryKeys.comments(postId));
 
+      // The deleted comment (or its parent, for a reply) can be on any
+      // page — filter every page independently rather than stopping at
+      // the first match, since a top-level delete only removes from one
+      // page but a reply's parent could differ from where the reply itself
+      // renders if pages were ever split mid-thread.
       queryClient.setQueryData(queryKeys.comments(postId), (old) => {
-        const key = commentsListKey(old);
-        const list = old?.[key] || [];
-        const updated = list
-          .filter((c) => (c.commentId || c.id) !== commentId)
-          .map((c) => ({
-            ...c,
-            replies: (c.replies || []).filter((r) => (r.commentId || r.id) !== commentId),
-          }));
-        return { ...old, [key]: updated };
+        if (!old?.pages?.length) return old;
+        const pages = old.pages.map((page) => {
+          const key = commentsListKey(page);
+          const list = page[key] || [];
+          const updated = list
+            .filter((c) => (c.commentId || c.id) !== commentId)
+            .map((c) => ({
+              ...c,
+              replies: (c.replies || []).filter((r) => (r.commentId || r.id) !== commentId),
+            }));
+          return { ...page, [key]: updated };
+        });
+        return { ...old, pages };
       });
 
       return { previous };

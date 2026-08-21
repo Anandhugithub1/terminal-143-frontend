@@ -130,7 +130,13 @@ export default function ModeratorDashboardPage() {
 
   const { data: circle, isLoading: isLoadingCircle } = useCircle(circleId);
   const { data: stats, isLoading: isLoadingStats } = useCircleStats(circleId);
-  const { data: requestsData, isLoading: isLoadingRequests } = useCircleRequests(circleId);
+  const {
+    requests,
+    isLoading: isLoadingRequests,
+    fetchNextPage: fetchNextRequestsPage,
+    hasNextPage: hasMoreRequests,
+    isFetchingNextPage: isFetchingMoreRequests,
+  } = useCircleRequests(circleId);
   const { byUserId: membersByUserId, data: membersData, isLoading: isLoadingMembers } = useCircleMembers(circleId);
   const { data: myProfile } = useMyProfile();
 
@@ -145,7 +151,6 @@ export default function ModeratorDashboardPage() {
   const myRole = isOwner ? "owner" : membersByUserId.get(myId)?.role ?? null;
   const canModerate = MODERATOR_ROLES.includes(myRole);
 
-  const requests = requestsData?.items || [];
   // Owner first, then moderators, then members — same hierarchy the role
   // rules enforce, so the list reads top-down as "who has authority here."
   const roleOrder = { owner: 0, moderator: 1, member: 2 };
@@ -634,6 +639,21 @@ export default function ModeratorDashboardPage() {
                 </div>
               </div>
             ))}
+
+            {hasMoreRequests && (
+              <div className="p-4 flex justify-center border-t border-gray-50">
+                <button
+                  type="button"
+                  onClick={() => fetchNextRequestsPage()}
+                  disabled={isFetchingMoreRequests}
+                  className="px-5 py-2 btn-outlined text-sm rounded-full disabled:opacity-60"
+                >
+                  {isFetchingMoreRequests
+                    ? t("profileTabs.seeMoreLoading")
+                    : t("profileTabs.seeMore")}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

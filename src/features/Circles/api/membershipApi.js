@@ -24,11 +24,16 @@ export const requestJoinCircle =
     { message }
   );
 
-// Owner/moderator only — backend 403s anyone else.
+// Owner/moderator only — backend 403s anyone else. lastKey is the backend's
+// opaque, pre-encoded cursor string (see membershipHandler.js's
+// _listRequests — it does encodeURIComponent(JSON.stringify(...)) itself
+// before returning it), so it's passed straight through unchanged, same as
+// chat/matches/notifications pagination.
 export const listCircleRequests =
-circleId =>
+(circleId, { limit, lastKey } = {}) =>
   api.get(
-    `${BASE}/${circleId}/requests`
+    `${BASE}/${circleId}/requests`,
+    { params: { limit, lastKey } }
   );
 
 // Any authenticated caller may check their OWN request status (no

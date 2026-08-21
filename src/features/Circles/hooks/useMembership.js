@@ -1,10 +1,13 @@
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient
 }
 from
 '@tanstack/react-query';
+
+import { useMemo } from 'react';
 
 import {
   joinCircle,
@@ -83,16 +86,29 @@ export function useMyCircleRequestStatus(circleId) {
 
 // Owner/moderator only — backend 403s anyone else. Short staleTime since
 // this drives an actionable queue a moderator expects to be near-live.
+// Paginated, 20 per page (matches the backend's default DynamoDB query
+// limit) — fetchNextPage() loads the next page via the backend's opaque
+// lastKey cursor, same encode-on-the-way-out shape as chat/matches/
+// notifications (see membershipHandler.js's _listRequests).
 export function useCircleRequests(circleId) {
-  return useQuery({
+  const query = useInfiniteQuery({
     queryKey: queryKeys.circleRequests(circleId),
-    queryFn: async () => {
-      const res = await listCircleRequests(circleId);
+    queryFn: async ({ pageParam }) => {
+      const res = await listCircleRequests(circleId, { lastKey: pageParam });
       return res.data;
     },
+    initialPageParam: null,
+    getNextPageParam: (lastPage) => lastPage.lastKey,
     enabled: !!circleId,
     staleTime: 1000 * 15,
   });
+
+  const requests = useMemo(
+    () => query.data?.pages?.flatMap((page) => page.items) ?? [],
+    [query.data]
+  );
+
+  return { ...query, requests };
 }
 
 export function useAcceptCircleRequest(circleId) {

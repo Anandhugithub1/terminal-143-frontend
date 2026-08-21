@@ -13,10 +13,15 @@ export const createComment =
     payload
   );
 
+// lastKey is the backend's opaque, pre-encoded cursor string (see
+// commentsHandler.js's _list — it does encodeURIComponent(JSON.stringify(...))
+// itself before returning it), so it's passed straight through unchanged,
+// same as chat/matches/notifications pagination.
 export const listComments =
-postId =>
+(postId, { limit, lastKey } = {}) =>
   api.get(
-    `${BASE}/posts/${postId}/comments`
+    `${BASE}/posts/${postId}/comments`,
+    { params: { limit, lastKey } }
   );
 
 export const replytoComment =
