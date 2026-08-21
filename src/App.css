@@ -141,6 +141,18 @@ img {
   box-shadow: 0 0 0 2px #ec4899; /* ring-pink-500 */
 }
 
+/* iOS Safari/WKWebView sizes an empty date input's internal mm/dd/yyyy
+   segments by their own intrinsic content width rather than respecting
+   `width: 100%` on the element, so the box can render wider than its
+   container and overflow the screen (seen on the profile "Edit Date of
+   Birth" page). min-width: 0 lets it actually shrink to the flex/block
+   container instead of the content's preferred size. */
+input[type="date"] {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 /* Chrome, Edge, Safari */
 input[type="date"].with-custom-date-icon::-webkit-calendar-picker-indicator {
   opacity: 0;           /* make it invisible */

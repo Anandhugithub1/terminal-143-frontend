@@ -185,7 +185,7 @@ export default function FieldEditPage({
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-5">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-5">
         {field.key === "interest" ? (
           <div className="flex flex-wrap gap-2">
             {selectedInterests.map(({ key, label, icon: Icon, selected }) => (
