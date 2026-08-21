@@ -105,17 +105,40 @@ async function putOnce(presignedUrl, file, { timeoutMs }) {
   }
 
   if (!isNative) {
-    // blob is web-only per the plugin's own docs; native ignores it and
-    // requires a filesystem `path` instead (handled below).
-    let result
+    // @capacitor/file-transfer's web shim always sends uploadFile() as a
+    // multipart/form-data POST body (new FormData(); xhr.send(form)) — it
+    // ignores `method: 'PUT'` for this purpose and there is no way to opt
+    // out. A presigned S3 PUT needs the raw bytes as the body with no
+    // multipart envelope at all, so every "successful" web upload was
+    // actually storing a corrupted object in S3: real image bytes wrapped in
+    // a form-data boundary and Content-Disposition header, which S3 accepts
+    // (right byte count, 200 OK) but no image decoder can read. A real
+    // browser has no CapacitorHttp patching the fetch/XHR globals (see the
+    // file-level comment above — that hazard is native-only), so a plain
+    // fetch PUT is safe here and sends the file's bytes untouched.
+    let res
     try {
-      result = await FileTransfer.uploadFile({ ...commonOptions, blob: file })
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), timeoutMs)
+      try {
+        res = await fetch(presignedUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type },
+          body: file,
+          signal: controller.signal,
+        })
+      } finally {
+        clearTimeout(timer)
+      }
     } catch (err) {
       throw Object.assign(new Error(err?.message || 'Upload failed'), {
-        status: statusFromFileTransferError(err),
+        status: 0,
+        aborted: err?.name === 'AbortError',
       })
     }
-    assertUploadSucceeded(result)
+    if (!res.ok) {
+      throw Object.assign(new Error(`Upload failed with status ${res.status}`), { status: res.status })
+    }
     return
   }
 
