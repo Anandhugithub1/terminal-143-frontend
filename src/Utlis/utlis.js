@@ -10,6 +10,7 @@ import {
   Umbrella,
   Edit2,
   Calendar,
+  HeartPulse,
 } from 'lucide-react';
 
 
@@ -53,6 +54,12 @@ export function computeAge(dob) {
   return Math.floor(diffMs / msPerYear).toString();
 }
 
+const STD_STATUS_LABELS = {
+  p: 'Positive',
+  n: 'Negative',
+  pns: 'Prefer not to say',
+};
+
 export function getProfileFields(profile) {
   if (!profile) return []; // Prevent crash when profile is null
 
@@ -90,6 +97,15 @@ icon:User,
       label: 'Languages',
       value: (profile.languagesKnown || []).join(', ') || 'Not set',
       icon: Globe2,
+    },
+    {
+      key: 'healthStatus',
+      label: 'Health Status',
+      value: profile.healthStatus?.stdStatus
+        ? STD_STATUS_LABELS[profile.healthStatus.stdStatus] || 'Not set'
+        : 'Not set',
+      rawValue: profile.healthStatus || {},
+      icon: HeartPulse,
     },
   ];
 }

@@ -280,7 +280,11 @@ export default function ProfileEditPage() {
                 : [],
           }}
           value={
-            activeField.value || (activeField.key === "languages" ? [] : "")
+            activeField.key === "languages"
+              ? activeField.value || []
+              : activeField.key === "healthStatus"
+              ? activeField.rawValue || {}
+              : activeField.value || ""
           }
           isSaving={isSaving}
           onSave={async (keyOrValue, maybeValue) => {

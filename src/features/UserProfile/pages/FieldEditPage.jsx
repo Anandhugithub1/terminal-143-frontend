@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { ChevronLeft } from "lucide-react"
 import { interestMap, calculateAge } from "../../../Utlis/utlis"
+import { statusOptions } from "../../AddProfile/utlis"
 import useLanguages from "../../AddProfile/hooks/useLanguages"
 import LanguagePicker from "../../AddProfile/components/LanguagePicker"
 
 const CURRENT_YEAR = new Date().getFullYear()
 const MIN_DOB = "1950-01-01"
 const MAX_DOB = `${CURRENT_YEAR}-12-31`
+const TODAY = new Date().toISOString().slice(0, 10)
 
 export default function FieldEditPage({
   field,
@@ -19,6 +21,8 @@ export default function FieldEditPage({
   const [selectedInterests, setSelectedInterests] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
   const [dobError, setDobError] = useState("")
+  const [stdStatus, setStdStatus] = useState("")
+  const [lastTestedDate, setLastTestedDate] = useState("")
 
   const {
     languagesList,
@@ -61,6 +65,9 @@ export default function FieldEditPage({
           })
         : []
     )
+  } else if (field.key === "healthStatus") {
+    setStdStatus(value?.stdStatus || "")
+    setLastTestedDate(value?.lastTestedDate || "")
   } else {
     setInputValue(value || "")
   }
@@ -113,6 +120,8 @@ export default function FieldEditPage({
         return
       }
       onSave("dob", inputValue.trim())
+    } else if (field.key === "healthStatus") {
+      onSave("healthStatus", { stdStatus, lastTestedDate })
     } else {
       onSave(inputValue.trim())
     }
@@ -124,6 +133,7 @@ export default function FieldEditPage({
     field.label.toLowerCase().includes("bio")
 
   const isAgeField = field.key === "age"
+  const isHealthStatusField = field.key === "healthStatus"
 
   /* ---------- Render ---------- */
   return (
@@ -222,6 +232,47 @@ export default function FieldEditPage({
               <p className="mt-2 text-sm text-red-600">{dobError}</p>
             )}
           </>
+        ) : isHealthStatusField ? (
+          <div className="space-y-5">
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                STI/STD Status
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {statusOptions.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    disabled={isSaving}
+                    onClick={() => setStdStatus(opt.value)}
+                    className={`px-3 py-1.5 rounded-full text-sm border transition
+                      ${
+                        stdStatus === opt.value
+                          ? "bg-primary/10 border-primary text-primary"
+                          : "bg-white border-gray-200 text-gray-700 hover:border-primary"
+                      }
+                    `}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm font-medium text-gray-700">
+                Tested On
+              </label>
+              <input
+                disabled={isSaving}
+                type="date"
+                max={TODAY}
+                value={lastTestedDate}
+                onChange={e => setLastTestedDate(e.target.value)}
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 disabled:opacity-60"
+              />
+            </div>
+          </div>
         ) : (
           <input
             disabled={isSaving}
