@@ -6,7 +6,6 @@ export function calculateProfileCompletion(profile) {
     "bio",
     "dob",
     "gender",
-    "interest",
     "photos",
     "socialMediaLinks",
   ];
