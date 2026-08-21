@@ -21,6 +21,7 @@
   "stdStatusPositive": "양성",
   "stdStatusUnknown": "알리고 싶지 않음",
   "testedOn": "검사일",
+  "healthStatusOptionalNote": "이 항목은 선택 사항입니다. 공유하기 불편하시면 비워두셔도 됩니다.",
   "aboutApp": "PassorMatch 소개",
   "intro": "PassorMatch는 태국 전역에서 진정성 있는 만남을 위해 만들어진 현대적인 데이팅 플랫폼입니다. 우리는 문화와 사랑, 그리고 어디에서나 의미 있는 관계를 소중히 여깁니다.",
   "missionTitle": "우리의 미션",

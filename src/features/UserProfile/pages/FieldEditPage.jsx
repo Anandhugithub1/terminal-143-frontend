@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { ChevronLeft } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { interestMap, calculateAge } from "../../../Utlis/utlis"
 import { statusOptions } from "../../AddProfile/utlis"
 import useLanguages from "../../AddProfile/hooks/useLanguages"
@@ -17,6 +18,7 @@ export default function FieldEditPage({
   onCancel,
   isSaving
 }) {
+  const { t } = useTranslation("common")
   const [inputValue, setInputValue] = useState(value || "")
   const [selectedInterests, setSelectedInterests] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
@@ -135,6 +137,12 @@ export default function FieldEditPage({
   const isAgeField = field.key === "age"
   const isHealthStatusField = field.key === "healthStatus"
 
+  const STD_STATUS_LABEL_KEYS = {
+    p: "stdStatusPositive",
+    n: "stdStatusNegative",
+    pns: "stdStatusUnknown"
+  }
+
   /* ---------- Render ---------- */
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col">
@@ -234,9 +242,13 @@ export default function FieldEditPage({
           </>
         ) : isHealthStatusField ? (
           <div className="space-y-5">
+            <p className="text-xs text-gray-500">
+              {t("healthStatusOptionalNote")}
+            </p>
+
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                STI/STD Status
+                {t("stdStatusLabel")}
               </label>
               <div className="flex flex-wrap gap-2">
                 {statusOptions.map(opt => (
@@ -253,7 +265,7 @@ export default function FieldEditPage({
                       }
                     `}
                   >
-                    {opt.label}
+                    {t(STD_STATUS_LABEL_KEYS[opt.value] || opt.label)}
                   </button>
                 ))}
               </div>
@@ -261,7 +273,7 @@ export default function FieldEditPage({
 
             <div>
               <label className="block mb-2 text-sm font-medium text-gray-700">
-                Tested On
+                {t("testedOn")}
               </label>
               <input
                 disabled={isSaving}
