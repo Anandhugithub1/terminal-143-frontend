@@ -9,7 +9,6 @@ export function calculateProfileCompletion(profile) {
     "interest",
     "photos",
     "socialMediaLinks",
-    "healthStatus",
   ];
 
   const filled = REQUIRED_FIELDS.filter((field) => {
@@ -26,12 +25,6 @@ export function calculateProfileCompletion(profile) {
         Array.isArray(profile.socialMediaLinks) &&
         profile.socialMediaLinks.some((link) => link.usernameOrLink?.trim())
       );
-    }
-
-    if (field === "healthStatus") {
-      // Must have both stdStatus and lastTestedDate filled
-      const hs = profile.healthStatus;
-      return hs && hs.stdStatus && hs.lastTestedDate;
     }
 
     // Default for text/number fields
