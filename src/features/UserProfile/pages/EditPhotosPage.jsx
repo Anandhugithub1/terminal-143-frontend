@@ -44,7 +44,13 @@ export default function EditPhotosPage() {
   const { uploadImage } = useEditableProfile()
   const { data: profile, isLoading } = useMyProfile()
   const [saving, setSaving] = useState(false)
-  const [selectedFile, setSelectedFile] = useState(null)
+  // Keyed by order: the UI lets you pick a new photo for several slots
+  // before tapping the single Save button (previewMap already showed every
+  // pending pick at once), but a single selectedFile/selectedOrder pair only
+  // ever remembered the LAST pick — every earlier one was silently dropped
+  // on save with no error, no toast, nothing. Tracking one pending file per
+  // slot instead means Save uploads everything that was actually picked.
+  const [pendingFiles, setPendingFiles] = useState({})
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [previewMap, setPreviewMap] = useState({})
   // Bumped on every pick to force the <input type="file"> to remount (via
@@ -82,7 +88,7 @@ export default function EditPhotosPage() {
     const file = e.target.files?.[0]
     if (!file || selectedOrder == null) return
 
-    setSelectedFile(file)
+    setPendingFiles((prev) => ({ ...prev, [selectedOrder]: file }))
     setPreviewMap((prev) => {
       const prevUrl = prev[selectedOrder]
       if (prevUrl) URL.revokeObjectURL(prevUrl)
@@ -93,17 +99,65 @@ export default function EditPhotosPage() {
     setInputKey((k) => k + 1)
   }
 
+  const pendingOrders = Object.keys(pendingFiles)
+
+  // Uploads every picked slot, one at a time — NOT in parallel. Each call
+  // to uploadImage reads the current "complete" photo array from the query
+  // cache, adds its one slot, and saves that whole array back (see
+  // EditProfile.jsx's uploadImage/updateUser — the backend trusts whatever
+  // array it's sent as authoritative). Firing these concurrently would let
+  // two calls read the same stale array before either write lands, so
+  // whichever updateUser resolved last would silently overwrite the other's
+  // slot — the exact stale-cache race already fixed once for back-to-back
+  // uploads. A failure on one slot doesn't stop the rest from being tried;
+  // every failure gets its own toast so a partial save is never silently
+  // swallowed.
   const handleSave = async () => {
-    if (!selectedFile || saving) return
+    if (!pendingOrders.length || saving) return
     try {
       setSaving(true)
-      await uploadImage(selectedFile, selectedOrder)
-      toast.success("Photo updated")
-      setSelectedFile(null)
-      setSelectedOrder(null)
-      setPreviewMap({})
-    } catch (err) {
-      toast.error(getErrorMessage(err))
+      const results = []
+      for (const order of pendingOrders) {
+        try {
+          await uploadImage(pendingFiles[order], Number(order))
+          results.push({ status: "fulfilled" })
+        } catch (err) {
+          results.push({ status: "rejected", reason: err })
+        }
+      }
+
+      const failedOrders = pendingOrders.filter((_, i) => results[i].status === "rejected")
+      const succeededOrders = pendingOrders.filter((_, i) => results[i].status === "fulfilled")
+
+      if (succeededOrders.length) {
+        toast.success(succeededOrders.length > 1 ? "Photos updated" : "Photo updated")
+      }
+      results.forEach((r, i) => {
+        if (r.status === "rejected") {
+          toast.error(getErrorMessage(r.reason))
+        }
+      })
+
+      // Clear only what succeeded — a failed slot keeps its pending file and
+      // preview so the user can retry it without re-picking, same as the
+      // wizard's per-slot retry.
+      setPendingFiles((prev) => {
+        const next = { ...prev }
+        succeededOrders.forEach((order) => delete next[order])
+        return next
+      })
+      setPreviewMap((prev) => {
+        const next = { ...prev }
+        succeededOrders.forEach((order) => {
+          const url = next[order]
+          if (url) URL.revokeObjectURL(url)
+          delete next[order]
+        })
+        return next
+      })
+      if (!failedOrders.length) {
+        setSelectedOrder(null)
+      }
     } finally {
       setSaving(false)
     }
@@ -112,7 +166,7 @@ export default function EditPhotosPage() {
   const getImageUrl = (order, isAvatar) =>
     previewMap[order] ?? (isAvatar ? profile.profilePhoto : getPhoto(order)) ?? null
 
-  const saveAction = selectedFile ? (
+  const saveAction = pendingOrders.length ? (
     <button
       onClick={handleSave}
       disabled={saving}

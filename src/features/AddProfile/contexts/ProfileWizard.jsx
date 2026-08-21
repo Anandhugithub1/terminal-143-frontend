@@ -65,6 +65,22 @@ export const WizardProvider = ({ children }) => {
   useEffect(() => {
     let cancelled = false
 
+    // Only restore if `saved` (sessionStorage) shows this is really a reload
+    // of an in-progress wizard session — sessionStorage clears on tab/browser
+    // close, so its absence means a genuinely fresh visit. Restoring
+    // unconditionally here previously meant IndexedDB — which has no expiry
+    // and isn't scoped to a session at all — would silently resurrect
+    // whatever file was sitting in a slot from a PREVIOUS, possibly abandoned
+    // wizard run (different account, different day) into a brand-new signup,
+    // with no re-pick and no indication to the user. A fresh visit instead
+    // clears any such leftover so it can't resurface in a later session either.
+    if (!saved) {
+      clearWizardPhotos().catch((err) => {
+        console.warn("Failed to clear stale wizard photos", err)
+      })
+      return
+    }
+
     loadWizardPhotos().then((stored) => {
       if (cancelled || !stored) return
       setFormDataState((prev) => ({
