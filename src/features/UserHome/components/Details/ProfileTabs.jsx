@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Users, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -6,8 +6,17 @@ import DetailSection from "./Details";
 import { CircleChipSkeleton } from "../../../Circles/components/common/Skeletons";
 import EmptyState from "../../../../shared/components/EmptyState";
 import { useUserCircles } from "../../../Circles/hooks/useCircles";
+import { useUserPosts } from "../../../Circles/hooks/usePosts";
 
 const PREVIEW_LIMIT = 20;
+// How many of this person's most recent posts (across every circle) to
+// scan for a per-circle count. This is a preview indicator, not an exact
+// total — a circle whose only posts from this person are older than this
+// window shows "No posts yet" even if one exists further back. Matches the
+// same page size ProfileCirclePostsPage.jsx fetches, so switching into a
+// circle from here is warm from the same React Query cache entry, not a
+// second fetch.
+const POST_SCAN_LIMIT = 20;
 
 // Info/Circles tab switcher below the profile card (ProfileCard + the
 // pass/refresh/like row above this are untouched — this only replaces what
@@ -30,6 +39,23 @@ export default function ProfileTabs({ profile, authorId }) {
     refetch: refetchCircles,
   } = useUserCircles(activeTab === "circles" ? authorId : null, { limit: PREVIEW_LIMIT });
   const circles = circlesData?.circles || [];
+
+  // Powers the per-row post count below — see POST_SCAN_LIMIT for why this
+  // is a preview, not an exact count. isLoading only (not isError): a
+  // failed post fetch shouldn't block rendering the circle list itself,
+  // rows just fall back to member count alone until it succeeds.
+  const { posts: recentPosts, isLoading: isLoadingPostCounts } = useUserPosts(
+    activeTab === "circles" ? authorId : null,
+    { limit: POST_SCAN_LIMIT }
+  );
+
+  const postCountByCircle = useMemo(() => {
+    const counts = new Map();
+    for (const post of recentPosts) {
+      counts.set(post.circleId, (counts.get(post.circleId) || 0) + 1);
+    }
+    return counts;
+  }, [recentPosts]);
 
   return (
     <div className="px-1 pb-6">
@@ -126,9 +152,25 @@ export default function ProfileTabs({ profile, authorId }) {
                     <Lock className="w-3 h-3 text-gray-400 shrink-0" />
                   )}
                 </div>
-                <p className="text-xs text-gray-400">
-                  {t("common.membersCount", { count: circle.memberCount ?? 0 })}
-                </p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <p className="text-xs text-gray-400">
+                    {t("common.membersCount", { count: circle.memberCount ?? 0 })}
+                  </p>
+                  {!isLoadingPostCounts && (
+                    <>
+                      <span className="text-gray-300">·</span>
+                      {postCountByCircle.get(circle.circleId) > 0 ? (
+                        <span className="text-xs font-medium text-primary">
+                          {t("profileTabs.postCount", { count: postCountByCircle.get(circle.circleId) })}
+                        </span>
+                      ) : (
+                        <span className="text-xs text-gray-400">
+                          {t("profileTabs.noPostsYetChip")}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </button>
           ))}
