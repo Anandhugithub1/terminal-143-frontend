@@ -12,8 +12,6 @@
     "logoutAllDevices": "Log keluar dari semua peranti",
     "cancel": "Batal",
     "logoutAllAlert": "Ciri log keluar dari semua peranti belum tersedia.",
-
-
     "title": "Keutamaan",
     "selectPrompt": "Pilih keutamaan anda:",
     "male": "Lelaki",
@@ -22,55 +20,63 @@
     "toMale": "Kepada Lelaki",
     "others": "Lain-lain",
     "save": "Simpan Keutamaan",
-
     "select_language": "Pilih Bahasa",
     "back": "Kembali",
     "languages": {
-      "english": "Inggeris",
-      "thai": "Thai",
-      "russian": "Rusia",
-      "chinese": "Cina",
-      "korean": "Korea",
-      "malay": "Melayu"
+        "english": "Inggeris",
+        "thai": "Thai",
+        "russian": "Rusia",
+        "chinese": "Cina",
+        "korean": "Korea",
+        "malay": "Melayu"
     },
-
-     "profileEdit": {
-    "title": "Sunting Profil",
-    "myBio": "Biografi Saya",
-    "aboutMe": "Tentang Saya",
-    "interests": "Minat",
-    "socialLinks": "Pautan Sosial",
-    "saveSocialLinks": "Simpan Pautan Sosial",
-    "edit": "Sunting",
-    "save": "Simpan",
-    "cancel": "Batal",
-    "bioPlaceholder": "Ceritakan sesuatu tentang diri anda...",
-    "bioEmptyText": "Klik 'Sunting' untuk menambah biografi anda",
-    "interestsEmptyText": "Klik 'Sunting' untuk memilih minat anda",
-    "socialPlaceholders": {
-      "IG": "Akaun Instagram anda",
-      "FB": "Pautan Facebook anda",
-      "Telegram": "Nama pengguna Telegram anda",
-      "Line": "ID Line anda",
-      "Wechat": "ID WeChat anda",
-      "Other": "Pautan atau akaun lain"
+    "profileEdit": {
+        "title": "Sunting Profil",
+        "myBio": "Biografi Saya",
+        "aboutMe": "Tentang Saya",
+        "interests": "Minat",
+        "socialLinks": "Pautan Sosial",
+        "saveSocialLinks": "Simpan Pautan Sosial",
+        "edit": "Sunting",
+        "save": "Simpan",
+        "cancel": "Batal",
+        "bioPlaceholder": "Ceritakan sesuatu tentang diri anda...",
+        "bioEmptyText": "Klik 'Sunting' untuk menambah biografi anda",
+        "interestsEmptyText": "Klik 'Sunting' untuk memilih minat anda",
+        "socialPlaceholders": {
+            "IG": "Akaun Instagram anda",
+            "FB": "Pautan Facebook anda",
+            "Telegram": "Nama pengguna Telegram anda",
+            "Line": "ID Line anda",
+            "Wechat": "ID WeChat anda",
+            "Other": "Pautan atau akaun lain"
+        },
+        "socialLabels": {
+            "IG": "Instagram",
+            "FB": "Facebook",
+            "Telegram": "Telegram",
+            "Line": "Line",
+            "Wechat": "WeChat",
+            "Other": "Lain-lain"
+        },
+        "showMorePlatforms": "Tunjukkan semua platform"
     },
-    "socialLabels": {
-      "IG": "Instagram",
-      "FB": "Facebook",
-      "Telegram": "Telegram",
-      "Line": "Line",
-      "Wechat": "WeChat",
-      "Other": "Lain-lain"
+    "avatarUpload": {
+        "takePhoto": "Ambil Foto",
+        "chooseGallery": "Pilih dari Galeri",
+        "removePhoto": "Buang Foto",
+        "removePhotoTitle": "Buang Foto Profil?",
+        "removePhotoDescription": "Adakah anda pasti mahu membuang foto profil anda? Tindakan ini tidak boleh dibatalkan."
     },
-    "showMorePlatforms": "Tunjukkan semua platform"
-  },
-  "avatarUpload": {
-    "takePhoto": "Ambil Foto",
-    "chooseGallery": "Pilih dari Galeri",
-    "removePhoto": "Buang Foto",
-    "removePhotoTitle": "Buang Foto Profil?",
-    "removePhotoDescription": "Adakah anda pasti mahu membuang foto profil anda? Tindakan ini tidak boleh dibatalkan."
-  }
-  }
-  
+    "privacy": "Privasi",
+    "privacyPage": {
+        "title": "Privasi",
+        "circleActivityHeading": "Aktiviti Bulatan",
+        "circleActivityDescription": "Kawal sama ada pengguna lain boleh melihat aktiviti bulatan anda apabila mereka melawat profil anda.",
+        "showCircleActivityLabel": "Tunjukkan aktiviti bulatan saya kepada orang lain",
+        "showCircleActivityOn": "Kelihatan — orang lain boleh melihat bulatan yang anda sertai dan siaran bulatan anda pada profil anda.",
+        "showCircleActivityOff": "Disembunyikan — bulatan dan siaran bulatan anda disembunyikan daripada orang lain. Anda masih boleh melihat aktiviti anda sendiri seperti biasa.",
+        "updateSuccess": "Tetapan privasi dikemas kini",
+        "updateFailed": "Tidak dapat mengemas kini tetapan ini. Sila cuba lagi."
+    }
+}

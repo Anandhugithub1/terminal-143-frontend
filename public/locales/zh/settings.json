@@ -12,8 +12,6 @@
     "logoutAllDevices": "从所有设备登出",
     "cancel": "取消",
     "logoutAllAlert": "暂不支持从所有设备登出。",
-
-
     "title": "偏好设置",
     "selectPrompt": "选择您的偏好：",
     "male": "男",
@@ -25,52 +23,60 @@
     "select_language": "选择语言",
     "back": "返回",
     "languages": {
-      "english": "英语",
-      "thai": "泰语",
-      "russian": "俄语",
-      "chinese": "中文",
-      "korean": "韩语",
-      "malay": "马来语"
+        "english": "英语",
+        "thai": "泰语",
+        "russian": "俄语",
+        "chinese": "中文",
+        "korean": "韩语",
+        "malay": "马来语"
     },
-
-
     "profileEdit": {
-    "title": "编辑个人资料",
-    "myBio": "我的简介",
-    "aboutMe": "关于我",
-    "interests": "兴趣",
-    "socialLinks": "社交链接",
-    "saveSocialLinks": "保存社交链接",
-    "edit": "编辑",
-    "save": "保存",
-    "cancel": "取消",
-    "bioPlaceholder": "写点关于自己的事...",
-    "bioEmptyText": "点击“编辑”添加个人简介",
-    "interestsEmptyText": "点击“编辑”选择兴趣",
-    "socialPlaceholders": {
-      "IG": "你的 Instagram 账号",
-      "FB": "你的 Facebook 链接",
-      "Telegram": "你的 Telegram 用户名",
-      "Line": "你的 Line ID",
-      "Wechat": "你的微信ID",
-      "Other": "其他链接或账号"
+        "title": "编辑个人资料",
+        "myBio": "我的简介",
+        "aboutMe": "关于我",
+        "interests": "兴趣",
+        "socialLinks": "社交链接",
+        "saveSocialLinks": "保存社交链接",
+        "edit": "编辑",
+        "save": "保存",
+        "cancel": "取消",
+        "bioPlaceholder": "写点关于自己的事...",
+        "bioEmptyText": "点击“编辑”添加个人简介",
+        "interestsEmptyText": "点击“编辑”选择兴趣",
+        "socialPlaceholders": {
+            "IG": "你的 Instagram 账号",
+            "FB": "你的 Facebook 链接",
+            "Telegram": "你的 Telegram 用户名",
+            "Line": "你的 Line ID",
+            "Wechat": "你的微信ID",
+            "Other": "其他链接或账号"
+        },
+        "socialLabels": {
+            "IG": "Instagram",
+            "FB": "Facebook",
+            "Telegram": "Telegram",
+            "Line": "Line",
+            "Wechat": "微信",
+            "Other": "其他"
+        },
+        "showMorePlatforms": "显示所有平台"
     },
-    "socialLabels": {
-      "IG": "Instagram",
-      "FB": "Facebook",
-      "Telegram": "Telegram",
-      "Line": "Line",
-      "Wechat": "微信",
-      "Other": "其他"
+    "avatarUpload": {
+        "takePhoto": "拍照",
+        "chooseGallery": "从相册选择",
+        "removePhoto": "移除照片",
+        "removePhotoTitle": "移除个人照片？",
+        "removePhotoDescription": "您确定要删除您的个人照片吗？此操作无法撤销。"
     },
-    "showMorePlatforms": "显示所有平台"
-  },
-  "avatarUpload": {
-    "takePhoto": "拍照",
-    "chooseGallery": "从相册选择",
-    "removePhoto": "移除照片",
-    "removePhotoTitle": "移除个人照片？",
-    "removePhotoDescription": "您确定要删除您的个人照片吗？此操作无法撤销。"
-  }
-  }
-  
+    "privacy": "隐私",
+    "privacyPage": {
+        "title": "隐私",
+        "circleActivityHeading": "圈子活动",
+        "circleActivityDescription": "控制其他用户访问您的个人资料时是否可以看到您的圈子活动",
+        "showCircleActivityLabel": "向他人展示我的圈子活动",
+        "showCircleActivityOn": "可见——他人可以在您的个人资料中看到您加入的圈子和圈子帖子",
+        "showCircleActivityOff": "已隐藏——您的圈子和圈子帖子对其他所有人隐藏。您仍可照常查看自己的活动",
+        "updateSuccess": "隐私设置已更新",
+        "updateFailed": "无法更新此设置，请重试"
+    }
+}

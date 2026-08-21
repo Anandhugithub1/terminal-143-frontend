@@ -72,7 +72,8 @@
     "sending": "กำลังส่ง…",
     "sendFailed": "ส่งไม่สำเร็จ",
     "sendRateLimited": "ส่งเร็วเกินไป — แตะเพื่อลองอีกครั้ง",
-    "retrySend": "แตะเพื่อลองอีกครั้ง"
+    "retrySend": "แตะเพื่อลองอีกครั้ง",
+    "reconnecting": "กำลังเชื่อมต่อใหม่…"
   },
   "circleConversation": {
     "back": "Back",
@@ -107,6 +108,7 @@
     "chatOffBadge": "ปิดแชท",
     "newBadge": "ใหม่",
     "showMore": "แสดงอีก {{count}} รายการ",
-    "showLess": "แสดงน้อยลง"
+    "showLess": "แสดงน้อยลง",
+    "showMore_other": "แสดงเพิ่มอีก {{count}} รายการ"
   }
 }

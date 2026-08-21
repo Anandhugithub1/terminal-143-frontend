@@ -108,5 +108,23 @@
       "somethingWentWrong": "Sesuatu tidak kena"
     }
   },
-  "exitConfirm": "Tekan kembali sekali lagi untuk keluar"
+  "exitConfirm": "Tekan kembali sekali lagi untuk keluar",
+  "distanceRangeTitle": "Julat Jarak Pilihan",
+  "distanceRangeHelp": "Sejauh mana anda sanggup berhubung dengan orang lain?",
+  "distanceSlider": "Penggelangsar Jarak",
+  "distanceUnit": "Unit Jarak",
+  "distanceUnitHelp": "Pilih unit ukuran pilihan anda",
+  "healthDisclosure": "Pendedahan Kesihatan",
+  "location": "Lokasi",
+  "locationHelper": "Bandar atau kawasan tempat anda tinggal",
+  "locationHelpText": "Mula menaip atau ketik 'Guna Lokasi Semasa Saya'",
+  "locationRequired": "Sila pilih lokasi",
+  "preferencesRequired": "Sila pilih sekurang-kurangnya satu keutamaan.",
+  "quickSelect": "Pilihan Pantas",
+  "rangeAnywhere": "Di mana-mana",
+  "rangeCity": "Dalam bandar",
+  "rangeNearby": "Berdekatan",
+  "rangeRegion": "Serantau",
+  "typeOrSearchLocation": "Cari bandar atau kawasan anda...",
+  "useMyCurrentLocation": "Guna Lokasi Semasa Saya"
 }

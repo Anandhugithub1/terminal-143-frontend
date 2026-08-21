@@ -72,7 +72,8 @@
     "sending": "Menghantar…",
     "sendFailed": "Tidak dihantar",
     "sendRateLimited": "Terlalu pantas — ketik untuk cuba semula",
-    "retrySend": "Ketik untuk cuba semula"
+    "retrySend": "Ketik untuk cuba semula",
+    "reconnecting": "Menyambung semula…"
   },
   "circleConversation": {
     "back": "Back",

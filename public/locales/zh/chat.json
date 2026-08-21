@@ -72,7 +72,8 @@
     "sending": "发送中…",
     "sendFailed": "未发送",
     "sendRateLimited": "发送太快 — 点击重试",
-    "retrySend": "点击重试"
+    "retrySend": "点击重试",
+    "reconnecting": "正在重新连接…"
   },
   "circleConversation": {
     "back": "Back",
@@ -107,6 +108,7 @@
     "chatOffBadge": "聊天已关闭",
     "newBadge": "新",
     "showMore": "显示另外 {{count}} 个",
-    "showLess": "收起"
+    "showLess": "收起",
+    "showMore_other": "显示更多 {{count}} 条"
   }
 }

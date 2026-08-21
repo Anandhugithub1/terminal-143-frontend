@@ -12,8 +12,6 @@
     "logoutAllDevices": "모든 장치에서 로그아웃",
     "cancel": "취소",
     "logoutAllAlert": "모든 장치에서 로그아웃은 아직 사용할 수 없습니다.",
-
-
     "title": "환경 설정",
     "selectPrompt": "선호 항목을 선택하세요:",
     "male": "남성",
@@ -25,49 +23,60 @@
     "select_language": "언어 선택",
     "back": "뒤로",
     "languages": {
-      "english": "영어",
-      "thai": "태국어",
-      "russian": "러시아어",
-      "chinese": "중국어",
-      "korean": "한국어",
-      "malay": "말레이어"
-    }, "profileEdit": {
-    "title": "프로필 편집",
-    "myBio": "내 소개",
-    "aboutMe": "내 소개",
-    "interests": "관심사",
-    "socialLinks": "소셜 링크",
-    "saveSocialLinks": "소셜 링크 저장",
-    "edit": "편집",
-    "save": "저장",
-    "cancel": "취소",
-    "bioPlaceholder": "자신에 대해 알려주세요...",
-    "bioEmptyText": "'편집'을 클릭하여 소개를 추가하세요",
-    "interestsEmptyText": "'편집'을 클릭하여 관심사를 선택하세요",
-    "socialPlaceholders": {
-      "IG": "Instagram 계정",
-      "FB": "Facebook 링크",
-      "Telegram": "Telegram 사용자 이름",
-      "Line": "Line ID",
-      "Wechat": "WeChat ID",
-      "Other": "기타 링크 또는 계정"
+        "english": "영어",
+        "thai": "태국어",
+        "russian": "러시아어",
+        "chinese": "중국어",
+        "korean": "한국어",
+        "malay": "말레이어"
     },
-    "socialLabels": {
-      "IG": "인스타그램",
-      "FB": "페이스북",
-      "Telegram": "텔레그램",
-      "Line": "라인",
-      "Wechat": "위챗",
-      "Other": "기타"
+    "profileEdit": {
+        "title": "프로필 편집",
+        "myBio": "내 소개",
+        "aboutMe": "내 소개",
+        "interests": "관심사",
+        "socialLinks": "소셜 링크",
+        "saveSocialLinks": "소셜 링크 저장",
+        "edit": "편집",
+        "save": "저장",
+        "cancel": "취소",
+        "bioPlaceholder": "자신에 대해 알려주세요...",
+        "bioEmptyText": "'편집'을 클릭하여 소개를 추가하세요",
+        "interestsEmptyText": "'편집'을 클릭하여 관심사를 선택하세요",
+        "socialPlaceholders": {
+            "IG": "Instagram 계정",
+            "FB": "Facebook 링크",
+            "Telegram": "Telegram 사용자 이름",
+            "Line": "Line ID",
+            "Wechat": "WeChat ID",
+            "Other": "기타 링크 또는 계정"
+        },
+        "socialLabels": {
+            "IG": "인스타그램",
+            "FB": "페이스북",
+            "Telegram": "텔레그램",
+            "Line": "라인",
+            "Wechat": "위챗",
+            "Other": "기타"
+        },
+        "showMorePlatforms": "모든 플랫폼 보기"
     },
-    "showMorePlatforms": "모든 플랫폼 보기"
-  },
-  "avatarUpload": {
-    "takePhoto": "사진 촬영",
-    "chooseGallery": "갤러리에서 선택",
-    "removePhoto": "사진 삭제",
-    "removePhotoTitle": "프로필 사진을 삭제하시겠습니까?",
-    "removePhotoDescription": "프로필 사진을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
-  }
-  }
-  
+    "avatarUpload": {
+        "takePhoto": "사진 촬영",
+        "chooseGallery": "갤러리에서 선택",
+        "removePhoto": "사진 삭제",
+        "removePhotoTitle": "프로필 사진을 삭제하시겠습니까?",
+        "removePhotoDescription": "프로필 사진을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+    },
+    "privacy": "개인정보",
+    "privacyPage": {
+        "title": "개인정보",
+        "circleActivityHeading": "서클 활동",
+        "circleActivityDescription": "다른 사용자가 회원님의 프로필을 방문했을 때 서클 활동을 볼 수 있는지 여부를 설정합니다.",
+        "showCircleActivityLabel": "다른 사용자에게 서클 활동 공개",
+        "showCircleActivityOn": "공개 — 다른 사람이 회원님이 가입한 서클과 서클 게시물을 프로필에서 볼 수 있습니다.",
+        "showCircleActivityOff": "비공개 — 회원님의 서클과 서클 게시물은 다른 모든 사람에게 숨겨집니다. 본인은 평소처럼 자신의 활동을 볼 수 있습니다.",
+        "updateSuccess": "개인정보 설정이 업데이트되었습니다",
+        "updateFailed": "설정을 업데이트하지 못했습니다. 다시 시도해 주세요."
+    }
+}

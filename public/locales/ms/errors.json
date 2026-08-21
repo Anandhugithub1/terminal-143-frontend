@@ -12,7 +12,6 @@
   "badRequest": "Sila semak input anda dan cuba lagi.",
   "generic": "Sesuatu telah berlaku tidak kena. Sila cuba lagi.",
   "invalidCredentials": "E-mel/telefon atau kata laluan tidak sah.",
-
   "profileAlreadyExists": "Anda sudah mempunyai profil.",
   "profileNotFound": "Profil tidak dijumpai.",
   "missingRequiredField": "Sila lengkapkan semua medan yang diperlukan.",
@@ -24,21 +23,25 @@
   "genderRequiredForUpdate": "Sila pilih jantina anda sebelum mengemas kini ini.",
   "noUpdatableFields": "Tiada perubahan untuk disimpan.",
   "restoreCooldown": "Anda baru sahaja memulihkan akaun anda. Sila tunggu sebelum memadamkannya semula.",
-
   "circleNameRequired": "Sila berikan nama untuk circle anda.",
   "circleNotFound": "Circle ini tidak lagi wujud.",
   "alreadyMember": "Anda sudah menjadi ahli circle ini.",
   "notAMember": "Anda bukan ahli circle ini.",
-
   "userBlocked": "Anda tidak boleh berbuat demikian dengan pengguna ini.",
   "senderProfileNotFound": "Profil anda tiada maklumat yang diperlukan untuk menghantar permintaan ini.",
   "missingDobForRequest": "Sila tambah tarikh lahir anda sebelum menghantar permintaan.",
-
   "supportTicketLimit": "Anda telah mencapai had tiket sokongan untuk hari ini. Sila cuba lagi esok.",
   "invalidModerationAction": "Tindakan itu tidak sah.",
-
   "ratingRange": "Sila pilih penarafan antara 1 dan 5.",
   "reviewTextLength": "Ulasan anda hendaklah antara 5 hingga 300 aksara.",
   "passwordTooShort": "Kata laluan anda mestilah sekurang-kurangnya 8 aksara.",
-  "invalidOtp": "Kod itu salah atau telah tamat tempoh. Sila cuba lagi atau minta kod baharu."
+  "invalidOtp": "Kod itu salah atau telah tamat tempoh. Sila cuba lagi atau minta kod baharu.",
+  "circleNotPrivate": "Bulatan ini tidak memerlukan kelulusan untuk menyertai.",
+  "circleIsPrivate": "Bulatan ini peribadi — minta untuk sertai sebaliknya.",
+  "requestNotFound": "Permintaan ini tidak lagi wujud.",
+  "requestAlreadyResolved": "Permintaan ini telah diselesaikan.",
+  "circleRequestFailed": "Tidak dapat menghantar permintaan anda. Sila cuba lagi.",
+  "circleModerateFailed": "Tidak dapat menyelesaikan tindakan itu. Sila cuba lagi.",
+  "cannotRemoveOwner": "Pemilik bulatan tidak boleh dialih keluar.",
+  "cannotActOnModerator": "Hanya pemilik boleh melakukan itu kepada moderator lain."
 }

@@ -108,5 +108,23 @@
       "somethingWentWrong": "เกิดข้อผิดพลาด"
     }
   },
-  "exitConfirm": "กดย้อนกลับอีกครั้งเพื่อออกจากแอป"
+  "exitConfirm": "กดย้อนกลับอีกครั้งเพื่อออกจากแอป",
+  "distanceRangeTitle": "ช่วงระยะทางที่ต้องการ",
+  "distanceRangeHelp": "คุณยินดีที่จะเชื่อมต่อกับผู้อื่นในระยะทางเท่าใด?",
+  "distanceSlider": "แถบเลื่อนระยะทาง",
+  "distanceUnit": "หน่วยระยะทาง",
+  "distanceUnitHelp": "เลือกหน่วยวัดที่คุณต้องการ",
+  "healthDisclosure": "การเปิดเผยข้อมูลสุขภาพ",
+  "location": "ตำแหน่งที่ตั้ง",
+  "locationHelper": "เมืองหรือพื้นที่ที่คุณอาศัยอยู่",
+  "locationHelpText": "เริ่มพิมพ์หรือแตะ 'ใช้ตำแหน่งปัจจุบันของฉัน'",
+  "locationRequired": "กรุณาเลือกตำแหน่งที่ตั้ง",
+  "preferencesRequired": "กรุณาเลือกอย่างน้อยหนึ่งรายการที่ต้องการ",
+  "quickSelect": "เลือกด่วน",
+  "rangeAnywhere": "ทุกที่",
+  "rangeCity": "ภายในเมือง",
+  "rangeNearby": "ใกล้เคียง",
+  "rangeRegion": "ในภูมิภาค",
+  "typeOrSearchLocation": "ค้นหาเมืองหรือพื้นที่ของคุณ...",
+  "useMyCurrentLocation": "ใช้ตำแหน่งปัจจุบันของฉัน"
 }

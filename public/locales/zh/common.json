@@ -108,5 +108,23 @@
       "somethingWentWrong": "出了点问题"
     }
   },
-  "exitConfirm": "再按一次返回键退出"
+  "exitConfirm": "再按一次返回键退出",
+  "distanceRangeTitle": "偏好距离范围",
+  "distanceRangeHelp": "您愿意与多远的人建立联系？",
+  "distanceSlider": "距离滑块",
+  "distanceUnit": "距离单位",
+  "distanceUnitHelp": "选择您偏好的计量单位",
+  "healthDisclosure": "健康信息披露",
+  "location": "位置",
+  "locationHelper": "您所居住的城市或地区",
+  "locationHelpText": "开始输入，或点击「使用我的当前位置」",
+  "locationRequired": "请选择位置",
+  "preferencesRequired": "请至少选择一项偏好",
+  "quickSelect": "快速选择",
+  "rangeAnywhere": "不限",
+  "rangeCity": "同城范围内",
+  "rangeNearby": "附近",
+  "rangeRegion": "同区域内",
+  "typeOrSearchLocation": "搜索您的城市或地区…",
+  "useMyCurrentLocation": "使用我的当前位置"
 }

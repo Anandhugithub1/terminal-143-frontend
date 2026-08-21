@@ -12,7 +12,6 @@
   "badRequest": "请检查您输入的信息后重试。",
   "generic": "出现了一些问题，请重试。",
   "invalidCredentials": "邮箱/手机号或密码不正确。",
-
   "profileAlreadyExists": "您已经拥有个人资料。",
   "profileNotFound": "未找到个人资料。",
   "missingRequiredField": "请填写所有必填项。",
@@ -24,21 +23,25 @@
   "genderRequiredForUpdate": "请先选择性别再进行此项更新。",
   "noUpdatableFields": "没有可保存的更改。",
   "restoreCooldown": "您最近刚恢复了账户，请稍候再删除。",
-
   "circleNameRequired": "请为您的圈子命名。",
   "circleNotFound": "该圈子已不存在。",
   "alreadyMember": "您已经是该圈子的成员。",
   "notAMember": "您不是该圈子的成员。",
-
   "userBlocked": "您无法对该用户执行此操作。",
   "senderProfileNotFound": "您的个人资料缺少发送此请求所需的信息。",
   "missingDobForRequest": "请先添加出生日期再发送请求。",
-
   "supportTicketLimit": "您今天的支持工单已达上限，请明天再试。",
   "invalidModerationAction": "该操作无效。",
-
   "ratingRange": "请选择1到5之间的评分。",
   "reviewTextLength": "评价内容应为5到300个字符之间。",
   "passwordTooShort": "密码长度必须至少为8个字符。",
-  "invalidOtp": "验证码不正确或已过期，请重试或重新获取验证码。"
+  "invalidOtp": "验证码不正确或已过期，请重试或重新获取验证码。",
+  "circleNotPrivate": "此圈子无需批准即可加入",
+  "circleIsPrivate": "此圈子为私密圈子——请改为申请加入",
+  "requestNotFound": "该申请已不存在",
+  "requestAlreadyResolved": "该申请已处理",
+  "circleRequestFailed": "无法发送您的申请，请重试",
+  "circleModerateFailed": "无法完成该操作，请重试",
+  "cannotRemoveOwner": "无法移除圈主",
+  "cannotActOnModerator": "只有圈主才能对其他版主执行此操作"
 }

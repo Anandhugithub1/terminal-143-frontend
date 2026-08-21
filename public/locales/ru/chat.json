@@ -72,7 +72,8 @@
     "sending": "Отправка…",
     "sendFailed": "Не отправлено",
     "sendRateLimited": "Слишком быстро — нажмите, чтобы повторить",
-    "retrySend": "Нажмите, чтобы повторить"
+    "retrySend": "Нажмите, чтобы повторить",
+    "reconnecting": "Переподключение…"
   },
   "circleConversation": {
     "back": "Back",
