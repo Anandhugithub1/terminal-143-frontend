@@ -312,7 +312,9 @@
     "noCirclesTitle": "Нет кругов для отображения",
     "postsHere": "Публикации в этом круге",
     "postCount": "{{count}} публикаций",
-    "noPostsYetChip": "Пока нет публикаций"
+    "noPostsYetChip": "Пока нет публикаций",
+    "seeMoreLoading": "Загрузка...",
+    "seeLess": "Скрыть"
   },
   "moderatorDashboard": {
     "header": "Управление кругом",

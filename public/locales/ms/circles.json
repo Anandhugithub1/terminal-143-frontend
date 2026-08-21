@@ -312,7 +312,9 @@
     "noCirclesTitle": "Tiada bulatan untuk dipaparkan",
     "postsHere": "Siaran dalam bulatan ini",
     "postCount": "{{count}} siaran",
-    "noPostsYetChip": "Belum ada siaran"
+    "noPostsYetChip": "Belum ada siaran",
+    "seeMoreLoading": "Memuatkan...",
+    "seeLess": "Lihat kurang"
   },
   "moderatorDashboard": {
     "header": "Urus Bulatan",

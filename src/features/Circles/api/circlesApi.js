@@ -26,11 +26,22 @@ circleId =>
 // list (not an error) when the target has circle activity hidden, has
 // blocked/been blocked by the viewer, or has no circles — the backend
 // deliberately never reveals which, so the frontend can't either.
+//
+// Unlike posts pagination (a plain numeric offset string), lastKey here is a
+// raw DynamoDB ExclusiveStartKey object ({PK, SK}) — circlesHandler.js reads
+// it with JSON.parse(decodeURIComponent(qs.lastKey)), i.e. it expects a single
+// JSON-string query param. Axios's default params serializer would otherwise
+// explode an object value into bracket-notation keys (lastKey[PK]=...&
+// lastKey[SK]=...), which the backend never sees as `qs.lastKey` at all —
+// every "next page" request would silently fall back to lastKey=null and
+// re-fetch page one forever. Stringify only — axios URL-encodes string
+// params itself, so encoding it again here would double-encode and break
+// the backend's single decodeURIComponent().
 export const listUserCirclesByAuthor =
 (authorId, { limit = 20, lastKey = null } = {}) =>
   api.get(
     `${BASE}users/${authorId}/circles`,
-    { params: { limit, lastKey } }
+    { params: { limit, lastKey: lastKey ? JSON.stringify(lastKey) : null } }
   );
 
 export const updateCircle =

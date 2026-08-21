@@ -312,7 +312,9 @@
     "noCirclesTitle": "ไม่มีเซอร์เคิลให้แสดง",
     "postsHere": "โพสต์ในเซอร์เคิลนี้",
     "postCount": "{{count}} โพสต์",
-    "noPostsYetChip": "ยังไม่มีโพสต์"
+    "noPostsYetChip": "ยังไม่มีโพสต์",
+    "seeMoreLoading": "กำลังโหลด...",
+    "seeLess": "ดูน้อยลง"
   },
   "moderatorDashboard": {
     "header": "จัดการเซอร์เคิล",

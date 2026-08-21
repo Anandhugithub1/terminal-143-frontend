@@ -1,10 +1,11 @@
 import {
   useQuery,
+  useInfiniteQuery,
   useMutation,
   useQueryClient
 } from '@tanstack/react-query';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   listUserCircles,
@@ -186,16 +187,30 @@ export function useCircleStats(circleId) {
 // lazy-tab pattern as useUserPosts). An empty result here can mean "no
 // circles," "activity hidden," or "blocked" — the backend deliberately
 // never distinguishes which, so this hook doesn't either.
-export function useUserCircles(authorId, { limit = 20 } = {}) {
-  return useQuery({
+// Paginated, `limit` per page (5 for the profile-tab preview) — fetchNextPage()
+// loads the next page via the backend's lastKey cursor, same shape as
+// useUserPosts.
+export function useUserCircles(authorId, { limit = 5 } = {}) {
+  const query = useInfiniteQuery({
     queryKey: [...queryKeys.userCircles(authorId), limit],
-    queryFn: async () => {
-      const res = await listUserCirclesByAuthor(authorId, { limit });
+
+    queryFn: async ({ pageParam }) => {
+      const res = await listUserCirclesByAuthor(authorId, { limit, lastKey: pageParam });
       return res.data;
     },
+
+    initialPageParam: null,
+    getNextPageParam: lastPage => lastPage.lastKey,
     enabled: !!authorId,
     staleTime: 1000 * 60,
   });
+
+  const circles = useMemo(
+    () => query.data?.pages?.flatMap(page => page.circles) ?? [],
+    [query.data]
+  );
+
+  return { ...query, circles };
 }
 
 // Owner/moderator/admin only — backend 403s anyone else (see the

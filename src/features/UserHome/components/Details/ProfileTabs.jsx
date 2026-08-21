@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Users, Lock } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -8,7 +8,9 @@ import EmptyState from "../../../../shared/components/EmptyState";
 import { useUserCircles } from "../../../Circles/hooks/useCircles";
 import { useUserPosts } from "../../../Circles/hooks/usePosts";
 
-const PREVIEW_LIMIT = 20;
+// Page size for the Circles tab's own "View more" pagination — deliberately
+// small since this is a profile preview, not the dedicated circles list.
+const PREVIEW_LIMIT = 5;
 // How many of this person's most recent posts (across every circle) to
 // scan for a per-circle count. This is a preview indicator, not an exact
 // total — a circle whose only posts from this person are older than this
@@ -33,12 +35,46 @@ export default function ProfileTabs({ profile, authorId }) {
   const [activeTab, setActiveTab] = useState("info");
 
   const {
-    data: circlesData,
+    data: circlesPages,
     isLoading: isLoadingCircles,
     isError: isCirclesError,
     refetch: refetchCircles,
+    fetchNextPage: fetchNextCirclesPage,
+    hasNextPage: hasNextCirclesPage,
+    isFetchingNextPage: isFetchingNextCirclesPage,
   } = useUserCircles(activeTab === "circles" ? authorId : null, { limit: PREVIEW_LIMIT });
-  const circles = circlesData?.circles || [];
+
+  // How many fetched pages to actually render — lets "View less" collapse
+  // back down without discarding the already-fetched pages, so re-expanding
+  // via "See more" is instant instead of refetching.
+  const [visiblePageCount, setVisiblePageCount] = useState(1);
+  useEffect(() => {
+    setVisiblePageCount(1);
+  }, [activeTab, authorId]);
+
+  const totalFetchedPages = circlesPages?.pages?.length ?? 0;
+
+  const circles = useMemo(
+    () =>
+      (circlesPages?.pages ?? [])
+        .slice(0, visiblePageCount)
+        .flatMap((page) => page.circles),
+    [circlesPages, visiblePageCount]
+  );
+
+  const canShowMore = hasNextCirclesPage || visiblePageCount < totalFetchedPages;
+  const canShowLess = visiblePageCount > 1;
+
+  const handleSeeMore = () => {
+    if (visiblePageCount < totalFetchedPages) {
+      // Already have this page cached from a prior expand — just reveal it.
+      setVisiblePageCount((n) => n + 1);
+    } else {
+      fetchNextCirclesPage().then(() => setVisiblePageCount((n) => n + 1));
+    }
+  };
+
+  const handleSeeLess = () => setVisiblePageCount(1);
 
   // Powers the per-row post count below — see POST_SCAN_LIMIT for why this
   // is a preview, not an exact count. isLoading only (not isError): a
@@ -116,7 +152,7 @@ export default function ProfileTabs({ profile, authorId }) {
               which (see listUserCircles.js), so this can't say which
               either. A generic empty state is the correct, private
               behavior, not a bug. */}
-          {!isLoadingCircles && !isCirclesError && circles.length === 0 && (
+          {!isLoadingCircles && !isCirclesError && circles.length === 0 && !hasNextCirclesPage && (
             <div className="bg-white rounded-2xl shadow-sm">
               <EmptyState
                 icon={Users}
@@ -174,6 +210,32 @@ export default function ProfileTabs({ profile, authorId }) {
               </div>
             </button>
           ))}
+
+          {(canShowMore || canShowLess) && (
+            <div className="pt-2 flex justify-center gap-2">
+              {canShowLess && (
+                <button
+                  type="button"
+                  onClick={handleSeeLess}
+                  className="px-6 py-2.5 btn-outlined text-sm rounded-full"
+                >
+                  {t("profileTabs.seeLess")}
+                </button>
+              )}
+              {canShowMore && (
+                <button
+                  type="button"
+                  onClick={handleSeeMore}
+                  disabled={isFetchingNextCirclesPage}
+                  className="px-6 py-2.5 btn-outlined text-sm rounded-full disabled:opacity-60"
+                >
+                  {isFetchingNextCirclesPage
+                    ? t("profileTabs.seeMoreLoading")
+                    : t("profileTabs.seeMore")}
+                </button>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>

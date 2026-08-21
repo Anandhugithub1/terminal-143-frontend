@@ -312,7 +312,9 @@
     "noCirclesTitle": "暂无可显示的圈子",
     "postsHere": "该圈子中的帖子",
     "postCount": "{{count}} 篇帖子",
-    "noPostsYetChip": "暂无帖子"
+    "noPostsYetChip": "暂无帖子",
+    "seeMoreLoading": "加载中…",
+    "seeLess": "收起"
   },
   "moderatorDashboard": {
     "header": "管理圈子",

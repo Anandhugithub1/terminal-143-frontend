@@ -312,7 +312,9 @@
     "noCirclesTitle": "표시할 서클이 없습니다",
     "postsHere": "이 서클의 게시물",
     "postCount": "게시물 {{count}}개",
-    "noPostsYetChip": "게시물 없음"
+    "noPostsYetChip": "게시물 없음",
+    "seeMoreLoading": "로딩 중...",
+    "seeLess": "간략히 보기"
   },
   "moderatorDashboard": {
     "header": "서클 관리",
