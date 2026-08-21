@@ -4,10 +4,10 @@ export function calculateProfileCompletion(profile) {
   const REQUIRED_FIELDS = [
     "name",
     "bio",
-    "age",
+    "dob",
     "gender",
     "interest",
-    "photo",
+    "photos",
     "socialMediaLinks",
     "healthStatus",
   ];
