@@ -50,6 +50,32 @@ export function useEditableProfile() {
     await updateMutation.mutateAsync({ [key]: value })
   }
 
+  // FileTransfer.uploadFile (see shared/utils/uploadToS3) can resolve
+  // successfully on native platforms even when the object never actually
+  // landed in S3 — seen in production as a photo that saves fine (updateUser
+  // succeeds) but 404s from CloudFront forever after, because nothing in the
+  // upload path ever confirms the object exists before we trust it. A HEAD
+  // against the public URL closes that gap. CloudFront can take a moment to
+  // reflect a just-written object, so this retries briefly before giving up.
+  const VERIFY_RETRIES = 3
+  const VERIFY_DELAY_MS = 800
+
+  const verifyUploaded = async (publicUrl) => {
+    for (let attempt = 0; attempt <= VERIFY_RETRIES; attempt++) {
+      try {
+        const res = await fetch(publicUrl, { method: "HEAD", cache: "no-store" })
+        if (res.ok) return
+      } catch {
+        // Network hiccup on the verification HEAD itself — treat the same as
+        // a not-yet-visible object and retry below.
+      }
+      if (attempt < VERIFY_RETRIES) {
+        await new Promise((resolve) => setTimeout(resolve, VERIFY_DELAY_MS))
+      }
+    }
+    throw new Error("UPLOAD_NOT_VERIFIED")
+  }
+
   /**
    * Internal helper to upload a photo to S3
    */
@@ -64,6 +90,10 @@ export function useEditableProfile() {
       await getPresignedUrl({ fileType: uploadFile.type, photoIndex: order })
 
     await putToS3(presignedUrl, uploadFile)
+
+    // Don't trust putToS3 resolving as proof the object exists — verify
+    // before this URL is ever handed to updateUser and persisted.
+    await verifyUploaded(publicUrl)
 
     return publicUrl
   }

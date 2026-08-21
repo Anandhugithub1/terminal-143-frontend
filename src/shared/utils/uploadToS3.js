@@ -76,6 +76,20 @@ function fileToBase64(file) {
   })
 }
 
+// FileTransfer.uploadFile resolves with the transport outcome, not the HTTP
+// outcome — on iOS in particular it resolves successfully even when S3
+// answers 403/404/500 (ionic-team/capacitor-file-transfer#58, still open).
+// The plugin never rejects on a non-2xx response, so we have to check
+// responseCode ourselves on every resolved result or a failed PUT looks
+// identical to a successful one to every caller up the stack.
+function assertUploadSucceeded(result) {
+  const code = Number(result?.responseCode)
+  if (Number.isFinite(code) && code >= 200 && code < 300) return
+  throw Object.assign(new Error(`Upload failed with status ${result?.responseCode}`), {
+    status: Number.isFinite(code) ? code : 0,
+  })
+}
+
 // One S3 PUT attempt via @capacitor/file-transfer. On native platforms this
 // means round-tripping the file through a temp disk file first (the plugin's
 // `path` option, not `blob`, is what actually reaches native URLSession/
@@ -93,13 +107,15 @@ async function putOnce(presignedUrl, file, { timeoutMs }) {
   if (!isNative) {
     // blob is web-only per the plugin's own docs; native ignores it and
     // requires a filesystem `path` instead (handled below).
+    let result
     try {
-      await FileTransfer.uploadFile({ ...commonOptions, blob: file })
+      result = await FileTransfer.uploadFile({ ...commonOptions, blob: file })
     } catch (err) {
       throw Object.assign(new Error(err?.message || 'Upload failed'), {
         status: statusFromFileTransferError(err),
       })
     }
+    assertUploadSucceeded(result)
     return
   }
 
@@ -113,8 +129,9 @@ async function putOnce(presignedUrl, file, { timeoutMs }) {
     recursive: true,
   })
 
+  let result
   try {
-    await FileTransfer.uploadFile({ ...commonOptions, path: uri })
+    result = await FileTransfer.uploadFile({ ...commonOptions, path: uri })
   } catch (err) {
     throw Object.assign(new Error(err?.message || 'Upload failed'), {
       status: statusFromFileTransferError(err),
@@ -125,6 +142,14 @@ async function putOnce(presignedUrl, file, { timeoutMs }) {
       // anyway, so a failed delete here isn't worth surfacing to the caller.
     })
   }
+
+  // Outside the try/catch above: a thrown assertion here is a real HTTP
+  // status from S3 (e.g. 403 SignatureDoesNotMatch), not a FileTransferError,
+  // so it must not be rewrapped through statusFromFileTransferError — that
+  // reads err.data.httpStatus, which this error doesn't have, and would
+  // silently default the status to 0 (retryable), causing pointless retries
+  // of an unfixable signature/permission failure.
+  assertUploadSucceeded(result)
 }
 
 // The presigned URL signs the exact byte count (see predesginedurl.js), so the
