@@ -5,7 +5,6 @@ import LazyFallback from "../components/Ui/LazyFallback.jsx"
 const SettingsPage = lazy(() => import("../pages/Settings/Settings"))
 const LanguagePage = lazy(() => import("../pages/Settings/Language"))
 const PreferencesPage = lazy(() => import("../pages/Settings/Preference"))
-const PrivacyPage = lazy(() => import("../pages/Settings/Privacy"))
 const InfoPage = lazy(() => import("../pages/Settings/Info"))
 const HelpCenterPage = lazy(() => import("../pages/Settings/HelpCenterPage"))
 const RatingPage = lazy(() => import("../pages/Settings/Rating.jsx"))
@@ -40,17 +39,6 @@ export const SettingsRoutes = (
         <Suspense fallback={<LazyFallback />}>
           <PreferencesPage />
         </Suspense>
-      }
-    />
-
-    <Route
-      path="privacy-settings"
-      element={
-        <ProtectedRoute>
-          <Suspense fallback={<LazyFallback />}>
-            <PrivacyPage />
-          </Suspense>
-        </ProtectedRoute>
       }
     />
 

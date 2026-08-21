@@ -20,6 +20,9 @@ const UserProfilePage = lazy(() =>
 const UserPostsListPage = lazy(() =>
   import("../features/UserHome/pages/UserPostsListPage.jsx")
 )
+const ProfileCirclePostsPage = lazy(() =>
+  import("../features/UserHome/pages/ProfileCirclePostsPage.jsx")
+)
 
 const LocationEditPage =lazy(() => 
 import("../features/UserHome/pages/LocationEditPage.jsx")
@@ -87,6 +90,14 @@ export const ProfileRoutes = (
       element={
         <Suspense fallback={<LoadingSpinner />}>
           <UserPostsListPage />
+        </Suspense>
+      }
+    />
+    <Route
+      path="/user/:pk/circles/:circleId"
+      element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <ProfileCirclePostsPage />
         </Suspense>
       }
     />

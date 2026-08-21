@@ -309,7 +309,8 @@
     "posts": "Posts",
     "circles": "Circles",
     "seeMore": "See more",
-    "noCirclesTitle": "No circles to show"
+    "noCirclesTitle": "No circles to show",
+    "postsHere": "Posts in this circle"
   },
   "moderatorDashboard": {
     "header": "Manage Circle",

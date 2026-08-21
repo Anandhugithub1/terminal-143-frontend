@@ -3,7 +3,7 @@ import "@fontsource-variable/inter";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Users } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
 import { getProfileFields } from "../../../Utlis/utlis";
@@ -53,6 +53,26 @@ export default function ProfileEditPage() {
     toast.success(t("profileEdit.updated", "Profile updated successfully"));
 
   const showError = (err) => toast.error(getErrorMessage(err));
+
+  // Defaults true, matching the schema default — this hook's own useQuery
+  // has no select transform (unlike useMyProfile's mapProfile), so an
+  // undefined field here must be treated as "not yet toggled off" rather
+  // than read as falsy.
+  const showCircleActivity = profile?.showCircleActivity !== false;
+  const [isTogglingPrivacy, setIsTogglingPrivacy] = useState(false);
+
+  const handleTogglePrivacy = async () => {
+    if (isTogglingPrivacy) return;
+    setIsTogglingPrivacy(true);
+    try {
+      await updateProfileData("showCircleActivity", !showCircleActivity);
+      showSuccess();
+    } catch (err) {
+      showError(err);
+    } finally {
+      setIsTogglingPrivacy(false);
+    }
+  };
 
   const saveSocialLinks = useCallback(async () => {
     const formatted = Object.entries(socialLinks)
@@ -208,6 +228,45 @@ export default function ProfileEditPage() {
 </Section>
 
           </LazyWrapper>
+
+          {/* Privacy — moved here from a standalone Settings page so the
+              control sits where people are already deciding what others
+              can see of them, rather than requiring a separate trip to
+              Settings to find it. */}
+          <Section title={t("privacyPage.circleActivityHeading")}>
+            <p className="text-xs text-gray-500 mb-3">
+              {t("privacyPage.circleActivityDescription")}
+            </p>
+
+            <button
+              type="button"
+              onClick={handleTogglePrivacy}
+              disabled={isTogglingPrivacy}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-left disabled:opacity-60 transition-colors"
+            >
+              <Users size={18} className="text-gray-500 shrink-0" />
+              <span className="flex-1 text-sm font-medium text-gray-800">
+                {t("privacyPage.showCircleActivityLabel")}
+              </span>
+              <span
+                className={`w-11 h-6 rounded-full relative shrink-0 transition-colors ${
+                  showCircleActivity ? "bg-primary" : "bg-gray-300"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
+                    showCircleActivity ? "translate-x-[22px]" : "translate-x-0.5"
+                  }`}
+                />
+              </span>
+            </button>
+
+            <p className="text-xs text-gray-400 mt-2.5 leading-relaxed">
+              {showCircleActivity
+                ? t("privacyPage.showCircleActivityOn")
+                : t("privacyPage.showCircleActivityOff")}
+            </p>
+          </Section>
         </div>
       </main>
 
