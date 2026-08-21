@@ -63,7 +63,7 @@ export default function LanguagePicker({
         onClick={() => setOpen((o) => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex w-full justify-between items-center px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-pink-500"
+        className="inline-flex w-full justify-between items-center px-4 py-2 bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
       >
         <span className={selected.length ? '' : 'text-gray-400'}>{label}</span>
         <ChevronDownIcon className="w-5 h-5 text-gray-500" />
@@ -74,7 +74,7 @@ export default function LanguagePicker({
           {selected.map((lang) => (
             <span
               key={lang.value}
-              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-pink-50 text-pink-700 text-xs border border-pink-100"
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs border border-primary/20"
             >
               {lang.label}
               <button
@@ -94,14 +94,14 @@ export default function LanguagePicker({
       )}
 
       {open && (
-        <div className="absolute right-0 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg z-20 max-h-72 overflow-hidden flex flex-col">
+        <div className="absolute right-0 mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-lg z-20 max-h-72 overflow-hidden flex flex-col">
           <div className="p-2 border-b border-gray-100">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search language..."
-              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-pink-500 focus:border-pink-500"
+              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
               aria-label="Search languages"
             />
           </div>
@@ -121,11 +121,11 @@ export default function LanguagePicker({
                   type="button"
                   onClick={() => toggle(lang)}
                   className={`w-full flex justify-between items-center px-4 py-2 text-left text-sm cursor-pointer ${
-                    isSelected ? 'bg-pink-50 text-pink-700' : 'hover:bg-gray-50'
+                    isSelected ? 'bg-primary/10 text-primary' : 'hover:bg-gray-50'
                   }`}
                 >
                   <span>{lang.label}</span>
-                  {isSelected && <CheckIcon className="w-4 h-4 text-pink-500" />}
+                  {isSelected && <CheckIcon className="w-4 h-4 text-primary" />}
                 </button>
               );
             })}

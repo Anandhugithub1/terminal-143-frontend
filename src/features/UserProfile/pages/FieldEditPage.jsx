@@ -153,8 +153,8 @@ export default function FieldEditPage({
           className={`px-4 py-1.5 rounded-lg text-sm font-medium flex items-center justify-center min-w-[72px]
             ${
               isSaving || (isAgeField && !!dobError)
-                ? "bg-pink-300 cursor-not-allowed"
-                : "bg-[#FF3366] text-white hover:bg-[#e52b5d]"
+                ? "bg-primary/40 cursor-not-allowed"
+                : "bg-primary text-white hover:opacity-90"
             }
           `}
         >
@@ -178,14 +178,14 @@ export default function FieldEditPage({
                 className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm border transition
                   ${
                     selected
-                      ? "bg-pink-100 border-pink-300 text-pink-700"
-                      : "bg-white border-gray-200 text-gray-700 hover:border-[#FF3366]"
+                      ? "bg-primary/10 border-primary text-primary"
+                      : "bg-white border-gray-200 text-gray-700 hover:border-primary"
                   }
                 `}
               >
                 <Icon
                   size={16}
-                  className={selected ? "text-pink-600" : "text-gray-500"}
+                  className={selected ? "text-primary" : "text-gray-500"}
                 />
                 <span>{label}</span>
               </button>
@@ -205,7 +205,7 @@ export default function FieldEditPage({
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
             rows={6}
-            className="w-full border rounded-lg p-3 resize-none"
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 placeholder-gray-400 shadow-sm resize-none focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 disabled:opacity-60"
           />
         ) : isAgeField ? (
           <>
@@ -216,7 +216,7 @@ export default function FieldEditPage({
               max={MAX_DOB}
               value={inputValue}
               onChange={e => handleDobChange(e.target.value)}
-              className="w-full border rounded-lg p-3"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 disabled:opacity-60"
             />
             {dobError && (
               <p className="mt-2 text-sm text-red-600">{dobError}</p>
@@ -228,7 +228,7 @@ export default function FieldEditPage({
             type="text"
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
-            className="w-full border rounded-lg p-3"
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-800 placeholder-gray-400 shadow-sm focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-200 disabled:opacity-60"
           />
         )}
       </div>
