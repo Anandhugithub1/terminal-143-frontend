@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react"
 import { ChevronLeft } from "lucide-react"
 import { interestMap, calculateAge } from "../../../Utlis/utlis"
-import useLanguages from "../../AddProfile/Hooks/useLanguages"
+import useLanguages from "../../AddProfile/hooks/useLanguages"
 import LanguagePicker from "../../AddProfile/components/LanguagePicker"
 
 const CURRENT_YEAR = new Date().getFullYear()
