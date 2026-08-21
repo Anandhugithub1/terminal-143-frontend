@@ -60,7 +60,7 @@ export default function DeleteAccountPage() {
       <PageHeader title="Delete account" />
 
       <div className="p-4 max-w-md mx-auto">
-        <div className="mt-4 flex items-start gap-3 p-4 rounded-lg bg-rose-50 border border-rose-100">
+        <div className="mt-4 flex items-start gap-3 p-4 rounded-2xl bg-rose-50 border border-rose-100">
           <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
           <div>
             <h2 className="text-sm font-semibold text-rose-900">
@@ -96,7 +96,7 @@ export default function DeleteAccountPage() {
             placeholder={CONFIRM_WORD}
             autoCapitalize="characters"
             autoComplete="off"
-            className="mt-2 w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400"
+            className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm text-gray-800 placeholder-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-400 focus:border-rose-400 transition-all duration-200"
           />
         </label>
 
@@ -110,7 +110,7 @@ export default function DeleteAccountPage() {
           <button
             onClick={() => deleteMutation.mutate()}
             disabled={!canDelete}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-full bg-rose-600 text-white text-sm font-semibold disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.99] transition"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-3xl bg-rose-600 text-white text-sm font-semibold shadow-lg disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.99] transition"
           >
             <Trash2 className="w-4 h-4" />
             {deleteMutation.isPending ? 'Deleting…' : 'Delete my account'}
