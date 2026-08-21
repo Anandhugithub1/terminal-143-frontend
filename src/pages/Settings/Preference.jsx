@@ -26,7 +26,7 @@ const PreferencesPage = () => {
     { label: t("female"), value: "F", icon: <UserPlus size={20} /> },
     { label: t("toFemale"), value: "TF", icon: <Heart size={20} /> },
     { label: t("toMale"), value: "TM", icon: <Smile size={20} /> },
-    { label: t("others"), value: "Ot", icon: <Star size={20} /> }
+    { label: t("others"), value: "OT", icon: <Star size={20} /> }
   ]
 
   const [selectedPreferences, setSelectedPreferences] = useState([])

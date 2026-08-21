@@ -13,7 +13,7 @@ export const PREFERENCES = {
     FEMALE: 'F',
     TO_FEMALE: 'TF',  // Ladyboy, Shemale, Trans Women
     TO_MALE: 'TM',    // Trans Man, Tomboy
-    OTHERS: 'Ot',
+    OTHERS: 'OT',
   };    
   
 
