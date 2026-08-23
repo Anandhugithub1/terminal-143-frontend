@@ -95,8 +95,12 @@ export default function PeekShell({ children, isChildOpen, backTo }) {
   return (
     <div className="relative h-[100dvh] overflow-hidden">
       {/* The parent page is always mounted — this is what makes the swipe a
-          real reveal instead of a slide-to-blank. */}
-      {children}
+          real reveal instead of a slide-to-blank. Scrolls internally
+          (rather than the outer div clipping it) so parent content taller
+          than the viewport — e.g. an expanded circle-chats list — stays
+          reachable instead of being cut off by the peek shell's fixed
+          height. */}
+      <div className="h-full overflow-y-auto overflow-x-hidden">{children}</div>
 
       {showPanel && (
         <div
