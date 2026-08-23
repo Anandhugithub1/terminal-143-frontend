@@ -1,7 +1,10 @@
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
+import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 export const useSendMatchRequest = () => {
+  const { t } = useTranslation("swipe")
   const mutation = useMutation({
     mutationFn: async ({ recipientId, postId, circleId, createdAtEpoch }) => {
       const body = { recipientId }
@@ -21,19 +24,29 @@ export const useSendMatchRequest = () => {
     onError: (err) => {
       console.error("[hook] mutation error:", err)
     },
-    onSuccess: (data) => {
-      console.log("[hook] onSuccess:", data)
-    }
   })
 
   return {
+    // Tapping Match/swiping right has no visible state change of its own
+    // (unlike a like button that fills in), so a failed request that only
+    // logs to console is indistinguishable from a successful one — the
+    // button just does nothing. This default toast fires whenever a caller
+    // doesn't supply its own onError, so every entry point (circles feed,
+    // profile, swipe deck) gets baseline feedback instead of silently
+    // eating network/auth failures.
     send: (recipientId, options = {}) => {
       if (!recipientId) {
         console.warn("[hook] Aborting; recipientId missing")
         return
       }
-      const { postId, circleId, createdAtEpoch, ...mutationOptions } = options
-      mutation.mutate({ recipientId, postId, circleId, createdAtEpoch }, mutationOptions)
+      const { postId, circleId, createdAtEpoch, onError, ...mutationOptions } = options
+      mutation.mutate(
+        { recipientId, postId, circleId, createdAtEpoch },
+        {
+          onError: onError || (() => toast.error(t("genericError"))),
+          ...mutationOptions,
+        }
+      )
     },
     isSending: mutation.isLoading,
     error: mutation.error

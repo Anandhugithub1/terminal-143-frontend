@@ -78,6 +78,8 @@
     "beFirstToPost": "Станьте первым, кто опубликует в {{circleName}}",
     "createAPost": "Создать публикацию",
     "matchRequestSent": "Запрос на совпадение отправлен",
+    "matchAction": "Совпадение",
+    "matchingAction": "Отправка…",
     "feedQuietTitle": "В вашей ленте тихо",
     "feedQuietBody": "Присоединяйтесь к новым кругам, чтобы наполнить её",
     "meanwhileIn": "Тем временем в ",

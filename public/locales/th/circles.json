@@ -78,6 +78,8 @@
     "beFirstToPost": "เป็นคนแรกที่โพสต์ใน {{circleName}}",
     "createAPost": "สร้างโพสต์",
     "matchRequestSent": "ส่งคำขอจับคู่แล้ว",
+    "matchAction": "จับคู่",
+    "matchingAction": "กำลังจับคู่…",
     "feedQuietTitle": "ฟีดของคุณเงียบไปหน่อย",
     "feedQuietBody": "เข้าร่วมเซอร์เคิลเพิ่มเติมเพื่อเติมเต็มฟีด",
     "meanwhileIn": "ในขณะเดียวกันที่ ",

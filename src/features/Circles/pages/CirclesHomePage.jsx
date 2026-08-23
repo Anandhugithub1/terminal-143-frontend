@@ -165,6 +165,28 @@ export default function CirclesHomePage() {
   const markPostSeen = useSeenTracker();
   const { send: sendMatchRequest } = useSendMatchRequest();
 
+  // Tracks which single post's Match button is mid-request so only that
+  // button swaps to "Matching…" / disables — the mutation itself is one
+  // shared instance across the whole feed, so without scoping by post id
+  // every Match button in the list would show pending at once.
+  const [matchingPostId, setMatchingPostId] = useState(null);
+  const handleMatchRequest = (post, circleId) => {
+    setMatchingPostId(post.postId);
+    sendMatchRequest(post.authorId, {
+      postId: post.postId,
+      circleId,
+      createdAtEpoch: post.createdAtEpoch,
+      onSuccess: () => {
+        setMatchingPostId(null);
+        toast.success(t("circlesHome.matchRequestSent"));
+      },
+      onError: () => {
+        setMatchingPostId(null);
+        toast.error(t("onboarding.genericErrorToast"));
+      },
+    });
+  };
+
   if (isCirclesError) {
     return (
       <div className="min-h-[100dvh] bg-gray-50 flex flex-col">
@@ -544,14 +566,11 @@ export default function CirclesHomePage() {
                       actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                       actions={buildPostActions({
                         includeMatchActions: showMatchActions,
+                        isMatching: matchingPostId === post.postId,
+                        matchLabel: t("circlesHome.matchAction"),
+                        matchingLabel: t("circlesHome.matchingAction"),
                         onComment: () => setCommentPost(post),
-                        onToggleLike: () =>
-                          sendMatchRequest(post.authorId, {
-                            postId: post.postId,
-                            circleId: selectedCircleId,
-                            createdAtEpoch: post.createdAtEpoch,
-                            onSuccess: () => toast.success(t("circlesHome.matchRequestSent")),
-                          }),
+                        onToggleLike: () => handleMatchRequest(post, selectedCircleId),
                       })}
                     />
                   );
@@ -628,14 +647,11 @@ export default function CirclesHomePage() {
                               actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                               actions={buildPostActions({
                                 includeMatchActions: showMatchActions,
+                                isMatching: matchingPostId === post.postId,
+                                matchLabel: t("circlesHome.matchAction"),
+                                matchingLabel: t("circlesHome.matchingAction"),
                                 onComment: () => setCommentPost(post),
-                                onToggleLike: () =>
-                                  sendMatchRequest(post.authorId, {
-                                    postId: post.postId,
-                                    circleId: post.circleId,
-                                    createdAtEpoch: post.createdAtEpoch,
-                                    onSuccess: () => toast.success(t("circlesHome.matchRequestSent")),
-                                  }),
+                                onToggleLike: () => handleMatchRequest(post, post.circleId),
                               })}
                             />
                           );
@@ -693,14 +709,11 @@ export default function CirclesHomePage() {
                         actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
                         actions={buildPostActions({
                           includeMatchActions: showMatchActions,
+                          isMatching: matchingPostId === post.postId,
+                          matchLabel: t("circlesHome.matchAction"),
+                          matchingLabel: t("circlesHome.matchingAction"),
                           onComment: () => setCommentPost(post),
-                          onToggleLike: () =>
-                            sendMatchRequest(post.authorId, {
-                              postId: post.postId,
-                              circleId: post.circleId,
-                              createdAtEpoch: post.createdAtEpoch,
-                              onSuccess: () => toast.success(t("circlesHome.matchRequestSent")),
-                            }),
+                          onToggleLike: () => handleMatchRequest(post, post.circleId),
                           onPass: () => markPostSeen(post.postId, { immediate: isLastPost }),
                         })}
                       />

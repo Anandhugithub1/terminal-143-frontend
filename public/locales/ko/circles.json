@@ -78,6 +78,8 @@
     "beFirstToPost": "{{circleName}}에 첫 게시물을 올려보세요",
     "createAPost": "게시물 작성",
     "matchRequestSent": "매치 요청을 보냈습니다",
+    "matchAction": "매치",
+    "matchingAction": "매치 중…",
     "feedQuietTitle": "피드가 조용하네요",
     "feedQuietBody": "더 많은 서클에 가입해서 채워보세요",
     "meanwhileIn": "한편, ",

@@ -78,6 +78,8 @@
     "beFirstToPost": "成为第一个在 {{circleName}} 发布动态的人",
     "createAPost": "发布动态",
     "matchRequestSent": "已发送匹配请求",
+    "matchAction": "匹配",
+    "matchingAction": "匹配中…",
     "feedQuietTitle": "你的动态很安静",
     "feedQuietBody": "加入更多圈子来丰富你的动态",
     "meanwhileIn": "与此同时，在 ",

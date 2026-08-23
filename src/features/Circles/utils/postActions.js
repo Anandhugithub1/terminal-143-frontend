@@ -3,7 +3,16 @@ import { Heart, MessageCircle, X } from "lucide-react";
 const NEUTRAL_BUTTON_CLASS =
   "flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors";
 
-export function buildPostActions({ isLiked, onToggleLike, onComment, onPass, includeMatchActions = true }) {
+export function buildPostActions({
+  isLiked,
+  onToggleLike,
+  onComment,
+  onPass,
+  includeMatchActions = true,
+  isMatching = false,
+  matchLabel = "Match",
+  matchingLabel = "Matching…",
+}) {
   const commentAction = {
     key: "comment",
     icon: MessageCircle,
@@ -30,11 +39,12 @@ export function buildPostActions({ isLiked, onToggleLike, onComment, onPass, inc
     {
       key: "match",
       icon: Heart,
-      label: "Match",
+      label: isMatching ? matchingLabel : matchLabel,
       onClick: onToggleLike,
-      iconClassName: `w-4 h-4 group-hover:fill-white transition-colors ${isLiked ? "fill-rose-500 text-rose-500" : ""}`,
+      disabled: isMatching,
+      iconClassName: `w-4 h-4 group-hover:fill-white transition-colors ${isMatching ? "animate-pulse" : ""} ${isLiked ? "fill-rose-500 text-rose-500" : ""}`,
       className:
-        "group flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm hover:shadow-lg transition-all hover:scale-105",
+        `group flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm transition-all ${isMatching ? "opacity-70" : "hover:shadow-lg hover:scale-105"}`,
     },
   ];
 }

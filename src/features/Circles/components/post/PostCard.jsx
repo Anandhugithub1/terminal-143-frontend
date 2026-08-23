@@ -166,8 +166,8 @@ export default function PostCard({
       {!matched && actions.length > 0 && (
         <div className={`border-t border-gray-100 px-4 py-2.5 ${hasMedia ? 'mt-0' : ''}`}>
           <div className={actionsWrapperClassName}>
-            {actions.map(({ key, icon: Icon, label, onClick, className, iconClassName }) => (
-              <button key={key} onClick={onClick} className={className}>
+            {actions.map(({ key, icon: Icon, label, onClick, className, iconClassName, disabled }) => (
+              <button key={key} onClick={onClick} disabled={disabled} className={`${className} disabled:cursor-not-allowed`}>
                 <Icon className={iconClassName} />
                 {label}
               </button>
