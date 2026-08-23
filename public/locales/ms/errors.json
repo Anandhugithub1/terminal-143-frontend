@@ -43,5 +43,6 @@
   "circleRequestFailed": "Tidak dapat menghantar permintaan anda. Sila cuba lagi.",
   "circleModerateFailed": "Tidak dapat menyelesaikan tindakan itu. Sila cuba lagi.",
   "cannotRemoveOwner": "Pemilik bulatan tidak boleh dialih keluar.",
-  "cannotActOnModerator": "Hanya pemilik boleh melakukan itu kepada moderator lain."
+  "cannotActOnModerator": "Hanya pemilik boleh melakukan itu kepada moderator lain.",
+  "matchRequestAlreadySent": "Anda sudah menghantar permintaan padanan kepada orang ini."
 }

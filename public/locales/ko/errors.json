@@ -43,5 +43,6 @@
   "circleRequestFailed": "요청을 보내지 못했습니다. 다시 시도해 주세요.",
   "circleModerateFailed": "작업을 완료하지 못했습니다. 다시 시도해 주세요.",
   "cannotRemoveOwner": "서클 소유자는 제거할 수 없습니다.",
-  "cannotActOnModerator": "다른 운영진에 대한 조치는 소유자만 할 수 있습니다."
+  "cannotActOnModerator": "다른 운영진에 대한 조치는 소유자만 할 수 있습니다.",
+  "matchRequestAlreadySent": "이미 이 사람에게 매치 요청을 보냈습니다."
 }

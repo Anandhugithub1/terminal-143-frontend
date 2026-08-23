@@ -7,6 +7,7 @@ import { useQueryClient, useQueries } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
+import { getErrorMessage } from "../../../shared/api/getErrorMessage";
 import BottomNav from "../../../components/Layout/BottomNavigation";
 import TopNav from "../../../components/Layout/TopNavigation";
 import CreateCircleModal from "../components/circle/CreateCircleModal";
@@ -180,9 +181,9 @@ export default function CirclesHomePage() {
         setMatchingPostId(null);
         toast.success(t("circlesHome.matchRequestSent"));
       },
-      onError: () => {
+      onError: (err) => {
         setMatchingPostId(null);
-        toast.error(t("onboarding.genericErrorToast"));
+        toast.error(getErrorMessage(err));
       },
     });
   };

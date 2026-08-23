@@ -43,5 +43,6 @@
   "circleRequestFailed": "无法发送您的申请，请重试",
   "circleModerateFailed": "无法完成该操作，请重试",
   "cannotRemoveOwner": "无法移除圈主",
-  "cannotActOnModerator": "只有圈主才能对其他版主执行此操作"
+  "cannotActOnModerator": "只有圈主才能对其他版主执行此操作",
+  "matchRequestAlreadySent": "你已经向这个人发送过匹配请求了。"
 }

@@ -48,5 +48,6 @@
   "ratingRange": "Please choose a rating between 1 and 5.",
   "reviewTextLength": "Your review should be between 5 and 300 characters.",
   "passwordTooShort": "Your password must be at least 8 characters long.",
-  "invalidOtp": "That code is incorrect or has expired. Please try again or request a new one."
+  "invalidOtp": "That code is incorrect or has expired. Please try again or request a new one.",
+  "matchRequestAlreadySent": "You've already sent a match request to this person."
 }

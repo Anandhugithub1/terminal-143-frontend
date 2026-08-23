@@ -1,11 +1,15 @@
 import { useMutation } from "@tanstack/react-query"
 import axios from "axios"
 import { toast } from "sonner"
-import { useTranslation } from "react-i18next"
+import { getErrorMessage } from "../shared/api/getErrorMessage"
 
 export const useSendMatchRequest = () => {
-  const { t } = useTranslation("swipe")
   const mutation = useMutation({
+    // client.js's global MutationCache already toasts getErrorMessage(error)
+    // for any mutation that doesn't opt out — silent here so this hook's own
+    // onError below (which needs the same translated, status-aware message
+    // to disable/reset the caller's pending UI) doesn't double it up.
+    meta: { silent: true },
     mutationFn: async ({ recipientId, postId, circleId, createdAtEpoch }) => {
       const body = { recipientId }
       if (postId && circleId && createdAtEpoch) {
@@ -43,7 +47,7 @@ export const useSendMatchRequest = () => {
       mutation.mutate(
         { recipientId, postId, circleId, createdAtEpoch },
         {
-          onError: onError || (() => toast.error(t("genericError"))),
+          onError: onError || ((err) => toast.error(getErrorMessage(err))),
           ...mutationOptions,
         }
       )

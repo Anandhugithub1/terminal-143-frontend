@@ -39,6 +39,7 @@ const MESSAGE_KEY_MAP = [
   [/password did not conform with policy|password.*not long enough/i, 'passwordTooShort'],
   [/invalid verification code|invalid code provided/i, 'invalidOtp'],
   [/attempt limit exceeded/i, 'tooManyRequests'],
+  [/match request already sent/i, 'matchRequestAlreadySent'],
 ];
 
 const STATUS_KEY_MAP = {
