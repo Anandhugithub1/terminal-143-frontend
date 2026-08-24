@@ -58,3 +58,12 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Play Store listing: keep only the text listings in git.
+# All images (icon, feature graphic, screenshots, sources) live in Drive, not the repo.
+/playstore-icon-512.png
+/playstore-listings/**/*.png
+/playstore-listings/**/*.jpg
+/playstore-listings/**/*.jpeg
+/playstore-listings/raw/
+/playstore-listings/demo-images/
