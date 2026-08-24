@@ -268,5 +268,60 @@
       "subheading": "Join thousands of singles finding meaningful connections",
       "button": "Create Account"
     }
+  },
+  "childSafety": {
+    "pageTitle": "Child Safety Standards",
+    "lastUpdated": "Last updated: August 24, 2026",
+    "commitment": {
+      "heading": "Our Commitment",
+      "body": "PassorMatch is an adults-only (18+) dating and social platform. We have a zero-tolerance policy toward child sexual abuse and exploitation (CSAE) and child sexual abuse material (CSAM). The safety of minors is a top priority, and we are committed to preventing, detecting, and responding to any content or behavior that endangers children. This page describes the standards and measures we maintain in line with Google Play’s Child Safety Standards policy."
+    },
+    "adults": {
+      "heading": "Adults Only — 18+",
+      "body": "PassorMatch is strictly for adults aged 18 and over. Minors are not permitted to create an account or use the service. We enforce a minimum age of 18 through the following measures:",
+      "items": [
+        "During registration, every user must provide a date of birth. Anyone whose date of birth indicates they are under 18 is prevented from completing sign-up.",
+        "Our backend independently checks the date of birth and rejects any account for a user under 18, so the age requirement is enforced on the server and not only in the app.",
+        "Our automated moderation systems scan profile content for indications that a user may be a minor (for example, self-disclosure of being underage), and flag such accounts for human review and removal.",
+        "PassorMatch is offered only in regions where a self-declared minimum-age model is permitted. We do not make the service available in jurisdictions that legally require identity-based age verification or age assurance unless and until we support those measures."
+      ]
+    },
+    "prohibited": {
+      "heading": "Prohibited Content and Conduct",
+      "body": "The following are strictly prohibited on PassorMatch. Any of these will result in immediate removal and account termination:",
+      "items": [
+        "Any child sexual abuse material (CSAM) or content that sexualizes minors.",
+        "Grooming, solicitation, or any attempt to contact, exploit, or endanger a minor.",
+        "Use of the service by anyone under the age of 18.",
+        "Sharing, requesting, or facilitating access to any content that depicts the abuse or exploitation of a child."
+      ]
+    },
+    "detection": {
+      "heading": "Detection and Moderation",
+      "body": "We operate automated and human moderation systems designed to detect and act on child-safety risks:",
+      "items": [
+        "Automated content moderation scans profile information and reviews reported content for prohibited material and signals of underage use, classifying and prioritizing high-severity cases.",
+        "Flagged cases are escalated to a moderation team through an internal review dashboard, where child-safety and underage cases are treated as the highest priority.",
+        "Accounts found to violate these standards are removed, and associated content is deleted."
+      ]
+    },
+    "reporting": {
+      "heading": "In-App Reporting",
+      "body": "Every user can report other users and content directly from within the app. Reports that relate to child safety are prioritized for urgent review. To report a concern:",
+      "steps": [
+        "Open the profile or conversation in question.",
+        "Select the menu and choose Report.",
+        "Choose the reason that best describes the concern and submit."
+      ],
+      "emailNote": "You can also report a child-safety concern at any time by emailing us at <email></email>."
+    },
+    "authorities": {
+      "heading": "Reporting to Authorities",
+      "body": "We comply with all applicable child-safety laws. When we become aware of apparent child sexual abuse material or the exploitation of a minor, we act to remove it and report it to the appropriate regional and national authorities, including relevant child-protection organizations and law enforcement (such as the National Center for Missing & Exploited Children, NCMEC, where applicable), in accordance with our legal obligations."
+    },
+    "contact": {
+      "heading": "Point of Contact",
+      "body": "For any questions about our child-safety standards, CSAM prevention practices, or to report a concern, contact our designated point of contact:"
+    }
   }
 }

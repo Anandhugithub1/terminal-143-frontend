@@ -12,6 +12,7 @@ import { LoadingSpinner } from '../components/Ui/Spinner.jsx';
 
 const Privacy = lazy(() => import('../pages/Global/others/privacy.jsx'))
 const Terms = lazy(() => import('../pages/Global/others/terms.jsx'))
+const ChildSafety = lazy(() => import('../pages/Global/others/ChildSafety.jsx'))
 const Support = lazy(() => import('../pages/Global/others/Support.jsx'))
 const Partnerships = lazy(() => import('../pages/Global/others/Partnerships.jsx'))
 const FAQ = lazy(() => import('../pages/Global/others/FAQ.jsx'))
@@ -40,6 +41,15 @@ export const appRoutes = (
       element={
         <Suspense fallback={<LoadingSpinner />}>
           <Terms />
+        </Suspense>
+      }
+    />
+
+    <Route
+      path="child-safety"
+      element={
+        <Suspense fallback={<LoadingSpinner />}>
+          <ChildSafety />
         </Suspense>
       }
     />

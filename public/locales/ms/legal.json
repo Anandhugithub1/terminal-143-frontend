@@ -268,5 +268,60 @@
       "subheading": "Sertai beribu-ribu bujang yang mencari hubungan yang bermakna",
       "button": "Cipta Akaun"
     }
+  },
+  "childSafety": {
+    "pageTitle": "Piawaian Keselamatan Kanak-Kanak",
+    "lastUpdated": "Kemas kini terakhir: 24 Ogos 2026",
+    "commitment": {
+      "heading": "Komitmen Kami",
+      "body": "PassorMatch ialah platform temu janji dan sosial khusus dewasa (18+). Kami mempunyai dasar tanpa toleransi terhadap penderaan dan eksploitasi seksual kanak-kanak (CSAE) serta bahan penderaan seksual kanak-kanak (CSAM). Keselamatan kanak-kanak bawah umur adalah keutamaan tertinggi, dan kami komited untuk mencegah, mengesan dan bertindak balas terhadap sebarang kandungan atau tingkah laku yang membahayakan kanak-kanak. Halaman ini menerangkan piawaian dan langkah yang kami kekalkan selaras dengan dasar Piawaian Keselamatan Kanak-Kanak Google Play."
+    },
+    "adults": {
+      "heading": "Dewasa Sahaja — 18+",
+      "body": "PassorMatch adalah khusus untuk dewasa berumur 18 tahun ke atas. Kanak-kanak bawah umur tidak dibenarkan mencipta akaun atau menggunakan perkhidmatan ini. Kami menguatkuasakan syarat ini pada beberapa lapisan:",
+      "items": [
+        "Pengguna mesti memberikan tarikh lahir semasa pendaftaran. Sesiapa yang bawah 18 tahun dihalang daripada melengkapkan pendaftaran.",
+        "Bahagian belakang (backend) kami mengesahkan tarikh lahir secara bebas dan menolak mana-mana akaun bagi pengguna bawah 18 tahun, jadi syarat umur tidak boleh dipintas oleh aplikasi sahaja.",
+        "Sistem penyederhanaan automatik kami mengimbas kandungan profil untuk petunjuk bahawa pengguna mungkin bawah umur (contohnya mendedahkan diri sebagai bawah umur), dan menandakan akaun tersebut untuk semakan manusia dan pembuangan.",
+        "PassorMatch hanya ditawarkan di wilayah yang membenarkan model umur minimum berasaskan pengisytiharan sendiri. Kami tidak menyediakan perkhidmatan ini di bidang kuasa yang secara sah memerlukan pengesahan umur berasaskan identiti atau jaminan umur, melainkan dan sehingga kami menyokong langkah-langkah tersebut."
+      ]
+    },
+    "prohibited": {
+      "heading": "Kandungan dan Kelakuan yang Dilarang",
+      "body": "Perkara berikut dilarang sama sekali di PassorMatch. Mana-mana daripadanya akan mengakibatkan pembuangan segera dan penamatan akaun:",
+      "items": [
+        "Sebarang bahan penderaan seksual kanak-kanak (CSAM) atau kandungan yang menseksualkan kanak-kanak bawah umur.",
+        "Grooming, pemujukan, atau sebarang percubaan untuk menghubungi, mengeksploitasi atau membahayakan kanak-kanak bawah umur.",
+        "Penggunaan perkhidmatan oleh sesiapa yang berumur bawah 18 tahun.",
+        "Berkongsi, meminta atau memudahkan akses kepada sebarang kandungan yang menggambarkan penderaan atau eksploitasi kanak-kanak."
+      ]
+    },
+    "detection": {
+      "heading": "Pengesanan dan Penyederhanaan",
+      "body": "Kami mengendalikan sistem penyederhanaan automatik dan manusia yang direka untuk mengesan dan bertindak terhadap risiko keselamatan kanak-kanak:",
+      "items": [
+        "Penyederhanaan kandungan automatik mengimbas maklumat profil dan menyemak kandungan yang dilaporkan untuk bahan larangan dan isyarat penggunaan bawah umur, mengklasifikasi dan mengutamakan kes berkeutamaan tinggi.",
+        "Kes yang ditandakan dinaikkan kepada pasukan penyederhanaan melalui papan pemuka semakan dalaman, di mana kes keselamatan kanak-kanak dan bawah umur diberi keutamaan tertinggi.",
+        "Akaun yang didapati melanggar piawaian ini dibuang, dan kandungan berkaitan dipadamkan."
+      ]
+    },
+    "reporting": {
+      "heading": "Pelaporan Dalam Aplikasi",
+      "body": "Setiap pengguna boleh melaporkan pengguna lain dan kandungan terus dari dalam aplikasi. Laporan yang berkaitan dengan keselamatan kanak-kanak diutamakan untuk semakan segera. Untuk melaporkan kebimbangan:",
+      "steps": [
+        "Buka profil atau perbualan yang berkaitan.",
+        "Pilih menu dan pilih Lapor.",
+        "Pilih sebab yang paling menggambarkan kebimbangan dan hantar."
+      ],
+      "emailNote": "Anda juga boleh melaporkan kebimbangan keselamatan kanak-kanak pada bila-bila masa dengan menghantar e-mel kepada kami di <email></email>."
+    },
+    "authorities": {
+      "heading": "Pelaporan kepada Pihak Berkuasa",
+      "body": "Kami mematuhi semua undang-undang keselamatan kanak-kanak yang berkenaan. Apabila kami menyedari bahan penderaan seksual kanak-kanak yang jelas atau eksploitasi kanak-kanak bawah umur, kami bertindak untuk membuangnya dan melaporkannya kepada pihak berkuasa serantau dan kebangsaan yang berkaitan, termasuk organisasi perlindungan kanak-kanak dan penguatkuasaan undang-undang (seperti National Center for Missing & Exploited Children, NCMEC, jika berkenaan), selaras dengan kewajipan undang-undang kami."
+    },
+    "contact": {
+      "heading": "Titik Hubungan",
+      "body": "Untuk sebarang pertanyaan mengenai piawaian keselamatan kanak-kanak kami, amalan pencegahan CSAM, atau untuk melaporkan kebimbangan, hubungi titik hubungan yang ditetapkan:"
+    }
   }
 }
