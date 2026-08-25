@@ -57,6 +57,12 @@ export default function Terms() {
                   </ul>
                 </div>
 
+                {/* Age Verification */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('terms.ageVerification.heading')}</h2>
+                  <p>{t('terms.ageVerification.body')}</p>
+                </div>
+
                 {/* No Guarantee of Matches */}
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('terms.noGuarantee.heading')}</h2>

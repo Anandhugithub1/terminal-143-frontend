@@ -38,6 +38,11 @@ export const mapProfile = (data) => {
     // silently read as false for any profile predating this field, which
     // would show the toggle as "off" for someone who never touched it.
     showCircleActivity: data?.showCircleActivity !== false,
+    // Prefer the backend's derived boolean, but fall back to deriving it from
+    // the raw ageVerification status (own-profile responses include the object)
+    // so the badge works even if the deployed API predates the derived field.
+    ageVerified:
+      Boolean(data?.ageVerified) || data?.ageVerification?.status === "passed",
     raw: data
   }
 }

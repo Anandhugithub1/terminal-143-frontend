@@ -25,5 +25,19 @@
   "contactSupport": "联系客服",
   "errorStart": "无法开始验证。请重试。",
   "errorSubmit": "无法检查你的结果。请重试。",
-  "errorCapture": "相机检查未完成。请重试。"
+  "errorCapture": "相机检查未完成。请重试。",
+  "verifiedBadge": "年龄已验证",
+  "verifiedBadgeTitle": "该会员已验证年满 18 岁",
+  "errorCameraDenied": "年龄检查需要使用相机。请在设置中允许相机访问后重试。",
+  "captureHeader": "年龄检查",
+  "attemptOf": "第 {{current}} 次，共 {{total}} 次",
+  "introBullet1": "大约需要 5 秒",
+  "introBullet2": "快速活体检测，无需身份证",
+  "introBullet3": "照片随后立即删除",
+  "tryAgain": "重试",
+  "challengeExhaustedBody": "无法从自拍确认你的年龄。请在光线良好的地方再试一次，或联系客服。",
+  "challengeTip1": "面向亮光，不要背对光源",
+  "challengeTip2": "摘下眼镜或口罩并保持稳定",
+  "close": "关闭",
+  "cancel": "取消"
 }

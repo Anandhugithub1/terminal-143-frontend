@@ -25,5 +25,19 @@
   "contactSupport": "고객센터 문의",
   "errorStart": "확인을 시작할 수 없었습니다. 다시 시도해 주세요.",
   "errorSubmit": "결과를 확인할 수 없었습니다. 다시 시도해 주세요.",
-  "errorCapture": "카메라 확인이 완료되지 않았습니다. 다시 시도해 주세요."
+  "errorCapture": "카메라 확인이 완료되지 않았습니다. 다시 시도해 주세요.",
+  "verifiedBadge": "연령 인증됨",
+  "verifiedBadgeTitle": "이 회원은 18세 이상임을 인증했습니다",
+  "errorCameraDenied": "연령 확인에는 카메라 접근 권한이 필요합니다. 설정에서 카메라 접근을 허용한 후 다시 시도하세요.",
+  "captureHeader": "연령 확인",
+  "attemptOf": "{{total}}회 중 {{current}}회",
+  "introBullet1": "약 5초 소요",
+  "introBullet2": "간단한 라이브니스 확인, 신분증 불필요",
+  "introBullet3": "사진은 즉시 삭제됩니다",
+  "tryAgain": "다시 시도",
+  "challengeExhaustedBody": "셀카로 연령을 확인하지 못했습니다. 밝은 곳에서 다시 시도하거나 고객센터에 문의하세요.",
+  "challengeTip1": "빛을 얼굴 정면으로, 뒤에 두지 마세요",
+  "challengeTip2": "안경이나 마스크를 벤고 ꀀ지하세요",
+  "close": "닫기",
+  "cancel": "취소"
 }

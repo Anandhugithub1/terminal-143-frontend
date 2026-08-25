@@ -68,6 +68,14 @@ export default function Privacy() {
                   <p>{t('privacy.photos.body')}</p>
                 </div>
 
+                {/* Age Assurance & Biometric Data */}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('privacy.ageAssurance.heading')}</h2>
+                  <p>{t('privacy.ageAssurance.body1')}</p>
+                  <p className="mt-3">{t('privacy.ageAssurance.body2')}</p>
+                  <p className="mt-3">{t('privacy.ageAssurance.body3')}</p>
+                </div>
+
                 {/* Sensitive Information & Circles */}
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('privacy.circles.heading')}</h2>

@@ -74,6 +74,7 @@ const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage
         compatibility={compatibility}
         distance={distance}
         feedback={profile.feedback}
+        ageVerified={profile.ageVerified}
       />
     </div>
   );

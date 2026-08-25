@@ -25,5 +25,19 @@
   "contactSupport": "Hubungi sokongan",
   "errorStart": "Tidak dapat memulakan pengesahan. Sila cuba lagi.",
   "errorSubmit": "Tidak dapat menyemak keputusan anda. Sila cuba lagi.",
-  "errorCapture": "Semakan kamera tidak selesai. Sila cuba lagi."
+  "errorCapture": "Semakan kamera tidak selesai. Sila cuba lagi.",
+  "verifiedBadge": "Umur Disahkan",
+  "verifiedBadgeTitle": "Ahli ini telah mengesahkan mereka berumur 18 tahun ke atas",
+  "errorCameraDenied": "Akses kamera diperlukan untuk semakan umur. Sila benarkan akses kamera dalam tetapan dan cuba lagi.",
+  "captureHeader": "Semakan umur",
+  "attemptOf": "Cubaan {{current}} daripada {{total}}",
+  "introBullet1": "Mengambil masa kira-kira 5 saat",
+  "introBullet2": "Semakan liveness pantas, tiada ID diperlukan",
+  "introBullet3": "Foto anda dipadam sejurus selepas itu",
+  "tryAgain": "Cuba lagi",
+  "challengeExhaustedBody": "Kami tidak dapat mengesahkan umur anda daripada swafoto. Cuba sekali lagi dalam cahaya yang baik, atau hubungi sokongan.",
+  "challengeTip1": "Hadap cahaya terang, bukan di belakang anda",
+  "challengeTip2": "Tanggalkan cermin mata atau topeng dan pegang stabil",
+  "close": "Tutup",
+  "cancel": "Batal"
 }

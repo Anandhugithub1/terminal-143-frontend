@@ -90,7 +90,8 @@ const normalized = {
 
   location: src.location ?? "",
   job: src.job ?? "",
-  healthStatus: src.healthStatus ?? {}
+  healthStatus: src.healthStatus ?? {},
+  ageVerified: Boolean(src.ageVerified)
 }
 
 

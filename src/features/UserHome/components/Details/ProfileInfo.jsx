@@ -2,6 +2,8 @@ import React, { memo } from 'react'
 import PropTypes from 'prop-types'
 import { FaVenus } from 'react-icons/fa'
 import { RxHeart } from 'react-icons/rx'
+import { BadgeCheck } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const genderMap = {
   M: 'Male',
@@ -32,8 +34,10 @@ const ProfileInfo = memo(({
   about,
   gender,
   distance,
-  feedback
+  feedback,
+  ageVerified = false
 }) => {
+  const { t } = useTranslation('ageVerification')
 
   const likePercent = feedback?.likePercentage || 0
 
@@ -56,6 +60,14 @@ const ProfileInfo = memo(({
           label={genderLabel}
         />
 
+        {ageVerified && (
+          <Badge
+            icon={<BadgeCheck size={12} />}
+            label={t('verifiedBadge')}
+            iconClass="text-green-600"
+          />
+        )}
+
         {likePercent >= 50 && (
           <Badge
             icon={<RxHeart size={12} />}
@@ -75,6 +87,7 @@ export default ProfileInfo
 ProfileInfo.propTypes = {
   name: PropTypes.string.isRequired,
   age: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  ageVerified: PropTypes.bool,
   lastSeen: PropTypes.string.isRequired,
   about: PropTypes.string,
   gender: PropTypes.string.isRequired,
