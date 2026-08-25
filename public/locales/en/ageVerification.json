@@ -1,0 +1,38 @@
+{
+  "bannerTitle": "Verify your age",
+  "bannerBody": "Confirm you're 18+ within {{count}} day to keep using PassorMatch.",
+  "bannerBody_other": "Confirm you're 18+ within {{count}} days to keep using PassorMatch.",
+  "verifyNow": "Verify now",
+  "later": "Later",
+
+  "gateBadge": "Verification required",
+  "gateTitle": "Verify to continue",
+  "gateBody": "Your grace period has ended. Please confirm your age to keep using PassorMatch.",
+  "gateCta": "Verify my age",
+
+  "introTitle": "Quick age check",
+  "introBody": "Take a short selfie so we can confirm you're 18 or over. Your photo is deleted right after.",
+  "introCta": "Start",
+
+  "captureTitle": "Hold still…",
+  "captureBody": "Checking that you're a real, live person.",
+  "captureContinue": "Continue",
+
+  "checking": "Checking…",
+
+  "passedTitle": "You're all set",
+  "passedBody": "Age confirmed. You have full access.",
+  "continue": "Continue",
+
+  "challengeTitle": "One more step",
+  "challengeBody": "We couldn't confirm your age from the selfie alone. Retry in better light.",
+  "retrySelfie": "Retry selfie",
+
+  "failedTitle": "We couldn't verify you",
+  "failedBody": "PassorMatch is for adults 18 and over. If this is a mistake, contact support to appeal.",
+  "contactSupport": "Contact support",
+
+  "errorStart": "Couldn't start verification. Please try again.",
+  "errorSubmit": "Couldn't check your result. Please try again.",
+  "errorCapture": "The camera check didn't complete. Please try again."
+}
