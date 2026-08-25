@@ -136,7 +136,7 @@
     },
     "ageAssurance": {
       "heading": "Age Assurance and Biometric Data",
-      "body1": "In certain regions where the law requires it, we may ask you to verify that you are 18 or over before you can continue using PassorMatch. This may involve a short selfie so an age can be estimated from your facial image.",
+      "body1": "In certain regions where the law requires it, after you set up your profile we may ask you to verify that you are 18 or over in order to keep using PassorMatch. You are given a limited grace period to complete this. This may involve a short selfie so an age can be estimated from your facial image.",
       "body2": "When you complete this check, your facial image is processed only to estimate your age and confirm a real, live person is present. The image is deleted immediately after the check — we do not keep it, and it is not used to build a face profile, for advertising, or for any other purpose. We retain only the outcome of the check (for example, whether it passed) and, where relevant, the estimated age range.",
       "body3": "This processing is carried out using Amazon Rekognition (Amazon Web Services) acting as our processor. Where this data is treated as biometric or special-category data under applicable law, we process it to comply with our legal obligations to keep minors off the service and, where required, on the basis of your consent, which you may decline (in which case we may be unable to offer the service to you in that region)."
     }
@@ -276,7 +276,7 @@
     },
     "ageVerification": {
       "heading": "Age Verification",
-      "body": "Because PassorMatch is strictly for adults 18 and over, you may be required to verify your age in certain regions before or shortly after creating your account. This may include a facial age check. If age verification is required and you do not complete it within the time we specify, or it does not confirm that you are 18 or over, we may limit, suspend, or terminate your access. Verification is handled as described in our Privacy Policy."
+      "body": "Because PassorMatch is strictly for adults 18 and over, in certain regions you may be required to verify your age after you complete your profile. You are given a limited grace period to do so, during which you can keep using the service. This may include a facial age check. If age verification is required and you do not complete it before the grace period ends, or it does not confirm that you are 18 or over, we may limit, suspend, or terminate your access. Verification is handled as described in our Privacy Policy."
     }
   },
   "childSafety": {
@@ -293,7 +293,7 @@
         "During registration, every user must provide a date of birth. Anyone whose date of birth indicates they are under 18 is prevented from completing sign-up.",
         "Our backend independently checks the date of birth and rejects any account for a user under 18, so the age requirement is enforced on the server and not only in the app.",
         "Our automated moderation systems scan profile content for indications that a user may be a minor (for example, self-disclosure of being underage), and flag such accounts for human review and removal.",
-        "In regions whose law requires it, we ask users to verify that they are 18 or over through a facial age-estimation check before they can continue using the service. This check is provided by a third-party facial-analysis service, includes a liveness check to deter spoofing, and processes the image only to estimate age — the image is deleted immediately afterwards. Where a region legally requires identity-document based verification that we do not yet support, we do not offer the service there."
+        "In regions whose law requires it, once a user has set up their profile we ask them to verify that they are 18 or over through a facial age-estimation check, within a limited grace period, in order to keep using the service. This check is provided by a third-party facial-analysis service, includes a liveness check to deter spoofing, and processes the image only to estimate age — the image is deleted immediately afterwards. Where a region legally requires identity-document based verification that we do not yet support, we do not offer the service there."
       ]
     },
     "prohibited": {

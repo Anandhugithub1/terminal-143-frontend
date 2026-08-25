@@ -136,7 +136,7 @@
     },
     "ageAssurance": {
       "heading": "Jaminan Umur dan Data Biometrik",
-      "body1": "Di wilayah tertentu yang undang-undangnya memerlukannya, kami mungkin meminta anda mengesahkan bahawa anda berumur 18 tahun ke atas sebelum anda boleh terus menggunakan PassorMatch. Ini mungkin melibatkan swafoto ringkas supaya umur boleh dianggarkan daripada imej wajah anda.",
+      "body1": "Di wilayah tertentu yang undang-undangnya memerlukannya, selepas anda menyediakan profil anda, kami mungkin meminta anda mengesahkan bahawa anda berumur 18 tahun ke atas untuk terus menggunakan PassorMatch. Anda diberi tempoh tangguh yang terhad untuk melengkapkannya. Ini mungkin melibatkan swafoto ringkas supaya umur boleh dianggarkan daripada imej wajah anda.",
       "body2": "Apabila anda melengkapkan semakan ini, imej wajah anda diproses hanya untuk menganggar umur dan mengesahkan seorang yang benar dan hidup hadir. Imej dipadam sejurus selepas semakan — kami tidak menyimpannya, dan ia tidak digunakan untuk membina profil wajah, untuk pengiklanan, atau untuk apa-apa tujuan lain. Kami hanya menyimpan keputusan semakan (contohnya, sama ada ia lulus) dan, jika berkaitan, julat umur yang dianggarkan.",
       "body3": "Pemprosesan ini dijalankan menggunakan Amazon Rekognition (Amazon Web Services) yang bertindak sebagai pemproses kami. Jika data ini dianggap sebagai data biometrik atau kategori khas di bawah undang-undang yang berkenaan, kami memprosesnya untuk mematuhi kewajipan undang-undang kami bagi menghalang kanak-kanak bawah umur daripada perkhidmatan dan, jika diperlukan, atas dasar persetujuan anda, yang boleh anda tolak (dalam hal itu kami mungkin tidak dapat menawarkan perkhidmatan kepada anda di wilayah tersebut)."
     }
@@ -276,7 +276,7 @@
     },
     "ageVerification": {
       "heading": "Pengesahan Umur",
-      "body": "Oleh sebab PassorMatch hanya untuk dewasa 18 tahun ke atas, anda mungkin dikehendaki mengesahkan umur anda di wilayah tertentu sebelum atau sejurus selepas mencipta akaun anda. Ini mungkin termasuk semakan umur wajah. Jika pengesahan umur diperlukan dan anda tidak melengkapkannya dalam tempoh yang kami tetapkan, atau ia tidak mengesahkan bahawa anda berumur 18 tahun ke atas, kami mungkin mengehadkan, menggantung, atau menamatkan akses anda. Pengesahan dikendalikan seperti yang diterangkan dalam Dasar Privasi kami."
+      "body": "Oleh sebab PassorMatch hanya untuk dewasa 18 tahun ke atas, di wilayah tertentu anda mungkin dikehendaki mengesahkan umur anda selepas anda melengkapkan profil anda. Anda diberi tempoh tangguh yang terhad untuk berbuat demikian, dan dalam tempoh itu anda masih boleh menggunakan perkhidmatan. Ini mungkin termasuk semakan umur wajah. Jika pengesahan umur diperlukan dan anda tidak melengkapkannya sebelum tempoh tangguh berakhir, atau ia tidak mengesahkan bahawa anda berumur 18 tahun ke atas, kami mungkin mengehadkan, menggantung, atau menamatkan akses anda. Pengesahan dikendalikan seperti yang diterangkan dalam Dasar Privasi kami."
     }
   },
   "childSafety": {
@@ -293,7 +293,7 @@
         "Pengguna mesti memberikan tarikh lahir semasa pendaftaran. Sesiapa yang bawah 18 tahun dihalang daripada melengkapkan pendaftaran.",
         "Bahagian belakang (backend) kami mengesahkan tarikh lahir secara bebas dan menolak mana-mana akaun bagi pengguna bawah 18 tahun, jadi syarat umur tidak boleh dipintas oleh aplikasi sahaja.",
         "Sistem penyederhanaan automatik kami mengimbas kandungan profil untuk petunjuk bahawa pengguna mungkin bawah umur (contohnya mendedahkan diri sebagai bawah umur), dan menandakan akaun tersebut untuk semakan manusia dan pembuangan.",
-        "Di wilayah yang undang-undangnya memerlukannya, kami meminta pengguna mengesahkan bahawa mereka berumur 18 tahun ke atas melalui semakan anggaran umur wajah sebelum mereka boleh terus menggunakan perkhidmatan. Semakan ini disediakan oleh perkhidmatan analisis wajah pihak ketiga, termasuk semakan liveness untuk menghalang penipuan, dan memproses imej hanya untuk menganggar umur — imej dipadam sejurus selepasnya. Jika sesuatu wilayah secara sah memerlukan pengesahan berasaskan dokumen identiti yang belum kami sokong, kami tidak menawarkan perkhidmatan di sana."
+        "Di wilayah yang undang-undangnya memerlukannya, setelah pengguna menyediakan profil mereka, kami meminta mereka mengesahkan bahawa mereka berumur 18 tahun ke atas melalui semakan anggaran umur wajah, dalam tempoh tangguh yang terhad, untuk terus menggunakan perkhidmatan. Semakan ini disediakan oleh perkhidmatan analisis wajah pihak ketiga, termasuk semakan liveness untuk menghalang penipuan, dan memproses imej hanya untuk menganggar umur — imej dipadam sejurus selepasnya. Jika sesuatu wilayah secara sah memerlukan pengesahan berasaskan dokumen identiti yang belum kami sokong, kami tidak menawarkan perkhidmatan di sana."
       ]
     },
     "prohibited": {
