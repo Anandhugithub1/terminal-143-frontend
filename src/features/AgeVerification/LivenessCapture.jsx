@@ -13,7 +13,7 @@ import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { FaceLivenessDetector } from "@aws-amplify/ui-react-liveness"
 import { ThemeProvider, createTheme } from "@aws-amplify/ui-react"
-import { ShieldCheck, X } from "lucide-react"
+import { ShieldCheck, X, AlertCircle } from "lucide-react"
 import "@aws-amplify/ui-react/styles.css"
 import { makeLivenessCredentialsProvider } from "./credentials"
 
@@ -47,9 +47,20 @@ const livenessTheme = createTheme({
   },
 })
 
-export default function LivenessCapture({ sessionId, onComplete, onError, onBack, attempt, maxAttempts }) {
+// Map a retry reason from the previous attempt to a specific, actionable hint
+// key so the user knows what to fix this time. Falls back to a generic retry
+// message for anything unmapped.
+const RETRY_HINT_KEY = {
+  borderline: "retryHintBorderline",       // couldn't confirm age -> better light
+  unclear_capture: "retryHintFace",        // no/multiple faces -> single face, centered
+  liveness: "retryHintLiveness",           // not confirmed live -> hold still, follow prompts
+  capture: "retryHintCapture",             // camera check didn't finish
+}
+
+export default function LivenessCapture({ sessionId, onComplete, onError, onBack, attempt, maxAttempts, retryReason }) {
   const { t } = useTranslation("ageVerification")
   const credentialProvider = useMemo(() => makeLivenessCredentialsProvider(), [])
+  const hintKey = retryReason ? RETRY_HINT_KEY[retryReason] || "retryHintGeneric" : null
 
   return (
     <div className="flex flex-1 flex-col bg-white">
@@ -87,6 +98,25 @@ export default function LivenessCapture({ sessionId, onComplete, onError, onBack
           </button>
         )}
       </header>
+
+      {/* Retry hint — shown when this capture follows a failed attempt, telling
+          the user exactly what to fix (lighting, single face, hold still, ...). */}
+      {hintKey && (
+        <div
+          role="status"
+          className="flex items-start gap-2 border-b border-[#FCE4B8] bg-[#FEF6E7] px-4 py-2.5"
+        >
+          <AlertCircle size={17} className="mt-0.5 flex-none text-[#B45309]" />
+          <div className="min-w-0">
+            <p className="text-[13px] font-semibold leading-tight text-[#92400E]">
+              {t("retryTitle")}
+            </p>
+            <p className="mt-0.5 text-[12.5px] leading-snug text-[#B45309]">
+              {t(hintKey)}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Scoped overrides for the Amplify detector: the header already provides
           a Cancel control, so hide the detector's own built-in cancel button

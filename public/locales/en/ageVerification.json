@@ -40,5 +40,11 @@
   "challengeTip1": "Find good lighting — face the light, not a window behind you",
   "challengeTip2": "Take off glasses or a mask, and hold your phone steady",
   "close": "Close",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "retryTitle": "Let’s try that again",
+  "retryHintBorderline": "We couldn’t clearly confirm your age. Move to brighter light, face the camera straight on, and keep your whole face in view.",
+  "retryHintFace": "We couldn’t get a clear read of your face. Make sure only your face is in the frame, centered and well-lit.",
+  "retryHintLiveness": "We couldn’t confirm a live person. Hold your phone steady and follow the on-screen prompts.",
+  "retryHintCapture": "The camera check didn’t finish. Keep your face in the oval until it completes.",
+  "retryHintGeneric": "Let’s try once more — face the camera in good, even lighting and hold still."
 }

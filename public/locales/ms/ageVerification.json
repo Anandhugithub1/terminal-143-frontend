@@ -39,5 +39,11 @@
   "challengeTip1": "Hadap cahaya terang, bukan di belakang anda",
   "challengeTip2": "Tanggalkan cermin mata atau topeng dan pegang stabil",
   "close": "Tutup",
-  "cancel": "Batal"
+  "cancel": "Batal",
+  "retryTitle": "Mari cuba sekali lagi",
+  "retryHintBorderline": "Kami tidak dapat mengesahkan umur anda dengan jelas. Pindah ke tempat lebih terang, hadap kamera secara terus, dan pastikan seluruh wajah anda kelihatan.",
+  "retryHintFace": "Kami tidak dapat membaca wajah anda dengan jelas. Pastikan hanya wajah anda dalam bingkai, di tengah dan cukup cahaya.",
+  "retryHintLiveness": "Kami tidak dapat mengesahkan orang yang hidup. Pegang telefon anda dengan stabil dan ikut arahan pada skrin.",
+  "retryHintCapture": "Semakan kamera tidak selesai. Kekalkan wajah anda dalam bujur sehingga ia selesai.",
+  "retryHintGeneric": "Mari cuba sekali lagi — hadap kamera dalam cahaya yang sekata dan terang, dan jangan bergerak."
 }

@@ -39,5 +39,11 @@
   "challengeTip1": "面向亮光，不要背对光源",
   "challengeTip2": "摘下眼镜或口罩并保持稳定",
   "close": "关闭",
-  "cancel": "取消"
+  "cancel": "取消",
+  "retryTitle": "我们再试一次",
+  "retryHintBorderline": "我们无法清楚确认你的年龄。请移到光线更充足的地方，正对镜头，并让整张脸都在画面内。",
+  "retryHintFace": "我们无法清晰识别你的脸。请确保画面中只有你的脸，居中且光线充足。",
+  "retryHintLiveness": "我们无法确认是真人。请拿稳手机并按照屏幕提示操作。",
+  "retryHintCapture": "相机检查未完成。请将脸保持在椭圆框内，直到检查完成。",
+  "retryHintGeneric": "我们再试一次——在均匀充足的光线下正对镜头并保持不动。"
 }

@@ -25,10 +25,17 @@ export default function AgeVerificationFlow({ onClose, dismissible = true }) {
   const [outcome, setOutcome] = useState(null)
   const [error, setError] = useState("")
   const [attempt, setAttempt] = useState(1)
+  // Why the previous attempt is being retried (e.g. 'borderline', 'liveness',
+  // 'unclear_capture', 'capture'). Drives the hint shown on the capture screen
+  // so the user knows what to fix — empty on the very first attempt.
+  const [retryReason, setRetryReason] = useState("")
 
   // Start (or restart) a capture: fetch a fresh session then open the camera.
-  const startCapture = async (attemptNo) => {
+  // `reason` is the retry cause to surface on the capture screen (blank = first
+  // attempt, no hint).
+  const startCapture = async (attemptNo, reason = "") => {
     setError("")
+    setRetryReason(reason)
     try {
       const { sessionId } = await startAgeSession()
       if (!sessionId) throw new Error("No sessionId returned")
@@ -58,7 +65,9 @@ export default function AgeVerificationFlow({ onClose, dismissible = true }) {
         (res.status === "failed" && res.reason === "liveness")
       if (isRetryable && attempt < MAX_ATTEMPTS) {
         setError("")
-        await startCapture(attempt + 1)
+        // Pass the reason forward so the next capture screen tells the user
+        // exactly what to fix (lighting, single face, hold still, ...).
+        await startCapture(attempt + 1, res.reason || "borderline")
         return
       }
       // After exhausting retries, present a liveness-failure as the friendly
@@ -84,7 +93,7 @@ export default function AgeVerificationFlow({ onClose, dismissible = true }) {
   // A capture/camera error: retry automatically if attempts remain, else stop.
   const handleCaptureError = (_err, kind) => {
     if (kind !== "camera" && attempt < MAX_ATTEMPTS) {
-      startCapture(attempt + 1)
+      startCapture(attempt + 1, "capture")
       return
     }
     setError(kind === "camera" ? t("errorCameraDenied") : t("errorCapture"))
@@ -94,7 +103,9 @@ export default function AgeVerificationFlow({ onClose, dismissible = true }) {
   const retryFromResult = () => {
     setOutcome(null)
     setError("")
-    startCapture(1)
+    // Manual retry from the result screen: carry the last outcome's reason so
+    // the capture screen still shows the relevant hint.
+    startCapture(1, outcome?.reason || "borderline")
   }
 
   // Closing the flow: NOW refresh the server state (so the gate/banner clears
@@ -145,6 +156,7 @@ export default function AgeVerificationFlow({ onClose, dismissible = true }) {
             sessionId={sessionId}
             attempt={attempt}
             maxAttempts={MAX_ATTEMPTS}
+            retryReason={retryReason}
             onComplete={handleCaptureComplete}
             onError={handleCaptureError}
             onBack={() => setStep(STEP.INTRO)}
