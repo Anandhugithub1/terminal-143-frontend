@@ -46,5 +46,19 @@
   "retryHintFace": "We couldn’t get a clear read of your face. Make sure only your face is in the frame, centered and well-lit.",
   "retryHintLiveness": "We couldn’t confirm a live person. Hold your phone steady and follow the on-screen prompts.",
   "retryHintCapture": "The camera check didn’t finish. Keep your face in the oval until it completes.",
-  "retryHintGeneric": "Let’s try once more — face the camera in good, even lighting and hold still."
+  "retryHintGeneric": "Let’s try once more — face the camera in good, even lighting and hold still.",
+  "lvMoveFace": "Move your face in front of the camera",
+  "lvCenterFace": "Center your face",
+  "lvTooClose": "Move a little farther away",
+  "lvTooFar": "Move a little closer",
+  "lvTooManyFaces": "Only your face, please",
+  "lvFaceDetected": "Great — hold still",
+  "lvHoldStill": "Hold still for a moment",
+  "lvConnecting": "Connecting…",
+  "lvVerifying": "Verifying…",
+  "lvComplete": "All done!",
+  "lvTooBright": "It’s a bit too bright — try softer light",
+  "lvTooDark": "It’s a bit too dark — find brighter light",
+  "lvLightGood": "Lighting looks good",
+  "lvCantIdentify": "Face the camera so we can see you clearly"
 }

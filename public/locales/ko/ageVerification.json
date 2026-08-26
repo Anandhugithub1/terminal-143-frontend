@@ -45,5 +45,19 @@
   "retryHintFace": "얼굴을 선명하게 인식하지 못했습니다. 얼굴만 화면 중앙에 오도록 하고 조명을 밝게 해주세요.",
   "retryHintLiveness": "실제 사람인지 확인하지 못했습니다. 휴대폰을 흔들리지 않게 잡고 화면 안내를 따라주세요.",
   "retryHintCapture": "카메라 확인이 완료되지 않았습니다. 완료될 때까지 얼굴을 원 안에 유지해주세요.",
-  "retryHintGeneric": "한 번 더 시도해 주세요. 고르고 밝은 조명에서 카메라를 바라보고 움직이지 마세요."
+  "retryHintGeneric": "한 번 더 시도해 주세요. 고르고 밝은 조명에서 카메라를 바라보고 움직이지 마세요.",
+  "lvMoveFace": "얼굴을 카메라 앞으로 가져오세요",
+  "lvCenterFace": "얼굴을 화면 중앙에 맞추세요",
+  "lvTooClose": "조금 더 뒤로 물러나세요",
+  "lvTooFar": "조금 더 가까이 오세요",
+  "lvTooManyFaces": "본인 얼굴만 보이게 해주세요",
+  "lvFaceDetected": "좋아요 — 움직이지 마세요",
+  "lvHoldStill": "잠시 움직이지 마세요",
+  "lvConnecting": "연결 중…",
+  "lvVerifying": "확인 중…",
+  "lvComplete": "완료되었습니다!",
+  "lvTooBright": "너무 밝아요 — 부드러운 조명으로 해주세요",
+  "lvTooDark": "너무 어두워요 — 더 밝은 곳으로 이동하세요",
+  "lvLightGood": "조명이 적당해요",
+  "lvCantIdentify": "얼굴이 잘 보이도록 카메라를 바라보세요"
 }

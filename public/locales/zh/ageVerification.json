@@ -45,5 +45,19 @@
   "retryHintFace": "我们无法清晰识别你的脸。请确保画面中只有你的脸，居中且光线充足。",
   "retryHintLiveness": "我们无法确认是真人。请拿稳手机并按照屏幕提示操作。",
   "retryHintCapture": "相机检查未完成。请将脸保持在椭圆框内，直到检查完成。",
-  "retryHintGeneric": "我们再试一次——在均匀充足的光线下正对镜头并保持不动。"
+  "retryHintGeneric": "我们再试一次——在均匀充足的光线下正对镜头并保持不动。",
+  "lvMoveFace": "请将脸移到镜头前",
+  "lvCenterFace": "将脸对准中间",
+  "lvTooClose": "请稍微往后一点",
+  "lvTooFar": "请稍微靠近一点",
+  "lvTooManyFaces": "请只保留你的脸",
+  "lvFaceDetected": "很好——保持不动",
+  "lvHoldStill": "请保持不动片刻",
+  "lvConnecting": "连接中…",
+  "lvVerifying": "验证中…",
+  "lvComplete": "全部完成！",
+  "lvTooBright": "光线有点太亮——请用柔和一些的光",
+  "lvTooDark": "光线有点太暗——请找更亮的地方",
+  "lvLightGood": "光线看起来不错",
+  "lvCantIdentify": "请正对镜头，让我们能清楚看到你"
 }

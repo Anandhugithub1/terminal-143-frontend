@@ -45,5 +45,19 @@
   "retryHintFace": "Kami tidak dapat membaca wajah anda dengan jelas. Pastikan hanya wajah anda dalam bingkai, di tengah dan cukup cahaya.",
   "retryHintLiveness": "Kami tidak dapat mengesahkan orang yang hidup. Pegang telefon anda dengan stabil dan ikut arahan pada skrin.",
   "retryHintCapture": "Semakan kamera tidak selesai. Kekalkan wajah anda dalam bujur sehingga ia selesai.",
-  "retryHintGeneric": "Mari cuba sekali lagi — hadap kamera dalam cahaya yang sekata dan terang, dan jangan bergerak."
+  "retryHintGeneric": "Mari cuba sekali lagi — hadap kamera dalam cahaya yang sekata dan terang, dan jangan bergerak.",
+  "lvMoveFace": "Gerakkan wajah anda ke depan kamera",
+  "lvCenterFace": "Letakkan wajah anda di tengah",
+  "lvTooClose": "Undur sedikit ke belakang",
+  "lvTooFar": "Dekatkan sedikit",
+  "lvTooManyFaces": "Wajah anda sahaja, ya",
+  "lvFaceDetected": "Bagus — jangan bergerak",
+  "lvHoldStill": "Kekal diam sebentar",
+  "lvConnecting": "Menyambung…",
+  "lvVerifying": "Mengesahkan…",
+  "lvComplete": "Selesai!",
+  "lvTooBright": "Terlalu terang — cuba cahaya lebih lembut",
+  "lvTooDark": "Terlalu gelap — cari cahaya lebih terang",
+  "lvLightGood": "Pencahayaan nampak baik",
+  "lvCantIdentify": "Hadap kamera supaya kami dapat melihat anda dengan jelas"
 }

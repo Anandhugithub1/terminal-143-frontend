@@ -19,10 +19,20 @@ import { makeLivenessCredentialsProvider } from "./credentials"
 
 const REGION = import.meta.env.VITE_REKOGNITION_REGION || "us-east-1"
 
+// Match the detector's font to the app (Inter, loaded via index.html) so the
+// in-camera text looks consistent with the rest of PassorMatch.
+const APP_FONT = "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+
 // Brand the detector's controls (oval, buttons, progress) with PassorMatch pink.
 const livenessTheme = createTheme({
   name: "passormatch-liveness",
   tokens: {
+    fonts: {
+      default: {
+        variable: { value: APP_FONT },
+        static: { value: APP_FONT },
+      },
+    },
     colors: {
       background: { primary: { value: "#ffffff" } },
       brand: {
@@ -58,9 +68,31 @@ const RETRY_HINT_KEY = {
 }
 
 export default function LivenessCapture({ sessionId, onComplete, onError, onBack, attempt, maxAttempts, retryReason }) {
-  const { t } = useTranslation("ageVerification")
+  const { t, i18n } = useTranslation("ageVerification")
   const credentialProvider = useMemo(() => makeLivenessCredentialsProvider(), [])
   const hintKey = retryReason ? RETRY_HINT_KEY[retryReason] || "retryHintGeneric" : null
+
+  // Override the Amplify detector's built-in (English-only) in-camera copy with
+  // friendlier, on-brand, localized strings. Only the guidance/hint text is
+  // remapped; anything omitted falls back to Amplify's default. Rebuilt on
+  // language change so the camera speaks the user's language.
+  const displayText = useMemo(() => ({
+    hintMoveFaceFrontOfCameraText: t("lvMoveFace"),
+    hintCenterFaceText: t("lvCenterFace"),
+    hintTooCloseText: t("lvTooClose"),
+    hintTooFarText: t("lvTooFar"),
+    hintTooManyFacesText: t("lvTooManyFaces"),
+    hintFaceDetectedText: t("lvFaceDetected"),
+    hintHoldFaceForFreshnessText: t("lvHoldStill"),
+    hintConnectingText: t("lvConnecting"),
+    hintVerifyingText: t("lvVerifying"),
+    hintCheckCompleteText: t("lvComplete"),
+    hintIlluminationTooBrightText: t("lvTooBright"),
+    hintIlluminationTooDarkText: t("lvTooDark"),
+    hintIlluminationNormalText: t("lvLightGood"),
+    hintCanNotIdentifyText: t("lvCantIdentify"),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [i18n.language])
 
   return (
     <div className="flex flex-1 flex-col bg-white">
@@ -142,6 +174,7 @@ export default function LivenessCapture({ sessionId, onComplete, onError, onBack
             region={REGION}
             config={{ credentialProvider }}
             disableStartScreen
+            displayText={displayText}
             onAnalysisComplete={async () => { onComplete() }}
             onError={(err) => {
               const name = err?.error?.name || err?.name || "unknown"
