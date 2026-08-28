@@ -59,5 +59,7 @@
   "lvTooBright": "光线有点太亮——请用柔和一些的光",
   "lvTooDark": "光线有点太暗——请找更亮的地方",
   "lvLightGood": "光线看起来不错",
-  "lvCantIdentify": "请正对镜头，让我们能清楚看到你"
+  "lvCantIdentify": "请正对镜头，让我们能清楚看到你",
+  "photoVerifiedBadge": "已验证",
+  "photoVerifiedBadgeTitle": "该会员已完成实时自拍验证"
 }

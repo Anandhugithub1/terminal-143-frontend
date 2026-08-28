@@ -60,5 +60,7 @@
   "lvTooBright": "It’s a bit too bright — try softer light",
   "lvTooDark": "It’s a bit too dark — find brighter light",
   "lvLightGood": "Lighting looks good",
-  "lvCantIdentify": "Face the camera so we can see you clearly"
+  "lvCantIdentify": "Face the camera so we can see you clearly",
+  "photoVerifiedBadge": "Verified",
+  "photoVerifiedBadgeTitle": "This member completed a live selfie check"
 }

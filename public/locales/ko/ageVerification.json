@@ -59,5 +59,7 @@
   "lvTooBright": "너무 밝아요 — 부드러운 조명으로 해주세요",
   "lvTooDark": "너무 어두워요 — 더 밝은 곳으로 이동하세요",
   "lvLightGood": "조명이 적당해요",
-  "lvCantIdentify": "얼굴이 잘 보이도록 카메라를 바라보세요"
+  "lvCantIdentify": "얼굴이 잘 보이도록 카메라를 바라보세요",
+  "photoVerifiedBadge": "인증됨",
+  "photoVerifiedBadgeTitle": "이 회원은 실시간 셀카 확인을 완료했습니다"
 }

@@ -43,6 +43,13 @@ export const mapProfile = (data) => {
     // so the badge works even if the deployed API predates the derived field.
     ageVerified:
       Boolean(data?.ageVerified) || data?.ageVerification?.status === "passed",
+    // "Verified" badge: live selfie matched the profile photo on a passed check.
+    // Prefer the backend boolean; fall back to the raw object for own-profile
+    // responses so it works before the derived field is deployed.
+    photoVerified:
+      Boolean(data?.photoVerified) ||
+      (data?.ageVerification?.status === "passed" &&
+        data?.ageVerification?.photoVerified === true),
     raw: data
   }
 }

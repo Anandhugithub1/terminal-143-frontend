@@ -75,6 +75,7 @@ const ProfileCard = ({ profile, onMessageClick, onConnectClick, placeholderImage
         distance={distance}
         feedback={profile.feedback}
         ageVerified={profile.ageVerified}
+        photoVerified={profile.photoVerified}
       />
     </div>
   );

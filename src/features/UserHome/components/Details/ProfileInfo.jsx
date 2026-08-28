@@ -35,7 +35,8 @@ const ProfileInfo = memo(({
   gender,
   distance,
   feedback,
-  ageVerified = false
+  ageVerified = false,
+  photoVerified = false
 }) => {
   const { t } = useTranslation('ageVerification')
 
@@ -68,6 +69,14 @@ const ProfileInfo = memo(({
           />
         )}
 
+        {photoVerified && (
+          <Badge
+            icon={<BadgeCheck size={12} />}
+            label={t('photoVerifiedBadge')}
+            iconClass="text-blue-500"
+          />
+        )}
+
         {likePercent >= 50 && (
           <Badge
             icon={<RxHeart size={12} />}
@@ -88,6 +97,7 @@ ProfileInfo.propTypes = {
   name: PropTypes.string.isRequired,
   age: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   ageVerified: PropTypes.bool,
+  photoVerified: PropTypes.bool,
   lastSeen: PropTypes.string.isRequired,
   about: PropTypes.string,
   gender: PropTypes.string.isRequired,

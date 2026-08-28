@@ -59,5 +59,7 @@
   "lvTooBright": "Terlalu terang — cuba cahaya lebih lembut",
   "lvTooDark": "Terlalu gelap — cari cahaya lebih terang",
   "lvLightGood": "Pencahayaan nampak baik",
-  "lvCantIdentify": "Hadap kamera supaya kami dapat melihat anda dengan jelas"
+  "lvCantIdentify": "Hadap kamera supaya kami dapat melihat anda dengan jelas",
+  "photoVerifiedBadge": "Disahkan",
+  "photoVerifiedBadgeTitle": "Ahli ini telah melengkapkan semakan swafoto langsung"
 }

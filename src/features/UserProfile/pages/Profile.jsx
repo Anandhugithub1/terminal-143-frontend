@@ -12,6 +12,7 @@
   import BottomNav from "../../../components/Layout/BottomNavigation"
   import Skeleton from "react-loading-skeleton"
   import AgeVerifiedBadge from "../../AgeVerification/AgeVerifiedBadge"
+  import VerifiedBadge from "../../AgeVerification/VerifiedBadge"
   import "react-loading-skeleton/dist/skeleton.css"
   import "@fontsource-variable/inter"
 
@@ -131,9 +132,10 @@ const menuItems = [
             <h1 className="mt-4 text-lg font-semibold text-gray-900">
               {userName}
             </h1>
-            {profile.ageVerified && (
-              <div className="mt-1.5">
-                <AgeVerifiedBadge verified />
+            {(profile.ageVerified || profile.photoVerified) && (
+              <div className="mt-1.5 flex flex-wrap items-center justify-center gap-1.5">
+                <AgeVerifiedBadge verified={profile.ageVerified} />
+                <VerifiedBadge verified={profile.photoVerified} />
               </div>
             )}
             <p className="text-sm text-gray-500">
