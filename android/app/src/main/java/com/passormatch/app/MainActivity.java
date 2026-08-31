@@ -9,6 +9,7 @@ import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import androidx.activity.EdgeToEdge;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
@@ -26,6 +27,13 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Android 15 (SDK 35+) draws apps edge-to-edge by default. Opt in
+        // explicitly for backward compatibility on older versions too, per
+        // Google Play's edge-to-edge guidance. Must be called before
+        // super.onCreate(). Window insets are handled in the WebView via CSS
+        // env(safe-area-inset-*), which Capacitor maps from the system insets.
+        EdgeToEdge.enable(this);
+
         super.onCreate(savedInstanceState);
 
         // The age-verification selfie liveness check runs inside the WebView via
