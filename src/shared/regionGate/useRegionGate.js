@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
+import { Capacitor } from '@capacitor/core'
 
 // Country codes the app is not available in yet. ISO 3166-1 alpha-2.
 const BLOCKED_COUNTRIES = ['IN']
+
+// The Android native app is exempt from the region gate: Indian (and any other
+// BLOCKED_COUNTRIES) users on the Android app are allowed through. The gate
+// still applies on web and any other platform.
+const REGION_GATE_EXEMPT = Capacitor.getPlatform() === 'android'
 
 const IPINFO_TOKEN = import.meta.env.VITE_IPINFO_TOKEN
 const CACHE_KEY = 'regionGate.countryCode'
@@ -43,6 +49,14 @@ export function useRegionGate() {
   const [checked, setChecked] = useState(false)
 
   useEffect(() => {
+    // Android native app is exempt — never block, and skip the IP lookup
+    // entirely. (Web and other platforms still go through the gate below.)
+    if (REGION_GATE_EXEMPT) {
+      setBlocked(false)
+      setChecked(true)
+      return
+    }
+
     // Dev-only: import.meta.env.DEV is a build-time constant, so this
     // branch is stripped from production bundles — it cannot be toggled
     // at runtime or leak into prod.
