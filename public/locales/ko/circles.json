@@ -211,7 +211,7 @@
   },
   "createCircleModal": {
     "invalidImageType": "JPG, PNG 또는 WEBP 이미지를 선택해 주세요",
-    "imageTooLarge": "이미지는 5MB 이하여야 합니다",
+    "imageTooLarge": "이미지는 {{maxSize}}MB 이하여야 합니다",
     "nameRequired": "서클 이름은 필수입니다",
     "descriptionRequired": "설명은 필수입니다",
     "categoryRequired": "카테고리를 선택해 주세요",
@@ -222,7 +222,7 @@
     "coverPreviewAlt": "서클 커버 미리보기",
     "clickToUpload": "클릭하여 업로드",
     "orDragAndDrop": " 또는 드래그 앤 드롭",
-    "uploadHint": "PNG, JPG 최대 5MB",
+    "uploadHint": "PNG, JPG 최대 {{maxSize}}MB",
     "nameLabel": "서클 이름",
     "namePlaceholder": "예: 주말 등산 모임",
     "descriptionLabel": "설명",
@@ -373,6 +373,12 @@
     "makePrivateTitle": "이 서클을 비공개로 전환할까요?",
     "makePrivateMessage": "새 회원은 가입을 요청하고 승인받아야 합니다. 기존 회원은 접근 권한을 유지합니다.",
     "circleMadePrivateToast": "서클이 비공개로 전환되었습니다",
-    "circleMadePublicToast": "서클이 공개로 전환되었습니다"
+    "circleMadePublicToast": "서클이 공개로 전환되었습니다",
+    "dangerZone": "위험 구역",
+    "deleteCircle": "서클 삭제",
+    "deleteCircleHint": "이 서클과 게시물, 회원 정보가 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.",
+    "deleteCircleTitle": "이 서클을 삭제할까요?",
+    "deleteCircleMessage": "{{name}} 서클과 모든 게시물, 댓글, 회원 정보가 영구적으로 삭제됩니다. 회원들에게는 알림이 가지 않으며, 이 작업은 되돌릴 수 없습니다.",
+    "circleDeletedToast": "서클이 삭제되었습니다"
   }
 }

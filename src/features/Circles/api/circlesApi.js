@@ -61,6 +61,16 @@ circleId =>
     `${BASE}${circleId}/stats`
   );
 
+// Owner/moderator only — backend 403s anyone else. Permanent: no archive
+// step, no undo. Deletes the circle and everything scoped to it (members,
+// posts, comments, join requests) the moment the request resolves — see
+// circle-service's deleteCircle.js.
+export const deleteCircle =
+circleId =>
+  api.delete(
+    `${BASE}${circleId}`
+  );
+
 // Prefix search over circle names, served from the Redis index (never scans
 // DynamoDB). Returns { query, count, circles, nextOffset } — page by echoing
 // nextOffset back as `offset`.

@@ -211,7 +211,7 @@
   },
   "createCircleModal": {
     "invalidImageType": "请选择 JPG、PNG 或 WEBP 格式的图片",
-    "imageTooLarge": "图片大小需在 5MB 以内",
+    "imageTooLarge": "图片大小需在 {{maxSize}}MB 以内",
     "nameRequired": "圈子名称为必填项",
     "descriptionRequired": "简介为必填项",
     "categoryRequired": "请选择分类",
@@ -222,7 +222,7 @@
     "coverPreviewAlt": "圈子封面预览",
     "clickToUpload": "点击上传",
     "orDragAndDrop": " 或拖放文件",
-    "uploadHint": "PNG、JPG，最大 5MB",
+    "uploadHint": "PNG、JPG，最大 {{maxSize}}MB",
     "nameLabel": "圈子名称",
     "namePlaceholder": "例如：周末徒步小组",
     "descriptionLabel": "简介",
@@ -373,6 +373,12 @@
     "makePrivateTitle": "确定将此圈子设为私密吗？",
     "makePrivateMessage": "新成员需申请并经批准后方可加入，现有成员保留其访问权限",
     "circleMadePrivateToast": "圈子已设为私密",
-    "circleMadePublicToast": "圈子已设为公开"
+    "circleMadePublicToast": "圈子已设为公开",
+    "dangerZone": "危险区域",
+    "deleteCircle": "删除圈子",
+    "deleteCircleHint": "将永久删除此圈子及其帖子和成员，此操作无法撤销",
+    "deleteCircleTitle": "确定要删除此圈子吗？",
+    "deleteCircleMessage": "此操作将永久删除 {{name}}，及其所有帖子、评论和成员数据。成员不会收到通知，且此操作无法撤销。",
+    "circleDeletedToast": "圈子已删除"
   }
 }

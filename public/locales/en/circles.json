@@ -211,7 +211,7 @@
   },
   "createCircleModal": {
     "invalidImageType": "Please select a JPG, PNG, or WEBP image",
-    "imageTooLarge": "Image must be under 5MB",
+    "imageTooLarge": "Image must be under {{maxSize}}MB",
     "nameRequired": "Circle name is required",
     "descriptionRequired": "Description is required",
     "categoryRequired": "Please select category",
@@ -222,7 +222,7 @@
     "coverPreviewAlt": "Circle cover preview",
     "clickToUpload": "Click to upload",
     "orDragAndDrop": " or drag and drop",
-    "uploadHint": "PNG, JPG up to 5MB",
+    "uploadHint": "PNG, JPG up to {{maxSize}}MB",
     "nameLabel": "Circle Name",
     "namePlaceholder": "e.g., Weekend Hikers",
     "descriptionLabel": "Description",
@@ -373,6 +373,12 @@
     "removeMemberMessage": "{{name}} will lose access to this circle and its posts. They can request to join again later.",
     "memberRemovedToast": "Member removed",
     "memberPromotedToast": "Member promoted to moderator",
-    "memberDemotedToast": "Moderator demoted to member"
+    "memberDemotedToast": "Moderator demoted to member",
+    "dangerZone": "Danger Zone",
+    "deleteCircle": "Delete Circle",
+    "deleteCircleHint": "Permanently removes this circle, its posts, and its members. This cannot be undone.",
+    "deleteCircleTitle": "Delete this circle?",
+    "deleteCircleMessage": "This will permanently delete {{name}}, along with all of its posts, comments, and membership data. Members will not be notified, and this cannot be undone.",
+    "circleDeletedToast": "Circle deleted"
   }
 }

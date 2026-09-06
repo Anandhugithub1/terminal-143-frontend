@@ -14,6 +14,7 @@ import {
   getCircle,
   getCircleStats,
   updateCircle,
+  deleteCircle,
   searchCircles,
   searchCirclesByTag,
   searchPostsByTag
@@ -223,6 +224,27 @@ export function useUpdateCircle(circleId) {
     mutationFn: (payload) => updateCircle(circleId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.circle(circleId) });
+      queryClient.invalidateQueries({ queryKey: queryKeys.circles });
+    },
+  });
+}
+
+// Owner/moderator only — backend 403s anyone else. Permanent, no undo: the
+// circle and everything scoped to it (members, posts, comments, requests)
+// is gone the moment this resolves. Drops the circle's own cache entry
+// outright rather than just invalidating it — a refetch of a deleted
+// circle would 404, and the caller navigates away immediately on success
+// anyway (see ModeratorDashboardPage.jsx).
+export function useDeleteCircle(circleId) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => deleteCircle(circleId),
+    onSuccess: () => {
+      queryClient.removeQueries({ queryKey: queryKeys.circle(circleId) });
+      queryClient.removeQueries({ queryKey: queryKeys.circleStats(circleId) });
+      queryClient.removeQueries({ queryKey: queryKeys.circleMembers(circleId) });
+      queryClient.removeQueries({ queryKey: queryKeys.circleRequests(circleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.circles });
     },
   });

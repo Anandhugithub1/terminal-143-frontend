@@ -211,7 +211,7 @@
   },
   "createCircleModal": {
     "invalidImageType": "Пожалуйста, выберите изображение в формате JPG, PNG или WEBP",
-    "imageTooLarge": "Размер изображения должен быть не более 5 МБ",
+    "imageTooLarge": "Размер изображения должен быть не более {{maxSize}} МБ",
     "nameRequired": "Укажите название круга",
     "descriptionRequired": "Укажите описание",
     "categoryRequired": "Пожалуйста, выберите категорию",
@@ -222,7 +222,7 @@
     "coverPreviewAlt": "Предпросмотр обложки круга",
     "clickToUpload": "Нажмите, чтобы загрузить",
     "orDragAndDrop": " или перетащите файл",
-    "uploadHint": "PNG, JPG до 5 МБ",
+    "uploadHint": "PNG, JPG до {{maxSize}} МБ",
     "nameLabel": "Название круга",
     "namePlaceholder": "например, Пешие походы по выходным",
     "descriptionLabel": "Описание",
@@ -373,6 +373,12 @@
     "makePrivateTitle": "Сделать этот круг приватным?",
     "makePrivateMessage": "Новым участникам нужно будет запрашивать вступление и получать одобрение. Текущие участники сохранят доступ.",
     "circleMadePrivateToast": "Круг теперь приватный",
-    "circleMadePublicToast": "Круг теперь публичный"
+    "circleMadePublicToast": "Круг теперь публичный",
+    "dangerZone": "Опасная зона",
+    "deleteCircle": "Удалить круг",
+    "deleteCircleHint": "Безвозвратно удаляет этот круг, его публикации и участников. Это действие нельзя отменить.",
+    "deleteCircleTitle": "Удалить этот круг?",
+    "deleteCircleMessage": "Круг {{name}} будет безвозвратно удалён вместе со всеми публикациями, комментариями и данными об участниках. Участники не будут уведомлены, и это действие нельзя отменить.",
+    "circleDeletedToast": "Круг удалён"
   }
 }

@@ -211,7 +211,7 @@
   },
   "createCircleModal": {
     "invalidImageType": "โปรดเลือกไฟล์ภาพ JPG, PNG หรือ WEBP",
-    "imageTooLarge": "รูปภาพต้องมีขนาดไม่เกิน 5MB",
+    "imageTooLarge": "รูปภาพต้องมีขนาดไม่เกิน {{maxSize}}MB",
     "nameRequired": "กรุณากรอกชื่อเซอร์เคิล",
     "descriptionRequired": "กรุณากรอกคำอธิบาย",
     "categoryRequired": "กรุณาเลือกหมวดหมู่",
@@ -222,7 +222,7 @@
     "coverPreviewAlt": "ตัวอย่างภาพปกเซอร์เคิล",
     "clickToUpload": "คลิกเพื่ออัปโหลด",
     "orDragAndDrop": " หรือลากและวาง",
-    "uploadHint": "PNG, JPG ขนาดไม่เกิน 5MB",
+    "uploadHint": "PNG, JPG ขนาดไม่เกิน {{maxSize}}MB",
     "nameLabel": "ชื่อเซอร์เคิล",
     "namePlaceholder": "เช่น กลุ่มเดินป่าวันหยุด",
     "descriptionLabel": "คำอธิบาย",
@@ -373,6 +373,12 @@
     "makePrivateTitle": "เปลี่ยนเซอร์เคิลนี้เป็นส่วนตัวหรือไม่?",
     "makePrivateMessage": "สมาชิกใหม่จะต้องขอเข้าร่วมและได้รับการอนุมัติ สมาชิกปัจจุบันจะยังคงมีสิทธิ์เข้าถึง",
     "circleMadePrivateToast": "เซอร์เคิลเป็นส่วนตัวแล้ว",
-    "circleMadePublicToast": "เซอร์เคิลเป็นสาธารณะแล้ว"
+    "circleMadePublicToast": "เซอร์เคิลเป็นสาธารณะแล้ว",
+    "dangerZone": "โซนอันตราย",
+    "deleteCircle": "ลบเซอร์เคิล",
+    "deleteCircleHint": "ลบเซอร์เคิลนี้ โพสต์ และสมาชิกอย่างถาวร ไม่สามารถย้อนกลับการดำเนินการนี้ได้",
+    "deleteCircleTitle": "ลบเซอร์เคิลนี้หรือไม่?",
+    "deleteCircleMessage": "การดำเนินการนี้จะลบ {{name}} อย่างถาวร พร้อมกับโพสต์ ความคิดเห็น และข้อมูลสมาชิกทั้งหมด สมาชิกจะไม่ได้รับการแจ้งเตือน และไม่สามารถย้อนกลับการดำเนินการนี้ได้",
+    "circleDeletedToast": "ลบเซอร์เคิลแล้ว"
   }
 }

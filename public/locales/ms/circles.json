@@ -211,7 +211,7 @@
   },
   "createCircleModal": {
     "invalidImageType": "Sila pilih imej JPG, PNG, atau WEBP",
-    "imageTooLarge": "Imej mesti kurang daripada 5MB",
+    "imageTooLarge": "Imej mesti kurang daripada {{maxSize}}MB",
     "nameRequired": "Nama bulatan diperlukan",
     "descriptionRequired": "Penerangan diperlukan",
     "categoryRequired": "Sila pilih kategori",
@@ -222,7 +222,7 @@
     "coverPreviewAlt": "Pratonton kulit bulatan",
     "clickToUpload": "Klik untuk muat naik",
     "orDragAndDrop": " atau seret dan lepas",
-    "uploadHint": "PNG, JPG sehingga 5MB",
+    "uploadHint": "PNG, JPG sehingga {{maxSize}}MB",
     "nameLabel": "Nama Bulatan",
     "namePlaceholder": "cth., Pendaki Hujung Minggu",
     "descriptionLabel": "Penerangan",
@@ -373,6 +373,12 @@
     "makePrivateTitle": "Jadikan bulatan ini peribadi?",
     "makePrivateMessage": "Ahli baharu perlu meminta untuk sertai dan diluluskan. Ahli sedia ada mengekalkan akses mereka.",
     "circleMadePrivateToast": "Bulatan kini peribadi",
-    "circleMadePublicToast": "Bulatan kini awam"
+    "circleMadePublicToast": "Bulatan kini awam",
+    "dangerZone": "Zon Bahaya",
+    "deleteCircle": "Padam Bulatan",
+    "deleteCircleHint": "Mengalih keluar bulatan ini, siarannya, dan ahlinya secara kekal. Ini tidak boleh dibuat asal.",
+    "deleteCircleTitle": "Padam bulatan ini?",
+    "deleteCircleMessage": "Ini akan memadam {{name}} secara kekal, bersama semua siaran, komen, dan data keahliannya. Ahli tidak akan dimaklumkan, dan ini tidak boleh dibuat asal.",
+    "circleDeletedToast": "Bulatan dipadam"
   }
 }

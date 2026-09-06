@@ -16,12 +16,13 @@ import {
   Lock,
   Globe,
   Bot,
+  Trash2,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { useCircle, useCircleStats, useUpdateCircle } from "../hooks/useCircles";
+import { useCircle, useCircleStats, useUpdateCircle, useDeleteCircle } from "../hooks/useCircles";
 import {
   useCircleRequests,
   useAcceptCircleRequest,
@@ -127,6 +128,9 @@ export default function ModeratorDashboardPage() {
   // (existing non-members lose feed access immediately), so both directions
   // get a confirm rather than a bare instant toggle.
   const [visibilityConfirm, setVisibilityConfirm] = useState(null);
+  // Gates the delete confirm dialog — permanent, no undo, so this gets its
+  // own state rather than reusing removeConfirm/visibilityConfirm's shape.
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const { data: circle, isLoading: isLoadingCircle } = useCircle(circleId);
   const { data: stats, isLoading: isLoadingStats } = useCircleStats(circleId);
@@ -145,6 +149,7 @@ export default function ModeratorDashboardPage() {
   const removeMutation = useRemoveCircleMember(circleId);
   const setRoleMutation = useSetCircleMemberRole(circleId);
   const updateCircleMutation = useUpdateCircle(circleId);
+  const deleteCircleMutation = useDeleteCircle(circleId);
 
   const myId = myProfile?.username?.replace(/^USER#/, "") ?? "";
   const isOwner = !!myId && myId === circle?.ownerId;
@@ -284,6 +289,20 @@ export default function ModeratorDashboardPage() {
     );
   };
 
+  const handleConfirmDelete = () => {
+    deleteCircleMutation.mutate(undefined, {
+      onSuccess: () => {
+        toast.success(t("moderatorDashboard.circleDeletedToast"));
+        setDeleteConfirmOpen(false);
+        navigate("/circles", { replace: true });
+      },
+      onError: (err) => {
+        toast.error(getErrorMessage(err, "circleModerateFailed"));
+        setDeleteConfirmOpen(false);
+      },
+    });
+  };
+
   const pendingCount = stats?.requests?.pending ?? requests.length;
   const isPrivate = circle?.visibility === "private";
 
@@ -317,6 +336,15 @@ export default function ModeratorDashboardPage() {
             ? t("moderatorDashboard.makePrivate")
             : t("moderatorDashboard.makePublic")
         }
+      />
+
+      <ConfirmDialog
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title={t("moderatorDashboard.deleteCircleTitle")}
+        message={t("moderatorDashboard.deleteCircleMessage", { name: circle?.name })}
+        confirmLabel={t("moderatorDashboard.deleteCircle")}
       />
 
       {/* Header */}
@@ -407,6 +435,37 @@ export default function ModeratorDashboardPage() {
               className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-60 transition-colors shrink-0 whitespace-nowrap"
             >
               {isPrivate ? t("moderatorDashboard.makePublic") : t("moderatorDashboard.makePrivate")}
+            </button>
+          </div>
+        </div>
+
+        {/* Danger zone — owner/moderator/admin only, same role gate as
+            everything else on this page. Permanent: no archive step, no
+            undo. A single confirm dialog matches the weight already given
+            to remove-member (also irreversible) rather than inventing a
+            heavier "type the circle name" flow just for this action. */}
+        <div>
+          <h2 className="text-[11px] font-bold uppercase tracking-wide text-rose-400 mb-2 px-1">
+            {t("moderatorDashboard.dangerZone")}
+          </h2>
+          <div className="bg-white rounded-2xl shadow-sm border border-rose-100 p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-rose-50 flex items-center justify-center shrink-0">
+              <Trash2 className="w-4 h-4 text-rose-500" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold text-gray-900">
+                {t("moderatorDashboard.deleteCircle")}
+              </p>
+              <p className="text-xs text-gray-400">
+                {t("moderatorDashboard.deleteCircleHint")}
+              </p>
+            </div>
+            <button
+              onClick={() => setDeleteConfirmOpen(true)}
+              disabled={deleteCircleMutation.isPending || !circle}
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-rose-200 text-rose-600 hover:bg-rose-50 disabled:opacity-60 transition-colors shrink-0 whitespace-nowrap"
+            >
+              {t("moderatorDashboard.deleteCircle")}
             </button>
           </div>
         </div>
