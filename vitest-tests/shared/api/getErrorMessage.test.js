@@ -80,4 +80,51 @@ describe('getErrorMessage', () => {
     const err = axiosError({ status: 429, data: { error: 'Too many requests', retryAfterSeconds: 20 } })
     expect(getErrorMessage(err)).toBe('errors:tooManyRequestsWithRetry::{"duration":"20s"}')
   })
+
+  it('maps predesginedurl.js\'s 413 message to mediaTooLarge', () => {
+    const err = axiosError({ status: 413, data: { error: 'File too large. Max 20MB.', maxBytes: 20971520 } })
+    expect(getErrorMessage(err)).toBe('errors:mediaTooLarge')
+  })
+
+  it('falls back to mediaTooLarge for a 413 with no recognized message', () => {
+    const err = axiosError({ status: 413, data: {} })
+    expect(getErrorMessage(err)).toBe('errors:mediaTooLarge')
+  })
+
+  describe('network-error classification (isAxiosError/request gate)', () => {
+    it('a real axios error with no response (offline/dropped connection) maps to network', () => {
+      // Shape axios actually produces for a request that was sent but never
+      // got a response: isAxiosError:true, .request set, .response absent.
+      const err = { isAxiosError: true, request: {}, message: 'Network Error' }
+      expect(getErrorMessage(err)).toBe('errors:network')
+    })
+
+    it('an iOS CapacitorHttp failure (arbitrary NSError message, still isAxiosError) also maps to network', () => {
+      const err = { isAxiosError: true, request: {}, message: 'Load failed' }
+      expect(getErrorMessage(err)).toBe('errors:network')
+    })
+
+    it('a plain JS Error from a non-HTTP step (e.g. image conversion failing before any request) is NOT mislabeled as network', () => {
+      // This is exactly ensureNormalizedImage's failure shape: a bare Error
+      // thrown before getPresignedUrl/uploadToS3 are ever called, so it has
+      // no isAxiosError, no .request, no .response — only .message. Regression
+      // guard for the bug where this showed "Network error" and hid the real
+      // cause (bad/undecodable image) from the user.
+      const err = new Error('Could not decode image')
+      expect(getErrorMessage(err)).not.toBe('errors:network')
+    })
+
+    it('a plain Error with a fallbackKey surfaces that key, not network', () => {
+      const err = new Error('Image file is empty — please try selecting the photo again')
+      expect(getErrorMessage(err, 'circleRequestFailed')).toBe('errors:circleRequestFailed')
+    })
+
+    it('an uploadToS3-thrown error (status:0, no isAxiosError/request) is not mislabeled as network either', () => {
+      // uploadToS3.js throws plain Error objects with a `status` field, not
+      // axios errors — same non-HTTP-request shape as the image-conversion
+      // case above.
+      const err = Object.assign(new Error('Upload failed with status 0'), { status: 0 })
+      expect(getErrorMessage(err, 'circleRequestFailed')).toBe('errors:circleRequestFailed')
+    })
+  })
 })

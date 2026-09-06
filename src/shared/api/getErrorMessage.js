@@ -139,7 +139,16 @@ export function getErrorMessage(err, fallbackKey = 'generic') {
   // got no response is a network failure regardless of which platform's
   // wording produced it, so key off response presence rather than matching
   // specific error strings/codes that only cover the browser adapter.
-  if (!err?.response && err?.message !== undefined) {
+  //
+  // Gated on isAxiosError/request so this only fires for an actual attempted
+  // HTTP request. A plain `throw new Error(...)` (e.g. ensureNormalizedImage
+  // failing to decode/convert an image before any request is even made) also
+  // has no `.response`, and was previously mislabeled as a network failure —
+  // hiding the real cause (bad image, unsupported format, empty file) behind
+  // a "check your connection" message that had nothing to do with the actual
+  // problem.
+  const wasHttpRequest = err?.isAxiosError === true || err?.request !== undefined;
+  if (wasHttpRequest && !err?.response && err?.message !== undefined) {
     return t('errors:network');
   }
 
