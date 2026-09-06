@@ -44,13 +44,24 @@ jobs:
             -project ios/App/App.xcodeproj \
             -scheme App
 
+      - name: Build authenticated match git URL
+        env:
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+        run: |
+          set -euo pipefail
+          DECODED=$(echo "$MATCH_GIT_BASIC_AUTHORIZATION" | base64 --decode)
+          USERNAME="${DECODED%%:*}"
+          TOKEN="${DECODED#*:}"
+          echo "::add-mask::$TOKEN"
+          echo "::add-mask::$DECODED"
+          echo "MATCH_GIT_URL=https://${USERNAME}:${TOKEN}@github.com/Anandhugithub1/passormatch-certificates-" >> "$GITHUB_ENV"
+
       - name: Fetch certs and build signed archive
         env:
           APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
           APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
         run: bundle exec fastlane release
 
       - name: Upload to TestFlight

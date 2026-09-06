@@ -1,4 +1,9 @@
-git_url("https://github.com/Anandhugithub1/passormatch-certificates-")
+# fastlane match's `git_basic_authorization` option is not reliably applied to the
+# *initial* `git clone` on a fresh runner (known timing issue in Match::Storage::GitStorage),
+# which surfaces as "could not read Username ... terminal prompts disabled" even when the
+# secret is set correctly. The workflow instead builds an authenticated URL (with the
+# credential masked in logs via ::add-mask::) and passes it here as MATCH_GIT_URL.
+git_url(ENV["MATCH_GIT_URL"] || "https://github.com/Anandhugithub1/passormatch-certificates-")
 storage_mode("git")
 type("appstore")
 app_identifier("com.passormatch.app")
