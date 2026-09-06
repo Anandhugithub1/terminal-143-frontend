@@ -231,20 +231,26 @@ export function useUpdateCircle(circleId) {
 
 // Owner/moderator only — backend 403s anyone else. Permanent, no undo: the
 // circle and everything scoped to it (members, posts, comments, requests)
-// is gone the moment this resolves. Drops the circle's own cache entry
-// outright rather than just invalidating it — a refetch of a deleted
-// circle would 404, and the caller navigates away immediately on success
-// anyway (see ModeratorDashboardPage.jsx).
+// is gone the moment this resolves.
+//
+// Deliberately does NOT removeQueries() the circle's own cache entries here.
+// The caller (ModeratorDashboardPage) still has useCircle/useCircleStats/
+// useCircleRequests/useCircleMembers actively mounted and observing those
+// exact keys for the brief window before navigate() unmounts the page —
+// removeQueries() on an actively-observed query immediately refetches it,
+// which 403s/404s against a circle that no longer exists and gets toasted
+// by the app's global QueryCache.onError (shared/lib/client.js), stomping
+// the "Circle deleted" success toast. The caller instead disables those
+// hooks itself (passing null once its own circleDeleted flag flips) before
+// this promise even resolves; once nothing observes these keys anymore,
+// React Query's normal cache garbage collection clears them without ever
+// triggering a refetch.
 export function useDeleteCircle(circleId) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: () => deleteCircle(circleId),
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: queryKeys.circle(circleId) });
-      queryClient.removeQueries({ queryKey: queryKeys.circleStats(circleId) });
-      queryClient.removeQueries({ queryKey: queryKeys.circleMembers(circleId) });
-      queryClient.removeQueries({ queryKey: queryKeys.circleRequests(circleId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.circles });
     },
   });

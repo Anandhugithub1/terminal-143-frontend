@@ -266,7 +266,11 @@ export default function CirclesHomePage() {
   return (
     <div className="min-h-[100dvh] bg-gray-50 pb-20 overflow-x-hidden">
       {/* Modals */}
-      <CreateCircleModal isOpen={isCreateCircleOpen} onClose={() => setIsCreateCircleOpen(false)} />
+      <CreateCircleModal
+        isOpen={isCreateCircleOpen}
+        onClose={() => setIsCreateCircleOpen(false)}
+        onCreated={(circleId) => navigate(`/circles/${circleId}`)}
+      />
       <CommentSection isOpen={!!commentPost} onClose={() => setCommentPost(null)} post={commentPost} />
 
       {editPost && (

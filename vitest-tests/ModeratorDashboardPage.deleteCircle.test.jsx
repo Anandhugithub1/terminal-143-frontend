@@ -37,24 +37,36 @@ vi.mock('react-i18next', () => ({
 
 const deleteCircleMutate = vi.fn()
 
+// Spies so tests can assert what circleId argument each hook was actually
+// called with on a given render — the delete-success regression test below
+// needs to see these flip to null once circleDeleted is set.
+const useCircleSpy = vi.fn(() => ({
+  data: { circleId: 'vip-circle', name: 'VIP Circle', visibility: 'public', ownerId: 'owner1' },
+  isLoading: false,
+}))
+const useCircleStatsSpy = vi.fn(() => ({ data: { requests: { pending: 0, accepted: 0 } }, isLoading: false }))
+const useCircleRequestsSpy = vi.fn(() => ({
+  requests: [],
+  isLoading: false,
+  fetchNextPage: vi.fn(),
+  hasNextPage: false,
+  isFetchingNextPage: false,
+}))
+const useCircleMembersSpy = vi.fn(() => ({
+  byUserId: new Map([['owner1', { userId: 'owner1', role: 'owner' }]]),
+  data: [{ userId: 'owner1', role: 'owner' }],
+  isLoading: false,
+}))
+
 vi.mock('../src/features/Circles/hooks/useCircles', () => ({
-  useCircle: () => ({
-    data: { circleId: 'vip-circle', name: 'VIP Circle', visibility: 'public', ownerId: 'owner1' },
-    isLoading: false,
-  }),
-  useCircleStats: () => ({ data: { requests: { pending: 0, accepted: 0 } }, isLoading: false }),
+  useCircle: (id) => useCircleSpy(id),
+  useCircleStats: (id) => useCircleStatsSpy(id),
   useUpdateCircle: () => ({ mutate: vi.fn(), isPending: false }),
   useDeleteCircle: () => ({ mutate: deleteCircleMutate, isPending: false }),
 }))
 
 vi.mock('../src/features/Circles/hooks/useMembership', () => ({
-  useCircleRequests: () => ({
-    requests: [],
-    isLoading: false,
-    fetchNextPage: vi.fn(),
-    hasNextPage: false,
-    isFetchingNextPage: false,
-  }),
+  useCircleRequests: (id) => useCircleRequestsSpy(id),
   useAcceptCircleRequest: () => ({ mutate: vi.fn(), isPending: false }),
   useRejectCircleRequest: () => ({ mutate: vi.fn(), isPending: false }),
   useRemoveCircleMember: () => ({ mutate: vi.fn(), isPending: false }),
@@ -66,11 +78,7 @@ vi.mock('../src/features/Circles/hooks/usePosts', () => ({
 }))
 
 vi.mock('../src/features/Circles/api/circleChatApi', () => ({
-  useCircleMembers: () => ({
-    byUserId: new Map([['owner1', { userId: 'owner1', role: 'owner' }]]),
-    data: [{ userId: 'owner1', role: 'owner' }],
-    isLoading: false,
-  }),
+  useCircleMembers: (id) => useCircleMembersSpy(id),
 }))
 
 vi.mock('../src/features/UserProfile/Hooks/useMyProfile', () => ({
@@ -127,6 +135,35 @@ describe('ModeratorDashboardPage — delete circle', () => {
       expect(deleteCircleMutate).toHaveBeenCalledTimes(1)
       expect(mockNavigate).toHaveBeenCalledWith('/circles', { replace: true })
     })
+  })
+
+  it('disables useCircle/useCircleStats/useCircleRequests/useCircleMembers (passes null) once delete succeeds', async () => {
+    // Regression test for a real bug: after a successful delete, these
+    // hooks stayed mounted and enabled against the now-deleted circleId for
+    // the brief window before navigate() unmounted the page. Any one of
+    // them refetching hit "not a member of this circle" from the backend,
+    // and the app's global QueryCache.onError toasted that error right
+    // over the "Circle deleted" success toast. The fix passes null to all
+    // four once the mutation succeeds (see the circleDeleted state in
+    // ModeratorDashboardPage.jsx) — this asserts that actually happens.
+    deleteCircleMutate.mockImplementation((_arg, { onSuccess }) => onSuccess())
+
+    render(<ModeratorDashboardPage />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'moderatorDashboard.deleteCircle' }))
+    const confirmButtons = screen.getAllByRole('button', { name: 'moderatorDashboard.deleteCircle' })
+    fireEvent.click(confirmButtons[confirmButtons.length - 1])
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalled()
+    })
+
+    const lastCallArg = (spy) => spy.mock.calls[spy.mock.calls.length - 1][0]
+
+    expect(lastCallArg(useCircleSpy)).toBeNull()
+    expect(lastCallArg(useCircleStatsSpy)).toBeNull()
+    expect(lastCallArg(useCircleRequestsSpy)).toBeNull()
+    expect(lastCallArg(useCircleMembersSpy)).toBeNull()
   })
 
   it('closes the dialog without deleting when Cancel is clicked', async () => {

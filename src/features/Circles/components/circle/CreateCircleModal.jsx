@@ -52,7 +52,11 @@ const MAX_RAW_IMAGE_MB = 20;
 
 export default function CreateCircleModal({
   isOpen,
-  onClose
+  onClose,
+  // Called with the new circle's id right after a successful create, before
+  // the form resets/closes — lets the caller navigate to the circle's own
+  // page instead of just returning to wherever the modal was opened from.
+  onCreated
 }) {
   const { t } = useTranslation("circles");
   const [
@@ -273,7 +277,7 @@ export default function CreateCircleModal({
               crypto.randomUUID(),
           };
 
-        await createCircleMutation.mutateAsync(
+        const created = await createCircleMutation.mutateAsync(
           payload
         );
 
@@ -307,6 +311,7 @@ export default function CreateCircleModal({
         );
 
         onClose();
+        onCreated?.(created.circleId);
       } catch (
         err
       ) {

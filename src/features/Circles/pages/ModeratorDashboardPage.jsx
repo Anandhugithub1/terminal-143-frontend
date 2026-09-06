@@ -131,17 +131,28 @@ export default function ModeratorDashboardPage() {
   // Gates the delete confirm dialog — permanent, no undo, so this gets its
   // own state rather than reusing removeConfirm/visibilityConfirm's shape.
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  // Flips true the instant the delete mutation succeeds, before navigate()
+  // actually unmounts this page. Every hook below is gated on `null` once
+  // this is true (same "pass null to disable" convention as
+  // useCirclePostsForStats just below) — without it, these queries stay
+  // mounted and enabled for the brief window before navigation completes,
+  // any one of them refetching (e.g. on remount, focus, or an invalidated
+  // sibling key) hits a circle that no longer exists, 403s/404s, and the
+  // app's global QueryCache.onError (see shared/lib/client.js) toasts that
+  // failure right over the "Circle deleted" success toast.
+  const [circleDeleted, setCircleDeleted] = useState(false);
+  const activeCircleId = circleDeleted ? null : circleId;
 
-  const { data: circle, isLoading: isLoadingCircle } = useCircle(circleId);
-  const { data: stats, isLoading: isLoadingStats } = useCircleStats(circleId);
+  const { data: circle, isLoading: isLoadingCircle } = useCircle(activeCircleId);
+  const { data: stats, isLoading: isLoadingStats } = useCircleStats(activeCircleId);
   const {
     requests,
     isLoading: isLoadingRequests,
     fetchNextPage: fetchNextRequestsPage,
     hasNextPage: hasMoreRequests,
     isFetchingNextPage: isFetchingMoreRequests,
-  } = useCircleRequests(circleId);
-  const { byUserId: membersByUserId, data: membersData, isLoading: isLoadingMembers } = useCircleMembers(circleId);
+  } = useCircleRequests(activeCircleId);
+  const { byUserId: membersByUserId, data: membersData, isLoading: isLoadingMembers } = useCircleMembers(activeCircleId);
   const { data: myProfile } = useMyProfile();
 
   const acceptMutation = useAcceptCircleRequest(circleId);
@@ -169,7 +180,7 @@ export default function ModeratorDashboardPage() {
   // own comment): a real DynamoDB Query on the circle's partition key, not
   // a Scan, and never paginated further just to compute stats.
   const { data: postsForStats, isLoading: isLoadingInsights } = useCirclePostsForStats(
-    canModerate ? circleId : null,
+    canModerate ? activeCircleId : null,
     { limit: 50 }
   );
   // Memoized so a stable empty array (not a fresh [] literal every render)
@@ -292,6 +303,10 @@ export default function ModeratorDashboardPage() {
   const handleConfirmDelete = () => {
     deleteCircleMutation.mutate(undefined, {
       onSuccess: () => {
+        // Must happen before navigate() — disables every hook above via
+        // activeCircleId so none of them refetch against a circle that no
+        // longer exists (see the circleDeleted comment near its useState).
+        setCircleDeleted(true);
         toast.success(t("moderatorDashboard.circleDeletedToast"));
         setDeleteConfirmOpen(false);
         navigate("/circles", { replace: true });
