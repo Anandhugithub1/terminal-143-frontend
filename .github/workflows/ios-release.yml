@@ -49,11 +49,19 @@ jobs:
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
         run: |
           set -euo pipefail
-          DECODED=$(echo "$MATCH_GIT_BASIC_AUTHORIZATION" | base64 --decode)
+          # Strip any trailing newline/whitespace that may have been baked into the
+          # base64 payload (e.g. `echo "user:token" | base64` instead of `echo -n`),
+          # which otherwise corrupts the token and GitHub rejects it outright.
+          DECODED=$(printf '%s' "$MATCH_GIT_BASIC_AUTHORIZATION" | base64 --decode | tr -d '\r\n')
           USERNAME="${DECODED%%:*}"
           TOKEN="${DECODED#*:}"
           echo "::add-mask::$TOKEN"
           echo "::add-mask::$DECODED"
+          echo "Decoded username length: ${#USERNAME}, token length: ${#TOKEN}"
+          if [ -z "$USERNAME" ] || [ -z "$TOKEN" ]; then
+            echo "::error::MATCH_GIT_BASIC_AUTHORIZATION did not decode into 'username:token' - check the secret was created with 'printf' (not 'echo') before base64 encoding."
+            exit 1
+          fi
           echo "MATCH_GIT_URL=https://${USERNAME}:${TOKEN}@github.com/Anandhugithub1/passormatch-certificates-" >> "$GITHUB_ENV"
 
       - name: Fetch certs and build signed archive
