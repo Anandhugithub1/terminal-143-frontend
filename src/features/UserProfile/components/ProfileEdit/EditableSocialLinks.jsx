@@ -18,7 +18,7 @@ const EditableSocialLinks = ({
   const visiblePlatforms = expanded ? SOCIAL_PLATFORMS : defaultVisible;
 
   return (
-    <div className="space-y-4 px-4">
+    <div className="space-y-4 px-5">
       {visiblePlatforms.map((platform) => (
         <div key={platform} className="flex flex-col">
           <label className="mb-1 text-sm font-semibold text-gray-600">

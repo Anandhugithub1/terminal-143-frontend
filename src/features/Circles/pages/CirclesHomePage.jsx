@@ -22,7 +22,7 @@ import ConfirmDialog from "../components/common/ConfirmDialog";
 import CircleSearchBar from "../components/circle/CircleSearchBar";
 import { useCircles } from "../hooks/useCircles";
 import { useTranslatedCircleName } from "../constants/onboardingCircles";
-import { useFeed, usePosts, useUpdateFeedPost, useDeleteFeedPost } from "../hooks/usePosts";
+import { useFeed, useUpdateFeedPost, useDeleteFeedPost } from "../hooks/usePosts";
 import { listPosts } from "../api/postsApi";
 import { useSeenTracker } from "../hooks/useSeenTracker";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
@@ -87,7 +87,6 @@ export default function CirclesHomePage() {
   const [commentPost, setCommentPost] = useState(null);
   const [editPost, setEditPost] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [selectedCircleId, setSelectedCircleId] = useState(null);
 
   const updatePostMutation = useUpdateFeedPost();
   const deletePostMutation = useDeleteFeedPost();
@@ -99,9 +98,6 @@ export default function CirclesHomePage() {
 
   const { data: feedData, isLoading: isLoadingFeed } = useFeed();
   const feed = (feedData?.posts || []).filter((p) => p.status !== "deleted");
-
-  const { data: circlePostsData, isLoading: isLoadingCirclePosts } = usePosts(selectedCircleId);
-  const circlePosts = (circlePostsData?.items || []).filter((p) => p.status !== "deleted");
 
   const { data: myProfile } = useMyProfile();
   const myCoords = myProfile?.location?.coordinates;
@@ -130,9 +126,8 @@ export default function CirclesHomePage() {
   // compatibility filter as the feed (plus block/deletion filters) server-side
   // — see circle-service listPosts.js — so we don't re-filter here; we only
   // merge across circles, dedupe, and sort by recency. Only fetch when we
-  // actually need the fallback: feed is loaded, empty, and no circle selected.
-  const needFallback =
-    !isLoadingFeed && feed.length === 0 && !selectedCircleId;
+  // actually need the fallback: feed is loaded and empty.
+  const needFallback = !isLoadingFeed && feed.length === 0;
 
   const fallbackQueries = useQueries({
     queries: (needFallback ? myCircles : []).map((c) => ({
@@ -216,23 +211,13 @@ export default function CirclesHomePage() {
     return <Navigate to="/circles/onboarding" replace />;
   }
 
-  const selectedCircle = myCircles.find((c) => c.circleId === selectedCircleId) ?? null;
-
   const handlePickCircle = (circle) => {
     setPostTargetCircle(circle);
     setIsCirclePickerOpen(false);
     setIsCreatePostOpen(true);
   };
 
-  // When a circle tab is already active, skip the picker and post straight
-  // to that circle — only "For You" (no circle selected) needs the picker.
-  const handleStartPost = () => {
-    if (selectedCircle) {
-      handlePickCircle(selectedCircle);
-    } else {
-      setIsCirclePickerOpen(true);
-    }
-  };
+  const handleStartPost = () => setIsCirclePickerOpen(true);
 
   const handlePostCreated = () => {
     setIsCreatePostOpen(false);
@@ -377,13 +362,13 @@ export default function CirclesHomePage() {
 
             {/* For You */}
             <StoryAvatar
-              isActive={!selectedCircleId}
-              onClick={() => setSelectedCircleId(null)}
+              isActive
+              onClick={() => {}}
               label={t("common.forYou")}
               gradientClass="from-primary to-pink-500"
             >
-              <div className={`w-full h-full rounded-full flex items-center justify-center ${!selectedCircleId ? "bg-gradient-to-br from-primary to-pink-400" : "bg-gray-100"}`}>
-                <Rss className={`w-5 h-5 ${!selectedCircleId ? "text-white" : "text-gray-400"}`} />
+              <div className="w-full h-full rounded-full flex items-center justify-center bg-gradient-to-br from-primary to-pink-400">
+                <Rss className="w-5 h-5 text-white" />
               </div>
             </StoryAvatar>
 
@@ -392,13 +377,12 @@ export default function CirclesHomePage() {
             )}
 
             {!isLoadingCircles && myCircles.map((circle, index) => {
-              const isActive = selectedCircleId === circle.circleId;
               const circleName = getCircleName(circle.circleId, circle.name);
               return (
                 <StoryAvatar
                   key={circle.circleId}
-                  isActive={isActive}
-                  onClick={() => setSelectedCircleId(circle.circleId)}
+                  isActive={false}
+                  onClick={() => navigate(`/circles/${circle.circleId}`, { state: { circleData: circle } })}
                   label={circleName}
                   gradientClass={RING_GRADIENTS[index % RING_GRADIENTS.length]}
                 >
@@ -484,32 +468,17 @@ export default function CirclesHomePage() {
         {/* Section header */}
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-gray-800">
-              {selectedCircle
-                ? getCircleName(selectedCircle.circleId, selectedCircle.name)
-                : t("common.forYou")}
-            </h2>
-            {!selectedCircleId && !isLoadingFeed && feed.length > 0 && (
+            <h2 className="text-base font-bold text-gray-800">{t("common.forYou")}</h2>
+            {!isLoadingFeed && feed.length > 0 && (
               <span className="text-xs text-gray-400 font-normal">{t("circlesHome.postsSuffix", { count: feed.length })}</span>
             )}
-            {selectedCircleId && !isLoadingCirclePosts && circlePosts.length > 0 && (
-              <span className="text-xs text-gray-400 font-normal">{t("circlesHome.postsSuffix", { count: circlePosts.length })}</span>
-            )}
           </div>
-          {selectedCircle && (
-            <button
-              onClick={() => navigate(`/circles/${selectedCircleId}`, { state: { circleData: selectedCircle } })}
-              className="text-xs btn-outlined px-3 py-1 rounded-full"
-            >
-              {t("circlesHome.viewCircle")}
-            </button>
-          )}
         </div>
 
-        {/* Feed — animated on tab switch */}
+        {/* Feed */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={selectedCircleId ?? "foryou"}
+            key="foryou"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -517,212 +486,146 @@ export default function CirclesHomePage() {
             className="space-y-3 pb-4"
           >
 
-            {/* ─── Circle tab ─── */}
-            {selectedCircleId && (
-              <>
-                {isLoadingCirclePosts && (
-                  <><PostCardSkeleton variant="feed" /><PostCardSkeleton variant="feed" /></>
-                )}
-
-                {!isLoadingCirclePosts && circlePosts.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
-                      <PenLine className="w-7 h-7 text-gray-300" />
-                    </div>
-                    <p className="text-sm font-semibold text-gray-700 mb-1">{t("circlesHome.noPostsYetTitle")}</p>
-                    <p className="text-xs text-gray-400 mb-5">{t("circlesHome.beFirstToPost", { circleName: selectedCircle && getCircleName(selectedCircle.circleId, selectedCircle.name) })}</p>
-                    <button
-                      onClick={() => handlePickCircle(selectedCircle)}
-                      className="px-5 py-2 btn-filled text-sm rounded-full shadow-sm"
-                    >
-                      {t("circlesHome.createAPost")}
-                    </button>
-                  </div>
-                )}
-
-                {!isLoadingCirclePosts && circlePosts.map((post) => {
-                  const isAuthor = !!myId && myId === post.authorId;
-                  const isMatched = !isAuthor && isMatchedAuthor(post.authorId);
-                  const showMatchActions = !isAuthor && !isMatched;
-                  return (
-                    <PostCard
-                      key={post.postId}
-                      variant="feed"
-                      avatar={post.authorImage || DEFAULT_AVATAR}
-                      name={getAuthorDisplayName(post) || t("common.anonymous")}
-                      meta={<PostMeta post={post} />}
-                      body={post.content}
-                      media={post.media}
-                      tags={post.tags || []}
-                      onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
-                      onShare={() => handleSharePost(post, selectedCircleId)}
-                      isAuthor={isAuthor}
-                      onEdit={isAuthor ? () => setEditPost({ ...post, circleId: selectedCircleId, circleName: selectedCircle?.name }) : undefined}
-                      onDelete={isAuthor ? () => setDeleteConfirm({ ...post, circleId: selectedCircleId }) : undefined}
-                      matched={
-                        isMatched
-                          ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
-                          : null
-                      }
-                      actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
-                      actions={buildPostActions({
-                        includeMatchActions: showMatchActions,
-                        isMatching: matchingPostId === post.postId,
-                        matchLabel: t("circlesHome.matchAction"),
-                        matchingLabel: t("circlesHome.matchingAction"),
-                        onComment: () => setCommentPost(post),
-                        onToggleLike: () => handleMatchRequest(post, selectedCircleId),
-                      })}
-                    />
-                  );
-                })}
-              </>
+            {/* ─── For You feed ─── */}
+            {isLoadingFeed && (
+              <><PostCardSkeleton variant="feed" /><PostCardSkeleton variant="feed" /></>
             )}
 
-            {/* ─── For You feed ─── */}
-            {!selectedCircleId && (
+            {!isLoadingFeed && feed.length === 0 && (
               <>
-                {isLoadingFeed && (
-                  <><PostCardSkeleton variant="feed" /><PostCardSkeleton variant="feed" /></>
-                )}
+                {/* Compact empty notice */}
+                <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 border border-gray-100 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">🌱</span>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-700">{t("circlesHome.feedQuietTitle")}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">{t("circlesHome.feedQuietBody")}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => navigate("/circles/discover")}
+                    className="text-xs btn-outlined px-3 py-1.5 rounded-full"
+                  >
+                    {t("common.discover")}
+                  </button>
+                </div>
 
-                {!isLoadingFeed && feed.length === 0 && (
+                {/* Fallback — recent posts across all your circles */}
+                {fallbackPosts.length > 0 && (
                   <>
-                    {/* Compact empty notice */}
-                    <div className="flex items-center justify-between bg-white rounded-2xl px-4 py-3 border border-gray-100 shadow-sm">
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">🌱</span>
-                        <div>
-                          <p className="text-sm font-semibold text-gray-700">{t("circlesHome.feedQuietTitle")}</p>
-                          <p className="text-xs text-gray-400 mt-0.5">{t("circlesHome.feedQuietBody")}</p>
-                        </div>
-                      </div>
+                    <div className="flex items-center justify-between pt-2">
+                      <p className="text-sm font-bold text-gray-700">
+                        {t("circlesHome.fromYourCircles")}{" "}✨
+                      </p>
                       <button
                         onClick={() => navigate("/circles/discover")}
-                        className="text-xs btn-outlined px-3 py-1.5 rounded-full"
+                        className="text-xs btn-outlined px-3 py-1 rounded-full"
                       >
                         {t("common.discover")}
                       </button>
                     </div>
-
-                    {/* Fallback — recent posts across all your circles */}
-                    {fallbackPosts.length > 0 && (
-                      <>
-                        <div className="flex items-center justify-between pt-2">
-                          <p className="text-sm font-bold text-gray-700">
-                            {t("circlesHome.fromYourCircles")}{" "}✨
-                          </p>
-                          <button
-                            onClick={() => navigate("/circles/discover")}
-                            className="text-xs btn-outlined px-3 py-1 rounded-full"
-                          >
-                            {t("common.discover")}
-                          </button>
-                        </div>
-                        {fallbackPosts.map((post) => {
-                          const isAuthor = !!myId && myId === post.authorId;
-                          const isMatched = !isAuthor && isMatchedAuthor(post.authorId);
-                          const showMatchActions = !isAuthor && !isMatched;
-                          return (
-                            <PostCard
-                              key={post.postId}
-                              variant="feed"
-                              avatar={post.authorImage || DEFAULT_AVATAR}
-                              name={getAuthorDisplayName(post) || t("common.anonymous")}
-                              heading={getCircleName(post.circleId, post.circleName)}
-                              onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
-                              meta={<PostMeta post={post} />}
-                              body={post.content}
-                              media={post.media}
-                              tags={post.tags || []}
-                              onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
-                              onShare={() => handleSharePost(post, post.circleId)}
-                              isAuthor={isAuthor}
-                              onEdit={isAuthor ? () => setEditPost(post) : undefined}
-                              onDelete={isAuthor ? () => setDeleteConfirm(post) : undefined}
-                              matched={
-                                isMatched
-                                  ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
-                                  : null
-                              }
-                              actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
-                              actions={buildPostActions({
-                                includeMatchActions: showMatchActions,
-                                isMatching: matchingPostId === post.postId,
-                                matchLabel: t("circlesHome.matchAction"),
-                                matchingLabel: t("circlesHome.matchingAction"),
-                                onComment: () => setCommentPost(post),
-                                onToggleLike: () => handleMatchRequest(post, post.circleId),
-                              })}
-                            />
-                          );
-                        })}
-                      </>
-                    )}
+                    {fallbackPosts.map((post) => {
+                      const isAuthor = !!myId && myId === post.authorId;
+                      const isMatched = !isAuthor && isMatchedAuthor(post.authorId);
+                      const showMatchActions = !isAuthor && !isMatched;
+                      return (
+                        <PostCard
+                          key={post.postId}
+                          variant="feed"
+                          avatar={post.authorImage || DEFAULT_AVATAR}
+                          name={getAuthorDisplayName(post) || t("common.anonymous")}
+                          heading={getCircleName(post.circleId, post.circleName)}
+                          onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
+                          meta={<PostMeta post={post} />}
+                          body={post.content}
+                          media={post.media}
+                          tags={post.tags || []}
+                          onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
+                          onShare={() => handleSharePost(post, post.circleId)}
+                          isAuthor={isAuthor}
+                          onEdit={isAuthor ? () => setEditPost(post) : undefined}
+                          onDelete={isAuthor ? () => setDeleteConfirm(post) : undefined}
+                          matched={
+                            isMatched
+                              ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
+                              : null
+                          }
+                          actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                          actions={buildPostActions({
+                            includeMatchActions: showMatchActions,
+                            isMatching: matchingPostId === post.postId,
+                            matchLabel: t("circlesHome.matchAction"),
+                            matchingLabel: t("circlesHome.matchingAction"),
+                            onComment: () => setCommentPost(post),
+                            onToggleLike: () => handleMatchRequest(post, post.circleId),
+                          })}
+                        />
+                      );
+                    })}
                   </>
                 )}
-
-                {feed.map((post, index) => {
-                  const distance =
-                    myCoords && post.location?.coordinates
-                      ? formatDistance(haversineDistanceKm(myCoords, post.location.coordinates))
-                      : null;
-                  const isLastPost = index === feed.length - 1;
-                  const isAuthor = !!myId && myId === post.authorId;
-                  const isMatched = !isAuthor && isMatchedAuthor(post.authorId);
-                  const showMatchActions = !isAuthor && !isMatched;
-                  const onSeen = (postId) => markPostSeen(postId, { immediate: isLastPost });
-
-                  return (
-                    <PostSeenObserver key={post.postId} postId={post.postId} onSeen={onSeen}>
-                      <PostCard
-                        variant="feed"
-                        avatar={post.authorImage || DEFAULT_AVATAR}
-                        name={getAuthorDisplayName(post) || t("common.anonymous")}
-                        meta={
-                          <PostMeta
-                            post={post}
-                            extra={
-                              distance && (
-                                <span className="inline-flex items-center gap-1 whitespace-nowrap">
-                                  <MapPin className="w-3 h-3 shrink-0" />
-                                  {distance}
-                                </span>
-                              )
-                            }
-                          />
-                        }
-                        heading={getCircleName(post.circleId, post.circleName)}
-                        onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
-                        onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
-                        onShare={post.circleId ? () => handleSharePost(post, post.circleId) : undefined}
-                        isAuthor={isAuthor}
-                        onEdit={isAuthor ? () => setEditPost(post) : undefined}
-                        onDelete={isAuthor ? () => setDeleteConfirm(post) : undefined}
-                        media={post.media}
-                        body={post.content}
-                        tags={post.tags || []}
-                        matched={
-                          isMatched
-                            ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
-                            : null
-                        }
-                        actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
-                        actions={buildPostActions({
-                          includeMatchActions: showMatchActions,
-                          isMatching: matchingPostId === post.postId,
-                          matchLabel: t("circlesHome.matchAction"),
-                          matchingLabel: t("circlesHome.matchingAction"),
-                          onComment: () => setCommentPost(post),
-                          onToggleLike: () => handleMatchRequest(post, post.circleId),
-                          onPass: () => markPostSeen(post.postId, { immediate: isLastPost }),
-                        })}
-                      />
-                    </PostSeenObserver>
-                  );
-                })}
               </>
             )}
+
+            {feed.map((post, index) => {
+              const distance =
+                myCoords && post.location?.coordinates
+                  ? formatDistance(haversineDistanceKm(myCoords, post.location.coordinates))
+                  : null;
+              const isLastPost = index === feed.length - 1;
+              const isAuthor = !!myId && myId === post.authorId;
+              const isMatched = !isAuthor && isMatchedAuthor(post.authorId);
+              const showMatchActions = !isAuthor && !isMatched;
+              const onSeen = (postId) => markPostSeen(postId, { immediate: isLastPost });
+
+              return (
+                <PostSeenObserver key={post.postId} postId={post.postId} onSeen={onSeen}>
+                  <PostCard
+                    variant="feed"
+                    avatar={post.authorImage || DEFAULT_AVATAR}
+                    name={getAuthorDisplayName(post) || t("common.anonymous")}
+                    meta={
+                      <PostMeta
+                        post={post}
+                        extra={
+                          distance && (
+                            <span className="inline-flex items-center gap-1 whitespace-nowrap">
+                              <MapPin className="w-3 h-3 shrink-0" />
+                              {distance}
+                            </span>
+                          )
+                        }
+                      />
+                    }
+                    heading={getCircleName(post.circleId, post.circleName)}
+                    onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
+                    onAuthorClick={post.authorId ? () => navigate(`/profile/${post.authorId}`) : undefined}
+                    onShare={post.circleId ? () => handleSharePost(post, post.circleId) : undefined}
+                    isAuthor={isAuthor}
+                    onEdit={isAuthor ? () => setEditPost(post) : undefined}
+                    onDelete={isAuthor ? () => setDeleteConfirm(post) : undefined}
+                    media={post.media}
+                    body={post.content}
+                    tags={post.tags || []}
+                    matched={
+                      isMatched
+                        ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
+                        : null
+                    }
+                    actionsWrapperClassName={showMatchActions ? "grid grid-cols-3 gap-2" : "grid grid-cols-1 gap-2"}
+                    actions={buildPostActions({
+                      includeMatchActions: showMatchActions,
+                      isMatching: matchingPostId === post.postId,
+                      matchLabel: t("circlesHome.matchAction"),
+                      matchingLabel: t("circlesHome.matchingAction"),
+                      onComment: () => setCommentPost(post),
+                      onToggleLike: () => handleMatchRequest(post, post.circleId),
+                      onPass: () => markPostSeen(post.postId, { immediate: isLastPost }),
+                    })}
+                  />
+                </PostSeenObserver>
+              );
+            })}
           </motion.div>
         </AnimatePresence>
       </div>

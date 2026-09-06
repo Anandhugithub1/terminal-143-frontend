@@ -191,42 +191,42 @@ export default function ProfileEditPage() {
 
           {/* Social Links */}
           <LazyWrapper fallbackCount={6}>
-           <Section title={t("profileEdit.socialLinks")}>
+            <Section title={t("profileEdit.socialLinks")}>
+              {/* Privacy Info */}
+              <p className="text-xs text-gray-500 px-5 mb-3">
+                Your social links stay private and are shared only when there’s a match.
+              </p>
 
-  {/* Privacy Info */}
-  <p className="text-xs text-gray-500 mb-3">
-    Your social links stay private and are shared only when there’s a match.
-  </p>
+              <EditableSocialLinks
+                socialLinks={socialLinks}
+                onChange={(p, v) =>
+                  setSocialLinks((prev) => ({ ...prev, [p]: v }))
+                }
+                platformLabels={Object.fromEntries(
+                  SOCIAL_PLATFORMS.map((p) => [
+                    p.key,
+                    t(`profileEdit.socialLabels.${p.key}`),
+                  ])
+                )}
+                inputPlaceholders={Object.fromEntries(
+                  SOCIAL_PLATFORMS.map((p) => [
+                    p.key,
+                    t(`profileEdit.socialPlaceholders.${p.key}`),
+                  ])
+                )}
+                showMoreLabel={t("profileEdit.showMorePlatforms")}
+              />
 
-  <EditableSocialLinks
-    socialLinks={socialLinks}
-    onChange={(p, v) =>
-      setSocialLinks((prev) => ({ ...prev, [p]: v }))
-    }
-    platformLabels={Object.fromEntries(
-      SOCIAL_PLATFORMS.map((p) => [
-        p.key,
-        t(`profileEdit.socialLabels.${p.key}`),
-      ])
-    )}
-    inputPlaceholders={Object.fromEntries(
-      SOCIAL_PLATFORMS.map((p) => [
-        p.key,
-        t(`profileEdit.socialPlaceholders.${p.key}`),
-      ])
-    )}
-    showMoreLabel={t("profileEdit.showMorePlatforms")}
-  />
-
-  <button
-    onClick={saveSocialLinks}
-    disabled={isSaving}
-    className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 text-sm font-medium"
-  >
-    {t("profileEdit.saveSocialLinks")}
-  </button>
-</Section>
-
+              <div className="px-5 pb-5">
+                <button
+                  onClick={saveSocialLinks}
+                  disabled={isSaving}
+                  className="mt-4 px-4 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-600 text-sm font-medium"
+                >
+                  {t("profileEdit.saveSocialLinks")}
+                </button>
+              </div>
+            </Section>
           </LazyWrapper>
 
           {/* Privacy — moved here from a standalone Settings page so the
@@ -234,38 +234,40 @@ export default function ProfileEditPage() {
               can see of them, rather than requiring a separate trip to
               Settings to find it. */}
           <Section title={t("privacyPage.circleActivityHeading")}>
-            <p className="text-xs text-gray-500 mb-3">
-              {t("privacyPage.circleActivityDescription")}
-            </p>
+            <div className="px-5 pb-5">
+              <p className="text-xs text-gray-500 mb-3">
+                {t("privacyPage.circleActivityDescription")}
+              </p>
 
-            <button
-              type="button"
-              onClick={handleTogglePrivacy}
-              disabled={isTogglingPrivacy}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-left disabled:opacity-60 transition-colors"
-            >
-              <Users size={18} className="text-gray-500 shrink-0" />
-              <span className="flex-1 text-sm font-medium text-gray-800">
-                {t("privacyPage.showCircleActivityLabel")}
-              </span>
-              <span
-                className={`w-11 h-6 rounded-full relative shrink-0 transition-colors ${
-                  showCircleActivity ? "bg-primary" : "bg-gray-300"
-                }`}
+              <button
+                type="button"
+                onClick={handleTogglePrivacy}
+                disabled={isTogglingPrivacy}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-gray-200 bg-white text-left disabled:opacity-60 transition-colors"
               >
+                <Users size={18} className="text-gray-500 shrink-0" />
+                <span className="flex-1 text-sm font-medium text-gray-800">
+                  {t("privacyPage.showCircleActivityLabel")}
+                </span>
                 <span
-                  className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
-                    showCircleActivity ? "translate-x-[22px]" : "translate-x-0.5"
+                  className={`w-11 h-6 rounded-full relative shrink-0 transition-colors ${
+                    showCircleActivity ? "bg-primary" : "bg-gray-300"
                   }`}
-                />
-              </span>
-            </button>
+                >
+                  <span
+                    className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
+                      showCircleActivity ? "translate-x-[22px]" : "translate-x-0.5"
+                    }`}
+                  />
+                </span>
+              </button>
 
-            <p className="text-xs text-gray-400 mt-2.5 leading-relaxed">
-              {showCircleActivity
-                ? t("privacyPage.showCircleActivityOn")
-                : t("privacyPage.showCircleActivityOff")}
-            </p>
+              <p className="text-xs text-gray-400 mt-2.5 leading-relaxed">
+                {showCircleActivity
+                  ? t("privacyPage.showCircleActivityOn")
+                  : t("privacyPage.showCircleActivityOff")}
+              </p>
+            </div>
           </Section>
         </div>
       </main>

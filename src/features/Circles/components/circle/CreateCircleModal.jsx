@@ -8,8 +8,7 @@ import {
 
 import {
   useRef,
-  useState,
-  useEffect
+  useState
 } from "react";
 
 import { useTranslation } from "react-i18next";
@@ -30,11 +29,8 @@ import {
 } from "../../api/imageupload";
 import { uploadToS3 } from "../../../../shared/utils/uploadToS3";
 
-import LocationInput from "../../../AddProfile/components/LocationInput";
 import { ensureNormalizedImage } from "../../../../utils/imageConversion";
 import BottomSheetModal from "../common/BottomSheetModal";
-import { useMyProfile } from "../../../UserProfile/Hooks/useMyProfile";
-import { useLocationState } from "../../../../shared/hooks/useLocationState";
 
 const ALLOWED_IMAGE_TYPES = [
   "image/jpeg",
@@ -44,6 +40,15 @@ const ALLOWED_IMAGE_TYPES = [
   "image/heic",
   "image/heif"
 ];
+
+// Raised from 5MB to match the backend's presign cap (predesginedurl.js) and
+// the sibling post-media limit (mediaConfig.js). This is a pre-filter on the
+// RAW picked file, not the normalized upload — see handleImageChange, which
+// only rejects here for truly oversized files (e.g. a huge PNG/video picked
+// by mistake). Legitimate camera photos, including large iOS HEIC captures,
+// are always shrunk well under this by ensureNormalizedImage before upload,
+// so this ceiling is intentionally generous rather than tight.
+const MAX_RAW_IMAGE_MB = 20;
 
 export default function CreateCircleModal({
   isOpen,
@@ -79,17 +84,6 @@ export default function CreateCircleModal({
     tagInput,
     setTagInput
   ] = useState("");
-
-  const { location, setLocation, isEnrichingLocation, handleLocationSelect, resetLocation } = useLocationState();
-
-  const { data: myProfile } = useMyProfile();
-
-  useEffect(() => {
-    if (isOpen && myProfile?.location?.placeName && !location.placeName) {
-      setLocation(myProfile.location);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, myProfile]);
 
   const [
     coverFile,
@@ -153,10 +147,10 @@ export default function CreateCircleModal({
 
       if (
         file.size >
-        5 * 1024 * 1024
+        MAX_RAW_IMAGE_MB * 1024 * 1024
       ) {
         toast.error(
-          t("createCircleModal.imageTooLarge")
+          t("createCircleModal.imageTooLarge", { maxSize: MAX_RAW_IMAGE_MB })
         );
         return;
       }
@@ -255,19 +249,6 @@ export default function CreateCircleModal({
           }
         }
 
-        const locationTag =
-          location.placeName
-            ? location
-                .placeName
-                .trim()
-                .toLowerCase()
-            : null;
-
-        const combinedTags =
-          locationTag && !tags.includes(locationTag)
-            ? [...tags, locationTag]
-            : tags;
-
         const payload =
           {
             name:
@@ -280,10 +261,7 @@ export default function CreateCircleModal({
 
             visibility,
 
-            tags:
-              combinedTags,
-
-            location,
+            tags,
 
             coverPhoto,
 
@@ -320,8 +298,6 @@ export default function CreateCircleModal({
         setVisibility(
           "public"
         );
-
-        resetLocation();
 
         setCoverFile(
           null
@@ -616,11 +592,6 @@ export default function CreateCircleModal({
             </div>
           </div>
 
-          {/* Location */}
-          <LocationInput
-            formData={{ location }}
-            onSelect={handleLocationSelect}
-          />
         </div>
 
         {/* Footer */}
@@ -641,8 +612,7 @@ export default function CreateCircleModal({
               }
               disabled={
                 createCircleMutation.isPending ||
-                isUploadingImage ||
-                isEnrichingLocation
+                isUploadingImage
               }
               className="flex-1 px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:shadow-lg transition-all disabled:opacity-50"
             >
@@ -650,8 +620,6 @@ export default function CreateCircleModal({
                 ? t("createCircleModal.uploadingImage")
                 : createCircleMutation.isPending
                 ? t("createCircleModal.creating")
-                : isEnrichingLocation
-                ? t("createCircleModal.fetchingLocation")
                 : t("createCircleModal.createCircle")}
             </button>
           </div>

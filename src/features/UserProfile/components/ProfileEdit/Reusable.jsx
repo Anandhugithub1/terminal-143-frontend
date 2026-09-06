@@ -7,9 +7,14 @@ export const LoadingSkeleton = ({ count = 3, height = 30 }) => (
   <Skeleton count={count} height={height} className="my-2" />
 );
 
+// Section is edge-to-edge (no horizontal/vertical content padding) so every
+// section's content — list rows, inputs, buttons — can apply the same px-5
+// and line up flush with each other and with the title, instead of some
+// content sitting inside the section's own padding and others adding their
+// own padding on top of it.
 export const Section = ({ title, children, className = "" }) => (
-  <section className={`bg-white border border-gray-200 rounded-2xl p-5 mb-6 ${className}`}>
-    <h2 className="text-sm font-semibold text-gray-800 mb-3">{title}</h2>
+  <section className={`bg-white border border-gray-200 rounded-2xl overflow-hidden mb-6 ${className}`}>
+    <h2 className="text-sm font-semibold text-gray-800 px-5 pt-5 mb-3">{title}</h2>
     {children}
   </section>
 );
