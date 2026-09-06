@@ -20,6 +20,7 @@
   "photoLimitSingle": "사진은 1장만 등록할 수 있습니다.",
   "photoLimitMulti": "사진은 최대 5장까지 등록할 수 있습니다.",
   "photoInvalidUrl": "사진 중 하나를 업로드하지 못했습니다. 다시 시도해 주세요.",
+  "mediaTooLarge": "파일 용량이 너무 커서 업로드할 수 없습니다.",
   "genderRequiredForUpdate": "업데이트하기 전에 성별을 선택해 주세요.",
   "noUpdatableFields": "저장할 변경 사항이 없습니다.",
   "restoreCooldown": "최근에 계정을 복구하셨습니다. 다시 삭제하려면 잠시 기다려 주세요.",

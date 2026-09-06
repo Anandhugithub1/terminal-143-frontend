@@ -20,6 +20,7 @@
   "photoLimitSingle": "Hanya satu foto dibenarkan.",
   "photoLimitMulti": "Anda boleh menambah sehingga 5 foto.",
   "photoInvalidUrl": "Salah satu foto anda tidak dapat dimuat naik. Sila cuba lagi.",
+  "mediaTooLarge": "Fail itu terlalu besar untuk dimuat naik.",
   "genderRequiredForUpdate": "Sila pilih jantina anda sebelum mengemas kini ini.",
   "noUpdatableFields": "Tiada perubahan untuk disimpan.",
   "restoreCooldown": "Anda baru sahaja memulihkan akaun anda. Sila tunggu sebelum memadamkannya semula.",

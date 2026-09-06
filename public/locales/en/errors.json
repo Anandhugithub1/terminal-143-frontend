@@ -21,6 +21,7 @@
   "photoLimitSingle": "Only one photo is allowed.",
   "photoLimitMulti": "You can add up to 5 photos.",
   "photoInvalidUrl": "One of your photos couldn't be uploaded. Please try again.",
+  "mediaTooLarge": "That file is too large to upload.",
   "genderRequiredForUpdate": "Please select your gender before updating this.",
   "noUpdatableFields": "No changes to save.",
   "restoreCooldown": "You recently restored your account. Please wait before deleting it again.",

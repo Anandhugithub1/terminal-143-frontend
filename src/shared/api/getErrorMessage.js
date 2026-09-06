@@ -16,6 +16,9 @@ const MESSAGE_KEY_MAP = [
   [/only one photo allowed/i, 'photoLimitSingle'],
   [/max \d+ photos allowed/i, 'photoLimitMulti'],
   [/each photo must have a valid url/i, 'photoInvalidUrl'],
+  // predesginedurl.js's 413 body: "File too large. Max 20MB." — covers both
+  // circleCover and postMedia presign requests (same handler, same message).
+  [/file too large/i, 'mediaTooLarge'],
   [/gender required to update/i, 'genderRequiredForUpdate'],
   [/no updatable fields/i, 'noUpdatableFields'],
   [/recently restored your account/i, 'restoreCooldown'],
@@ -48,6 +51,7 @@ const STATUS_KEY_MAP = {
   403: 'forbidden',
   404: 'notFound',
   409: 'conflict',
+  413: 'mediaTooLarge',
   429: 'tooManyRequests',
 };
 

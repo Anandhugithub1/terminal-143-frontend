@@ -402,7 +402,7 @@ export default function CreateCircleModal({
                   </p>
 
                   <p className="text-xs text-gray-400">
-                    {t("createCircleModal.uploadHint")}
+                    {t("createCircleModal.uploadHint", { maxSize: MAX_RAW_IMAGE_MB })}
                   </p>
                 </div>
               )}

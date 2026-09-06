@@ -20,6 +20,7 @@
   "photoLimitSingle": "只能上传一张照片。",
   "photoLimitMulti": "最多可添加5张照片。",
   "photoInvalidUrl": "有一张照片上传失败，请重试。",
+  "mediaTooLarge": "该文件过大，无法上传。",
   "genderRequiredForUpdate": "请先选择性别再进行此项更新。",
   "noUpdatableFields": "没有可保存的更改。",
   "restoreCooldown": "您最近刚恢复了账户，请稍候再删除。",
