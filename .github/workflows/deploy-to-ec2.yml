@@ -6,15 +6,47 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      # The EC2 box is a t2.micro (1 GB RAM) - building there directly (npm ci +
+      # vite build) can thrash swap badly enough to make the instance unresponsive.
+      # Build here instead, on a runner with real RAM, and ship only the compiled
+      # dist/ to a dedicated branch that EC2 pulls with a plain `git clone`.
+      - name: Push built dist/ to deploy/dist branch
+        run: |
+          set -euo pipefail
+          cd dist
+          git init -q
+          git checkout -q -b deploy/dist
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy dist for ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Anandhugithub1/terminal-143-frontend.git" HEAD:deploy/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -32,6 +64,8 @@ jobs:
           INSTANCE_ID="${{ vars.EC2_INSTANCE_ID }}"
           # Use a JSON array string for --parameters. Each array element is a command executed by AWS-RunShellScript.
           # We run each command with sudo -i -u ec2-user so commands execute as ec2-user (has correct git SSH keys & ownership).
+          # Pull main first only to get the latest deploy.sh itself; deploy.sh then
+          # clones the pre-built deploy/dist branch (no npm/vite on the box anymore).
           CMD_ID=$(aws ssm send-command \
             --instance-ids "$INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
