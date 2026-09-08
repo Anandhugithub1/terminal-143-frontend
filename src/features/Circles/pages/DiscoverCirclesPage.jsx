@@ -210,9 +210,12 @@ export default function DiscoverCirclesPage() {
                           term (error falls to 14px then climbs again), which is
                           why no flat fill ever matched. The apparent gradient in
                           the mock is just the photo — dark foliage left, bright
-                          waterfall right — read through that blur. */}
+                          waterfall right — read through that blur.
+                          The rim comes from .glass-rim (App.css) rather than a
+                          flat ring: the mock's border is lit from the top-left
+                          and fades round, which a uniform ring can't do. */}
                       <span
-                        className={`absolute top-2 left-2 text-[11px] font-normal px-3 py-1 rounded-full text-[#F5F5F5] ring-1 ring-white/45 [backdrop-filter:blur(14px)] ${
+                        className={`glass-rim absolute top-2 left-2 text-[11px] font-normal px-3 py-1 rounded-full text-[#F5F5F5] [backdrop-filter:blur(14px)] ${
                           isGoldBadge ? "bg-[#9e8872]/90" : "bg-[#7d8582]/40"
                         }`}
                       >

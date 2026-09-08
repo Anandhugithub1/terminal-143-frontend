@@ -176,3 +176,36 @@ input[type="date"].with-custom-date-icon::-webkit-clear-button {
     font-size: 16px !important;
   }
 }
+
+/* Glass rim for the Discover Circles category pills.
+   The mock's badge border is not a uniform ring: measured against the design,
+   the top edge sits ~+89 luminance over the background, the bottom edge shows
+   a secondary glint (~+61) and then falls slightly BELOW it (~-11) at the very
+   bottom, and the left edge (~+82) is far brighter than the right (~-9). That
+   is a rim lit from the top-left, so a flat `ring-1` cannot reproduce it — it
+   needs a gradient stroke, which is what the masked pseudo-element draws.
+   Kept here rather than as Tailwind arbitrary variants because the mask
+   compositing needed for a gradient border is unreadable inline. */
+.glass-rim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    170deg,
+    rgba(255, 255, 255, 0.75) 0%,
+    rgba(255, 255, 255, 0.1) 42%,
+    rgba(255, 255, 255, 0.45) 92%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
