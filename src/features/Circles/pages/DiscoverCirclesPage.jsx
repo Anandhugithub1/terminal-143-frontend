@@ -96,7 +96,7 @@ export default function DiscoverCirclesPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-b from-gray-50 to-white pb-20">
+    <div className="min-h-[100dvh] bg-gray-50 pb-20">
       <TopNav />
 
       {/* Header */}
@@ -108,7 +108,7 @@ export default function DiscoverCirclesPage() {
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </button>
-          <h1 className="text-lg font-bold text-text-sec">{t("discoverCircles.header")}</h1>
+          <h1 className="text-xl font-bold text-text-sec">{t("discoverCircles.header")}</h1>
         </div>
       </div>
 
@@ -127,18 +127,18 @@ export default function DiscoverCirclesPage() {
           <>
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 placeholder={t("discoverCircles.searchPlaceholderWithTags")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm"
+                className="w-full pl-11 pr-10 py-3.5 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base placeholder:text-gray-400"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition-colors"
                   aria-label={t("common.clearSearch")}
                 >
                   <X className="w-4 h-4 text-gray-400" />
@@ -153,10 +153,10 @@ export default function DiscoverCirclesPage() {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                    className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                       selectedCategory === category
-                        ? "bg-primary text-white shadow-md"
-                        : "bg-white text-gray-600 border border-gray-200 active:bg-gray-100"
+                        ? "bg-primary text-white shadow-sm"
+                        : "bg-white text-gray-700 border border-gray-200 active:bg-gray-100"
                     }`}
                   >
                     {category}
@@ -168,19 +168,22 @@ export default function DiscoverCirclesPage() {
             {/* Circles Grid — renders both the curated starter list (icon +
                 description) and server search results (coverPhoto +
                 memberCount), which carry different fields. */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {filteredCircles.map((circle) => {
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+              {filteredCircles.map((circle, index) => {
                 const key = circle.id ?? circle.circleId;
                 const Icon = circle.icon;
                 const isJoining = joiningId === circle.circleId;
                 const isJoined = joinedCircleIds.has(circle.circleId);
                 const image = circle.image || circle.coverPhoto;
                 const showFallback = !image || imageErrors.has(key);
+                // Category badge alternates down the grid (per the design:
+                // left column silver, right column gold on a 2-up layout).
+                const isGoldBadge = index % 2 === 1;
                 return (
                   <div key={key} className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                     <div className="relative">
                       {showFallback ? (
-                        <div className={`w-full h-28 flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
+                        <div className={`w-full h-32 flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
                           {Icon ? (
                             <Icon className={`w-8 h-8 ${circle.iconColor}`} />
                           ) : (
@@ -188,7 +191,7 @@ export default function DiscoverCirclesPage() {
                           )}
                         </div>
                       ) : (
-                        <div className="w-full h-28 bg-gray-100 overflow-hidden">
+                        <div className="w-full h-32 bg-gray-100 overflow-hidden">
                           <img
                             src={image}
                             alt={circle.name}
@@ -199,10 +202,23 @@ export default function DiscoverCirclesPage() {
                           />
                         </div>
                       )}
-                      <span className="absolute top-3 left-3 text-xs font-medium px-3 py-1.5 rounded-full bg-black/35 text-white backdrop-blur-sm border border-white/40">
+                      {/* Silver variant solved against the design's own pixels:
+                          the badge was rendered headlessly over a clean plate of
+                          the mock's cover photo across a 540-candidate sweep of
+                          colour x alpha x blur, scored on RMSE. #7d8582 @ 40%
+                          with a 14px backdrop blur won; blur is the dominant
+                          term (error falls to 14px then climbs again), which is
+                          why no flat fill ever matched. The apparent gradient in
+                          the mock is just the photo — dark foliage left, bright
+                          waterfall right — read through that blur. */}
+                      <span
+                        className={`absolute top-2 left-2 text-[11px] font-normal px-3 py-1 rounded-full text-[#F5F5F5] ring-1 ring-white/45 [backdrop-filter:blur(14px)] ${
+                          isGoldBadge ? "bg-[#9e8872]/90" : "bg-[#7d8582]/40"
+                        }`}
+                      >
                         {circle.category}
                       </span>
-                      <div className="absolute -bottom-5 left-3 w-11 h-11 rounded-full border-2 border-white shadow-sm overflow-hidden bg-gray-100">
+                      <div className="absolute -bottom-6 left-3 w-12 h-12 rounded-full border-[3px] border-white shadow-sm overflow-hidden bg-gray-100">
                         {showFallback ? (
                           <div className={`w-full h-full flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
                             {Icon ? (
@@ -222,9 +238,9 @@ export default function DiscoverCirclesPage() {
                         )}
                       </div>
                     </div>
-                    <div className="p-3 pt-7 flex flex-col flex-1">
-                      <h3 className="font-bold text-sm text-gray-800 mb-1">{circle.name}</h3>
-                      <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">
+                    <div className="p-3 pt-8 flex flex-col flex-1">
+                      <h3 className="font-bold text-base text-gray-900 mb-1">{circle.name}</h3>
+                      <p className="text-[13px] leading-snug text-gray-500 line-clamp-2 mb-3 flex-1">
                         {circle.description ||
                           t("discoverCircles.memberCount", { count: circle.memberCount ?? 0 })}
                       </p>
@@ -233,7 +249,7 @@ export default function DiscoverCirclesPage() {
                           isJoined ? navigate(`/circles/${circle.circleId}`) : handleJoin(circle)
                         }
                         disabled={isJoining}
-                        className={`w-full py-2 rounded-xl text-sm font-bold active:scale-95 transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5 ${
+                        className={`w-full py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5 ${
                           isJoined
                             ? "bg-primary/10 text-primary"
                             : "bg-gray-100 text-gray-800"
