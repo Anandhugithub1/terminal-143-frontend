@@ -185,7 +185,20 @@ input[type="date"].with-custom-date-icon::-webkit-clear-button {
    is a rim lit from the top-left, so a flat `ring-1` cannot reproduce it — it
    needs a gradient stroke, which is what the masked pseudo-element draws.
    Kept here rather than as Tailwind arbitrary variants because the mask
-   compositing needed for a gradient border is unreadable inline. */
+   compositing needed for a gradient border is unreadable inline.
+
+   The ::before is absolute, so the host must establish a containing block or
+   the rim resolves against some ancestor and paints somewhere else entirely.
+   The badges already do (they are .absolute); the category chips are static,
+   so they opt in with .glass-rim-host. That is a separate class rather than
+   `position:relative` on .glass-rim itself because this file is imported
+   after Tailwind — a bare `.glass-rim{position:relative}` is the same
+   specificity as `.absolute` but comes later, so it would silently win and
+   knock the badges out of their corner. */
+.glass-rim-host {
+  position: relative;
+}
+
 .glass-rim::before {
   content: "";
   position: absolute;

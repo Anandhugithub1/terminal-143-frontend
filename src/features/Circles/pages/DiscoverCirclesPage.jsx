@@ -127,13 +127,13 @@ export default function DiscoverCirclesPage() {
           <>
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400" />
               <input
                 type="text"
                 placeholder={t("discoverCircles.searchPlaceholderWithTags")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-10 py-3.5 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-base placeholder:text-gray-400"
+                className="w-full h-[43px] pl-11 pr-10 bg-white border border-gray-200 rounded-2xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm placeholder:text-gray-400"
               />
               {searchQuery && (
                 <button
@@ -153,10 +153,10 @@ export default function DiscoverCirclesPage() {
                   <button
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className={`flex-shrink-0 px-5 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                    className={`glass-rim glass-rim-host flex-shrink-0 h-[30px] px-4 rounded-full text-[13px] font-medium transition-all whitespace-nowrap [backdrop-filter:blur(20px)_saturate(180%)] ${
                       selectedCategory === category
-                        ? "bg-primary text-white shadow-sm"
-                        : "bg-white text-gray-700 border border-gray-200 active:bg-gray-100"
+                        ? "bg-primary/90 text-white"
+                        : "bg-white/70 text-gray-700 active:bg-white/90"
                     }`}
                   >
                     {category}
@@ -168,7 +168,7 @@ export default function DiscoverCirclesPage() {
             {/* Circles Grid — renders both the curated starter list (icon +
                 description) and server search results (coverPhoto +
                 memberCount), which carry different fields. */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
               {filteredCircles.map((circle, index) => {
                 const key = circle.id ?? circle.circleId;
                 const Icon = circle.icon;
@@ -183,15 +183,15 @@ export default function DiscoverCirclesPage() {
                   <div key={key} className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
                     <div className="relative">
                       {showFallback ? (
-                        <div className={`w-full h-32 flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
+                        <div className={`w-full h-[81px] flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
                           {Icon ? (
-                            <Icon className={`w-8 h-8 ${circle.iconColor}`} />
+                            <Icon className={`w-7 h-7 ${circle.iconColor}`} />
                           ) : (
-                            <Compass className="w-8 h-8 text-primary" />
+                            <Compass className="w-7 h-7 text-primary" />
                           )}
                         </div>
                       ) : (
-                        <div className="w-full h-32 bg-gray-100 overflow-hidden">
+                        <div className="w-full h-[81px] bg-gray-100 overflow-hidden">
                           <img
                             src={image}
                             alt={circle.name}
@@ -221,13 +221,13 @@ export default function DiscoverCirclesPage() {
                       >
                         {circle.category}
                       </span>
-                      <div className="absolute -bottom-6 left-3 w-12 h-12 rounded-full border-[3px] border-white shadow-sm overflow-hidden bg-gray-100">
+                      <div className="absolute -bottom-5 left-2.5 w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden bg-gray-100">
                         {showFallback ? (
                           <div className={`w-full h-full flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
                             {Icon ? (
-                              <Icon className={`w-5 h-5 ${circle.iconColor}`} />
+                              <Icon className={`w-4 h-4 ${circle.iconColor}`} />
                             ) : (
-                              <Compass className="w-5 h-5 text-primary" />
+                              <Compass className="w-4 h-4 text-primary" />
                             )}
                           </div>
                         ) : (
@@ -241,9 +241,9 @@ export default function DiscoverCirclesPage() {
                         )}
                       </div>
                     </div>
-                    <div className="p-3 pt-8 flex flex-col flex-1">
-                      <h3 className="font-bold text-base text-gray-900 mb-1">{circle.name}</h3>
-                      <p className="text-[13px] leading-snug text-gray-500 line-clamp-2 mb-3 flex-1">
+                    <div className="px-3 pb-2 pt-5 flex flex-col flex-1">
+                      <h3 className="font-bold text-sm text-gray-900 mb-0.5">{circle.name}</h3>
+                      <p className="text-xs leading-snug text-gray-500 line-clamp-2 mb-2.5 flex-1">
                         {circle.description ||
                           t("discoverCircles.memberCount", { count: circle.memberCount ?? 0 })}
                       </p>
@@ -252,7 +252,7 @@ export default function DiscoverCirclesPage() {
                           isJoined ? navigate(`/circles/${circle.circleId}`) : handleJoin(circle)
                         }
                         disabled={isJoining}
-                        className={`w-full py-3 rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5 ${
+                        className={`w-full h-[38px] rounded-lg text-[13px] font-semibold active:scale-95 transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5 ${
                           isJoined
                             ? "bg-primary/10 text-primary"
                             : "bg-gray-100 text-gray-800"

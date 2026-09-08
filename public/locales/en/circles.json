@@ -42,31 +42,15 @@
     "genericErrorToast": "Something went wrong. Please try again.",
     "goBack": "Go back",
     "stepSelect": "Select your circles",
-    "stepConfirm": "Confirm your choices",
     "selectedCount": "{{count}} selected",
     "heading": "Find Your People Through Activities",
     "subheading": "Select at least 3 circles based on what you love to do. Great way to meet new friends (and maybe more) naturally!",
     "selectMoreWarning": "Select at least {{count}} more circle{{plural}} to continue",
     "searchPlaceholder": "Search activities...",
-    "confirmHeading": "Awesome Choices! 🎉",
-    "confirmSubheading": "You're joining {{count}} activity groups. Get ready to have fun and meet great people!",
-    "yourCircles": "Your Activity Circles",
-    "removeCircle": "Remove circle",
-    "whatToExpect": "What to Expect",
-    "naturalConnections": {
-      "title": "Natural Connections",
-      "body": "Meet people while doing activities you genuinely enjoy"
-    },
-    "regularMeetups": {
-      "title": "Regular Meetups",
-      "body": "Weekly events, outings, and social hours"
-    },
     "continueWithCount": "Continue with {{count}} Circle{{plural}}",
     "needMoreSuffix": " (Need {{count}} more)",
     "joining": "Joining...",
-    "settingUpProfile": "Setting up your profile...",
-    "joinAndStart": "Join {{count}} Circle{{plural}} & Start Connecting",
-    "addMoreCircles": "Add More Circles"
+    "settingUpProfile": "Setting up your profile..."
   },
   "circlesHome": {
     "postToCircle": "Post to a Circle",

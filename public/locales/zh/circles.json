@@ -42,31 +42,15 @@
     "genericErrorToast": "出了点问题，请重试。",
     "goBack": "返回",
     "stepSelect": "选择你的圈子",
-    "stepConfirm": "确认你的选择",
     "selectedCount": "已选择 {{count}} 个",
     "heading": "通过活动找到属于你的人",
     "subheading": "根据你喜欢做的事情，至少选择 3 个圈子。这是自然结识新朋友（甚至更多）的好方法！",
     "selectMoreWarning": "还需再选择 {{count}} 个圈子才能继续",
     "searchPlaceholder": "搜索活动...",
-    "confirmHeading": "绝佳的选择！🎉",
-    "confirmSubheading": "你正在加入 {{count}} 个活动小组，准备好享受乐趣、结识优秀的人吧！",
-    "yourCircles": "你的活动圈子",
-    "removeCircle": "移除圈子",
-    "whatToExpect": "你可以期待什么",
-    "naturalConnections": {
-      "title": "自然的连接",
-      "body": "在从事你真正喜欢的活动时结识他人"
-    },
-    "regularMeetups": {
-      "title": "定期聚会",
-      "body": "每周活动、出游和社交时光"
-    },
     "continueWithCount": "以 {{count}} 个圈子继续",
     "needMoreSuffix": "（还需要 {{count}} 个）",
     "joining": "加入中...",
-    "settingUpProfile": "正在设置你的资料...",
-    "joinAndStart": "加入 {{count}} 个圈子并开始连接",
-    "addMoreCircles": "添加更多圈子"
+    "settingUpProfile": "正在设置你的资料..."
   },
   "circlesHome": {
     "postToCircle": "发布到圈子",

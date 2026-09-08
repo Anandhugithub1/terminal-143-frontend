@@ -42,31 +42,15 @@
     "genericErrorToast": "Sesuatu tidak kena. Sila cuba lagi.",
     "goBack": "Kembali",
     "stepSelect": "Pilih bulatan anda",
-    "stepConfirm": "Sahkan pilihan anda",
     "selectedCount": "{{count}} dipilih",
     "heading": "Temui Orang Anda Melalui Aktiviti",
     "subheading": "Pilih sekurang-kurangnya 3 bulatan berdasarkan perkara yang anda suka lakukan. Cara terbaik untuk berkenalan dengan rakan baharu (dan mungkin lebih) secara semula jadi!",
     "selectMoreWarning": "Pilih sekurang-kurangnya {{count}} bulatan lagi untuk teruskan",
     "searchPlaceholder": "Cari aktiviti...",
-    "confirmHeading": "Pilihan Yang Hebat! 🎉",
-    "confirmSubheading": "Anda menyertai {{count}} kumpulan aktiviti. Bersedia untuk berseronok dan berkenalan dengan orang yang hebat!",
-    "yourCircles": "Bulatan Aktiviti Anda",
-    "removeCircle": "Buang bulatan",
-    "whatToExpect": "Apa Yang Dijangka",
-    "naturalConnections": {
-      "title": "Perhubungan Semula Jadi",
-      "body": "Berkenalan dengan orang semasa melakukan aktiviti yang anda benar-benar gemari"
-    },
-    "regularMeetups": {
-      "title": "Pertemuan Berkala",
-      "body": "Acara mingguan, lawatan, dan sesi bersosial"
-    },
     "continueWithCount": "Teruskan dengan {{count}} Bulatan",
     "needMoreSuffix": " (Perlukan {{count}} lagi)",
     "joining": "Menyertai...",
-    "settingUpProfile": "Menyediakan profil anda...",
-    "joinAndStart": "Sertai {{count}} Bulatan & Mula Berhubung",
-    "addMoreCircles": "Tambah Lagi Bulatan"
+    "settingUpProfile": "Menyediakan profil anda..."
   },
   "circlesHome": {
     "postToCircle": "Hantar ke Bulatan",
