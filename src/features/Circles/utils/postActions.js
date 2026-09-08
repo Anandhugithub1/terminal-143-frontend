@@ -2,7 +2,7 @@ import { RxCross1 } from "react-icons/rx";
 import { FaCommentDots, FaHeart } from "react-icons/fa";
 
 const OUTLINED_BUTTON_CLASS =
-  "flex items-center justify-center gap-1.5 py-2 rounded-full bg-white border border-gray-200 text-gray-800 font-bold text-sm hover:bg-gray-50 transition-colors";
+  "flex items-center justify-center gap-1 sm:gap-1.5 py-2 px-1 rounded-xl bg-white border border-gray-200 text-gray-800 font-bold text-xs sm:text-sm hover:bg-gray-50 transition-colors min-w-0";
 
 export function buildPostActions({
   isLiked,
@@ -46,7 +46,7 @@ export function buildPostActions({
       disabled: isMatching,
       iconClassName: `w-4 h-4 text-white ${isMatching ? "animate-pulse" : ""}`,
       className:
-        `flex items-center justify-center gap-1.5 py-2 rounded-full bg-primary text-white font-bold text-sm transition-all ${isMatching ? "opacity-70" : "hover:shadow-lg hover:scale-105"}`,
+        `flex items-center justify-center gap-1 sm:gap-1.5 py-2 px-1 rounded-xl bg-primary text-white font-bold text-xs sm:text-sm transition-all min-w-0 ${isMatching ? "opacity-70" : "hover:shadow-lg hover:scale-105"}`,
     },
   ];
 }
