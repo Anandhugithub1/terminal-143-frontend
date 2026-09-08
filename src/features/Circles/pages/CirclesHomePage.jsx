@@ -26,7 +26,8 @@ import { useFeed, useUpdateFeedPost, useDeleteFeedPost } from "../hooks/usePosts
 import { listPosts } from "../api/postsApi";
 import { useSeenTracker } from "../hooks/useSeenTracker";
 import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
-import { useMatches } from "../../UserHome/api";
+import { useMatches, useReportUser } from "../../UserHome/api";
+import ReportUserModal from "../../UserHome/components/Modals/ReportUserModal";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { buildPostActions } from "../utils/postActions";
 import { DEFAULT_AVATAR, getAuthorDisplayName, getAuthorBadge } from "../utils/postDisplay";
@@ -87,9 +88,16 @@ export default function CirclesHomePage() {
   const [commentPost, setCommentPost] = useState(null);
   const [editPost, setEditPost] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const [reportPost, setReportPost] = useState(null);
 
   const updatePostMutation = useUpdateFeedPost();
   const deletePostMutation = useDeleteFeedPost();
+  const { mutate: reportUser } = useReportUser();
+
+  const handleReportPost = (post) => {
+    if (!post.authorId) return;
+    setReportPost(post);
+  };
 
   const { data: circlesData, isLoading: isLoadingCircles, isError: isCirclesError, refetch: refetchCircles } = useCircles();
   const myCircles = circlesData?.circles || [];
@@ -291,6 +299,17 @@ export default function CirclesHomePage() {
         onConfirm={handleConfirmDelete}
         title={t("myPosts.deletePostTitle")}
         message={t("myPosts.deletePostMessage")}
+      />
+
+      <ReportUserModal
+        open={!!reportPost}
+        onClose={() => setReportPost(null)}
+        username={reportPost?.authorId}
+        sourceType="POST"
+        sourceService="circle-service"
+        sourceId={reportPost?.postId}
+        circleId={reportPost?.circleId}
+        onSubmit={(payload) => reportUser(payload)}
       />
 
       {/* Reddit-style circle picker */}
@@ -550,6 +569,7 @@ export default function CirclesHomePage() {
                           isAuthor={isAuthor}
                           onEdit={isAuthor ? () => setEditPost(post) : undefined}
                           onDelete={isAuthor ? () => setDeleteConfirm(post) : undefined}
+                          onReport={!isAuthor ? () => handleReportPost(post) : undefined}
                           matched={
                             isMatched
                               ? { name: getAuthorDisplayName(post), onMessage: () => navigate(`/matches/${post.authorId}/chat`) }
@@ -610,6 +630,7 @@ export default function CirclesHomePage() {
                     isAuthor={isAuthor}
                     onEdit={isAuthor ? () => setEditPost(post) : undefined}
                     onDelete={isAuthor ? () => setDeleteConfirm(post) : undefined}
+                    onReport={!isAuthor ? () => handleReportPost(post) : undefined}
                     media={post.media}
                     body={post.content}
                     tags={post.tags || []}

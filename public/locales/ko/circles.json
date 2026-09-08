@@ -262,6 +262,7 @@
   },
   "postCard": {
     "comment": "댓글",
+    "moreOptions": "더보기",
     "editPost": "게시물 수정",
     "share": "공유",
     "deletePost": "게시물 삭제",

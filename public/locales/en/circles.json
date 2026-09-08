@@ -262,6 +262,7 @@
   },
   "postCard": {
     "comment": "Comments",
+    "moreOptions": "More options",
     "editPost": "Edit Post",
     "share": "Share",
     "deletePost": "Delete Post",

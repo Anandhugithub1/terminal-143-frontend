@@ -262,6 +262,7 @@
   },
   "postCard": {
     "comment": "ความคิดเห็น",
+    "moreOptions": "ตัวเลือกเพิ่มเติม",
     "editPost": "แก้ไขโพสต์",
     "share": "แชร์",
     "deletePost": "ลบโพสต์",

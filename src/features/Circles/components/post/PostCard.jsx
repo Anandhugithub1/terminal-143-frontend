@@ -112,6 +112,7 @@ export default function PostCard({
         <button
           onClick={() => setIsMenuOpen(true)}
           className="p-1.5 -mr-1 shrink-0 hover:bg-gray-100 rounded-full transition-colors"
+          aria-label={t("postCard.moreOptions")}
         >
           <MoreVertical className="w-4 h-4 text-gray-400" />
         </button>

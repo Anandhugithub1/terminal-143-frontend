@@ -262,6 +262,7 @@
   },
   "postCard": {
     "comment": "Komen",
+    "moreOptions": "Lagi pilihan",
     "editPost": "Edit Hantaran",
     "share": "Kongsi",
     "deletePost": "Padam Hantaran",
