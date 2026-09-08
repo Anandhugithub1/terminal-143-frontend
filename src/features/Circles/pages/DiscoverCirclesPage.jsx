@@ -1,4 +1,4 @@
-import { ArrowLeft, Search, X, Compass } from "lucide-react";
+import { ArrowLeft, Search, X, Compass, Check } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -199,13 +199,32 @@ export default function DiscoverCirclesPage() {
                           />
                         </div>
                       )}
-                      <span className="absolute bottom-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-black/40 text-white backdrop-blur-sm">
+                      <span className="absolute top-3 left-3 text-xs font-medium px-3 py-1.5 rounded-full bg-black/35 text-white backdrop-blur-sm border border-white/40">
                         {circle.category}
                       </span>
+                      <div className="absolute -bottom-5 left-3 w-11 h-11 rounded-full border-2 border-white shadow-sm overflow-hidden bg-gray-100">
+                        {showFallback ? (
+                          <div className={`w-full h-full flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
+                            {Icon ? (
+                              <Icon className={`w-5 h-5 ${circle.iconColor}`} />
+                            ) : (
+                              <Compass className="w-5 h-5 text-primary" />
+                            )}
+                          </div>
+                        ) : (
+                          <img
+                            src={image}
+                            alt=""
+                            loading="lazy"
+                            decoding="async"
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
                     </div>
-                    <div className="p-3 flex flex-col flex-1">
+                    <div className="p-3 pt-7 flex flex-col flex-1">
                       <h3 className="font-bold text-sm text-gray-800 mb-1">{circle.name}</h3>
-                      <p className="text-xs text-gray-600 line-clamp-2 mb-3 flex-1">
+                      <p className="text-xs text-gray-500 line-clamp-2 mb-3 flex-1">
                         {circle.description ||
                           t("discoverCircles.memberCount", { count: circle.memberCount ?? 0 })}
                       </p>
@@ -214,12 +233,17 @@ export default function DiscoverCirclesPage() {
                           isJoined ? navigate(`/circles/${circle.circleId}`) : handleJoin(circle)
                         }
                         disabled={isJoining}
-                        className={`w-full py-2 rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60 ${
+                        className={`w-full py-2 rounded-xl text-sm font-bold active:scale-95 transition-transform disabled:opacity-60 flex items-center justify-center gap-1.5 ${
                           isJoined
                             ? "bg-primary/10 text-primary"
-                            : "bg-primary text-white"
+                            : "bg-gray-100 text-gray-800"
                         }`}
                       >
+                        {isJoined && (
+                          <span className="flex items-center justify-center w-4 h-4 rounded-full bg-primary shrink-0">
+                            <Check className="w-2.5 h-2.5 text-white" strokeWidth={3} />
+                          </span>
+                        )}
                         {isJoining
                           ? t("discoverCircles.joining")
                           : isJoined
