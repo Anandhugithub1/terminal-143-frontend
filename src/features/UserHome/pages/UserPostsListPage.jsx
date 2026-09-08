@@ -10,7 +10,7 @@ import PostMeta from "../../Circles/components/post/PostMeta";
 import CommentSection from "../../Circles/components/comment/CommentSection";
 import { PostCardSkeleton } from "../../Circles/components/common/Skeletons";
 import { useUserPosts } from "../../Circles/hooks/usePosts";
-import { DEFAULT_AVATAR } from "../../Circles/utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorBadge } from "../../Circles/utils/postDisplay";
 import { buildPostActions } from "../../Circles/utils/postActions";
 import { shareLink } from "../../Circles/utils/share";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
@@ -137,6 +137,7 @@ export default function UserPostsListPage() {
             variant="circle"
             avatar={post.authorImage || DEFAULT_AVATAR}
             name={post.authorName || t("common.anonymous")}
+            authorBadge={getAuthorBadge(post)}
             heading={post.circleName}
             onHeadingClick={() => navigate(`/circles/${post.circleId}`)}
             meta={<PostMeta post={post} />}

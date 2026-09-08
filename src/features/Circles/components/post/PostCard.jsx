@@ -10,6 +10,7 @@ export default function PostCard({
   name,
   statusDot = false,
   badge,
+  authorBadge,
   meta,
   onShare,
   onReport,
@@ -94,9 +95,16 @@ export default function PostCard({
               )}
               {badge}
             </div>
-            <h3 className="text-sm font-semibold text-gray-900 truncate leading-tight mt-0.5">
-              {name}
-            </h3>
+            <div className="flex items-center gap-1.5 min-w-0 mt-0.5">
+              <h3 className="text-sm font-semibold text-gray-900 truncate leading-tight">
+                {name}
+              </h3>
+              {authorBadge && (
+                <span className="shrink-0 text-[11px] font-medium text-gray-600 bg-white border border-gray-200 px-2 py-0.5 rounded-full whitespace-nowrap">
+                  {authorBadge}
+                </span>
+              )}
+            </div>
             <div className="mt-0.5">{meta}</div>
           </div>
         </div>
@@ -109,9 +117,18 @@ export default function PostCard({
         </button>
       </div>
 
+      {/* Media — edge-to-edge */}
+      {hasMedia && (
+        <PostMedia
+          media={media}
+          image={image}
+          alt={heading || name}
+        />
+      )}
+
       {/* Body */}
       {(body || tags.length > 0) && (
-        <div className={`px-4 space-y-2.5 ${hasMedia ? 'pb-2' : 'pb-3'}`}>
+        <div className={`px-4 space-y-2.5 ${hasMedia ? 'pt-3 pb-2' : 'pb-3'}`}>
           {body && (
             <p className="text-sm text-gray-700 leading-relaxed">{body}</p>
           )}
@@ -128,15 +145,6 @@ export default function PostCard({
             </div>
           )}
         </div>
-      )}
-
-      {/* Media — edge-to-edge */}
-      {hasMedia && (
-        <PostMedia
-          media={media}
-          image={image}
-          alt={heading || name}
-        />
       )}
 
       {/* Matched author — banner + Message, replaces the action row */}
@@ -166,10 +174,16 @@ export default function PostCard({
       {!matched && actions.length > 0 && (
         <div className={`border-t border-gray-100 px-4 py-2.5 ${hasMedia ? 'mt-0' : ''}`}>
           <div className={actionsWrapperClassName}>
-            {actions.map(({ key, icon: Icon, label, onClick, className, iconClassName, disabled }) => (
+            {actions.map(({ key, icon: Icon, label, onClick, className, iconClassName, iconWrapClassName, disabled }) => (
               <button key={key} onClick={onClick} disabled={disabled} className={`${className} disabled:cursor-not-allowed`}>
-                <Icon className={iconClassName} />
-                {label}
+                {iconWrapClassName ? (
+                  <span className={`flex items-center justify-center w-5 h-5 rounded-full shrink-0 ${iconWrapClassName}`}>
+                    <Icon className={iconClassName} />
+                  </span>
+                ) : (
+                  <Icon className={iconClassName} />
+                )}
+                <span className="truncate">{label}</span>
               </button>
             ))}
           </div>

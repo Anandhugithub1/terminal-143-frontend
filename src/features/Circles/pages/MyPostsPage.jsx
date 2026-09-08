@@ -11,7 +11,7 @@ import PostMeta from "../components/post/PostMeta";
 import ConfirmDialog from "../components/common/ConfirmDialog";
 import { useMyPosts, useUpdateMyPost, useDeleteMyPost } from "../hooks/usePosts";
 import { useTranslatedCircleName } from "../constants/onboardingCircles";
-import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorDisplayName, getAuthorBadge } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { PostCardSkeleton } from "../components/common/Skeletons";
@@ -152,6 +152,7 @@ export default function MyPostsPage() {
             variant="circle"
             avatar={post.authorImage || DEFAULT_AVATAR}
             name={getAuthorDisplayName(post) || t("common.anonymous")}
+            authorBadge={getAuthorBadge(post)}
             heading={getCircleName(post.circleId, post.circleName)}
             onHeadingClick={() => navigate(`/circles/${post.circleId}`)}
             meta={<PostMeta post={post} />}

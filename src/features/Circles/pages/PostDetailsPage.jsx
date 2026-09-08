@@ -9,7 +9,7 @@ import PostMeta from "../components/post/PostMeta";
 import CommentSection from "../components/comment/CommentSection";
 import { usePost } from "../hooks/usePosts";
 import { useCircle } from "../hooks/useCircles";
-import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorDisplayName, getAuthorBadge } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { useReportUser } from "../../UserHome/api";
@@ -103,6 +103,7 @@ export default function PostDetailsPage() {
           variant="circle"
           avatar={post.authorImage || DEFAULT_AVATAR}
           name={getAuthorDisplayName(post) || t("common.anonymous")}
+          authorBadge={getAuthorBadge(post)}
           meta={<PostMeta post={post} />}
           body={post.content}
           media={post.media}

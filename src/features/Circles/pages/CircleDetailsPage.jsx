@@ -34,7 +34,7 @@ import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
 import { useReportUser } from "../../UserHome/api";
 import ReportUserModal from "../../UserHome/components/Modals/ReportUserModal";
 import { queryKeys } from "../queries/queryKeys";
-import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorDisplayName, getAuthorBadge } from "../utils/postDisplay";
 import { buildPostActions } from "../utils/postActions";
 import { shareLink } from "../utils/share";
 import { getErrorMessage } from "../../../shared/api/getErrorMessage";
@@ -692,6 +692,7 @@ export default function CircleDetailsPage() {
                   variant="circle"
                   avatar={post.authorImage || DEFAULT_AVATAR}
                   name={getAuthorDisplayName(post) || t("common.anonymous")}
+                  authorBadge={getAuthorBadge(post)}
                   meta={<PostMeta post={post} />}
                   body={post.content}
                   media={post.media}

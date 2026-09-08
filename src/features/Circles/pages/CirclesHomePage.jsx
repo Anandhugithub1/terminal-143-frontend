@@ -29,7 +29,7 @@ import { useMyProfile } from "../../UserProfile/Hooks/useMyProfile";
 import { useMatches } from "../../UserHome/api";
 import { haversineDistanceKm, formatDistance } from "../utils/geo";
 import { buildPostActions } from "../utils/postActions";
-import { DEFAULT_AVATAR, getAuthorDisplayName } from "../utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorDisplayName, getAuthorBadge } from "../utils/postDisplay";
 import { shareLink } from "../utils/share";
 import { PostCardSkeleton, CircleAvatarSkeleton } from "../components/common/Skeletons";
 import { queryKeys } from "../queries/queryKeys";
@@ -538,6 +538,7 @@ export default function CirclesHomePage() {
                           variant="feed"
                           avatar={post.authorImage || DEFAULT_AVATAR}
                           name={getAuthorDisplayName(post) || t("common.anonymous")}
+                          authorBadge={getAuthorBadge(post)}
                           heading={getCircleName(post.circleId, post.circleName)}
                           onHeadingClick={post.circleId ? () => navigate(`/circles/${post.circleId}`) : undefined}
                           meta={<PostMeta post={post} />}
@@ -588,6 +589,7 @@ export default function CirclesHomePage() {
                     variant="feed"
                     avatar={post.authorImage || DEFAULT_AVATAR}
                     name={getAuthorDisplayName(post) || t("common.anonymous")}
+                    authorBadge={getAuthorBadge(post)}
                     meta={
                       <PostMeta
                         post={post}

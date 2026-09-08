@@ -41,6 +41,14 @@ export const getGenderLabel = (gender) => {
   return GENDER_LABELS[gender.toUpperCase()] || gender;
 };
 
+// The "(26, Female)" pill shown next to an author's name on a post card.
+export const getAuthorBadge = (post) => {
+  const age = getAgeFromDob(post?.authorDob);
+  const gender = getGenderLabel(post?.authorGender);
+  const info = [age, gender].filter(Boolean).join(", ");
+  return info ? `(${info})` : null;
+};
+
 // The label to show for a post's author. Prefers the real profile display name
 // (authorDisplayName, added later); falls back to authorName (the username) for
 // posts created before that field existed / not yet backfilled.

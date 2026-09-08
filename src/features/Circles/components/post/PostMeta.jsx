@@ -1,12 +1,9 @@
 import { Clock, MapPin, Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { formatPostTime, getAgeFromDob, getGenderLabel } from "../../utils/postDisplay";
+import { formatPostTime } from "../../utils/postDisplay";
 
 export default function PostMeta({ post, extra }) {
   const { t } = useTranslation("circles");
-  const age = getAgeFromDob(post.authorDob);
-  const gender = getGenderLabel(post.authorGender);
-  const authorInfo = [age, gender].filter(Boolean).join(", ");
   const likePercentage = post.authorFeedback?.likePercentage;
   const location = post.location?.placeName
     ? `${post.location.placeName}${post.location.countryCode ? `, ${post.location.countryCode}` : ""}`
@@ -18,8 +15,6 @@ export default function PostMeta({ post, extra }) {
         <Clock className="w-3 h-3 shrink-0" />
         {formatPostTime(post.createdAtEpoch)}
       </span>
-
-      {authorInfo && <span className="whitespace-nowrap">{authorInfo}</span>}
 
       {location && (
         <span className="inline-flex items-center gap-1 min-w-0">

@@ -177,10 +177,10 @@ export default function DiscoverCirclesPage() {
                 const image = circle.image || circle.coverPhoto;
                 const showFallback = !image || imageErrors.has(key);
                 return (
-                  <div key={key} className={`${circle.bgColor || "bg-white border border-gray-200"} rounded-2xl p-3`}>
-                    <div className="relative mb-3">
+                  <div key={key} className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                    <div className="relative">
                       {showFallback ? (
-                        <div className={`w-full h-24 rounded-xl flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
+                        <div className={`w-full h-28 flex items-center justify-center ${circle.iconBg || "bg-primary/10"}`}>
                           {Icon ? (
                             <Icon className={`w-8 h-8 ${circle.iconColor}`} />
                           ) : (
@@ -188,13 +188,13 @@ export default function DiscoverCirclesPage() {
                           )}
                         </div>
                       ) : (
-                        <div className="w-full h-24 rounded-xl bg-gray-100 overflow-hidden">
+                        <div className="w-full h-28 bg-gray-100 overflow-hidden">
                           <img
                             src={image}
                             alt={circle.name}
                             loading="lazy"
                             decoding="async"
-                            className="w-full h-full object-contain"
+                            className="w-full h-full object-cover"
                             onError={() => handleImageError(key)}
                           />
                         </div>
@@ -203,30 +203,32 @@ export default function DiscoverCirclesPage() {
                         {circle.category}
                       </span>
                     </div>
-                    <h3 className="font-bold text-sm text-gray-800 mb-1 line-clamp-1">{circle.name}</h3>
-                    <p className="text-xs text-gray-600 line-clamp-2 mb-3 min-h-[2rem]">
-                      {circle.description ||
-                        t("discoverCircles.memberCount", { count: circle.memberCount ?? 0 })}
-                    </p>
-                    <button
-                      onClick={() =>
-                        isJoined ? navigate(`/circles/${circle.circleId}`) : handleJoin(circle)
-                      }
-                      disabled={isJoining}
-                      className={`w-full py-2 rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60 ${
-                        isJoined
-                          ? "bg-primary/10 text-primary"
-                          : "bg-primary text-white"
-                      }`}
-                    >
-                      {isJoining
-                        ? t("discoverCircles.joining")
-                        : isJoined
-                        ? t("circleSearch.joinedBadge")
-                        : circle.visibility === "private"
-                        ? t("discoverCircles.requestToJoin")
-                        : t("discoverCircles.joinCircle")}
-                    </button>
+                    <div className="p-3 flex flex-col flex-1">
+                      <h3 className="font-bold text-sm text-gray-800 mb-1">{circle.name}</h3>
+                      <p className="text-xs text-gray-600 line-clamp-2 mb-3 flex-1">
+                        {circle.description ||
+                          t("discoverCircles.memberCount", { count: circle.memberCount ?? 0 })}
+                      </p>
+                      <button
+                        onClick={() =>
+                          isJoined ? navigate(`/circles/${circle.circleId}`) : handleJoin(circle)
+                        }
+                        disabled={isJoining}
+                        className={`w-full py-2 rounded-xl text-sm font-semibold active:scale-95 transition-transform disabled:opacity-60 ${
+                          isJoined
+                            ? "bg-primary/10 text-primary"
+                            : "bg-primary text-white"
+                        }`}
+                      >
+                        {isJoining
+                          ? t("discoverCircles.joining")
+                          : isJoined
+                          ? t("circleSearch.joinedBadge")
+                          : circle.visibility === "private"
+                          ? t("discoverCircles.requestToJoin")
+                          : t("discoverCircles.joinCircle")}
+                      </button>
+                    </div>
                   </div>
                 );
               })}

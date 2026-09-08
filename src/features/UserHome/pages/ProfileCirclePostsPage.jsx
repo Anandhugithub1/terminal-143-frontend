@@ -11,7 +11,7 @@ import CommentSection from "../../Circles/components/comment/CommentSection";
 import { PostCardSkeleton } from "../../Circles/components/common/Skeletons";
 import { useUserPosts } from "../../Circles/hooks/usePosts";
 import { useCircle } from "../../Circles/hooks/useCircles";
-import { DEFAULT_AVATAR } from "../../Circles/utils/postDisplay";
+import { DEFAULT_AVATAR, getAuthorBadge } from "../../Circles/utils/postDisplay";
 import { buildPostActions } from "../../Circles/utils/postActions";
 import { shareLink } from "../../Circles/utils/share";
 import { useSendMatchRequest } from "../../../Hooks/sendMatchRequest";
@@ -173,6 +173,7 @@ export default function ProfileCirclePostsPage() {
             variant="circle"
             avatar={post.authorImage || DEFAULT_AVATAR}
             name={post.authorName || t("common.anonymous")}
+            authorBadge={getAuthorBadge(post)}
             meta={<PostMeta post={post} />}
             body={post.content}
             media={post.media}

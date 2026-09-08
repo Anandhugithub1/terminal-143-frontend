@@ -1,7 +1,8 @@
-import { Heart, MessageCircle, X } from "lucide-react";
+import { RxCross1 } from "react-icons/rx";
+import { FaCommentDots, FaHeart } from "react-icons/fa";
 
-const NEUTRAL_BUTTON_CLASS =
-  "flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors";
+const OUTLINED_BUTTON_CLASS =
+  "flex items-center justify-center gap-1.5 py-2 rounded-full bg-white border border-gray-200 text-gray-800 font-bold text-sm hover:bg-gray-50 transition-colors";
 
 export function buildPostActions({
   isLiked,
@@ -15,11 +16,11 @@ export function buildPostActions({
 }) {
   const commentAction = {
     key: "comment",
-    icon: MessageCircle,
+    icon: FaCommentDots,
     label: "Comment",
     onClick: onComment,
-    iconClassName: "w-4 h-4",
-    className: NEUTRAL_BUTTON_CLASS,
+    iconClassName: "w-4 h-4 text-gray-800",
+    className: OUTLINED_BUTTON_CLASS,
   };
 
   if (!includeMatchActions) {
@@ -29,22 +30,23 @@ export function buildPostActions({
   return [
     {
       key: "pass",
-      icon: X,
+      icon: RxCross1,
       label: "Pass",
       onClick: onPass,
-      iconClassName: "w-4 h-4",
-      className: NEUTRAL_BUTTON_CLASS,
+      iconClassName: "w-2.5 h-2.5 text-white",
+      iconWrapClassName: "bg-rose-500",
+      className: OUTLINED_BUTTON_CLASS,
     },
     commentAction,
     {
       key: "match",
-      icon: Heart,
+      icon: FaHeart,
       label: isMatching ? matchingLabel : matchLabel,
       onClick: onToggleLike,
       disabled: isMatching,
-      iconClassName: `w-4 h-4 group-hover:fill-white transition-colors ${isMatching ? "animate-pulse" : ""} ${isLiked ? "fill-rose-500 text-rose-500" : ""}`,
+      iconClassName: `w-4 h-4 text-white ${isMatching ? "animate-pulse" : ""}`,
       className:
-        `group flex items-center justify-center gap-2 py-2.5 rounded-xl bg-primary text-white font-semibold text-sm transition-all ${isMatching ? "opacity-70" : "hover:shadow-lg hover:scale-105"}`,
+        `flex items-center justify-center gap-1.5 py-2 rounded-full bg-primary text-white font-bold text-sm transition-all ${isMatching ? "opacity-70" : "hover:shadow-lg hover:scale-105"}`,
     },
   ];
 }
