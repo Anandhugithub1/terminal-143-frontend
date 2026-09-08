@@ -241,9 +241,17 @@ export default function OnboardingPage({ onComplete, onBack }) {
                   </div>
                   <div className="px-3 pb-3 pt-5 flex flex-col flex-1">
                     <h3 className="font-bold text-sm text-gray-900 mb-0.5 line-clamp-1">{circle.name}</h3>
-                    <p className="text-xs leading-snug text-gray-500 line-clamp-2 mb-2 flex-1">
+                    <p
+                      className="text-xs leading-snug text-gray-500 mb-2 overflow-hidden"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                      }}
+                    >
                       {circle.description}
                     </p>
+                    <div className="flex-1" />
                     <div className="flex items-center gap-1 flex-wrap">
                       {circle.tags.slice(0, 2).map((tag) => (
                         <span key={tag} className="text-[11px] text-primary bg-white border border-primary/30 px-2 py-0.5 rounded-full">
