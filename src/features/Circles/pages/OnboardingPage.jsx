@@ -246,7 +246,7 @@ export default function OnboardingPage({ onComplete, onBack }) {
                     </p>
                     <div className="flex items-center gap-1 flex-wrap">
                       {circle.tags.slice(0, 2).map((tag) => (
-                        <span key={tag} className="text-[11px] text-primary bg-primary/5 px-2 py-0.5 rounded-full">
+                        <span key={tag} className="text-[11px] text-primary bg-white border border-primary/30 px-2 py-0.5 rounded-full">
                           #{tag}
                         </span>
                       ))}
