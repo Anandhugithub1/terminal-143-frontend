@@ -1,0 +1,38 @@
+{
+    "stats": {
+      "matches": "成功配对",
+      "verified": "已验证的用户",
+      "rating": "平均评分"
+    },
+    "ctaHeading": "准备好开始您的旅程了吗？",
+    "ctaText": "加入成千上万通过 Terminal143 找到真挚联系的专业人士",
+  
+    "heading": "为什么选择 Terminal143",
+    "subheading": "建立真挚联系的现代方式",
+    "cards": {
+      "smartMatching": {
+        "title": "智能匹配",
+        "desc": "我们的 AI 算法分析数千个数据点，帮助您找到真正契合的对象"
+      },
+      "verifiedMembers": {
+        "title": "已验证用户",
+        "desc": "所有资料都经过严格审核，确保真实性与安全性"
+      },
+      "qualityFirst": {
+        "title": "质量优先",
+        "desc": "专注于真挚联系，而不是无止境地滑动选择"
+      }
+    },
+  
+    "hero": {
+      "headingPart1": "寻找真挚联系",
+      "headingHighlight": "不玩游戏",
+      "subheading": "为追求真实关系的专业人士提供智能匹配",
+      "buttons": {
+        "trial": "免费试用",
+        "howItWorks": "了解详情"
+      },
+      "imageAlt": "专业情侣使用 Terminal143 应用程序"
+    }
+  }
+  

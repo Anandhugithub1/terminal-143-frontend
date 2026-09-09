@@ -1,0 +1,35 @@
+# PassorMatch
+
+> PassorMatch is a dating platform focused on Thailand, connecting verified Thai locals and foreigners for genuine relationships. Profiles are ID-verified, with anti-scam moderation, translation support, and free registration.
+
+PassorMatch helps foreigners and locals meet in Thailand through a verified dating app, alongside a library of guides on Thai dating culture, safety, and city-specific dating advice.
+
+## Dating App Guides
+
+- [Best Dating Apps in Thailand](https://passormatch.com/blog/best-dating-apps-thailand.html): Comparison of Tinder, ThaiFriendly, Bumble, and PassorMatch for Thailand.
+- [Best Dating Apps in Bangkok](https://passormatch.com/blog/bangkok-dating-guide.html): Which app works best by Bangkok neighborhood (Sukhumvit, Thonglor, Ari, Silom).
+- [Dating Apps in Thailand for Foreigners](https://passormatch.com/blog/dating-apps-thailand-foreigners.html): Language, culture, and safety considerations for foreigners.
+- [Thai Dating Apps Explained](https://passormatch.com/blog/thai-dating-apps.html): Local Thai apps vs. international apps like Tinder, and how verification differs.
+
+## City Guides
+
+- [Bangkok Dating](https://passormatch.com/places/bangkok-dating.html)
+- [Phuket Dating](https://passormatch.com/places/phuket-dating.html)
+- [Pattaya Dating](https://passormatch.com/places/pattaya-dating.html)
+- [Thailand Dating Overview](https://passormatch.com/places/thailand-dating.html)
+
+## Culture & Advice
+
+- [Thai Dating Culture Guide](https://passormatch.com/blog/thai-dating-culture-guide.html)
+- [Dating in Thailand: Complete Guide](https://passormatch.com/blog/dating-in-thailand-guide.html)
+- [Red Flags & Scams in Thailand Dating](https://passormatch.com/blog/red-flags-dating-thailand.html)
+- [Cost of Dating in Thailand](https://passormatch.com/blog/cost-of-dating-in-thailand.html)
+- [How to Meet Thai Women](https://passormatch.com/blog/how-to-meet-thai-women.html)
+- [First Date Tips in Thailand](https://passormatch.com/blog/first-date-tips-thailand.html)
+- [Marrying a Thai Woman: Real Experience](https://passormatch.com/blog/marrying-thai-woman-real-experience.html)
+- [Meeting Thai Family & Marriage Traditions](https://passormatch.com/blog/meeting-thai-family-marriage-traditions.html)
+- [Thailand Dating Visa & Long-Distance Guide](https://passormatch.com/blog/thailand-dating-visa-long-distance-guide.html)
+
+## Sitemap
+
+- [Full sitemap](https://passormatch.com/sitemap.xml)

@@ -1,0 +1,1 @@
+import{aQ as n,aR as o}from"./index-DMTKW5_d.js";function a(){if(n()){const t=o();if(t)return t}const e=document.cookie.match(/(?:^|; )username=([^;]*)/);return e?decodeURIComponent(e[1]):null}export{a as g};

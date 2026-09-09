@@ -1,0 +1,45 @@
+{
+    "languages": {
+      "en": "English",
+      "th": "ภาษาไทย",
+      "ru": "Русский",
+      "zh": "中文",
+      "es": "Español",
+      "mx": "Español (MX)",
+      "it": "Italiano",
+      "pt": "Português"
+    }
+
+,
+    "brand": "PassorMatch",
+  "tagline": "Making meaningful connections since 2024",
+  "sections": {
+    "company": "Company",
+    "legal": "Legal",
+    "connect": "Connect"
+  },
+  "links": {
+    "about": "About",
+    "careers": "Careers",
+    "blog": "Blog",
+    "places": "Places",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "security": "Security",
+    "contact": "Contact",
+    "support": "Support",
+    "faq": "FAQ",
+    "press": "Press",
+    "partnerships": "Partnerships"
+  },
+  "copyright": "© 2024 PassorMatch. All rights reserved.",
+
+
+  "home": "Home",
+  "requests": "Requests",
+  "matches": "Matches/Chat",
+  "profile": "Profile",
+  "circles": "Circles"
+
+  }
+  

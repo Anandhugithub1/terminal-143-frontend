@@ -1,0 +1,42 @@
+{
+    "languages": {
+      "en": "English",
+      "th": "ภาษาไทย",
+      "ru": "Русский",
+      "zh": "中文",
+      "es": "Español",
+      "mx": "Español (MX)",
+      "it": "Italiano",
+      "pt": "Português",
+      "ko": "한국어"
+    },
+    "brand": "PassorMatch",
+    "tagline": "2024년부터 의미 있는 연결을 만듭니다",
+    "sections": {
+      "company": "회사",
+      "legal": "법률",
+      "connect": "연결"
+    },
+    "links": {
+      "about": "회사 소개",
+      "careers": "채용",
+      "blog": "블로그",
+      "privacy": "개인정보처리방침",
+      "terms": "이용 약관",
+      "places": "장소",
+      "security": "보안",
+      "contact": "문의하기",
+    "support": "고객지원",
+      "faq": "자주 묻는 질문",
+      "press": "보도자료",
+      "partnerships": "파트너십"
+    },
+    "copyright": "© 2024 PassorMatch. 판권 소유.",
+
+    "home": "홈",
+    "requests": "요청",
+    "matches": "매치/채팅",
+    "profile": "프로필",
+    "circles": "서클"
+  }
+  

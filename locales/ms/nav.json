@@ -1,0 +1,43 @@
+{
+    "languages": {
+      "en": "English",
+      "th": "ภาษาไทย",
+      "ru": "Русский",
+      "zh": "中文",
+      "es": "Español",
+      "mx": "Español (MX)",
+      "it": "Italiano",
+      "pt": "Português",
+      "ko": "한국어",
+      "ms": "Bahasa Melayu"
+    },
+    "brand": "Terminal143",
+    "tagline": "Mewujudkan hubungan bermakna sejak 2024",
+    "sections": {
+      "company": "Syarikat",
+      "legal": "Perundangan",
+      "connect": "Hubungi"
+    },
+    "links": {
+      "about": "Tentang Kami",
+      "careers": "Kerjaya",
+      "blog": "Blog",
+      "privacy": "Dasar Privasi",
+      "terms": "Terma Perkhidmatan",
+      "places": "Tempat",
+      "security": "Keselamatan",
+      "contact": "Hubungi Kami",
+    "support": "Sokongan",
+      "faq": "Soalan Lazim",
+      "press": "Siaran Akhbar",
+      "partnerships": "Perkongsian"
+    },
+    "copyright": "© 2024 PassorMatch. Hak cipta terpelihara.",
+
+    "home": "Laman Utama",
+    "requests": "Permintaan",
+    "matches": "Padanan/Chat",
+    "profile": "Profil",
+    "circles": "Bulatan"
+  }
+  
