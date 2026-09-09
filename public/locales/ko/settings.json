@@ -32,6 +32,8 @@
     },
     "profileEdit": {
         "title": "프로필 편집",
+        "updated": "프로필이 성공적으로 업데이트되었습니다",
+        "updatedTo": "{{field}}이(가) {{value}}(으)로 업데이트되었습니다",
         "myBio": "내 소개",
         "aboutMe": "내 소개",
         "interests": "관심사",

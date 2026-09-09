@@ -54,7 +54,7 @@ export function computeAge(dob) {
   return Math.floor(diffMs / msPerYear).toString();
 }
 
-const STD_STATUS_LABELS = {
+export const STD_STATUS_LABELS = {
   p: 'Positive',
   n: 'Negative',
   pns: 'Prefer not to say',
@@ -96,6 +96,7 @@ icon:User,
       key: 'languages',
       label: 'Languages',
       value: (profile.languagesKnown || []).join(', ') || 'Not set',
+      rawValue: profile.languagesKnown || [],
       icon: Globe2,
     },
     {

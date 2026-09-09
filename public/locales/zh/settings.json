@@ -32,6 +32,8 @@
     },
     "profileEdit": {
         "title": "编辑个人资料",
+        "updated": "个人资料已成功更新",
+        "updatedTo": "{{field}}已更新为{{value}}",
         "myBio": "我的简介",
         "aboutMe": "关于我",
         "interests": "兴趣",

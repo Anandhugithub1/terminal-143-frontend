@@ -32,6 +32,8 @@
     },
     "profileEdit": {
         "title": "Редактировать профиль",
+        "updated": "Профиль успешно обновлён",
+        "updatedTo": "{{field}} изменено на {{value}}",
         "myBio": "Моя биография",
         "aboutMe": "О себе",
         "interests": "Интересы",

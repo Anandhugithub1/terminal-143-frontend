@@ -36,6 +36,8 @@
 
   "profileEdit": {
     "title": "Edit Profile",
+    "updated": "Profile updated successfully",
+    "updatedTo": "{{field}} updated to {{value}}",
     "myBio": "My Bio",
     "aboutMe": "About Me",
     "interests": "Interests",

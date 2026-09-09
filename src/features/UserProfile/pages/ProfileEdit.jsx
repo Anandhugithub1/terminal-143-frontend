@@ -6,7 +6,11 @@ import { toast } from "sonner";
 import { ChevronLeft, Users } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 
-import { getProfileFields } from "../../../Utlis/utlis";
+import {
+  getProfileFields,
+  formatDate,
+  STD_STATUS_LABELS,
+} from "../../../Utlis/utlis";
 import { useEditableProfile } from "../../../Hooks/EditProfile";
 import { Section, LazyWrapper } from "../components/ProfileEdit/Reusable";
 import FieldEditPage from "./FieldEditPage";
@@ -53,6 +57,43 @@ export default function ProfileEditPage() {
     toast.success(t("profileEdit.updated", "Profile updated successfully"));
 
   const showError = (err) => toast.error(getErrorMessage(err));
+
+  // Turns a raw saved value into readable text so the success toast can say
+  // what changed (e.g. "Name updated to newname") instead of a generic message.
+  const formatUpdatedValue = (key, value) => {
+    if (key === "dob") return value ? `${formatDate(value)}` : "";
+    if (key === "languagesKnown") {
+      return Array.isArray(value) ? value.join(", ") : String(value ?? "");
+    }
+    if (key === "healthStatus") {
+      const label = value?.stdStatus
+        ? STD_STATUS_LABELS[value.stdStatus] || value.stdStatus
+        : "";
+      return label;
+    }
+    if (key === "interest") {
+      return Array.isArray(value) ? value.join(", ") : String(value ?? "");
+    }
+    if (typeof value === "boolean") return value ? "on" : "off";
+    if (Array.isArray(value)) return value.join(", ");
+    if (value && typeof value === "object") return "";
+    return value != null ? String(value) : "";
+  };
+
+  const showFieldUpdated = (fieldLabel, key, value) => {
+    const formatted = formatUpdatedValue(key, value);
+    if (formatted) {
+      toast.success(
+        t("profileEdit.updatedTo", {
+          defaultValue: `${fieldLabel} updated to ${formatted}`,
+          field: fieldLabel,
+          value: formatted,
+        })
+      );
+    } else {
+      showSuccess();
+    }
+  };
 
   // Defaults true, matching the schema default — this hook's own useQuery
   // has no select transform (unlike useMyProfile's mapProfile), so an
@@ -283,9 +324,11 @@ export default function ProfileEditPage() {
           }}
           value={
             activeField.key === "languages"
-              ? activeField.value || []
+              ? activeField.rawValue || []
               : activeField.key === "healthStatus"
               ? activeField.rawValue || {}
+              : activeField.key === "age"
+              ? activeField.rawValue || ""
               : activeField.value || ""
           }
           isSaving={isSaving}
@@ -298,7 +341,7 @@ export default function ProfileEditPage() {
             try {
               setIsSaving(true);
               await updateProfileData(key, value);
-              showSuccess();
+              showFieldUpdated(activeField.label, key, value);
               setActiveField(null);
             } catch (err) {
               showError(err);

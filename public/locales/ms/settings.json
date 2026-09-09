@@ -32,6 +32,8 @@
     },
     "profileEdit": {
         "title": "Sunting Profil",
+        "updated": "Profil berjaya dikemas kini",
+        "updatedTo": "{{field}} dikemas kini kepada {{value}}",
         "myBio": "Biografi Saya",
         "aboutMe": "Tentang Saya",
         "interests": "Minat",
