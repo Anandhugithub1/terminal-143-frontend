@@ -12,6 +12,12 @@ export function useSuggestions({ shouldAutoRefresh = false } = {}) {
   const [currentSource, setCurrentSource] = useState(null)
   const [autoRefreshExpired, setAutoRefreshExpired] = useState(false)
 
+  // Usernames swiped this session but not yet confirmed dropped by the
+  // server's next suggestions response — guards against the swipe-record
+  // write (POST /user/swipe) losing a race with a refetch that follows it
+  // immediately, which would otherwise let the just-swiped profile resurface.
+  const recentlySwipedRef = useRef(new Set())
+
   /* ---------------- NORMAL FETCH ---------------- */
 
   const {
@@ -59,9 +65,29 @@ export function useSuggestions({ shouldAutoRefresh = false } = {}) {
     refreshMutation.mutate()
   }, [refreshMutation])
 
+  /* ---------------- REMOVE SWIPED PROFILE (optimistic) ---------------- */
+
+  const removeProfile = useCallback((username) => {
+    if (!username) return
+
+    recentlySwipedRef.current.add(username)
+
+    queryClient.setQueryData(["profiles"], (old) => {
+      if (!old?.profiles?.length) return old
+
+      const filtered = old.profiles.filter((p) => p.PK !== username)
+      if (filtered.length === old.profiles.length) return old
+
+      return { ...old, profiles: filtered }
+    })
+  }, [queryClient])
+
   /* ---------------- RESPONSE STATE ---------------- */
 
-  const profiles = data?.profiles || []
+  const rawProfiles = data?.profiles || []
+  const profiles = recentlySwipedRef.current.size
+    ? rawProfiles.filter((p) => !recentlySwipedRef.current.has(p.PK))
+    : rawProfiles
   const computing = data?.computing || false
   const source = data?.source || null
   const hadPool = data?.hadPool ?? true
@@ -83,8 +109,11 @@ export function useSuggestions({ shouldAutoRefresh = false } = {}) {
   /* -------- Track source -------- */
 
   useEffect(() => {
-    if (source) setCurrentSource(source)
-  }, [source])
+    if (source && source !== currentSource) {
+      recentlySwipedRef.current.clear()
+      setCurrentSource(source)
+    }
+  }, [source, currentSource])
 
   /* -------- Reset when computing -------- */
 
@@ -145,6 +174,7 @@ export function useSuggestions({ shouldAutoRefresh = false } = {}) {
     isLoading,
     isFetching,
     isRefreshing: refreshMutation.isLoading,
-    refetch
+    refetch,
+    removeProfile
   }
 }

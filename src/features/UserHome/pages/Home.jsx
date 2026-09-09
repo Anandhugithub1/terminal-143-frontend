@@ -62,6 +62,7 @@ const { mutate: reportUser } = useReportUser();
     isFetching,
     isRefreshing,
     refetch,
+    removeProfile,
   } = useSuggestions({
     shouldAutoRefresh: Boolean(location.state?.profileJustCompleted),
   });
@@ -141,17 +142,27 @@ const [showReport, setShowReport] = useState(false);
         sendMatchRequest(current.PK);
       }
 
-      const next = idx + 1;
+      // Drop the swiped profile from the local list immediately instead of
+      // trusting the next refetch to have already excluded it — the
+      // seen-record call above is fire-and-forget, so a refetch can otherwise
+      // race ahead of it and briefly resurface the same profile (most visible
+      // with a thin pool, where a single swipe empties it and triggers this
+      // refetch right away).
+      removeProfile(current.PK);
 
-      if (next >= profiles.length) {
+      const remaining = profiles.length - 1;
+
+      if (remaining <= 0) {
         setIdx(0);
         refetch();
         return;
       }
 
-      setIdx(next);
+      if (idx >= remaining) {
+        setIdx(remaining - 1);
+      }
     },
-    [profiles, idx, currentSource, seenMutation, sendMatchRequest, refetch],
+    [profiles, idx, currentSource, seenMutation, sendMatchRequest, refetch, removeProfile],
   );
 
   const isNoPool = !computing && !hadPool && profiles.length === 0;
